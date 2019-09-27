@@ -1,0 +1,27 @@
+@import "../../../theme/variables";
+
+/*Booking info Card*/
+#bookingCard{
+  ion-card-header{
+    background:$transGray;
+  }
+  ion-card-content{
+    background: white;
+  }
+
+  ion-list{
+    ion-list-header{
+      ion-label{
+        white-space: normal;
+        line-break: auto;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        font-size: 12px !important;
+      }
+    }
+    ion-item{
+      font-size: 14px !important;
+    }
+  }
+
+}

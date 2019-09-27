@@ -1,0 +1,85 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>{{title}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <ion-searchbar
+            showCancelButton="true"
+            placeholder="{{strings.getString('location_search_hint')}}"
+            debounce="500"
+            (input)="onInput($event)"
+            (search)="onInput($event)"
+            (clear)="onClear($event)"
+            [animated]="true"
+            [(ngModel)]="searchText">
+    </ion-searchbar>
+</ion-header>
+<ion-content>
+    <div id="map" style="position: fixed !important; width: 100%;height: 100%"></div>
+    <div *ngIf="isLoading==true"
+         class="cell cell-flex cell-flex-center"
+         style="position: absolute !important; top: -20px; bottom: 0; left: 0; right: 0; width: 100%;height: 100%; z-index: 500 !important;">
+        <ion-spinner name="bubbles"></ion-spinner>
+    </div>
+    <div style="position: absolute !important; top: 0; width: 100%;height: auto; z-index: 300 !important;"
+         *ngIf="searchText!=null && searchText.length>=1">
+        <ion-card>
+            <ion-card-content>
+                <div class="cell loader" *ngIf="autoCompleteItems == null">
+                    <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
+                    <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
+                </div>
+                <div class="cell loader" *ngIf="autoCompleteItems != null && autoCompleteItems.length<1">
+                    <img src="{{assets.getPath('not_found')}}"/>
+                    <ion-label class="cell-content">{{strings.getString('not_found_txt')}}</ion-label>
+                </div>
+                <ion-list *ngIf="autoCompleteItems!=null && autoCompleteItems.length>=1">
+                    <ion-item *ngFor="let item of autoCompleteItems; let i = index" [attr.index]="i" (click)="getPlaceDetails(item.placeId)">
+                        <ion-col size="2" class="cell cell-center cell-flex cell-flex-center ">
+                            <ion-icon name="pin" class="danger"></ion-icon>
+                        </ion-col>
+                        <ion-col size="10">
+                            <div class="cell">
+                                <div>
+                                    <ion-label class="cell-title cell-left">{{item.name}}</ion-label>
+                                </div>
+                                <div>
+                                    <ion-label class="cell-content cell-left">{{item.formatted_address}}</ion-label>
+                                </div>
+                            </div>
+                        </ion-col>
+                    </ion-item>
+                </ion-list>
+            </ion-card-content>
+        </ion-card>
+    </div>
+    <div style="position: absolute !important; bottom: 0; width: 100%;height: auto; z-index: 200 !important;"
+         *ngIf="selectedPlace!=null">
+        <ion-card>
+            <ion-card-content>
+                <div class="cell cell-flex cell-flex-center">
+                    <ion-button class="iconBt" (click)="selectedPlace=null">
+                        <ion-icon color="primary" slot="icon-only" name="close"></ion-icon>
+                    </ion-button>
+                </div>
+                <div>
+                    <div class="cell cell-flex cell-flex-center">
+                        <ion-label class="cell-title">{{selectedPlace.name}}</ion-label>
+                    </div>
+                    <div class="cell cell-flex cell-flex-center">
+                        <ion-label class="cell-content">{{selectedPlace.formatted_address}}</ion-label>
+                    </div>
+                </div>
+                <div class="cell cell-flex cell-flex-center">
+                    <ion-button color="primary" (click)="dismiss()">
+                        {{strings.getString("select_txt")}}
+                        <ion-icon slot="start" color="secondary" name="add-circle-outline"></ion-icon></ion-button>
+                </div>
+            </ion-card-content>
+        </ion-card>
+    </div>
+</ion-content>

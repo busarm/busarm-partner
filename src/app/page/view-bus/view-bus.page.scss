@@ -1,0 +1,29 @@
+
+#fileInput {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+#fileInputLabel {
+  height: 40px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: {
+    top: 5px;
+    bottom: 5px;
+    left: 10px;
+    right: 10px;
+  };
+  ion-icon{
+    margin: {
+      right: 8px;
+    };
+  }
+}

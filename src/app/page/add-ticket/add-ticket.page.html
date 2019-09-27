@@ -1,0 +1,42 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>{{strings.getString('add_ticket_txt')}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <form #ticketForm="ngForm" (ngSubmit)="add()" autocomplete="off">
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-label position="stacked">{{strings.getString('ticket_type_txt')}}</ion-label>
+                    <ion-select name="ticketType" required placeholder="{{strings.getString('select_ticket_type_txt')}}"
+                                [(ngModel)]="selectedTicketType">
+                        <ion-select-option *ngFor="let type of ticketTypes" [value]="type.id">
+                            {{type.name}} {{type.description}}
+                        </ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <br>
+                <ion-item>
+                    <ion-label position="fixed">{{country.currency_code}}</ion-label>
+                    <ion-input name="ticketPrice" required [(ngModel)]="ticketPrice"
+                               placeholder="{{strings.getString('enter_ticket_price_txt')}}" type="number"></ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-button expand="full" color="primary" type="submit"
+                            [disabled]="!ticketForm.form.valid">
+                    {{strings.getString("done_txt")}}
+                </ion-button>
+            </ion-col>
+        </ion-row>
+    </form>
+</ion-content>

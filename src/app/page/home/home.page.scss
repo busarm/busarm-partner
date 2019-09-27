@@ -1,0 +1,9 @@
+.active-item {
+  border-right: 8px solid var(--ion-color-danger);
+}
+.tab-selected{
+  ion-icon,ion-label{
+    --color: white !important;
+    color: white !important;
+  }
+}

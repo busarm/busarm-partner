@@ -1,0 +1,223 @@
+import {Component} from '@angular/core';
+import {AlertController, Events, ModalController, NavController} from "@ionic/angular";
+import {Network} from "@ionic-native/network/ngx";
+import {ConnectionStatusEvents} from "../../utils/NetworkProvider";
+import {Api} from "../../utils/Api";
+import {Strings} from "../../resources";
+import {ToastType} from "../../utils/Utils";
+import {BusType, LocationType, TicketType, TripInfo, TripStatus} from "../../models/ApiResponse";
+import {PageController} from "../page-controller";
+import {ViewTripPage} from "../view-trip/view-trip.page";
+import {AddTripPage} from "../add-trip/add-trip.page";
+
+@Component({
+    selector: 'app-trip',
+    templateUrl: './trip.page.html',
+    styleUrls: ['./trip.page.scss'],
+})
+export class TripPage extends PageController{
+
+    searchText: string = null;
+    trips: TripInfo[] = null;
+    currentTrips: TripInfo[] = null;
+    statusList: TripStatus[] = null;
+    locationTypes: LocationType[] = null;
+    busTypes: BusType[] = null;
+    ticketTypes: TicketType[] = null;
+
+    constructor(public navCtrl: NavController,
+                public alertCtrl: AlertController,
+                public modalCtrl: ModalController,
+                public events: Events,
+                public network: Network) {
+        super();
+    }
+
+    public async ngOnInit() {
+        await super.ngOnInit();
+        console.log("Trips Loaded");
+
+    }
+
+    public async ionViewDidEnter(){
+        //Give time for components to load first
+        this.setTimeout(() => {
+
+            if (!this.trips)
+                this.loadTripsView();
+
+            /*Online event*/
+            this.events.subscribe(ConnectionStatusEvents.Online_Event, async () => {
+                await this.hideToastMsg();
+                if (!this.trips)
+                    this.loadTripsView();
+            });
+
+        }, 500);
+    }
+
+    /**Search input event
+     * */
+    public onInput(event,isSearch=false) {
+        if (event.isTrusted) {
+            this.searchText = event.target.value;
+            if (this.assertAvailable(this.searchText) && this.searchText.length > 0) {
+                if (isSearch) { //Only perform action if search pressed
+                    if (this.assertAvailable(this.trips)) {
+                        this.currentTrips = [];
+                        for (let index in this.trips) {
+                            let trip = this.trips[index];
+                            let reg = new RegExp(this.searchText, 'gi');
+                            if (trip.pickup_loc_name.match(reg) ||
+                                trip.pickup_city.match(reg) ||
+                                trip.dropoff_loc_name.match(reg) ||
+                                trip.dropoff_city.match(reg) ||
+                                trip.agent_email.match(reg)) {
+
+                                this.currentTrips.push(trip)
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                this.onClear(event);
+            }
+        }
+    }
+
+    /**Reset Search bar*/
+    public onClear(event) {
+        if (event.isTrusted) {
+            this.searchText = null;
+            this.currentTrips = this.trips;
+        }
+    }
+
+    /**Launch add trip page*/
+    async showAddTrip() {
+        let chooseModal = await this.modalCtrl.create({
+            component: AddTripPage,
+            componentProps: {
+                statusList: this.statusList,
+                locationTypes: this.locationTypes,
+                busTypes: this.busTypes,
+                ticketTypes: this.ticketTypes,
+            }
+        });
+        chooseModal.onDidDismiss().then(data => {
+            if (data.data) {
+                this.loadTripsView();
+            }
+        });
+        return await chooseModal.present();
+    }
+
+
+
+    /**Launch view trip page*/
+    async showTrip(trip: TripInfo) {
+        let chooseModal = await this.modalCtrl.create({
+            component: ViewTripPage,
+            componentProps: {
+                trip: trip
+            }
+        });
+        chooseModal.onDidDismiss().then(data => {
+            if (data.data) {
+                this.loadTripsView();
+            }
+        });
+        return await chooseModal.present();
+    }
+
+    /**Refresh View*/
+    public refreshTripsView(event?) {
+        this.loadTripsView(() => {
+            if (event) {
+                event.target.complete();
+            }
+        })
+    }
+
+    /**Load Trips View*/
+    public loadTripsView(completed?: () => any) {
+
+        /*Get Trip status*/
+        Api.getTripStatusList((status, result) => {
+            if (status) {
+                if (this.assertAvailable(result)) {
+                    this.statusList = result.data;
+                }
+            }
+        });
+
+        /*Get Location Types*/
+        Api.getLocationTypes((status, result) => {
+            if (status) {
+                if (this.assertAvailable(result)) {
+                    this.locationTypes = result.data;
+                }
+            }
+        });
+
+        /*Get Bus Types*/
+        Api.getPartnerBusTypes((status, result) => {
+            if (status) {
+                if (this.assertAvailable(result)) {
+                    this.busTypes = result.data;
+                }
+            }
+        });
+
+        /*Get Ticket Types*/
+        Api.getTicketTypes((status, result) => {
+            if (status) {
+                if (this.assertAvailable(result)) {
+                    this.ticketTypes = result.data;
+                }
+            }
+        });
+
+        /*Get trips*/
+        Api.getTrips((status, result) => {
+            if (status) {
+                if (this.assertAvailable(result)) {
+                    this.searchText = null;
+                    this.trips = this.currentTrips = result.data;
+                }
+                else {
+                    this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                }
+            }
+            else {
+                this.showToastMsg(result, ToastType.ERROR);
+            }
+
+            if (this.assertAvailable(completed)) {
+                completed();
+            }
+        });
+
+    }
+
+
+    /**Get Status class for trip status*/
+    public getTripStatusClass(status: string): string {
+        if (this.assertAvailable(status)) {
+            switch (status) {
+                case "2":
+                default:
+                    return "status-default";
+                case "3":
+                    return "status-cancel";
+                case "7":
+                    return "status-ok";
+                case "8":
+                    return "status-warn";
+            }
+        }
+    }
+
+
+}

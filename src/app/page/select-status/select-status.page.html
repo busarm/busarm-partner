@@ -1,0 +1,40 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>{{strings.getString('select_status_txt')}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+    <!--Status list-->
+    <div *ngIf="statusList!=null && statusList.length > 0">
+        <ion-list>
+            <ion-card *ngFor="let status of statusList; let i = index" [attr.index]="i">
+                <ion-card-content>
+                    <ion-row>
+                        <ion-col size="8" class="cell cell-flex cell-flex-center">
+                            <div class="cell">
+                                <ion-label class="cell-title cell-left">{{status.status}}</ion-label>
+                            </div>
+                        </ion-col>
+                        <ion-col size="4" class="cell cell-center  cell-flex cell-flex-center">
+                            <div>
+                                <div class="cell cell-center ">
+                                    <ion-button color="primary" (click)="add(status)">
+                                        <ion-icon name="add" slot="start"></ion-icon>
+                                        {{strings.getString("select_txt")}}
+                                    </ion-button>
+                                </div>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+                </ion-card-content>
+            </ion-card>
+        </ion-list>
+    </div>
+</ion-content>

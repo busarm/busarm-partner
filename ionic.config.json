@@ -1,0 +1,7 @@
+{
+  "name": "EBusGh Partners",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,57 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>{{strings.getString('add_agent_txt')}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <form #agentForm="ngForm" (ngSubmit)="add()" autocomplete="off">
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-checkbox name="is_admin" slot="end" color="primary" [(ngModel)]="isExistingUser">
+                    </ion-checkbox>
+                    <ion-label>{{strings.getString('existing_user')}}</ion-label>
+                </ion-item>
+                <br>
+                <ion-item *ngIf="!isExistingUser">
+                    <ion-label position="stacked">{{strings.getString('name_txt')}}</ion-label>
+                    <ion-input name="name" [required]="!isExistingUser" [(ngModel)]="name" type="text">
+                    </ion-input>
+                </ion-item>
+                <br>
+                <ion-item>
+                    <ion-label position="stacked">{{strings.getString('email_txt')}}</ion-label>
+                    <ion-input name="email" [required]="true" [(ngModel)]="email" type="email">
+                    </ion-input>
+                </ion-item>
+                <br>
+                <ion-item *ngIf="!isExistingUser">
+                    <ion-label position="fixed">{{dialCode}}</ion-label>
+                    <ion-input name="phone" [required]="!isExistingUser" [(ngModel)]="phone" type="number"
+                               placeholder="{{strings.getString('phone_txt')}}">
+                    </ion-input>
+                </ion-item>
+                <br>
+                <ion-item>
+                    <ion-checkbox name="is_admin" slot="end" color="primary" [(ngModel)]="isAdmin">
+                    </ion-checkbox>
+                    <ion-label>{{strings.getString('admin_txt')}}</ion-label>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-button expand="full" color="primary" type="submit"
+                            [disabled]="!agentForm.form.valid">
+                    {{strings.getString("submit_txt")}}
+                </ion-button>
+            </ion-col>
+        </ion-row>
+    </form>
+</ion-content>

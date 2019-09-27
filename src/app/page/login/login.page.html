@@ -1,0 +1,40 @@
+<ion-content padding>
+    <ion-row justify-content-center>
+        <ion-col size-md="6">
+            <form #loginForm="ngForm" (ngSubmit)="login()" autocomplete="off">
+                <div align="center" class="logoContainer">
+                    <img draggable="false" align="center" class="logo logoImg"
+                         src="{{assets.getPath('logo_dark')}}">
+                    <img draggable="false" align="center" class="logo logoTxt"
+                         src="{{assets.getPath('logo_txt_dark')}}">
+                    <h3 class="logoNameTxt">{{strings.getString("partner_txt")}}</h3>
+                </div>
+                <ion-row>
+                    <ion-col>
+                        <ion-item>
+                            <ion-label color="primary" position="fixed">{{strings.getString("email_txt")}}</ion-label>
+                            <ion-input name="username" id="usernameField"
+                                       type="text" required [(ngModel)]="username" #email> </ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label color="primary" position="fixed">{{strings.getString("password_txt")}}</ion-label>
+                            <ion-input name="password" id="passwordField"
+                                       type="password" required [(ngModel)]="password" #pass> </ion-input>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <ion-button color="primary" class="submit-btn" type="submit"
+                                    [disabled]="!loginForm.form.valid">
+                            {{strings.getString("login_txt")}}
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </form>
+            <ion-item [disabled]="username==null || username.length<1" [lines]="'none'" (click)="confirmForgotPassword()">
+                <ion-label>{{strings.getString("forgot_password_title_txt")}}</ion-label>
+            </ion-item>
+        </ion-col>
+    </ion-row>
+</ion-content>

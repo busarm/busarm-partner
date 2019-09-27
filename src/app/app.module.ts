@@ -1,0 +1,78 @@
+import {enableProdMode, NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {RouteReuseStrategy} from '@angular/router';
+
+import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
+import {SplashScreen} from '@ionic-native/splash-screen/ngx';
+import {StatusBar} from '@ionic-native/status-bar/ngx';
+import {Network} from "@ionic-native/network/ngx";
+import {Device} from "@ionic-native/device/ngx";
+import {AppVersion} from "@ionic-native/app-version/ngx";
+import {SecureStorage} from "@ionic-native/secure-storage/ngx";
+import {BarcodeScanner} from "@ionic-native/barcode-scanner/ngx";
+
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {IonicStorageModule} from "@ionic/storage";
+import {HomePageModule} from "./page/home/home.module";
+import {LoginPageModule} from "./page/login/login.module";
+import {Camera} from "@ionic-native/camera/ngx";
+import {DatePicker} from "@ionic-native/date-picker/ngx";
+import {File} from "@ionic-native/file/ngx";
+import {FilePath} from "@ionic-native/file-path/ngx";
+import {AES256} from "@ionic-native/aes-256/ngx";
+import {InAppBrowser} from "@ionic-native/in-app-browser/ngx";
+import {DEFAULT_TIMEOUT, TimeoutInterceptor} from "./utils/TimeoutInterceptor";
+import {Deeplinks} from "@ionic-native/deeplinks/ngx";
+import {environment} from "../environments/environment";
+import {AuthGuard} from "./utils/AuthGuard";
+
+//Turn on production mode
+if(environment.production)
+    enableProdMode();
+
+@NgModule({
+    declarations: [AppComponent],
+    entryComponents: [AppComponent],
+    imports: [
+        BrowserModule,
+        IonicModule.forRoot({
+            hardwareBackButton:true,
+            rippleEffect:true,
+            animated:true,
+            persistConfig:true
+        }),
+        HttpClientModule,
+        IonicStorageModule.forRoot({
+            name:"ebusgh_storage",
+            driverOrder: ['indexeddb', 'localstorage', 'websql', 'sqlite']
+        }),
+        HomePageModule,
+        LoginPageModule,
+        AppRoutingModule,
+    ],
+    providers: [
+        [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }],
+        [{ provide: DEFAULT_TIMEOUT, useValue: 30000 }], //Set Http Timeout
+        AuthGuard,
+        StatusBar,
+        SplashScreen,
+        {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+        Network,
+        Device,
+        AppVersion,
+        SecureStorage,
+        BarcodeScanner,
+        DatePicker,
+        Camera,
+        File,
+        FilePath,
+        AES256,
+        InAppBrowser,
+        Deeplinks
+    ],
+    bootstrap: [AppComponent]
+})
+export class AppModule {
+}

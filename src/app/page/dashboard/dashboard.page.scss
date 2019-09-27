@@ -1,0 +1,54 @@
+@import "../../../theme/variables";
+ion-content {
+
+  /*Active Trip Info Div*/
+  #dashCards{
+    ion-icon {
+      color: $themeColorDark;
+    }
+    ion-card{
+      ion-card-content{
+        background: $disabledGray;
+        --background: $disabledGray;
+        ion-list{
+          background: $disabledGray;
+          --background: $disabledGray;
+        }
+        ion-item{
+          background: $disabledGray;
+          --background: $disabledGray;
+        }
+      }
+    }
+    #activeTrips{
+      ion-col{
+        &[index="0"]{
+          ion-card-header{
+            background:$themeColorDark;
+            color: white !important;
+          }
+          ion-card-content{
+            background: white;
+          }
+        }
+        &:not([index="0"]){
+          ion-card-header{
+            background:$themeColorLight;
+            color: white !important;
+          }
+          ion-card-content{
+            background: $disabledGray;
+            --background: $disabledGray;
+          }
+        }
+        ion-card-content{
+          ion-col[left]{
+            .cell{
+              padding: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

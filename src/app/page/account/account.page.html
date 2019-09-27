@@ -1,0 +1,110 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-menu-button color="secondary">
+            </ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            {{strings.getString("account_title_txt")}}
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-grid>
+        <ion-row justify-content-center wrap>
+            <ion-col size-lg="4" size="12">
+                <ion-card *ngIf="userInfo!=null">
+                    <ion-card-content>
+                        <ion-row>
+                            <ion-col size-sm="5" size="12" class="cell cell-flex cell-flex-center">
+                                <ion-img *ngIf="userInfo.partner_logo!=null"
+                                         class="img thumbnail"
+                                         [src]="userInfo.partner_logo"
+                                         cache=true>
+                                </ion-img>
+                                <ion-img *ngIf="userInfo.partner_logo==null &&  (!userInfo.is_partner && !userInfo.is_admin)"
+                                         class="img thumbnail"
+                                         [src]="assets.getPath('logo_txt_dark')">
+                                </ion-img>
+                                <ion-button *ngIf="platform.is('cordova') && userInfo.partner_logo==null &&  (userInfo.is_partner || userInfo.is_admin)"
+                                            (click)="selectImage()"
+                                            class="cell cell-flex cell-flex-center"
+                                            style="height: 100%!important;"
+                                            [fill]="'outline'" [shape]="'round'" color="primary">
+                                    <span style="word-wrap: break-word !important;">{{strings.getString("add_logo_txt")}}</span>
+                                </ion-button>
+                                <ion-button *ngIf="!platform.is('cordova') && userInfo.partner_logo==null &&  (userInfo.is_partner || userInfo.is_admin)"
+                                            class="cell cell-flex cell-flex-center"
+                                            style="height: 100%!important;"
+                                            [fill]="'outline'" [shape]="'round'" color="primary">
+                                    <input id="fileInput" type="file" accept="image/*" (change)="changeListener($event)"/>
+                                    <label id="fileInputLabel" for="fileInput"><ion-icon color="primary" name="images"> </ion-icon>{{strings.getString("upload_txt")}}</label>
+                                </ion-button>
+                            </ion-col>
+                            <ion-col size-sm="7" size="12" class="cell cell-flex cell-flex-center">
+                                <div class="cell cell-center cell-left">
+                                    <div>
+                                        <ion-label class="cell-sub">{{userInfo.partner_name}}</ion-label>
+                                    </div>
+                                    <div>
+                                        <ion-label class="cell-title">{{userInfo.name}} - ({{
+                                            userInfo.is_partner?"Partner":userInfo.is_admin?"Admin":userInfo.is_agent?"Agent":"User"
+                                            }})
+                                        </ion-label>
+                                    </div>
+                                    <div>
+                                        <ion-label class="cell-content">{{userInfo.email}}</ion-label>
+                                    </div>
+                                    <div>
+                                        <ion-label class="cell-content">{{userInfo.dial_code}}{{userInfo.phone}}</ion-label>
+                                    </div>
+                                </div>
+                            </ion-col>
+                        </ion-row>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+            <ion-col size-lg="6" size="12" no-padding>
+                <ion-row wrap>
+                    <ion-col size="12">
+                        <ion-card *ngIf="userInfo!=null && (userInfo.is_admin || userInfo.is_partner)" routerLink="/agents">
+                            <ion-card-content>
+                                <ion-item [lines]="'none'">
+                                    <ion-icon name="people" slot="start">
+                                    </ion-icon>
+                                    {{strings.getString('my_agents_txt')}}
+                                </ion-item>
+                            </ion-card-content>
+                        </ion-card>
+                    </ion-col>
+                    <ion-col size="12">
+                        <ion-card>
+                            <ion-card-content>
+                                <ion-item (click)="showSupport()">
+                                    {{strings.getString('support_txt')}}
+                                </ion-item>
+                                <ion-item (click)="showTerms()">
+                                    {{strings.getString('terms_and_condition_txt')}}
+                                </ion-item>
+                                <ion-item (click)="showPrivacy()">
+                                    {{strings.getString('privacy_policy_txt')}}
+                                </ion-item>
+                                <ion-item (click)="showApp()">
+                                    {{strings.getString('go_to_app_txt')}}
+                                </ion-item>
+                            </ion-card-content>
+                        </ion-card>
+                    </ion-col>
+                    <ion-col size="12" padding>
+                        <ion-button expand="full" color="danger" (click)="confirmLogout()">
+                            <ion-icon name="exit" color="secondary" slot="start">
+                            </ion-icon>
+                            {{strings.getString('logout_txt')}}
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

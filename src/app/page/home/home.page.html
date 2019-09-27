@@ -1,0 +1,71 @@
+
+
+<!--Menu Controller-->
+<ion-menu *ngIf="!platform.is('mobile')" size="start" menuId="home">
+    <ion-header>
+        <ion-toolbar color="primary">
+            <div align="center"  class="logoContainer">
+                <img draggable="false" class="logo logoTxt"
+                     src="{{assets.getPath('logo_txt_light')}}">
+                <h4 class="logoNameTxt">{{strings.getString("partner_txt")}}</h4>
+            </div>
+        </ion-toolbar>
+    </ion-header>
+    <br>
+    <br>
+    <ion-content>
+        <ion-menu-toggle auto-hide="false">
+            <ion-item routerLink="/home/dashboard" routerDirection="root" [class.active-item]="selectedPage.startsWith('/home/dashboard')">
+                <ion-icon slot="start" name="home" color="primary"> </ion-icon>
+                {{strings.getString("dashboard_title_txt")}}
+            </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false">
+            <ion-item routerLink="/home/trip" routerDirection="root" [class.active-item]="selectedPage.startsWith('/home/trip')">
+                <ion-icon slot="start" name="map" color="primary"> </ion-icon>
+                {{strings.getString("trips_title_txt")}}
+            </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false">
+            <ion-item routerLink="/home/bus" routerDirection="root" [class.active-item]="selectedPage.startsWith('/home/bus')">
+                <ion-icon slot="start" name="bus" color="primary"> </ion-icon>
+                {{strings.getString("buses_title_txt")}}
+            </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false">
+            <ion-item routerLink="/home/account" routerDirection="root" [class.active-item]="selectedPage.startsWith('/home/account')">
+                <ion-icon slot="start" name="person" color="primary"> </ion-icon>
+                {{strings.getString("account_title_txt")}}
+            </ion-item>
+        </ion-menu-toggle>
+        <ion-list>
+        </ion-list>
+    </ion-content>
+</ion-menu>
+<ion-router-outlet *ngIf="!platform.is('mobile')" main><!--Home Content will display in here-->
+</ion-router-outlet>
+
+<!--Tab Controller-->
+<ion-tabs  *ngIf="platform.is('mobile')" (ionTabsWillChange)="willChange($event)">
+    <ion-tab-bar slot="bottom">
+        <ion-tab-button tab="dashboard">
+            <ion-icon name="home"> </ion-icon>
+            <ion-label>{{strings.getString('dashboard_title_txt')}}</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button tab="trip">
+            <ion-icon name="map"> </ion-icon>
+            <ion-label>{{strings.getString('trips_title_txt')}}</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button tab="bus">
+            <ion-icon name="bus"> </ion-icon>
+            <ion-label>{{strings.getString('buses_title_txt')}}</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button tab="account">
+            <ion-icon name="person"> </ion-icon>
+            <ion-label>{{strings.getString('account_title_txt')}}</ion-label>
+        </ion-tab-button>
+    </ion-tab-bar>
+</ion-tabs>
