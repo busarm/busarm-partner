@@ -1,31 +1,28 @@
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from "@angular/router";
 import {Injectable} from "@angular/core";
 import {AppComponent} from "../app.component";
-import {LoginPage} from "../page/login/login.page";
+import { ToastType } from "./Utils";
+import { SessionManager } from "./SessionManager";
+import { Strings } from "../resources";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor() {}
-
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        if (!AppComponent.instance.loaded && !AppComponent.instance.authAttempted) {
-            return AppComponent.instance.authorize(!AppComponent.instance.authorized).then(status => {
-                if (route.component == LoginPage){
-                    if (status) {
-                        AppComponent.instance.setRootPage('/home');
-                    }
-                    return !status;
+    async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        return await AppComponent.instance.authorize(!AppComponent.instance.authAttempted).then(async status => {
+            if (route.routeConfig.path == 'login'){ // If login page, go to home if already authorized
+                if (status) {
+                    await AppComponent.instance.goHome();
+                }
+                return !status;
+            }
+            else {
+                if (!status) {
+                   await AppComponent.instance.showToastMsg(Strings.getString('error_access_expired'), ToastType.ERROR);
+                   await SessionManager.logout();
                 }
                 return status;
-            })
-        } else {
-            if (route.component == LoginPage){
-                if (AppComponent.instance.authorized){
-                    AppComponent.instance.setRootPage('/home');
-                }
-                return !AppComponent.instance.authorized;
             }
-            return AppComponent.instance.authorized;
-        }
+        }) 
     }
 }

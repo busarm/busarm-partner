@@ -6,7 +6,7 @@ import {UserInfo} from "../../models/ApiResponse";
 import {ToastType} from "../../utils/Utils";
 import {Api} from "../../utils/Api";
 import {Strings} from "../../resources";
-import {AddAgentPage} from "../add-agent/add-agent.page";
+import {AddAgentPage} from "./add-agent/add-agent.page";
 
 @Component({
     selector: 'app-view-agents',
@@ -18,8 +18,7 @@ export class AgentsPage extends PageController {
     agents: UserInfo[];
 
     constructor(public modalCtrl: ModalController,
-                private iab: InAppBrowser,
-                public navCtrl: NavController) {
+                private iab: InAppBrowser) {
         super();
     }
 
@@ -52,7 +51,7 @@ export class AgentsPage extends PageController {
             if (this.assertAvailable(completed)) {
                 completed();
             }
-        });
+        }, false);
     }
 
     /**Launch add user page*/
@@ -86,7 +85,7 @@ export class AgentsPage extends PageController {
         );
     }
 
-    /**Delete Image*/
+    /**Delete Agent*/
     public deleteAgent(agentId: string) {
         this.showLoading().then(()=>{
             Api.deleteAgent(agentId,(status, result) => {
@@ -95,6 +94,32 @@ export class AgentsPage extends PageController {
                     if (this.assertAvailable(result)) {
                         if (result.status){
                             this.loadAgentsView();
+                            this.showToastMsg(result.msg, ToastType.SUCCESS);
+                        }
+                        else{
+                            this.showToastMsg(result.msg, ToastType.ERROR);
+                        }
+                    }
+                    else {
+                        this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                    }
+                }
+                else {
+                    this.showToastMsg(result, ToastType.ERROR);
+                }
+            });
+        });
+    }
+
+    /**Toggle Agent active status*/
+    public toggleAgent(agentId: string, active: boolean|number) {
+        this.showLoading().then(()=>{
+            Api.toggleAgent(agentId, active?1:0,(status, result) => {
+                this.hideLoading();
+                this.loadAgentsView();
+                if (status) {
+                    if (this.assertAvailable(result)) {
+                        if (result.status){
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                         }
                         else{

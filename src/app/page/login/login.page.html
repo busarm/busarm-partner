@@ -1,6 +1,6 @@
 <ion-content padding>
     <ion-row justify-content-center>
-        <ion-col size-md="6">
+        <ion-col size-md="6" size-lg="4">
             <form #loginForm="ngForm" (ngSubmit)="login()" autocomplete="off">
                 <div align="center" class="logoContainer">
                     <img draggable="false" align="center" class="logo logoImg"
@@ -12,12 +12,12 @@
                 <ion-row>
                     <ion-col>
                         <ion-item>
-                            <ion-label color="primary" position="fixed">{{strings.getString("email_txt")}}</ion-label>
+                            <ion-label color="primary" position="stacked">{{strings.getString("email_txt")}}</ion-label>
                             <ion-input name="username" id="usernameField"
                                        type="text" required [(ngModel)]="username" #email> </ion-input>
                         </ion-item>
-                        <ion-item>
-                            <ion-label color="primary" position="fixed">{{strings.getString("password_txt")}}</ion-label>
+                        <ion-item *ngIf="!forgottenPassword">
+                            <ion-label color="primary" position="stacked">{{strings.getString("password_txt")}}</ion-label>
                             <ion-input name="password" id="passwordField"
                                        type="password" required [(ngModel)]="password" #pass> </ion-input>
                         </ion-item>
@@ -27,13 +27,15 @@
                     <ion-col>
                         <ion-button color="primary" class="submit-btn" type="submit"
                                     [disabled]="!loginForm.form.valid">
-                            {{strings.getString("login_txt")}}
+                            {{forgottenPassword?strings.getString("verify_email_txt"):strings.getString("login_txt")}}
                         </ion-button>
                     </ion-col>
                 </ion-row>
             </form>
-            <ion-item [disabled]="username==null || username.length<1" [lines]="'none'" (click)="confirmForgotPassword()">
-                <ion-label>{{strings.getString("forgot_password_title_txt")}}</ion-label>
+            <ion-item [disabled]="username==null || username.length < 1" [lines]="'none'">
+                <ion-label>{{strings.getString('forgot_password_title_txt')}}</ion-label>
+                <ion-checkbox name="forgot_password" slot="start" color="primary" [(ngModel)]="forgottenPassword">
+                </ion-checkbox>
             </ion-item>
         </ion-col>
     </ion-row>

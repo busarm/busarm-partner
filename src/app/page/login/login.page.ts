@@ -7,6 +7,7 @@ import {OauthGrantType} from "../../utils/Oauth";
 import {ToastType, Utils} from "../../utils/Utils";
 import {NetworkProvider} from "../../utils/NetworkProvider";
 import {SessionManager} from "../../utils/SessionManager";
+import { Urls } from '../../utils/Urls';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,8 @@ export class LoginPage extends PageController{
     public username: string;
     public password: string;
 
+    forgottenPassword: boolean;
+
     constructor() {
         super();
     }
@@ -25,10 +28,23 @@ export class LoginPage extends PageController{
     public async ngOnInit(){}
     public async ionViewDidEnter(){}
 
-    /**Process user Login
+
+    /**Process user Login request
      * */
     public login()
     {
+        if(this.forgottenPassword){
+            this.confirmForgotPassword();
+        }
+        else {
+            this.processLogin();
+        }
+    }
+
+    /**
+     * Process Login
+     */
+    public processLogin(){
         if(NetworkProvider.isOnline()){
 
             //Show Loader
@@ -50,7 +66,7 @@ export class LoginPage extends PageController{
                                     this.instance.authorized = true;
 
                                     //Load Home
-                                    await this.instance.setRootPage("home");
+                                    await this.instance.goHome();
                                     this.instance.hideLoadingScreen();
                                 }
                                 else{
@@ -99,13 +115,14 @@ export class LoginPage extends PageController{
             },
             {
                 title: this.strings.getString("yes_txt"),
-                callback: () => {
+                callback: async  () => {
                     //Trigger Oauth email login
+                    let state = await Utils.getCurrentInstance();
                     this.oauth.oauthAuthorizeWithEmail(
                         ['agent'],
-                        location.origin,
+                        Urls.partnerOauthRedirectUrl,
                         this.username,
-                        Utils.getCurrentInstance())
+                        state)
                 }
             },
         );

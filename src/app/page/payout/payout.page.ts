@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {PageController} from "../page-controller";
 import {PayOutTransaction} from "../../models/ApiResponse";
-import {ModalController} from "@ionic/angular";
+import {ModalController, NavController} from "@ionic/angular";
 import {ToastType} from "../../utils/Utils";
 import {Api} from "../../utils/Api";
 
@@ -13,21 +13,44 @@ import {Api} from "../../utils/Api";
 
 export class PayoutPage extends PageController {
 
-    @Input() payout: PayOutTransaction;
-
+    payout: PayOutTransaction;
     receiverName: string;
     receiverBank: string;
     receiverAccount: string;
 
-    constructor(private modalCtrl: ModalController) {
+    constructor(private navCtrl: NavController) {
         super();
     }
 
-    public async ngOnInit() {}
-
-    public async ionViewDidEnter() {
+    public async ngOnInit() {
+        await super.ngOnInit();
+        this.payout = await this.getRouteParams();
+        if(!this.payout){
+            this.loadPayout();
+        }
     }
 
+    async dismiss(){
+        this.navCtrl.back();
+    }
+
+    /**
+     * Load Payout Transactions
+     */
+    private loadPayout(){
+        this.showLoading().then(()=>{
+            Api.getPayOutTransactions(async (status, result) =>{
+                this.hideLoading();
+                if(status){
+                    this.payout = result.data;
+                }
+                else {
+                    await this.showToastMsg(result, ToastType.ERROR);
+                    this.instance.goHome();
+                }
+            })
+        })
+    }
 
     /**Submit request form*/
     public submit(){
@@ -45,7 +68,7 @@ export class PayoutPage extends PageController {
                 this.hideLoading();
                 if (status) {
                     this.showToastMsg(result.msg, ToastType.SUCCESS);
-                    this.dismiss(true);
+                    this.dismiss();
                 }
                 else {
                     this.showToastMsg(result, ToastType.ERROR);
@@ -72,10 +95,4 @@ export class PayoutPage extends PageController {
             }
         }
     }
-
-    /**Close Modal*/
-    dismiss(success?: boolean) {
-        this.modalCtrl.dismiss(success)
-    }
-
 }

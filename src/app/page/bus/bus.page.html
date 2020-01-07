@@ -21,6 +21,7 @@
             (input)="onInput($event)"
             (search)="onInput($event,true)"
             (clear)="onClear($event)"
+            (cancel)="onClear($event)"
             [animated]="true"
             [(ngModel)]="searchText">
     </ion-searchbar>
@@ -98,7 +99,7 @@
         </ion-grid>
     </div>
     <br><br><br>
-    <ion-fab  *ngIf="busTypes!=null && userInfo!=null && (userInfo.is_partner || userInfo.is_admin)" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab  *ngIf="busTypes!=null && userInfo!=null && userInfo.is_admin" vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button (click)="showAddBus()">
             <ion-icon name="add">
             </ion-icon>

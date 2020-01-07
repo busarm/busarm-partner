@@ -5,17 +5,16 @@ import {FormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 
 import {BookingsPage} from "./bookings.page";
-import {ViewBookingPage} from "../view-booking/view-booking.page";
-import {ViewBookingPageModule} from "../view-booking/view-booking.module";
+import {ViewBookingPage} from "./view-booking/view-booking.page";
+import {ViewBookingPageModule} from "./view-booking/view-booking.module";
 import {RouterModule, Routes} from "@angular/router";
 
-const routes: Routes = [
+const routes: Routes = [ 
     {
-        path: 'view-booking',
-        component: ViewBookingPage
-    },
+        path: '',
+        component: BookingsPage
+    }
 ];
-
 @NgModule({
     imports: [
         CommonModule,
@@ -24,7 +23,10 @@ const routes: Routes = [
         ViewBookingPageModule,
         RouterModule.forChild(routes)
     ],
-    declarations: [BookingsPage]
+    declarations: [BookingsPage],
+    entryComponents: [
+        ViewBookingPage
+    ]
 })
 export class BookingsPageModule {
 }

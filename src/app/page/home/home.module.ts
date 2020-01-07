@@ -1,26 +1,24 @@
 import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
 
 import {IonicModule} from '@ionic/angular';
 
-import {HomePage} from './home.page';
-import {DashboardPage} from "../dashboard/dashboard.page";
-import {DashboardPageModule} from "../dashboard/dashboard.module";
-import {TripPage} from "../trip/trip.page";
-import {TripPageModule} from "../trip/trip.module";
-import {BusPage} from "../bus/bus.page";
-import {BusPageModule} from "../bus/bus.module";
-import {AccountPage} from "../account/account.page";
-import {AccountPageModule} from "../account/account.module";
-import {AuthGuard} from "../../utils/AuthGuard";
-
-const routes: Routes = [
+import {HomePage} from './home.page'; 
+import { DashboardPage } from '../dashboard/dashboard.page';
+import { TripPage } from '../trip/trip.page';
+import { BusPage } from '../bus/bus.page';
+import { AccountPage } from '../account/account.page'; 
+import { DashboardPageModule } from '../dashboard/dashboard.module';
+import { TripPageModule } from '../trip/trip.module';
+import { BusPageModule } from '../bus/bus.module';
+import { AccountPageModule } from '../account/account.module';
+ 
+const routes: Routes = [ 
     {
-        path: 'home',
+        path: '',
         component: HomePage,
-        canActivate: [AuthGuard],
         children: [
             {
                 path: 'dashboard',
@@ -46,6 +44,7 @@ const routes: Routes = [
         ]
     }
 ];
+
 
 @NgModule({
     imports: [

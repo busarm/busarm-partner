@@ -1,15 +1,15 @@
 import {Component} from '@angular/core';
 import {AlertController, Events, ModalController, NavController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
-import {ConnectionStatusEvents, NetworkProvider} from "../../utils/NetworkProvider";
+import {NetworkProvider} from "../../utils/NetworkProvider";
 import {Api} from "../../utils/Api";
 import {Strings} from "../../resources";
-import {ToastType, Utils} from "../../utils/Utils";
-import {BusType, BusInfo, UserInfo} from "../../models/ApiResponse";
+import {ToastType} from "../../utils/Utils";
+import {BusType, BusInfo} from "../../models/ApiResponse";
 import {PageController} from "../page-controller";
-import {ViewBusPage} from "../view-bus/view-bus.page";
-import {AddBusPage} from "../add-bus/add-bus.page";
-import {SessionManager} from "../../utils/SessionManager";
+import {ViewBusPage} from "./view-bus/view-bus.page";
+import {AddBusPage} from "./add-bus/add-bus.page";
+import {EventsParams} from "../../utils/EventsParams";
 
 @Component({
     selector: 'app-bus',
@@ -34,26 +34,30 @@ export class BusPage extends PageController{
 
     public async ngOnInit() {
         await super.ngOnInit();
-        console.log("Buses Loaded");
+
+        /*Online event*/
+        this.events.subscribe(EventsParams.Online_Event, async () => {
+            await this.hideToastMsg();
+            if (!this.buses)
+                this.loadBusesView();
+        });
+
+        /*Country Change event*/
+        this.events.subscribe(EventsParams.CountryChangeSuccessEvent, async () => {
+            this.loadBusesView();
+        });
     }
 
     public async ionViewDidEnter(){
-        //Give time for components to load first
+
+        /*Give time for components to load first*/
         this.setTimeout(() => {
 
             if (!this.buses)
                 this.loadBusesView();
 
-            /*Online event*/
-            this.events.subscribe(ConnectionStatusEvents.Online_Event, async () => {
-                await this.hideToastMsg();
-                if (!this.buses)
-                    this.loadBusesView();
-            });
-
         }, 500);
     }
-
 
     /**Search input event
      * */
@@ -167,7 +171,6 @@ export class BusPage extends PageController{
             responseType: "text",
             observe: 'events'
         });
-
-        console.log(img);
+        console.log(image);
     }
  }

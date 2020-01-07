@@ -4,13 +4,16 @@ import {OnDestroy, OnInit} from "@angular/core";
 import {AppComponent} from "../app.component";
 import {SessionManager} from "../utils/SessionManager";
 import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
+import {EventsParams} from "../utils/EventsParams";
+import { Params } from "@angular/router";
 
-export abstract class PageController implements OnInit, OnDestroy {
+export class PageController implements OnInit, OnDestroy {
 
     //Define resources for views to use
     public strings = Strings;
     public assets = Assets;
 
+    public selectedCountry: string = null;
     public session: ValidateSessionObject = null;
     public userInfo: UserInfo = null;
     public static timer: number = null;
@@ -32,7 +35,6 @@ export abstract class PageController implements OnInit, OnDestroy {
     public ionViewDidLeave(){}
 
 
-
     /**Get App instance*/
     get instance() {
         return AppComponent.instance;
@@ -43,9 +45,10 @@ export abstract class PageController implements OnInit, OnDestroy {
         return AppComponent.oauth;
     }
 
-
-    /**Get Session Info*/
-    public async getSession() {
+    /**Get Session Info
+     * @return {ValidateSessionObject}
+     */
+    public async getSession()  {
         return this.session = await new Promise<ValidateSessionObject>((resolve: (data: ValidateSessionObject) => any) => {
             SessionManager.getSession(data => {
                 if (data) {
@@ -57,8 +60,10 @@ export abstract class PageController implements OnInit, OnDestroy {
         });
     }
 
-    /**Get User Info*/
-    public async getUserInfo() {
+    /**Get User Info
+     * @return {UserInfo}
+     */
+    public async getUserInfo(){
         return this.userInfo = await new Promise<UserInfo>((resolve: (data: UserInfo) => any) => {
             SessionManager.getUserInfo(data => {
                 if (data) {
@@ -67,6 +72,87 @@ export abstract class PageController implements OnInit, OnDestroy {
                     resolve(null);
                 }
             });
+        });
+    }
+
+    /**Set Country*/
+    public async setCountry() {
+        if (this.selectedCountry != null && this.userInfo.allow_multi_countries){
+            this.instance.set_country(this.selectedCountry,  async (status, msg) => {
+                if (status){
+                    this.instance.events.publish(EventsParams.CountryChangeSuccessEvent);
+                }
+                else {
+                    this.instance.events.publish(EventsParams.CountryChangeFailedEvent);
+                    await this.showToastMsg(msg?msg:Strings.getString("error_unexpected"), ToastType.ERROR);
+                }
+            })
+        }
+    }
+
+    /**
+     * Navigate to a new page
+     * @param path 
+     * @param params 
+     */
+    public async navigate(path:string, params?:any){
+        if(params){await this.setRouteParams(path, params)}
+        return this.instance.router.navigateByUrl(path,  {
+                queryParamsHandling:'merge',
+                preserveFragment:false, 
+                preserveQueryParams:false});
+    }
+    
+    /**
+     * Set Route Params
+     * @param path 
+     * @param params 
+     */
+    public async setRouteParams(path:string, params:any){
+        return await new Promise<boolean>((resolve: (data: boolean) => any) => {
+            SessionManager.set('route_'+Utils.safeString(path), params, data => {
+                if (data) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            });
+        });
+    }
+
+
+    /**
+     * Get Route params
+     * @param path 
+     */
+    public async getRouteParams(path?:string){
+        return await new Promise<any>((resolve: (data: any) => any) => {
+            let key ='route_'+Utils.safeString((path?path:this.instance.router.url));
+            SessionManager.get(key, data => {
+                if (data) {
+                    resolve(data);
+                    SessionManager.remove(key); //remove params after use
+                } else {
+                    resolve(null);
+                }
+            });
+        });
+    }
+
+    /**
+     * Get Url Query params
+     * @param path 
+     */
+    public async getQueryParams(){
+        return await new Promise<Params>((resolve: (data: Params) => any) => {
+            this.instance.router.routerState.root.queryParams.subscribe(async (queryParams)=>{
+                if(queryParams){
+                    resolve(queryParams)
+                }
+                else {
+                    resolve(null);
+                }
+              })
         });
     }
 
@@ -126,6 +212,12 @@ export abstract class PageController implements OnInit, OnDestroy {
         return Utils.assertAvailable(data)
     }
 
+    /**
+     * Set Timout
+     * @param handler 
+     * @param timeout 
+     * @param stopPrevious 
+     */
     public setTimeout(handler?: TimerHandler, timeout?: number, stopPrevious: boolean = true) {
         if (stopPrevious && PageController.timer) {
             clearTimeout(PageController.timer);

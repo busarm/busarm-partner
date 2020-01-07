@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "bookings.page.scss"
+    ],
+    "names": [],
+    "file": "bookings.page.css"
+}

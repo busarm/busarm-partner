@@ -1,7 +1,8 @@
 {
-  "name": "EBusGh Partners",
+  "name": "Wecari Partners",
   "integrations": {
     "cordova": {}
   },
-  "type": "angular"
+  "type": "angular",
+  "id": "bdeeaa61"
 }

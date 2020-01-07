@@ -5,7 +5,8 @@ import {Booking, BookingInfo} from "../../models/ApiResponse";
 import {ToastType} from "../../utils/Utils";
 import {Api} from "../../utils/Api";
 import {Strings} from "../../resources";
-import {ViewBookingPage} from "../view-booking/view-booking.page";
+import {ViewBookingPage} from "./view-booking/view-booking.page";
+import { Router, Params } from '@angular/router';
 
 @Component({
     selector: 'app-bookings',
@@ -14,22 +15,40 @@ import {ViewBookingPage} from "../view-booking/view-booking.page";
 })
 export class BookingsPage extends PageController {
 
-    @Input() bookings: Booking[] = null;
+    bookings: Booking[] = null;
 
-    constructor(private modalCtrl: ModalController, public navCtrl: NavController) {
+    constructor(private modalCtrl: ModalController, private navCtrl: NavController) {
         super();
     }
 
-    public async ngOnInit() {}
-
-    public ionViewDidEnter() {
-        if (this.bookings==null){
-            this.dismiss()
+    public async ngOnInit() {
+        await super.ngOnInit();
+        this.bookings = await this.getRouteParams();
+        if(!this.bookings){
+            this.loadBookings();
         }
     }
 
-    dismiss(success = false){
-        this.modalCtrl.dismiss(success)
+    async dismiss(){
+        this.navCtrl.back();
+    }
+
+    /**
+     * Load Booking list
+     */
+    private loadBookings(){
+        this.showLoading().then(()=>{
+            Api.getBookings(async (status, result) =>{
+                this.hideLoading();
+                if(status){
+                    this.bookings = result.data;
+                }
+                else {
+                    await this.showToastMsg(result, ToastType.ERROR);
+                    this.instance.goHome();
+                }
+            })
+        })
     }
 
     /**Get Status class for booking status*/
@@ -79,7 +98,7 @@ export class BookingsPage extends PageController {
         });
         chooseModal.onDidDismiss().then((data) => {
             if (data.data) {
-                return this.dismiss(true);
+                return this.dismiss();
             }
         });
         return await chooseModal.present();

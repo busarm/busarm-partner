@@ -37,6 +37,7 @@ export class AccountPage extends PageController {
     }
 
     public async ngOnInit() {
+        await super.ngOnInit();
         console.log("Account Loaded");
     }
 
@@ -126,6 +127,11 @@ export class AccountPage extends PageController {
                     if (this.assertAvailable(result)) {
                         if (result.status) {
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
+                            this.instance.get_user_info((status)=>{
+                                if(status){
+                                    this.getUserInfo();
+                                }
+                            });
                         }
                         else {
                             this.showToastMsg(result.msg, ToastType.ERROR);
@@ -161,6 +167,11 @@ export class AccountPage extends PageController {
         );
     }
 
+    /**Show Agents page*/
+    public showAgents(){
+        this.navigate("agents");
+    }
+
     /**Show Support page*/
     public showSupport(){
         this.iab.create(Urls.support+"?access_token="+OauthStorage.accessToken,'_blank',{
@@ -187,7 +198,7 @@ export class AccountPage extends PageController {
 
     /**Show App page*/
     public showApp(){
-        this.iab.create(Urls.appBaseUrl+"?access_token="+OauthStorage.accessToken,'_blank',{
+        this.iab.create(Urls.baseUrl+"?access_token="+OauthStorage.accessToken,'_blank',{
             zoom:"no",
             hardwareback:"yes"
         });

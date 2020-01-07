@@ -24,6 +24,7 @@ export enum Keys {
     error_unexpected,
     error_access_expired,
     login_txt,
+    verify_email_txt,
     refresh_txt,
     ok_txt,
     close_txt,
@@ -111,9 +112,7 @@ export enum Keys {
     delete_trip_title_txt,
     delete_trip_msg_txt,
     delete_bus_title_txt,
-    delete_bus_msg_txt,
-    delete_ticket_title_txt,
-    delete_ticket_msg_txt,
+    delete_bus_msg_txt, 
     delete_image_title_txt,
     delete_image_msg_txt,
     select_image_source_txt,
@@ -173,6 +172,8 @@ export enum Keys {
     terms_and_condition_txt,
     privacy_policy_txt,
     go_to_app_txt,
+    pay_before_txt,
+    authorizing_txt
 }
 
 export type StringKey = keyof typeof Keys;
@@ -192,7 +193,7 @@ const English: String = {
     agent_txt: "Agent",
     partner_txt: "Partner",
     please_wait: "Please Wait!",
-    refreshing_txt: "Refreshing...",
+    refreshing_txt: "Refreshing",
     invalid_login: "Invalid email or password",
     error_connection: "Unable to connect to server. Please check your connectivity settings",
     error_unexpected: "Unexpected error occurred. Please try again later",
@@ -209,7 +210,7 @@ const English: String = {
     no_active_trip_txt: "Currently no active trip for booking.",
     active_trips_txt: "Active Trips",
     upcoming_trips_txt: "Upcoming Trips",
-    pull_refresh_txt: "Pull to refresh...",
+    pull_refresh_txt: "Pull to refresh",
     name_txt: "Name",
     phone_txt: "Phone Number",
     from_txt: "From",
@@ -286,8 +287,6 @@ const English: String = {
     delete_trip_msg_txt: "Are you sure you want to delete this trip? <strong>This action is irreversible.</strong>",
     delete_bus_title_txt: "Delete Bus",
     delete_bus_msg_txt: "Are you sure you want to delete this bus?",
-    delete_ticket_title_txt: "Delete Ticket",
-    delete_ticket_msg_txt: "Are you sure you want to delete this ticket?",
     delete_image_title_txt: "Delete Image",
     delete_image_msg_txt: "Are you sure you want to delete this image?",
     select_image_source_txt: "Select Image source",
@@ -308,6 +307,7 @@ const English: String = {
     new_user:"New User?",
     existing_user:"Existing User?",
     forgot_password_title_txt:"Forgot Password?",
+    verify_email_txt:"Verify Email",
     forgot_password_msg_txt:"An email will be sent to you for authorization. Do you want to proceed?",
     upload_txt:"Upload",
     bookings_txt:"Bookings",
@@ -346,7 +346,10 @@ const English: String = {
     support_txt:"Support",
     terms_and_condition_txt:"Terms and Conditions",
     privacy_policy_txt:"Privacy Policy",
-    go_to_app_txt:"Go to EbusGh App"
+    go_to_app_txt:"Go to Wecari App",
+    pay_before_txt:"Pay before:",
+    authorizing_txt: "Authorizing access. Please wait ...",
+
 };
 
 

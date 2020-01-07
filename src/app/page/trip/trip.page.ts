@@ -1,14 +1,20 @@
 import {Component} from '@angular/core';
 import {AlertController, Events, ModalController, NavController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
-import {ConnectionStatusEvents} from "../../utils/NetworkProvider";
 import {Api} from "../../utils/Api";
 import {Strings} from "../../resources";
 import {ToastType} from "../../utils/Utils";
-import {BusType, LocationType, TicketType, TripInfo, TripStatus} from "../../models/ApiResponse";
+import {
+    BusType,
+    LocationType,
+    TicketType,
+    TripInfo,
+    TripStatus
+} from "../../models/ApiResponse";
 import {PageController} from "../page-controller";
-import {ViewTripPage} from "../view-trip/view-trip.page";
-import {AddTripPage} from "../add-trip/add-trip.page";
+import {ViewTripPage} from "./view-trip/view-trip.page";
+import {AddTripPage} from "./add-trip/add-trip.page";
+import {EventsParams} from "../../utils/EventsParams";
 
 @Component({
     selector: 'app-trip',
@@ -35,23 +41,26 @@ export class TripPage extends PageController{
 
     public async ngOnInit() {
         await super.ngOnInit();
-        console.log("Trips Loaded");
 
+        /*Online event*/
+        this.events.subscribe(EventsParams.Online_Event, async () => {
+            await this.hideToastMsg();
+            if (!this.trips)
+                this.loadTripsView();
+        });
+
+        /*Country Change event*/
+        this.events.subscribe(EventsParams.CountryChangeSuccessEvent, async () => {
+            this.loadTripsView();
+        });
     }
 
     public async ionViewDidEnter(){
-        //Give time for components to load first
+        /*Give time for components to load first*/
         this.setTimeout(() => {
 
             if (!this.trips)
                 this.loadTripsView();
-
-            /*Online event*/
-            this.events.subscribe(ConnectionStatusEvents.Online_Event, async () => {
-                await this.hideToastMsg();
-                if (!this.trips)
-                    this.loadTripsView();
-            });
 
         }, 500);
     }

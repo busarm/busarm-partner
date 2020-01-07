@@ -1,0 +1,11 @@
+
+<ion-content padding>
+  <div align="center" class="logoContainer">
+    <img draggable="false" align="center" class="logo logoTxt"
+         src="{{assets.getPath('logo_txt_dark')}}">
+  </div>
+  <div class="loader cell">
+    <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
+    <ion-label class="cell-content">{{strings.getString('authorizing_txt')}}</ion-label>
+  </div>
+</ion-content>

@@ -8,7 +8,9 @@ export interface ValidateSessionObject extends SimpleResponseObject  {
     updated?: boolean;
     session_token?: string;
     encryption_key?: string;
-    configs:ConfigObject
+    configs:ConfigObject,
+    country?: Country;
+    countries?: Country[];
 }
 
 export interface ConfigObject {
@@ -17,7 +19,7 @@ export interface ConfigObject {
     google_api_key:string,
     account_name:string,
     bank_name:string,
-    account_number:string,
+    account_number:string
 }
 
 /*----USER INFO RESPONSE ------*/
@@ -40,34 +42,46 @@ export interface UserInfo{
     dial_code?: string;
     phone?: string;
     lang?: string;
+    is_active?: boolean|number;
     is_admin?: boolean|number;
     is_agent?: boolean|number;
     is_partner?: boolean|number;
     partner_id?: string;
     partner_logo?: string;
     partner_name?: string;
+    partner_active?:  boolean|number;
+    partner_verified?:  boolean|number;
     suspended?: string;
     verified?: string;
     country?: Country;
-    permissions?:string[]
+    permissions?:string[],
+    allow_international?: boolean|number;
+    allow_multi_countries?: boolean|number;
 }
 
 export interface Country {
+    country_img?: string
     country_code?: string;
     country_name?: string;
     currency_code?: string;
     dial_code?: string;
     lat?: string;
     lng?: string;
+    booking_fee?: string
+    is_active?: string
+    is_default?: string
 }
 
 
 /*----BOOKING INFO RESPONSE ------*/
 
+export interface BookingsInfoObject extends SimpleResponseObject  {
+    data?: BookingInfo[];
+}
+
 export interface BookingInfoObject extends SimpleResponseObject  {
     data?: BookingInfo;
 }
-
 export interface BookingInfo{
     reference_code?: string;
     booking_id?: string;
@@ -127,6 +141,7 @@ export interface TripInfo{
     price?:string,
     currency_code?:string,
     agent_id?:string,
+    agent_name?:string,
     agent_email?:string,
     partner_id?:string,
     partner_name?:string,
@@ -163,6 +178,8 @@ export interface TicketInfo{
     currency_code?:string
     price?: string,
     description?: string,
+    allow_deactivate?: string|number|boolean|any,
+    is_active?: string|number|boolean|any,
 }
 
 export interface BookingTicketInfo{
@@ -258,6 +275,15 @@ export interface LocationType{
     name?: string,
 }
 
+/*------PAYIN TRANSACTION RESPONSE*/
+export interface PayInTransactionObject extends SimpleResponseObject  {
+    data?: PayInTransaction;
+}
+
+/*------PAYOUT TRANSACTION RESPONSE*/
+export interface PayOutTransactionObject extends SimpleResponseObject  {
+    data?: PayOutTransaction;
+}
 
 /*------DASHBOARD RESPONSE*/
 
@@ -278,7 +304,7 @@ export interface Dashboard{
             banked_in:number,
         },
         payin:PayInTransaction,
-        payouts:PayOutTransaction
+        payout:PayOutTransaction
     }
 }
 
@@ -311,6 +337,7 @@ export interface PayInTransaction{
     balance:number,
     from:string,
     to:string,
+    last_day_to_action:string,
     action_required:boolean,
     requests:PayInTransactionRequest[],
     info:string,

@@ -62,7 +62,7 @@ export class Oauth {
     /**Authorize Access to the app
      * @param params Object
      * @param params.grant_type default -> client_credentials grantType
-     * @param params.ignore_grant_types grant_type(s) to ignore if OauthGrantType.Auto selected
+     * @param params.allowed_grant_types grant_type(s) to ignore if OauthGrantType.Auto selected
      * @param params.redirect_uri For authorization_code grant_type default -> current url
      * @param params.user_id For authorization_code grant_type
      * @param params.username For User_Credentials grant_type
@@ -71,7 +71,7 @@ export class Oauth {
      * */
     authorizeAccess(params: {
         grant_type?: OauthGrantType,
-        ignore_grant_types?: OauthGrantType[],
+        allowed_grant_types?: OauthGrantType[],
         redirect_uri?: string,
         user_id?: string,
         username?: string,
@@ -84,8 +84,8 @@ export class Oauth {
         let grant_type: OauthGrantType = OauthUtils.assertAvailable(params.grant_type) ?
             params.grant_type :
             OauthGrantType.Client_Credentials;
-        let ignore_grant_types: OauthGrantType[] = OauthUtils.assertAvailable(params.ignore_grant_types) ?
-            params.ignore_grant_types :
+        let allowed_grant_types: OauthGrantType[] = OauthUtils.assertAvailable(params.allowed_grant_types) ?
+            params.allowed_grant_types :
             [];
         let redirect_uri: string = OauthUtils.assertAvailable(params.redirect_uri) ?
             params.redirect_uri :
@@ -104,7 +104,7 @@ export class Oauth {
                 case OauthGrantType.Auto:
                     if (OauthUtils.assertAvailable(params.user_id) || OauthUtils.assertAvailable(OauthUtils.getUrlParam('code'))) { //if authorization code exists in url param
                         grant_type = OauthGrantType.Authorization_Code;
-                        if (!ignore_grant_types.includes(grant_type)) {
+                        if (allowed_grant_types.includes(grant_type)) {
                             getNewOauthToken()
                         } else {
                             params.callback(false);
@@ -112,7 +112,7 @@ export class Oauth {
                     }
                     else if(OauthUtils.assertAvailable(params.username) && OauthUtils.assertAvailable(params.password)) {
                         grant_type = OauthGrantType.User_Credentials;
-                        if (!ignore_grant_types.includes(grant_type)) {
+                        if (allowed_grant_types.includes(grant_type)) {
                             getNewOauthToken()
                         } else {
                             params.callback(false);
@@ -120,7 +120,7 @@ export class Oauth {
                     }
                     else {
                         grant_type = OauthGrantType.Client_Credentials;
-                        if (!ignore_grant_types.includes(grant_type)) {
+                        if (allowed_grant_types.includes(grant_type)) {
                             getNewOauthToken()
                         } else {
                             params.callback(false);
@@ -247,7 +247,7 @@ export class Oauth {
                 default:
 
                     //Get token
-                    this.oauthTokenWithClientCredentials(
+                    this.oauthTokenWithClientCredentials(scope,
                         /**Ajax Response callback
                          * @param token OauthTokenResponse
                          * @param xhr XMLHttpRequest | ActiveXObject
@@ -287,7 +287,7 @@ export class Oauth {
         /**Refresh Existing Token
          * @param refreshToken String
          * */
-        let refreshOauthToken = (refreshToken) => {
+        let refreshOauthToken = (refreshToken:string) => {
 
             this.oauthRefreshToken(refreshToken,
                 /**Ajax Response callback
@@ -297,10 +297,8 @@ export class Oauth {
                 (token, xhr) => {
                     if (OauthUtils.assertAvailable(token)) {
                         if (OauthUtils.assertAvailable(token.accessToken)) {
-
                             //save token
                             OauthStorage.saveAccess(token);
-
                             if (typeof params.callback === 'function') {
                                 params.callback(OauthStorage.accessToken);
                             }
@@ -333,23 +331,10 @@ export class Oauth {
                  * @param xhr XMLHttpRequest | ActiveXObject
                  * */
                 (verify, xhr) => {
-                    if (OauthUtils.assertAvailable(verify)) {
-                        if (OauthUtils.assertAvailable(verify.success)) {
-                            if (verify.success == true) {
-                                if (typeof params.callback === 'function') {
-                                    OauthStorage.accessToken = accessToken;
-                                    params.callback(OauthUtils.assertAvailable(accessToken)?accessToken:true);
-                                }
-                            }
-                            else {
-                                if (typeof params.callback === 'function') {
-                                    params.callback(false);
-                                }
-                            }
-                        } else {
-                            if (typeof params.callback === 'function') {
-                                params.callback(false);
-                            }
+                    if (OauthUtils.assertAvailable(verify) && OauthUtils.assertAvailable(verify.success) && verify.success == true) {
+                        if (typeof params.callback === 'function') {
+                            OauthStorage.accessToken = accessToken;
+                            params.callback(OauthUtils.assertAvailable(accessToken)?accessToken:true);
                         }
                     }
                     else {
@@ -372,40 +357,13 @@ export class Oauth {
                      * @param xhr XMLHttpRequest | ActiveXObject
                      * */
                     (verify, xhr) => {
-                        if (OauthUtils.assertAvailable(verify)) {
-                            if (OauthUtils.assertAvailable(verify.success)) {
-                                if (verify.success == true) {
-                                    if (typeof params.callback === 'function') {
-                                        params.callback(OauthUtils.assertAvailable(accessToken)?accessToken:true);
-                                    }
-                                }
-                                else {
-                                    //Failed to verify token - get new token
-                                    getNewOauthToken();
-                                }
-                            }
-                            else if (OauthUtils.assertAvailable(verify.error)){
-                                //Failed to verify token - get new token
-                                getNewOauthToken();
-                            }
-                            else {
-                                if (typeof params.callback === 'function') {
-                                    params.callback(false);
-                                }
+                        if (OauthUtils.assertAvailable(verify) && OauthUtils.assertAvailable(verify.success) && verify.success == true) {
+                            if (typeof params.callback === 'function') {
+                                params.callback(OauthUtils.assertAvailable(accessToken)?accessToken:true);
                             }
                         }
                         else {
-
-                            let expiry = parseInt(OauthStorage.getData(OauthStorage.expiresInKey));
-                            let today = new Date();
-                            let now = today.getTime();
-
-                            /* Check if token has expired
-                             * Check if current time is greater than 10 secs
-                             * before the time the oauth token is supposed to expire
-                             * (10 Secs before -> to prevent miscalculations due to
-                             * delayed oauth server response)*/
-                            if (now > expiry + 10) {
+                            if (OauthUtils.hasTokenExpired()) {
                                 //expired - get refresh token
                                 let refreshToken = OauthStorage.refreshToken;
                                 if (OauthUtils.assertAvailable(refreshToken)) {
@@ -520,15 +478,17 @@ export class Oauth {
     }
 
     /**Get oauth token with Client credentials
+     * @param scope
      * @param callback function
      * */
-    oauthTokenWithClientCredentials(callback: (verify: OauthTokenResponse, xhr: XMLHttpRequest) => any) {
+    oauthTokenWithClientCredentials(scope: string[], callback: (verify: OauthTokenResponse, xhr: XMLHttpRequest) => any) {
         OauthRequest.post({
             url: this.tokenUrl,
             params: {
                 grant_type: OauthGrantType.Client_Credentials,
                 client_id: this.clientId,
-                client_secret: this.clientSecret
+                client_secret: this.clientSecret,
+                scope: scope.join(" "),
             },
             /**Ajax Response callback
              * @param xhr XMLHttpRequest | ActiveXObject
@@ -559,6 +519,12 @@ export class Oauth {
      * @param callback function
      * */
     oauthTokenWithUserCredentials(username: string, password: string, scope:string[], callback: (verify: OauthTokenResponse, xhr: XMLHttpRequest) => any) {
+        if (!OauthUtils.assertAvailable(username)) {
+            throw "'username' Required"
+        }
+        if (!OauthUtils.assertAvailable(password)) {
+            throw "'password' Required"
+        }
         OauthRequest.post({
             url: this.tokenUrl,
             params: {
@@ -949,7 +915,7 @@ export class OauthRequest {
 
         //Add Access Token if requested
         if (this.withAccessToken) {
-            this.xhttp.setRequestHeader("Access-Token", OauthStorage.accessToken);
+            this.xhttp.setRequestHeader("Authorization", OauthStorage.tokenType +' ' + OauthStorage.accessToken);
         }
 
         //Send Request
@@ -1101,15 +1067,12 @@ export class OauthStorage {
 
     /**Save Access data to Local storage
      * @param accessData OauthTokenResponse */
-    static saveAccess(accessData) {
+    static saveAccess(accessData: OauthTokenResponse) {
         OauthStorage.setData(OauthStorage.accessTokenKey, OauthUtils.safeString(accessData.accessToken));
         OauthStorage.setData(OauthStorage.refreshTokenKey, OauthUtils.safeString(accessData.refreshToken));
         OauthStorage.setData(OauthStorage.accessScopeKey, OauthUtils.safeString(accessData.accessScope));
         OauthStorage.setData(OauthStorage.tokenTypeKey, OauthUtils.safeString(accessData.tokenType));
-
-        let expires = new Date();
-        expires.setSeconds(expires.getSeconds() + accessData.expiresIn);
-        OauthStorage.setData(OauthStorage.expiresInKey, OauthUtils.safeString(expires.getTime()));
+        OauthStorage.setData(OauthStorage.expiresInKey, OauthUtils.safeString(Math.floor(Date.now() / 1000) + accessData.expiresIn));
     }
 
 
@@ -1156,13 +1119,6 @@ export class OauthStorage {
         }
     }
 
-    /**Get Access Token
-     * @return String
-     * */
-    static get accessToken() {
-        return OauthStorage.getData(OauthStorage.accessTokenKey);
-    }
-
     /**Set Access Token
      * @param accessToken String
      * */
@@ -1170,6 +1126,12 @@ export class OauthStorage {
         OauthStorage.setData(OauthStorage.accessTokenKey,accessToken);
     }
 
+    /**Get Access Token
+     * @return String
+     * */
+    static get accessToken() {
+        return OauthStorage.getData(OauthStorage.accessTokenKey);
+    }
     /**Get Refresh Token
      * @return String
      * */
@@ -1183,11 +1145,38 @@ export class OauthStorage {
     static get accessScope() {
         return OauthStorage.getData(OauthStorage.accessScopeKey);
     }
+
+    /**Get Expires In
+     * @return string
+     * */
+    static get expiresIn() {
+        return OauthStorage.getData(OauthStorage.expiresInKey);
+    }
+
+    /**Get Token Type
+     * @return String
+     * */
+    static get tokenType() {
+        return OauthStorage.getData(OauthStorage.tokenTypeKey);
+    }
 }
 
 
 /**Common Functions*/
 export class OauthUtils {
+
+
+    /**Check if token has expired
+     *  @return boolean
+     * */
+    static hasTokenExpired() {
+        if(OauthUtils.assertAvailable(OauthStorage.accessToken) && OauthUtils.assertAvailable(OauthStorage.expiresIn)){
+            return parseInt(OauthStorage.expiresIn) < (Math.floor(Date.now() / 1000 ) + 10); // + 10 to account for network letency
+        }
+        return true;
+    }
+    
+
     /**Check if collection contains data
      *  @param object object
      *  @param item string

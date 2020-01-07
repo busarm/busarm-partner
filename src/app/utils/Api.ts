@@ -1,4 +1,3 @@
-import {Md5} from 'ts-md5/dist/md5';
 import {Urls} from "./Urls";
 import {
     BookingInfoObject,
@@ -14,15 +13,19 @@ import {
     TripStatusObject,
     UserInfoObject,
     UsersObject,
-    ValidateSessionObject
+    ValidateSessionObject,
+    BookingsInfoObject,
+    PayInTransactionObject,
+    PayOutTransactionObject
 } from "../models/ApiResponse";
-import {Utils} from "./Utils";
+import {Utils, ToastType} from "./Utils";
 import {SessionManager} from "./SessionManager";
 import {NetworkProvider} from "./NetworkProvider";
 import {Strings} from "../resources";
 import {OauthRequestMethod, OauthStorage} from "./Oauth";
-import {Crypt} from "./Crypt";
+import {CIPHER} from "./CIPHER";
 import {HttpResponse} from "@angular/common/http";
+import * as CryptoJS from "crypto-js";
 
 
 /**Define the types of Api Responses*/
@@ -64,6 +67,31 @@ export class Api {
         new Api(requestParams)
     }
 
+    /**Secure access token
+     *
+     * @return {string}
+     */
+    private secureToken (requestParams:ApiRequestParams){
+        if (requestParams.encrypt && requestParams.method != OauthRequestMethod.GET && requestParams.params) {
+            let method = String(requestParams.method).toLowerCase();
+            let data = requestParams.params;
+            let path = requestParams.url;
+            if (URL) {
+                let u = new URL(path);
+                path = u.origin + u.pathname;
+            }
+            let cnonce = CryptoJS.MD5(Utils.toJson(data));
+            let A1 = OauthStorage.accessToken;
+            let A2 = CryptoJS.MD5(`${method}:${path}`);
+            let integrity = CryptoJS.MD5(`${A1}:${cnonce}:${A2}`);
+            return OauthStorage.tokenType+' '+CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(OauthStorage.accessToken+'/'+integrity));
+        }
+        else {
+            return OauthStorage.tokenType+' '+OauthStorage.accessToken;
+        }
+    }
+
+
     /**
      * Constructor
      * @param {ApiRequestParams} requestParams
@@ -84,37 +112,26 @@ export class Api {
 
                 requestParams.headers["X-Session-Token"] = session != null ? session.session_token : "";
                 if (requestParams.encrypt) {
-
                     if (session != null) {
-                        Crypt.encrypt(session.encryption_key, Utils.toJson(requestParams.params), (status, res,iv) => {
-
+                        CIPHER.encrypt(session.encryption_key, Utils.toJson(requestParams.params), (status, cipher) => {
                             if (status) {
-                                let dataHash = String(Md5.hashStr(res));
-                                let baseHash = String(Md5.hashStr(Urls.baseUrl));
-                                let ivEncoded = btoa(iv);
-                                let request_token = dataHash + baseHash + ivEncoded;
-
                                 requestParams.params = {
-                                    data: res,
-                                    request_token: request_token,
+                                    data: cipher
                                 };
-
-                                requestParams.headers["X-Encrypted"] = 1;
-                                this.processRequest(requestParams, true,session.encryption_key,iv)
+                                requestParams.headers["X-Encrypted"] = '1';
+                                this.processRequest(requestParams, true, session.encryption_key)
                             }
                             else {
-                                console.log("Encryption Failed: "+res);
-                                this.processRequest(requestParams, false, null,null)
+                                this.processRequest(requestParams, false)
                             }
                         })
                     }
-                    else{
-                        console.log("Encryption Failed: Failed to get session");
-                        this.processRequest(requestParams, false, null,null)
+                    else {
+                        this.processRequest(requestParams, false)
                     }
                 }
-                else{
-                    this.processRequest(requestParams, false, null,null)
+                else {
+                    this.processRequest(requestParams, false)
                 }
             });
         }
@@ -124,8 +141,13 @@ export class Api {
         }
     }
 
-    /**Start performing request*/
-    private processRequest(requestParams: ApiRequestParams, encrypted: boolean, encryptionKey?:string, encryptionIv?:string, ) {
+    /**
+     * Process Api Request
+     * @param requestParams 
+     * @param encryptedRequest 
+     * @param encryptionKey 
+     */
+    private processRequest(requestParams: ApiRequestParams, encryptedRequest: boolean, encryptionKey?:string) {
         let processWithMethod = () => {
             switch (requestParams.method) {
                 case OauthRequestMethod.DELETE:
@@ -163,7 +185,6 @@ export class Api {
             }
         };
 
-
         /*Respond first from cache*/
         if (requestParams.cache && requestParams.loadCache) {
 
@@ -179,40 +200,31 @@ export class Api {
         }
 
         /*Process Request*/
-        requestParams.headers["Access-Token"] = OauthStorage.accessToken;
+        requestParams.headers["Authorization"] =  this.secureToken(requestParams);
         processWithMethod().subscribe(result => {
-
-            if (encrypted){ // If Request Encrypted
-
+            let encryptedResponse = result.headers.get('X-Encrypted')  == "1";
+            if (encryptedResponse){ // If Response is Encrypted
                 let integrity = result.headers.get('X-Integrity');
-                if(this.verifyIntegrity(result.body,integrity)){ //Verify Integrity of response
-
-                    let encryptedResponse = result.headers.get('X-Encrypted');
-                    if (encryptedResponse == "1") { //If response Encrypted
-
-                        Crypt.decrypt(encryptionKey,encryptionIv,result.body,(status, res) => {
-                            if (status){
-                                this.processResponse(true,{
-                                    ok:result.ok,
-                                    status:result.status,
-                                    statusText:result.statusText,
-                                    clone:result.clone,
-                                    type:result.type,
-                                    url:result.url,
-                                    headers:result.headers,
-                                    body:res,
-                                },requestParams);
+                if(this.verifyIntegrity(result.body, integrity, encryptionKey)){ //Verify Integrity of response
+                    CIPHER.decrypt(encryptionKey,result.body,(status, plain) => {
+                        if (status){
+                            this.processResponse(true,{
+                                ok:result.ok,
+                                status:result.status,
+                                statusText:result.statusText,
+                                clone:result.clone,
+                                type:result.type,
+                                url:result.url,
+                                headers:result.headers,
+                                body:plain,
+                            },requestParams);
+                        }
+                        else {
+                            if (!this.cacheLoaded) {
+                                requestParams.callback(false, Strings.getString("error_unexpected"), ApiResponseType.unknown);
                             }
-                            else {
-                                if (!this.cacheLoaded) {
-                                    requestParams.callback(false, Strings.getString("error_unexpected"), ApiResponseType.unknown);
-                                }
-                            }
-                        })
-                    }
-                    else {
-                        this.processResponse(result.ok,result,requestParams);
-                    }
+                        }
+                    })
                 }
                 else {
                     if (!this.cacheLoaded) {
@@ -226,11 +238,14 @@ export class Api {
         }, err => {
             this.processResponse(false,err,requestParams);
         });
-
-
     }
 
-    /**Process Api Response*/
+    /**
+     * Process Api Response
+     * @param status 
+     * @param result 
+     * @param requestParams 
+     */
     private processResponse(status:boolean, result:HttpResponse<any>, requestParams:ApiRequestParams){
         if (result) {
             if (status) {
@@ -285,21 +300,11 @@ export class Api {
             }
             else {
                 if (result.status === 401 || result.status === 403) { //Failed to authorize api access
-
-                    /*Try to refresh access token and regenerate session*/
-                    SessionManager.regenerate(status => {
-                        if (status) {
-                            Api.performRequest(requestParams); //Recall api
-                        }
-                        else {
-                            if (requestParams.callback)
-                                requestParams.callback(false, Strings.getString("error_access_expired"), ApiResponseType.Authorization_error);
-                        }
-                    });
+                    if (requestParams.callback)
+                                requestParams.callback(false, Strings.getString("error_access_expired"), ApiResponseType.Authorization_error);                  
                 }
                 else {
                     if (requestParams.cache) {
-
                         //get cached response
                         SessionManager.get(requestParams.cacheId, data => {
                             if (data) {
@@ -336,25 +341,26 @@ export class Api {
         }
     }
 
-    /** Verify integrity of response
+    /** 
+     * Verify integrity of response
      * @param data string data gotten from response
      * @param x_integrity string integrity of data to be compared with
+     * @param key string Encryption key
      * */
-    private verifyIntegrity (data:string,x_integrity:string)
+    private verifyIntegrity (data:string, x_integrity:string, key:string)
     {
-        let dataHash = String(Md5.hashStr(data));
-        return dataHash === x_integrity;
+        return x_integrity === CIPHER.getDigest(data, CryptoJS.MD5(key).toString());
     }
 
 
 
     /*----------------------- API FUNCTIONS ---------------------*/
 
-    /**Validate Session
+    /**Initialize api session
      * @param data
      * @param callback
      * */
-    public static validateSession(data: {
+    public static initialize(data: {
         agent?: string,
         os: string,
         version: string,
@@ -363,13 +369,46 @@ export class Api {
         device_name: string
     }, callback: (status: boolean, result: ValidateSessionObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
-            url: Urls.apiValidateSession,
+            url: Urls.apiInitialize,
             method: OauthRequestMethod.POST,
             params: data,
             cache:false,
             callback: callback
         })
     }
+
+    /**Set Current Country
+     * @param country_code
+     * @param callback
+     * */
+    public static setCountry(country_code: string, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            method: OauthRequestMethod.POST,
+            params: {
+                country:country_code
+            },
+            url: Urls.apiCountry,
+            cache: false,
+            callback: callback
+        })
+    }
+
+    /**Set Current Language
+     * @param lang_code
+     * @param callback
+     * */
+    public static setLanguage(lang_code: string, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            method: OauthRequestMethod.POST,
+            params: {
+                lang:lang_code
+            },
+            url: Urls.apiLanguage,
+            cache: false,
+            callback: callback
+        })
+    }
+
 
     /**Logout Users
      * @param callback
@@ -395,12 +434,13 @@ export class Api {
 
     /**Get Agents Data
      * @param callback
+     * @param loadCache
      * */
-    public static getAgents(callback: (status: boolean, result: UsersObject | string | any, responseType: ApiResponseType) => any) {
+    public static getAgents(callback: (status: boolean, result: UsersObject | string | any, responseType: ApiResponseType) => any, loadCache = true) {
         this.performRequest({
             url: Urls.apiGetAgents,
             cache:true,
-            loadCache:true,
+            loadCache:loadCache,
             callback: callback
         })
     }
@@ -494,6 +534,42 @@ export class Api {
               max_date: maxDate,
             },
             cacheId:String(Utils.hashString(Urls.apiGetDashboard+minDate+maxDate)),
+            callback: callback
+        })
+    }
+    
+
+    /**Get Payin Transactions
+     * @param callback
+     * */
+    public static getPayInTransactions(callback: (status: boolean, result: PayInTransactionObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            url: Urls.apiGetPayin,
+            cache:true,
+            callback: callback
+        })
+    }
+
+
+    /**Get Payout Transactions
+     * @param callback
+     * */
+    public static getPayOutTransactions(callback: (status: boolean, result: PayOutTransactionObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            url: Urls.apiGetPayout,
+            cache:true,
+            callback: callback
+        })
+    }
+
+
+    /**Get Booking list
+     * @param callback
+     * */
+    public static getBookings(callback: (status: boolean, result: BookingsInfoObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            url: Urls.apiGetBookings,
+            cache:true,
             callback: callback
         })
     }
@@ -599,6 +675,7 @@ export class Api {
                 booking_id: bookingId
             },
             url: Urls.apiVerifyBooking,
+            encrypt: true,
             callback: callback
         })
     }
@@ -614,6 +691,7 @@ export class Api {
             params: {
                 email: email,
             },
+            encrypt: true,
             cache: false,
             callback: callback
         })
@@ -744,6 +822,7 @@ export class Api {
             method: OauthRequestMethod.POST,
             params: payInRequest,
             url: Urls.apiPayInRequest,
+            encrypt: true,
             callback: callback
         })
     }
@@ -758,6 +837,7 @@ export class Api {
             method: OauthRequestMethod.POST,
             params: payoutRequest,
             url: Urls.apiPayoutRequest,
+            encrypt: true,
             callback: callback
         })
     }
@@ -777,6 +857,7 @@ export class Api {
                 remove: remove,
             },
             cache: false,
+            encrypt: true,
             callback: callback
         })
     }
@@ -851,18 +932,20 @@ export class Api {
         })
     }
 
-    /**Delete Ticket
+    /**Toggle Ticket
      * @param ticketId
      * @param typeId
+     * @param active
      * @param callback
      * */
-    public static deleteTicket(ticketId: string, typeId: string, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+    public static toggleTicket(ticketId: string, typeId: string, active:boolean, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
-            url: Urls.apiTicket,
-            method: OauthRequestMethod.DELETE,
+            url: Urls.apiTicketToggle,
+            method: OauthRequestMethod.POST,
             params: {
                 ticketId: ticketId,
                 typeId: typeId,
+                active: active,
             },
             cache: false,
             callback: callback
@@ -917,9 +1000,28 @@ export class Api {
             },
             url: Urls.apiUser,
             cache: false,
+            encrypt:true,
             callback: callback
         })
     }
 
+    /**Togle Agent
+     * @param agentId
+     * @param active
+     * @param callback
+     * */
+    public static toggleAgent(agentId: string, active: boolean|number, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            method: OauthRequestMethod.POST,
+            params: {
+                agentId: agentId,
+                active: active
+            },
+            url: Urls.apiUserToggle,
+            cache: false,
+            encrypt:true,
+            callback: callback
+        })
+    }
 
 }

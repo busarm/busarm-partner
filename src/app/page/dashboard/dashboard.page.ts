@@ -13,14 +13,14 @@ import {
 import {ToastType, Utils} from "../../utils/Utils";
 import {Api} from "../../utils/Api";
 import {Strings} from "../../resources";
-import {ConnectionStatusEvents} from "../../utils/NetworkProvider";
-import {ViewTripPage} from "../view-trip/view-trip.page";
+import {ViewTripPage} from "../trip/view-trip/view-trip.page";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner/ngx";
-import { Chart } from 'chart.js';
+import {Chart} from 'chart.js';
 import {BookingsPage} from "../bookings/bookings.page";
-import {ViewBookingPage} from "../view-booking/view-booking.page";
+import {ViewBookingPage} from "../bookings/view-booking/view-booking.page";
 import {PayoutPage} from "../payout/payout.page";
 import {PayInPage} from "../pay-in/pay-in.page";
+import {EventsParams} from "../../utils/EventsParams";
 
 @Component({
     selector: 'app-dashboard',
@@ -35,45 +35,55 @@ export class DashboardPage extends PageController {
     selectedBookingMonth: number = 0;
     dashboard: Dashboard = null;
     bookingMonths: BookingMonth[] = null;
-    platform: Platform;
+
+    private alertShowing = false;
 
     constructor(public navCtrl: NavController,
                 public alertCtrl: AlertController,
                 public modalCtrl: ModalController,
                 public events: Events,
                 private barcodeScanner: BarcodeScanner,
-                platform: Platform) {
+                public platform: Platform) {
         super();
-        this.platform = platform;
     }
 
     public async ngOnInit() {
         await super.ngOnInit();
-        console.log("Dashboard Loaded");
+
+        /*Set default country*/
+        this.selectedCountry = this.session.country.country_code;
+
+        /*Online event*/
+        this.events.subscribe(EventsParams.Online_Event, async () => {
+            await this.hideToastMsg();
+            if (!this.dashboard)
+                this.loadDashboardView();
+        });
+
+        /*Country Change event*/
+        this.events.subscribe(EventsParams.CountryChangeSuccessEvent, async () => {
+            this.loadDashboardView();
+        });
+        this.events.subscribe(EventsParams.CountryChangeFailedEvent, async () => {
+            /*Set default country*/
+            this.selectedCountry = this.session.country.country_code;
+        });
     }
 
     public async ionViewDidEnter(){
 
-        //Give time for components to load first
+        /*Give time for components to load first*/
         this.setTimeout(() => {
 
+            /*Init Dashboard*/
             if (!this.dashboard)
                 this.loadDashboardView();
-
-            /*Online event*/
-            this.events.subscribe(ConnectionStatusEvents.Online_Event, async () => {
-                await this.hideToastMsg();
-                if (!this.dashboard)
-                    this.loadDashboardView();
-            });
-
         }, 500);
-
     }
 
     /** Set up dashboard contents
-     * */
-    private alertShowing = false;
+     * @return {Promise<void>}
+     */
     public async initDashboard(){
 
         if (this.dashboard) {
@@ -115,9 +125,14 @@ export class DashboardPage extends PageController {
                 max_date:"",
                 display_date:this.strings.getString('all_months_txt'),
             });
-            this.dashboard.booking_months.forEach((month: BookingMonth) => {
-                this.bookingMonths.push(month)
-            });
+            if (this.dashboard.booking_months && this.dashboard.booking_months.length > 0) {
+                this.dashboard.booking_months.forEach((month: BookingMonth) => {
+                    this.bookingMonths.push(month)
+                });
+            }
+            else {
+                this.selectedBookingMonth = 0;
+            }
 
             setTimeout(()=>{
                 /*Active Trips*/
@@ -191,7 +206,10 @@ export class DashboardPage extends PageController {
         }
     }
 
-    /**Launch add trip page*/
+    /**Launch add trip page
+     * @param {TripInfo} trip
+     * @return {Promise<any>}
+     */
     async showTrip(trip: TripInfo) {
         let chooseModal = await this.modalCtrl.create({
             component: ViewTripPage,
@@ -207,40 +225,37 @@ export class DashboardPage extends PageController {
         return await chooseModal.present();
     }
 
-    /**Launch payin page*/
-    async showPayIn(payin: PayInTransaction) {
-        let chooseModal = await this.modalCtrl.create({
-            component: PayInPage,
-            componentProps: {
-                payIn: payin
-            }
-        });
-        chooseModal.onDidDismiss().then(data => {
-            if (data.data) {
-                this.loadDashboardView();
-            }
-        });
-        return await chooseModal.present();
+    /**Launch view bookings
+     * @param {Booking[]} bookings
+     * @return {Promise<any>}
+     */
+    async showBookings(bookings: Booking[]) {
+        if (bookings && bookings.length > 0) {
+            return this.navigate('bookings', bookings);
+        }
+        else {
+            return this.showToastMsg(Strings.getString("no_booking_txt"), ToastType.ERROR);
+        }
     }
 
-    /**Launch payout page*/
+    /**Launch pay-in page
+     * @param {PayInTransaction} payin
+     * @return {Promise<any>}
+     */
+    async showPayIn(payin: PayInTransaction) {
+        return this.navigate('pay-in', payin);
+    }
+
+    /**Launch payout page
+     * @param {PayOutTransaction} payout
+     * @return {Promise<any>}
+     */
     async showPayout(payout: PayOutTransaction) {
-        let chooseModal = await this.modalCtrl.create({
-            component: PayoutPage,
-            componentProps: {
-                payout: payout
-            }
-        });
-        chooseModal.onDidDismiss().then(data => {
-            if (data.data) {
-                this.loadDashboardView();
-            }
-        });
-        return await chooseModal.present();
+        return this.navigate('payout', payout);
     }
 
     /**Launch scan Qr Code page
-     * */
+     */
     showScanCode() {
         this.barcodeScanner.scan({
             resultDisplayDuration: 0,
@@ -257,7 +272,9 @@ export class DashboardPage extends PageController {
     }
 
     /**Search input event
-     * */
+     * @param event
+     * @param {boolean} isSearch
+     */
     public onInput(event,isSearch=false) {
         if (event.isTrusted) {
             this.referenceCode = event.target.value;
@@ -275,14 +292,18 @@ export class DashboardPage extends PageController {
         }
     }
 
-    /**Reset Search bar*/
+    /**Reset Search bar
+     * @param event
+     */
     public onClear(event) {
         if (event.isTrusted) {
             this.referenceCode = null;
         }
     }
 
-    /**Refresh View*/
+    /**Refresh View
+     * @param event
+     */
     public refreshDashboardView(event?) {
         this.loadDashboardView(() => {
             if (event) {
@@ -292,7 +313,10 @@ export class DashboardPage extends PageController {
         })
     }
 
-    /**Get Status class for booking status*/
+    /**Get Status class for booking status
+     * @param {string} status
+     * @return {string}
+     */
     public getBookingStatusClass(status: string): string {
         if (this.assertAvailable(status)) {
             switch (status) {
@@ -309,29 +333,11 @@ export class DashboardPage extends PageController {
         }
     }
 
-    /**Launch view bookings*/
-    async showBookings(bookings: Booking[]) {
-        if (bookings && bookings.length > 0) {
-            let chooseModal = await this.modalCtrl.create({
-                component: BookingsPage,
-                componentProps: {
-                    bookings: bookings
-                }
-            });
-            chooseModal.onDidDismiss().then((data) => {
-                if (data.data) {
-                    return this.loadDashboardView();
-                }
-            });
-            return await chooseModal.present();
-        }
-        else {
-            return this.showToastMsg(Strings.getString("no_booking_txt"), ToastType.ERROR);
-        }
-    }
 
-
-    /**Launch Booking details*/
+    /**Launch Booking details
+     * @param {BookingInfo} bookingInfo
+     * @return {Promise<any>}
+     */
     async showBooking(bookingInfo:BookingInfo){
         let chooseModal = await this.modalCtrl.create({
             component: ViewBookingPage,
@@ -346,7 +352,9 @@ export class DashboardPage extends PageController {
         return await chooseModal.present();
     }
 
-    /**Search booking for reference number*/
+    /**Search booking for reference number
+     * @param {string} ref_code
+     */
     private findBooking(ref_code: string) {
         this.showLoading().then(()=>{
             Api.getBookingInfo(ref_code, (status, result) => {
@@ -366,13 +374,15 @@ export class DashboardPage extends PageController {
         });
     }
 
-    /**Load Active Trips View*/
+    /**Load Active Trips View
+     * @param {() => any} completed
+     * @return {Promise<void>}
+     */
     public async loadDashboardView(completed?: () => any) {
         let min_date = this.bookingMonths?this.bookingMonths[this.selectedBookingMonth].min_date:"";
         let max_date = this.bookingMonths?this.bookingMonths[this.selectedBookingMonth].max_date:"";
         Api.getDashboard(min_date,max_date,async (status, result) => {
             if (status) {
-
                 //Save user data to session
                 if (this.assertAvailable(result)) {
                     if (result.data) {

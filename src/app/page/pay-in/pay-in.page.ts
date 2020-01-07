@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {PayInTransaction} from "../../models/ApiResponse";
-import {ModalController} from "@ionic/angular";
+import {NavController} from "@ionic/angular";
 import {ToastType} from "../../utils/Utils";
 import {Api} from "../../utils/Api";
 import {PageController} from "../page-controller";
@@ -12,14 +12,13 @@ import {PageController} from "../page-controller";
 })
 export class PayInPage extends PageController {
 
-    @Input() payIn: PayInTransaction;
-
+    payIn: PayInTransaction;
     accountName: string;
     bankName: string;
     accountNumber: string;
     paymentReference: string;
 
-    constructor(private modalCtrl: ModalController) {
+    constructor(private navCtrl: NavController) {
         super();
     }
 
@@ -28,9 +27,32 @@ export class PayInPage extends PageController {
         this.accountName = this.session.configs.account_name;
         this.bankName = this.session.configs.bank_name;
         this.accountNumber = this.session.configs.account_number;
+        this.payIn = await this.getRouteParams();
+        if(!this.payIn){
+            this.loadPayin();
+        }
     }
 
-    public async ionViewDidEnter() {
+    async dismiss(){
+        this.navCtrl.back();
+    }
+
+    /**
+     * Load Payin Transactions
+     */
+    private loadPayin(){
+        this.showLoading().then(()=>{
+            Api.getPayInTransactions(async (status, result) =>{
+                this.hideLoading();
+                if(status){
+                    this.payIn = result.data;
+                }
+                else {
+                    await this.showToastMsg(result, ToastType.ERROR);
+                    this.instance.goHome();
+                }
+            })
+        })
     }
 
     /**Submit request form*/
@@ -47,7 +69,7 @@ export class PayInPage extends PageController {
                 this.hideLoading();
                 if (status) {
                     this.showToastMsg(result.msg, ToastType.SUCCESS);
-                    this.dismiss(true);
+                    this.dismiss();
                 }
                 else {
                     this.showToastMsg(result, ToastType.ERROR);
@@ -73,11 +95,5 @@ export class PayInPage extends PageController {
                     return "status-cancel";
             }
         }
-    }
-
-    /**Close Modal*/
-    dismiss(success?: boolean) {
-        this.modalCtrl.dismiss(success)
-    }
-
+    } 
 }

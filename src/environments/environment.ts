@@ -1,8 +1,9 @@
 import {ENV} from "./ENV";
 export const environment = {
-    production: false
+    production: false,
+    app_name: "Wecari Partner",
+    app_version: "1.0",
 };
-export const ENVIRONMENT: ENV = ENV.DEV;
-export const SERVER_IP:string = "192.168.0.149";
+export const ENVIRONMENT: ENV = location.host.match(/localhost/) ? ENV.DEV : ENV.TEST;
 
 

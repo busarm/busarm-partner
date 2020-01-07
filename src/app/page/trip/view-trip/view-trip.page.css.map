@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "view-trip.page.scss"
+    ],
+    "names": [],
+    "file": "view-trip.page.css"
+}

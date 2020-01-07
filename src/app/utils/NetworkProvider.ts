@@ -4,17 +4,13 @@ import {HttpClient} from "@angular/common/http";
 import {Urls} from "./Urls";
 import {Events} from "@ionic/angular";
 import {AppComponent} from "../app.component";
+import {EventsParams} from "./EventsParams";
 // import {Promise} from "q";
 
 export enum ConnectionStatus {
     Unknown,
     Online,
     Offline
-}
-
-export enum ConnectionStatusEvents {
-    Online_Event = "network:online",
-    Offline_Event = "network:offline",
 }
 
 @Injectable()
@@ -46,8 +42,8 @@ export class NetworkProvider {
         return await this.network.onchange().subscribe(()=>{
             return new Promise(resolve => {
                 this.pingServer(connected =>{
-                    this.notify(connected,true);
-                    resolve();
+                    this.notify(connected,false);
+                    resolve(connected);
                 });
             })
         });
@@ -57,13 +53,13 @@ export class NetworkProvider {
     private notify(connected:boolean,trigger:boolean = false):void{
         if (connected) {
             if (trigger && NetworkProvider.previousStatus != ConnectionStatus.Online) {
-                this.eventCtrl.publish(ConnectionStatusEvents.Online_Event);
+                this.eventCtrl.publish(EventsParams.Online_Event);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Online;
         }
         else {
             if (trigger && NetworkProvider.previousStatus != ConnectionStatus.Offline) {
-                this.eventCtrl.publish(ConnectionStatusEvents.Offline_Event);
+                this.eventCtrl.publish(EventsParams.Offline_Event);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Offline;
         }

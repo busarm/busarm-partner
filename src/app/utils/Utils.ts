@@ -1,5 +1,9 @@
-import {Md5} from "ts-md5";
 import {OauthUtils} from "./Oauth";
+import * as CryptoJS from "crypto-js";
+import { Urls } from "./Urls"; 
+import { NetworkProvider } from "./NetworkProvider"; 
+import { ENVIRONMENT } from "../../environments/environment";
+import { ENV } from "../../environments/ENV";
 
 /**This hold Global Javascript functions
  * which you want to be accessible
@@ -7,8 +11,6 @@ import {OauthUtils} from "./Oauth";
  * */
 
 export class Utils {
-
-
 
     /**Return url without it's url parameters
      * @param url Url to strip
@@ -30,13 +32,33 @@ export class Utils {
 
     /**Return Current Instance hash
      * */
-    static getCurrentInstance() {
-        let date = new Date();
-        return String(Md5.hashStr(Utils.harold(date.getDay()) + "-" +
-            Utils.harold(date.getMonth()) + "-" +
-            Utils.harold(date.getFullYear())))+
-            "/"+
-            String(Md5.hashStr(location.host))
+    static async getCurrentInstance() {
+        return await new Promise(async (resolve:((data:string)=>any)) => {
+            let date = new Date();
+            let ipAddress = ENVIRONMENT !== ENV.DEV? await Utils.getIP() : false;
+            resolve(String(CryptoJS.MD5(
+                Utils.harold(date.getHours()) + "-" +
+                Utils.harold(date.getDay()) + "-" +
+                Utils.harold(date.getMonth()) + "-" +
+                Utils.harold(date.getFullYear())))+
+                "/"+
+                String(CryptoJS.SHA256((ipAddress?ipAddress:location.host))));
+        });
+    }
+
+    
+
+    /**Return Current IP
+     * */
+    static async getIP() {
+        return await new Promise(async (resolve:((data:any)=>any))=> {
+            NetworkProvider.getInstance().httpClient.get("http://ip-api.com/json")
+            .subscribe((data:any) => {
+                resolve(data.query);
+            }, () => {
+                resolve(false);
+            });
+        });
     }
 
     /**Pares Html entities*/
@@ -51,7 +73,7 @@ export class Utils {
 
     /**Load Google Api*/
     static loadGoogleApi(key:string){
-        Utils.load_script("https://maps.googleapis.com/maps/api/js?key="+key+"&libraries=places")
+        Utils.load_script(Urls.googleApiUrl.replace("<key>",key))
     }
 
 

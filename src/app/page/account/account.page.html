@@ -13,34 +13,49 @@
 <ion-content padding>
     <ion-grid>
         <ion-row justify-content-center wrap>
-            <ion-col size-lg="4" size="12">
+            <ion-col size-lg="6" size="12">
                 <ion-card *ngIf="userInfo!=null">
                     <ion-card-content>
                         <ion-row>
                             <ion-col size-sm="5" size="12" class="cell cell-flex cell-flex-center">
-                                <ion-img *ngIf="userInfo.partner_logo!=null"
-                                         class="img thumbnail"
-                                         [src]="userInfo.partner_logo"
-                                         cache=true>
-                                </ion-img>
-                                <ion-img *ngIf="userInfo.partner_logo==null &&  (!userInfo.is_partner && !userInfo.is_admin)"
-                                         class="img thumbnail"
-                                         [src]="assets.getPath('logo_txt_dark')">
-                                </ion-img>
-                                <ion-button *ngIf="platform.is('cordova') && userInfo.partner_logo==null &&  (userInfo.is_partner || userInfo.is_admin)"
-                                            (click)="selectImage()"
-                                            class="cell cell-flex cell-flex-center"
-                                            style="height: 100%!important;"
-                                            [fill]="'outline'" [shape]="'round'" color="primary">
-                                    <span style="word-wrap: break-word !important;">{{strings.getString("add_logo_txt")}}</span>
-                                </ion-button>
-                                <ion-button *ngIf="!platform.is('cordova') && userInfo.partner_logo==null &&  (userInfo.is_partner || userInfo.is_admin)"
-                                            class="cell cell-flex cell-flex-center"
-                                            style="height: 100%!important;"
-                                            [fill]="'outline'" [shape]="'round'" color="primary">
-                                    <input id="fileInput" type="file" accept="image/*" (change)="changeListener($event)"/>
-                                    <label id="fileInputLabel" for="fileInput"><ion-icon color="primary" name="images"> </ion-icon>{{strings.getString("upload_txt")}}</label>
-                                </ion-button>
+                                <ion-row>
+                                    <ion-col size-md="10" size="12" class="cell cell-flex cell-flex-center">
+                                        <ion-img *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='')"
+                                                class="img thumbnail"
+                                                [src]="userInfo.partner_logo"
+                                                cache=true>
+                                        </ion-img>
+                                        <ion-img *ngIf="(userInfo.partner_logo==null || userInfo.partner_logo=='') &&  (!userInfo.is_admin)"
+                                                class="img thumbnail"
+                                                [src]="assets.getPath('logo_txt_dark')">
+                                        </ion-img>
+                                        <ion-button *ngIf="platform.is('cordova') && (userInfo.partner_logo==null || userInfo.partner_logo=='') &&  userInfo.is_admin"
+                                                    (click)="selectImage()"
+                                                    class="cell cell-flex cell-flex-center"
+                                                    style="height: 100%!important;"
+                                                    [fill]="'outline'" [shape]="'round'" color="primary">
+                                            <span style="word-wrap: break-word !important;">{{strings.getString("add_logo_txt")}}</span>
+                                        </ion-button>
+                                        <ion-button *ngIf="!platform.is('cordova') && (userInfo.partner_logo==null || userInfo.partner_logo=='') &&  userInfo.is_admin"
+                                                    class="cell cell-flex cell-flex-center"
+                                                    style="height: 100%!important;"
+                                                    [fill]="'outline'" [shape]="'round'" color="primary">
+                                            <input class="fileInput" id="fileInputLogo" type="file" accept="image/*" (change)="changeListener($event)"/>
+                                            <label class="fileInputLabel" id="fileInputLogoLabel" for="fileInputLogo"><ion-icon color="primary" name="images"> </ion-icon>{{strings.getString("upload_txt")}}</label>
+                                        </ion-button>
+                                    </ion-col>
+                                    <ion-col size-md="2" size="12" *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='')" class="cell cell-flex cell-flex-center">
+                                        <ion-button *ngIf="!platform.is('cordova')" 
+                                                    style="height: 30px!important;width: 30px!important;" 
+                                                    class="iconBt">
+                                            <input class="fileInput" id="fileInputLogo" type="file" accept="image/*" (change)="changeListener($event)"/>
+                                            <label class="fileInputLabel" id="fileInputLogoLabel" for="fileInputLogo">
+                                                <ion-icon name="create" color="primary" slot="icon-only">
+                                                </ion-icon>
+                                            </label>
+                                        </ion-button>
+                                    </ion-col>
+                                </ion-row>
                             </ion-col>
                             <ion-col size-sm="7" size="12" class="cell cell-flex cell-flex-center">
                                 <div class="cell cell-center cell-left">
@@ -68,7 +83,7 @@
             <ion-col size-lg="6" size="12" no-padding>
                 <ion-row wrap>
                     <ion-col size="12">
-                        <ion-card *ngIf="userInfo!=null && (userInfo.is_admin || userInfo.is_partner)" routerLink="/agents">
+                        <ion-card *ngIf="userInfo!=null && userInfo.is_admin" (click)="showAgents()">
                             <ion-card-content>
                                 <ion-item [lines]="'none'">
                                     <ion-icon name="people" slot="start">

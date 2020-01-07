@@ -1,124 +1,127 @@
 <ion-header>
     <ion-toolbar color="primary">
-        <ion-title>{{strings.getString('request_payout_txt')}}</ion-title>
-        <ion-buttons slot="end">
-            <ion-button (click)="dismiss(false)">
-                <ion-icon slot="icon-only" name="close"> </ion-icon>
-            </ion-button>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/home/dashboard"> </ion-back-button>
         </ion-buttons>
+        <ion-title>{{strings.getString('request_payout_txt')}}</ion-title>
     </ion-toolbar>
 </ion-header>
-
 <ion-content padding>
-    <div *ngIf="payout.action_required">
-        <div class="section-title">
-            <div>{{strings.getString('new_request_txt')}}</div>
-        </div>
+    <ion-row justify-content-center  *ngIf="payout!=null && payout.action_required">
+        <ion-col size="12" class="cell cell-flex cell-flex-center">
+            <ion-label class="cell cell-center section-title">{{strings.getString('new_request_txt')}}</ion-label>
+        </ion-col>
         <br>
-        <form #payoutForm="ngForm" (ngSubmit)="submit()" autocomplete="off">
-            <ion-list>
-                <ion-row>
-                    <ion-col size="4" class="cell">
-                        <ion-label class="cell-label small-text">{{strings.getString('from_txt')}}</ion-label>
-                    </ion-col>
-                    <ion-col size="8">
-                        <ion-label>{{payout.from}}</ion-label>
-                    </ion-col>
-                </ion-row>
-                <ion-row>
-                    <ion-col size="4" class="cell">
-                        <ion-label class="cell-label small-text">{{strings.getString('to_txt')}}</ion-label>
-                    </ion-col>
-                    <ion-col size="8">
-                        <ion-label>{{payout.to}}</ion-label>
-                    </ion-col>
-                </ion-row>
-                <ion-row>
-                    <ion-col size="4" class="cell">
-                        <ion-label class="cell-label small-text">{{strings.getString('amount_txt')}}</ion-label>
-                    </ion-col>
-                    <ion-col size="8">
-                        <ion-label>{{payout.currency_code}} {{payout.balance}}</ion-label>
-                    </ion-col>
-                </ion-row>
-            </ion-list>
-            <br>
-            <ion-item>
-                <ion-label position="stacked">{{strings.getString('receiver_name_txt')}}</ion-label>
-                <ion-input required name="name" [(ngModel)]="receiverName" type="text"> </ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label position="stacked">{{strings.getString('receiver_bank_txt')}}</ion-label>
-                <ion-input required name="bank" [(ngModel)]="receiverBank" type="text"> </ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label position="stacked">{{strings.getString('receiver_account_txt')}}</ion-label>
-                <ion-input required name="account" [(ngModel)]="receiverAccount" type="text"> </ion-input>
-            </ion-item>
-            <br>
-            <div class="cell cell-center danger">
-                <span class="x-small-text">{{payout.info}}</span>
-            </div>
-            <div>
-                <ion-button expand="full" color="primary" type="submit"
-                            [disabled]="!payoutForm.form.valid">
-                    {{strings.getString("submit_txt")}}
-                </ion-button>
-            </div>
-        </form>
-    </div>
-    <br>
-    <br>
-    <div *ngIf="payout.requests!=null && payout.requests.length >= 1">
-        <div class="section-title">
-            <div>{{strings.getString('history_txt')}}</div>
-        </div>
-        <br>
-        <ion-grid>
-            <ion-card *ngFor="let request of payout.requests">
-                <ion-card-header>
+        <ion-col size-md="8" size-lg="6">
+            <form #payoutForm="ngForm" (ngSubmit)="submit()" autocomplete="off">
+                <ion-list>
                     <ion-row>
-                        <ion-col size="4" class="cell cell-center cell-flex cell-flex-left">
-                            <div class="cell cell-center  cell-flex cell-flex-center  {{getStatusClass(request.status_id)}}">
-                                {{request.status}}
-                            </div>
+                        <ion-col size="4" class="cell">
+                            <ion-label class="cell-label small-text">{{strings.getString('from_txt')}}</ion-label>
                         </ion-col>
-                        <ion-col size="8" class="cell cell-right cell-flex cell-flex-right">
-                            <ion-label class="cell-content">{{request.date_created}}
-                            </ion-label>
+                        <ion-col size="8">
+                            <ion-label>{{payout.from}}</ion-label>
                         </ion-col>
                     </ion-row>
-                </ion-card-header>
-                <ion-card-content>
-                    <div>
-                        <ion-label class="cell cell-center ">
-                            <div class="cell-title">{{strings.getString('receiver_name_txt')}}</div>
-                            <div class="cell-content">{{request.receiver_name}}</div>
-                        </ion-label>
-                        <ion-label class="cell cell-center ">
-                            <div class="cell-title">{{strings.getString('receiver_bank_txt')}}</div>
-                            <div class="cell-content">{{request.receiver_bank}}</div>
-                        </ion-label>
-                        <ion-label class="cell cell-center ">
-                            <div class="cell-title">{{strings.getString('receiver_bank_txt')}}</div>
-                            <div class="cell-content">{{request.receiver_account_no}}</div>
-                        </ion-label>
-                        <ion-label class="cell cell-center ">
-                            <div class="cell-title">{{strings.getString('from_txt')}}</div>
-                            <div class="cell-content">{{request.date_from}}</div>
-                        </ion-label>
-                        <ion-label class="cell cell-center ">
-                            <div class="cell-title">{{strings.getString('to_txt')}}</div>
-                            <div class="cell-content">{{request.date_to}}</div>
-                        </ion-label>
-                        <ion-label class="cell cell-center ">
-                            <div class="cell-title">{{strings.getString('amount_txt')}}</div>
-                            <h3 class="cell-content">{{request.currency_code}} {{request.amount}}</h3>
-                        </ion-label>
-                    </div>
-                </ion-card-content>
-            </ion-card>
-        </ion-grid>
-    </div>
+                    <ion-row>
+                        <ion-col size="4" class="cell">
+                            <ion-label class="cell-label small-text">{{strings.getString('to_txt')}}</ion-label>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-label>{{payout.to}}</ion-label>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="4" class="cell">
+                            <ion-label class="cell-label small-text">{{strings.getString('amount_txt')}}</ion-label>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-label>{{payout.currency_code}} {{payout.balance}}</ion-label>
+                        </ion-col>
+                    </ion-row>
+                </ion-list>
+                <br>
+                <ion-item>
+                    <ion-label position="stacked">{{strings.getString('receiver_name_txt')}}</ion-label>
+                    <ion-input required name="name" [(ngModel)]="receiverName" type="text"> </ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="stacked">{{strings.getString('receiver_bank_txt')}}</ion-label>
+                    <ion-input required name="bank" [(ngModel)]="receiverBank" type="text"> </ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="stacked">{{strings.getString('receiver_account_txt')}}</ion-label>
+                    <ion-input required name="account" [(ngModel)]="receiverAccount" type="text"> </ion-input>
+                </ion-item>
+                <br>
+                <div class="cell cell-center danger">
+                    <span class="x-small-text">{{payout.info}}</span>
+                </div>
+                <div>
+                    <ion-button expand="full" color="primary" type="submit"
+                                [disabled]="!payoutForm.form.valid">
+                        {{strings.getString("submit_txt")}}
+                    </ion-button>
+                </div>
+            </form>
+        </ion-col>
+    </ion-row>
+    <br>
+    <br>
+    <ion-row *ngIf="payout!=null && payout.requests!=null && payout.requests.length >= 1"> 
+        <ion-col size="12" class="cell cell-flex cell-flex-center">
+            <ion-label class="cell cell-center section-title">{{strings.getString('history_txt')}}</ion-label>
+        </ion-col>
+        <br>
+        <ion-grid>
+            <ion-row wrap>
+                <ion-col size="12" size-md="6" *ngFor="let request of payout.requests">
+                    <ion-card>
+                        <ion-card-header>
+                            <ion-row>
+                                <ion-col size="4" class="cell cell-center cell-flex cell-flex-left">
+                                    <div class="cell cell-center  cell-flex cell-flex-center  {{getStatusClass(request.status_id)}}">
+                                        {{request.status}}
+                                    </div>
+                                </ion-col>
+                                <ion-col size="8" class="cell cell-right cell-flex cell-flex-right">
+                                    <ion-label class="cell-content">{{request.date_created}}
+                                    </ion-label>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card-header>
+                        <ion-card-content>
+                            <div>
+                                <ion-label class="cell cell-center ">
+                                    <div class="cell-title">{{strings.getString('receiver_name_txt')}}</div>
+                                    <div class="cell-content">{{request.receiver_name}}</div>
+                                </ion-label>
+                                <ion-label class="cell cell-center ">
+                                    <div class="cell-title">{{strings.getString('receiver_bank_txt')}}</div>
+                                    <div class="cell-content">{{request.receiver_bank}}</div>
+                                </ion-label>
+                                <ion-label class="cell cell-center ">
+                                    <div class="cell-title">{{strings.getString('receiver_bank_txt')}}</div>
+                                    <div class="cell-content">{{request.receiver_account_no}}</div>
+                                </ion-label>
+                                <ion-label class="cell cell-center ">
+                                    <div class="cell-title">{{strings.getString('from_txt')}}</div>
+                                    <div class="cell-content">{{request.date_from}}</div>
+                                </ion-label>
+                                <ion-label class="cell cell-center ">
+                                    <div class="cell-title">{{strings.getString('to_txt')}}</div>
+                                    <div class="cell-content">{{request.date_to}}</div>
+                                </ion-label>
+                                <ion-label class="cell cell-center ">
+                                    <div class="cell-title">{{strings.getString('amount_txt')}}</div>
+                                    <h3 class="cell-content">{{request.currency_code}} {{request.amount}}</h3>
+                                </ion-label>
+                            </div>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </ion-grid>  
+    </ion-row>
 </ion-content>
 

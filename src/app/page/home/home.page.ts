@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {PageController} from "../page-controller";
 import {MenuController, ModalController, NavController, Platform} from "@ionic/angular";
 import {Router, RouterEvent} from "@angular/router";
-import {SessionManager} from "../../utils/SessionManager";
 
 @Component({
     selector: 'app-home',
@@ -30,6 +29,7 @@ export class HomePage extends PageController {
     }
 
     public async ngOnInit() {
+        await super.ngOnInit();
         this.setSelectedUrl(this.router.url);
         this.router.events.subscribe((event: RouterEvent) => {
             if (event && event.url && this.router.url == event.url) {

@@ -25,7 +25,7 @@ export class SessionManager {
 
     /**Initialize Secure storage*/
     private static initSecureStorage(secureStorageCallback?:(secureStorage:SecureStorageObject)=>any){
-        let subscription = this.context.secureStorage.create('ebusgh_secure_storage');
+        let subscription = this.context.secureStorage.create('wecari_secure_storage');
         if (Utils.assertAvailable(subscription)){ //use Secure Storage if available
             subscription.then(value => {
                 console.log('Secure Storage is ready!');
@@ -149,23 +149,12 @@ export class SessionManager {
         this.set(this.session_info, session, callback);
     }
 
-
-    /** Attempt to regenerate session
-     * */
-    static regenerate(callback?:(status:boolean)=>any) {
-        this.context.authorize(false, true).then(status => {
-            if(callback){
-                callback(status);
-            }
-        });
-    }
-
     /** Logout user
      * */
-    static async logout() {
+    static async logout(redirectUrl?:string) {
         this.clear();
         this.context.authorized = false;
-        await this.context.setRootPage("login");
+        await this.context.goToLogin({queryParams:{redirectUrl: redirectUrl}});
         if (!this.context.loaded) {
             this.context.hideLoadingScreen();
         }

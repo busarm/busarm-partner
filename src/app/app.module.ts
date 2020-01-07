@@ -15,8 +15,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {IonicStorageModule} from "@ionic/storage";
-import {HomePageModule} from "./page/home/home.module";
-import {LoginPageModule} from "./page/login/login.module";
 import {Camera} from "@ionic-native/camera/ngx";
 import {DatePicker} from "@ionic-native/date-picker/ngx";
 import {File} from "@ionic-native/file/ngx";
@@ -45,11 +43,9 @@ if(environment.production)
         }),
         HttpClientModule,
         IonicStorageModule.forRoot({
-            name:"ebusgh_storage",
+            name:"wecari_storage",
             driverOrder: ['indexeddb', 'localstorage', 'websql', 'sqlite']
         }),
-        HomePageModule,
-        LoginPageModule,
         AppRoutingModule,
     ],
     providers: [

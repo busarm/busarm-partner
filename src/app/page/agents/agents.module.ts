@@ -1,21 +1,20 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
 
 import {IonicModule} from '@ionic/angular';
 
 import {AgentsPage} from './agents.page';
-import {AddAgentPage} from "../add-agent/add-agent.page";
-import {AddAgentPageModule} from "../add-agent/add-agent.module";
-import {RouterModule, Routes} from "@angular/router";
+import {AddAgentPage} from "./add-agent/add-agent.page";
+import {AddAgentPageModule} from "./add-agent/add-agent.module";
 
-const routes: Routes = [
+const routes: Routes = [ 
     {
-        path: 'add-agent',
-        component: AddAgentPage
+        path: '',
+        component: AgentsPage
     },
 ];
-
 @NgModule({
     imports: [
         CommonModule,
@@ -24,7 +23,10 @@ const routes: Routes = [
         AddAgentPageModule,
         RouterModule.forChild(routes)
     ],
-    declarations: [AgentsPage]
+    declarations: [AgentsPage],
+    entryComponents: [
+        AddAgentPage
+    ]
 })
 
 export class AgentsPageModule {
