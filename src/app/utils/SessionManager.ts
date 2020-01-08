@@ -149,12 +149,14 @@ export class SessionManager {
         this.set(this.session_info, session, callback);
     }
 
-    /** Logout user
-     * */
-    static async logout(redirectUrl?:string) {
+    /**
+     * Logout user
+     * @param redirectUri 
+     */
+    static async logout(redirectUri?:string) {
         this.clear();
         this.context.authorized = false;
-        await this.context.goToLogin({queryParams:{redirectUrl: redirectUrl}});
+        await this.context.goToLogin(redirectUri?{queryParams:{redirectUri: redirectUri}}:{});
         if (!this.context.loaded) {
             this.context.hideLoadingScreen();
         }

@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {PageController} from "../page-controller";
 import {PayOutTransaction} from "../../models/ApiResponse";
-import {ModalController, NavController} from "@ionic/angular";
 import {ToastType} from "../../utils/Utils";
 import {Api} from "../../utils/Api";
 
@@ -18,7 +17,7 @@ export class PayoutPage extends PageController {
     receiverBank: string;
     receiverAccount: string;
 
-    constructor(private navCtrl: NavController) {
+    constructor() {
         super();
     }
 
@@ -28,10 +27,6 @@ export class PayoutPage extends PageController {
         if(!this.payout){
             this.loadPayout();
         }
-    }
-
-    async dismiss(){
-        this.navCtrl.back();
     }
 
     /**
@@ -68,7 +63,7 @@ export class PayoutPage extends PageController {
                 this.hideLoading();
                 if (status) {
                     this.showToastMsg(result.msg, ToastType.SUCCESS);
-                    this.dismiss();
+                    this.loadPayout();
                 }
                 else {
                     this.showToastMsg(result, ToastType.ERROR);

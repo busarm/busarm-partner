@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
             else {
                 if (!status) {
                    await AppComponent.instance.showToastMsg(Strings.getString('error_access_expired'), ToastType.ERROR);
-                   await SessionManager.logout();
+                   await SessionManager.logout(route.routeConfig.path);
                 }
                 return status;
             }

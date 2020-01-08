@@ -101,7 +101,7 @@ export class Urls{
     public static init(){
 
         /*Generic Urls*/
-        this.pingUrl = ENVIRONMENT == ENV.DEV? Urls.baseUrl + "ping/" : Urls.apiBaseUrl + "ping";
+        this.pingUrl = Urls.apiBaseUrl + "ping/";
         this.support = Urls.baseUrl + "support/";
         this.termsUrl = Urls.baseUrl + "terms/";
         this.privacyUrl = Urls.baseUrl + "privacy/";

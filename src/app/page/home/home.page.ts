@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {PageController} from "../page-controller";
-import {MenuController, ModalController, NavController, Platform} from "@ionic/angular";
+import {MenuController, ModalController, Platform} from "@ionic/angular";
 import {Router, RouterEvent} from "@angular/router";
 
 @Component({
@@ -13,7 +13,6 @@ export class HomePage extends PageController {
     platform: Platform;
 
     constructor(private router: Router,
-                private navCtrl: NavController,
                 private modalCtrl: ModalController,
                 private menu: MenuController,
                 platform: Platform) {

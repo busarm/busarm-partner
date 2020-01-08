@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AlertController, Events, ModalController, NavController} from "@ionic/angular";
+import {AlertController, Events, ModalController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
 import {Api} from "../../utils/Api";
 import {Strings} from "../../resources";
@@ -31,8 +31,7 @@ export class TripPage extends PageController{
     busTypes: BusType[] = null;
     ticketTypes: TicketType[] = null;
 
-    constructor(public navCtrl: NavController,
-                public alertCtrl: AlertController,
+    constructor(public alertCtrl: AlertController,
                 public modalCtrl: ModalController,
                 public events: Events,
                 public network: Network) {

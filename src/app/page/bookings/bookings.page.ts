@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../page-controller";
-import {ModalController, NavController} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {Booking, BookingInfo} from "../../models/ApiResponse";
 import {ToastType} from "../../utils/Utils";
 import {Api} from "../../utils/Api";
@@ -17,7 +17,7 @@ export class BookingsPage extends PageController {
 
     bookings: Booking[] = null;
 
-    constructor(private modalCtrl: ModalController, private navCtrl: NavController) {
+    constructor(private modalCtrl: ModalController) {
         super();
     }
 
@@ -27,10 +27,6 @@ export class BookingsPage extends PageController {
         if(!this.bookings){
             this.loadBookings();
         }
-    }
-
-    async dismiss(){
-        this.navCtrl.back();
     }
 
     /**
@@ -98,7 +94,7 @@ export class BookingsPage extends PageController {
         });
         chooseModal.onDidDismiss().then((data) => {
             if (data.data) {
-                return this.dismiss();
+                this.loadBookings();
             }
         });
         return await chooseModal.present();

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {ModalController, NavController} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import {PageController} from "../page-controller";
 import {UserInfo} from "../../models/ApiResponse";

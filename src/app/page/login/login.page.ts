@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component, Input} from '@angular/core';
 
 import {Strings} from "../../resources";
 import {ApiResponseType} from "../../utils/Api";
@@ -16,16 +16,23 @@ import { Urls } from '../../utils/Urls';
 })
 export class LoginPage extends PageController{
 
+    private redirectUri: string;
+    
     public username: string;
     public password: string;
 
     forgottenPassword: boolean;
+    
 
     constructor() {
         super();
     }
 
-    public async ngOnInit(){}
+    public async ngOnInit(){
+        super.ngOnInit();
+        this.redirectUri = (await this.getQueryParams()).redirectUri; //get redirect Uri
+    }
+
     public async ionViewDidEnter(){}
 
 
@@ -64,10 +71,15 @@ export class LoginPage extends PageController{
 
                                 if (status){
                                     this.instance.authorized = true;
-
-                                    //Load Home
-                                    await this.instance.goHome();
-                                    this.instance.hideLoadingScreen();
+                                    if(this.redirectUri){
+                                        //Set Redirect uri as root
+                                        this.instance.setRootPage(this.redirectUri);
+                                    }
+                                    else {
+                                        //Load Home
+                                        await this.instance.goHome();
+                                        this.instance.hideLoadingScreen();
+                                    }
                                 }
                                 else{
                                     this.instance.authorized = false;

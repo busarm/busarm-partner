@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {ModalController, NavController, NavParams, Platform} from "@ionic/angular";
+import {ModalController, NavParams, Platform} from "@ionic/angular";
 import {BusType, Country, LocationType, TicketInfo, TicketType,  TripStatus} from "../../../models/ApiResponse";
 import {DatePicker} from "@ionic-native/date-picker/ngx";
 import {PageController} from "../../page-controller";
@@ -45,7 +45,6 @@ export class AddTripPage extends PageController {
     platform: Platform;
 
     constructor(private modalCtrl: ModalController,
-                public navCtrl: NavController,
                 public navParams: NavParams,
                 private datePicker: DatePicker,
                 platform: Platform,

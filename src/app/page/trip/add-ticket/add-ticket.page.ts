@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../../page-controller";
-import {ModalController, NavController} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {Country, TicketInfo, TicketType} from "../../../models/ApiResponse";
 import {ToastType, Utils} from "../../../utils/Utils";
 
@@ -16,8 +16,7 @@ export class AddTicketPage extends PageController {
     @Input() selectedTicketType: number;
     ticketPrice: number;
 
-    constructor(private modalCtrl: ModalController,
-                public navCtrl: NavController) {
+    constructor(private modalCtrl: ModalController) {
         super();
     }
 

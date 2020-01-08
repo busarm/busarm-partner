@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {ActionSheetController, AlertController, Events, ModalController, NavController, Platform} from "@ionic/angular";
+import {ActionSheetController, Events, Platform} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
 import {ToastType} from "../../utils/Utils";
 import {PageController} from "../page-controller";
@@ -22,10 +22,7 @@ export class AccountPage extends PageController {
 
     platform: Platform;
 
-    constructor(public navCtrl: NavController,
-                public alertCtrl: AlertController,
-                public modalCtrl: ModalController,
-                private actionSheetController: ActionSheetController,
+    constructor(private actionSheetController: ActionSheetController,
                 private camera: Camera,
                 private file: File,
                 public events: Events,

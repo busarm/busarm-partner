@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AlertController, Events, ModalController, NavController} from "@ionic/angular";
+import {AlertController, Events, ModalController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
 import {NetworkProvider} from "../../utils/NetworkProvider";
 import {Api} from "../../utils/Api";
@@ -23,8 +23,7 @@ export class BusPage extends PageController{
     currentBuses: BusInfo[] = null;
     busTypes: BusType[] = null;
 
-    constructor(public navCtrl: NavController,
-                public alertCtrl: AlertController,
+    constructor(public alertCtrl: AlertController,
                 public modalCtrl: ModalController,
                 public events: Events,
                 public network: Network) {

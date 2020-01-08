@@ -1,6 +1,5 @@
 import {Component, Input} from '@angular/core';
 import {PayInTransaction} from "../../models/ApiResponse";
-import {NavController} from "@ionic/angular";
 import {ToastType} from "../../utils/Utils";
 import {Api} from "../../utils/Api";
 import {PageController} from "../page-controller";
@@ -18,7 +17,7 @@ export class PayInPage extends PageController {
     accountNumber: string;
     paymentReference: string;
 
-    constructor(private navCtrl: NavController) {
+    constructor() {
         super();
     }
 
@@ -31,10 +30,6 @@ export class PayInPage extends PageController {
         if(!this.payIn){
             this.loadPayin();
         }
-    }
-
-    async dismiss(){
-        this.navCtrl.back();
     }
 
     /**
@@ -69,7 +64,7 @@ export class PayInPage extends PageController {
                 this.hideLoading();
                 if (status) {
                     this.showToastMsg(result.msg, ToastType.SUCCESS);
-                    this.dismiss();
+                    this.loadPayin();
                 }
                 else {
                     this.showToastMsg(result, ToastType.ERROR);

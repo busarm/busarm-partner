@@ -1,9 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../../../page-controller";
-import {ModalController, NavController} from "@ionic/angular";
-import {BusInfo, BusType, TripStatus} from "../../../../models/ApiResponse";
-import {ToastType, Utils} from "../../../../utils/Utils";
-import {Api} from "../../../../utils/Api";
+import {ModalController} from "@ionic/angular";
+import {TripStatus} from "../../../../models/ApiResponse";
 
 @Component({
     selector: 'app-select-status',
@@ -16,8 +14,7 @@ export class SelectStatusPage extends PageController {
 
     status: TripStatus;
 
-    constructor(private modalCtrl: ModalController,
-                public navCtrl: NavController) {
+    constructor(private modalCtrl: ModalController) {
         super();
     }
 

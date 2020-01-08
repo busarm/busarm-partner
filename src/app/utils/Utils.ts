@@ -1,4 +1,3 @@
-import {OauthUtils} from "./Oauth";
 import * as CryptoJS from "crypto-js";
 import { Urls } from "./Urls"; 
 import { NetworkProvider } from "./NetworkProvider"; 
@@ -17,7 +16,7 @@ export class Utils {
      * @return string
      * */
     static stripUrlParams(url: string) {
-        if (OauthUtils.assertAvailable(url)) {
+        if (Utils.assertAvailable(url)) {
             return url.split("?")[0];
         }
         else

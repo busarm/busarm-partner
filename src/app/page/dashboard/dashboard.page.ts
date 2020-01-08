@@ -1,6 +1,6 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {PageController} from "../page-controller";
-import {AlertController, Events, ModalController, NavController, Platform} from "@ionic/angular";
+import {Events, ModalController, Platform} from "@ionic/angular";
 import {
     Booking,
     BookingInfo,
@@ -38,9 +38,7 @@ export class DashboardPage extends PageController {
 
     private alertShowing = false;
 
-    constructor(public navCtrl: NavController,
-                public alertCtrl: AlertController,
-                public modalCtrl: ModalController,
+    constructor(public modalCtrl: ModalController,
                 public events: Events,
                 private barcodeScanner: BarcodeScanner,
                 public platform: Platform) {

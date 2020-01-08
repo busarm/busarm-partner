@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../../page-controller";
-import {ModalController, NavController} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {UserInfo} from "../../../models/ApiResponse";
 import {ToastType} from "../../../utils/Utils";
 import {Api} from "../../../utils/Api";
@@ -21,8 +21,7 @@ export class AddAgentPage extends PageController {
     
     updated:boolean = false;
 
-    constructor(private modalCtrl: ModalController,
-                public navCtrl: NavController) {
+    constructor(private modalCtrl: ModalController) {
         super();
     }
 

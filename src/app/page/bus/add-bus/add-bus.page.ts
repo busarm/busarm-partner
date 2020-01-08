@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../../page-controller";
-import {ModalController, NavController} from "@ionic/angular";
+import {ModalController} from "@ionic/angular";
 import {BusInfo, BusType} from "../../../models/ApiResponse";
 import {ToastType, Utils} from "../../../utils/Utils";
 import {Api} from "../../../utils/Api";
@@ -19,8 +19,7 @@ export class AddBusPage extends PageController {
     busPlateNumber: string;
     busDesc: string;
 
-    constructor(private modalCtrl: ModalController,
-                public navCtrl: NavController) {
+    constructor(private modalCtrl: ModalController) {
         super();
     }
 
