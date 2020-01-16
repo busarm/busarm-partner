@@ -12,7 +12,7 @@ export class Urls{
             case ENV.PROD:
                 return "https://wecari.com/";
             case ENV.TEST:
-                return "https://staging.wecari.com/app/";
+                return "https://staging.wecari.com/";
             case ENV.DEV:
             default:
                 return "http://localhost/wecari.com/app/";
@@ -23,7 +23,7 @@ export class Urls{
             case ENV.PROD:
                 return "https://api.wecari.com/";
             case ENV.TEST:
-                return "https://staging.wecari.com/api/";
+                return "https://api.staging.wecari.com/";
             case ENV.DEV:
             default:
                 return "http://localhost/wecari.com/api/";
@@ -34,7 +34,7 @@ export class Urls{
             case ENV.PROD:
                 return "https://oauth.wecari.com/";
             case ENV.TEST:
-                return "https://staging.wecari.com/oauth/";
+                return "https://oauth.staging.wecari.com/";
             case ENV.DEV:
             default:
                 return "http://localhost/wecari.com/oauth/";
@@ -45,7 +45,7 @@ export class Urls{
             case ENV.PROD:
                 return "https://partner.wecari.com/";
             case ENV.TEST:
-                return "https://partner.wecari.com/";
+                return "https://partner.staging.wecari.com/";
             case ENV.DEV:
             default:
                 return "http://localhost:8100/";
@@ -101,7 +101,6 @@ export class Urls{
     public static init(){
 
         /*Generic Urls*/
-        this.pingUrl = Urls.apiBaseUrl + "ping/";
         this.support = Urls.baseUrl + "support/";
         this.termsUrl = Urls.baseUrl + "terms/";
         this.privacyUrl = Urls.baseUrl + "privacy/";
@@ -114,6 +113,7 @@ export class Urls{
 
 
         /*Api Urls*/
+        this.pingUrl = Urls.apiBaseUrl + "Initialize/ping";
         this.apiInitialize = Urls.apiBaseUrl + "Initialize";
         this.apiLogout = Urls.apiBaseUrl + "Initialize/logout";
         this.apiLanguage = Urls.apiBaseUrl + "Initialize/language";
