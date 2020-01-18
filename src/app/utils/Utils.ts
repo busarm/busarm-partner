@@ -51,7 +51,7 @@ export class Utils {
      * */
     static async getIP() {
         return await new Promise(async (resolve:((data:any)=>any))=> {
-            NetworkProvider.getInstance().httpClient.get("http://ip-api.com/json")
+            NetworkProvider.getInstance().httpClient.get("https://ip-api.com/json")
             .subscribe((data:any) => {
                 resolve(data.query);
             }, () => {
