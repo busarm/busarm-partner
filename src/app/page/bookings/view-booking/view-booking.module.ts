@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 
 import {ViewBookingPage} from './view-booking.page';
+import { ViewTripPage } from '../../trip/view-trip/view-trip.page';
 
 @NgModule({
     imports: [
@@ -11,7 +12,10 @@ import {ViewBookingPage} from './view-booking.page';
         FormsModule,
         IonicModule
     ],
-    declarations: [ViewBookingPage]
+    declarations: [ViewBookingPage],
+    entryComponents: [
+        ViewTripPage
+    ]
 })
 export class ViewBookingPageModule {
 }
