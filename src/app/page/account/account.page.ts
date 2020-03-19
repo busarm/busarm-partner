@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {ActionSheetController, Events, Platform} from "@ionic/angular";
+import {ActionSheetController, Platform} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
 import {ToastType} from "../../utils/Utils";
 import {PageController} from "../page-controller";
@@ -25,7 +25,6 @@ export class AccountPage extends PageController {
     constructor(private actionSheetController: ActionSheetController,
                 private camera: Camera,
                 private file: File,
-                public events: Events,
                 private iab: InAppBrowser,
                 public network: Network,
                 platform: Platform) {

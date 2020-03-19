@@ -47,10 +47,11 @@
             [(ngModel)]="referenceCode">
     </ion-searchbar>
 </ion-header>
-<ion-content padding>
+<ion-content class="ion-padding">
 
     <!--Refresher -->
     <ion-refresher
+            slot="fixed"
             [pullMin]="80"
             (ionRefresh)="refreshDashboardView($event)">
         <ion-refresher-content
@@ -84,7 +85,7 @@
 
             <!--Active trip grid-->
             <ion-grid *ngIf=" dashboard.active_trips!=null && dashboard.active_trips.length > 0">
-                <ion-row wrap justify-content-center>
+                <ion-row wrap class="ion-justify-content-center">
                     <ion-col size="12" size-md="6" size-xl="4"
                              *ngFor="let trip of dashboard.active_trips; let i = index" [attr.index]="i">
                         <ion-card>
@@ -176,7 +177,7 @@
             <div class="cell cell-flex cell-flex-center" *ngIf="dashboard.bookings!=null">
                 <ion-card>
                     <ion-card-content>
-                        <ion-row wrap justify-content-center>
+                        <ion-row wrap class="ion-justify-content-center">
                             <ion-col size="12" position="center" class="cell cell-center cell-flex cell-flex-center">
                                 <div class="cell">
                                     <canvas class="cell_chart chart_max" id="canvas_bookings"> </canvas>
@@ -240,11 +241,11 @@
 
             <!--Transactions grid-->
             <ion-grid>
-                <ion-row justify-content-center align-items-center>
+                <ion-row class="ion-justify-content-center ion-align-items-center">
                     <ion-col size="12" size-md="6" size-xl="6">
                         <ion-card>
                             <ion-card-content>
-                                <ion-row wrap justify-content-center>
+                                <ion-row wrap class="ion-justify-content-center">
                                     <ion-col size="12" position="center"
                                              class="cell cell-center cell-flex cell-flex-center">
                                         <ion-label class="cell">
@@ -287,16 +288,16 @@
                         </ion-card>
                     </ion-col>
                 </ion-row>
-                <ion-row justify-content-center align-items-center>
+                <ion-row class="ion-justify-content-center ion-align-items-center">
                     <ion-col size="12" size-md="6" size-xl="6">
                         <ion-card>
                             <ion-card-content>
-                                <ion-row wrap justify-content-center>
-                                    <ion-col size="12" position="center" class="cell cell-center" no-padding>
+                                <ion-row wrap class="ion-justify-content-center">
+                                    <ion-col size="12" position="center" class="cell cell-center ion-no-padding">
                                         <ion-label class="x-large-text bold">{{strings.getString('fees_txt')}}
                                         </ion-label>
                                     </ion-col>
-                                    <ion-col size="12" position="center" class="cell cell-center" no-padding>
+                                    <ion-col size="12" position="center" class="cell cell-center ion-no-padding">
                                         <ion-row>
                                             <ion-col size="12" position="center">
                                                 <ion-label class="small-text" color="dark">
@@ -346,7 +347,7 @@
                                         </ion-list>
                                     </ion-col>
                                 </ion-row>
-                                <ion-row *ngIf="dashboard.transactions.payin.action_required" justify-content-center="">
+                                <ion-row *ngIf="dashboard.transactions.payin.action_required" class="ion-justify-content-center">
                                     <ion-col class="cell cell-flex cell-flex-center" >
                                         <ion-label class="small-text" color="danger">
                                             {{strings.getString("pay_before_txt")}} {{dashboard.transactions.payin.last_day_to_action}}
@@ -364,12 +365,12 @@
                     <ion-col size="12" size-md="6" size-xl="6">
                         <ion-card>
                             <ion-card-content>
-                                <ion-row wrap justify-content-center>
-                                    <ion-col size="12" position="center" class="cell cell-center" no-padding>
+                                <ion-row wrap class="ion-justify-content-center">
+                                    <ion-col size="12" position="center" class="cell cell-center ion-no-padding">
                                         <ion-label class="x-large-text bold">{{strings.getString('payout_txt')}}
                                         </ion-label>
                                     </ion-col>
-                                    <ion-col size="12" position="center" class="cell cell-center" no-padding>
+                                    <ion-col size="12" position="center" class="cell cell-center ion-no-padding">
                                         <ion-row>
                                             <ion-col size="12" position="center">
                                                 <ion-label class="small-text" color="dark">
@@ -420,7 +421,7 @@
                                     </ion-col>
                                 </ion-row>
                                 <ion-row *ngIf="dashboard.transactions.payout.action_required"
-                                         justify-content-center="">
+                                         class="ion-justify-content-center">
                                     <ion-col size="12" class="cell cell-flex cell-flex-center cell-padding-3x">
                                         <ion-button color="primary"
                                                     (click)="showPayout(dashboard.transactions.payout)">

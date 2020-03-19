@@ -105,7 +105,7 @@ export class Oauth {
                     if (OauthUtils.assertAvailable(params.user_id) || OauthUtils.assertAvailable(OauthUtils.getUrlParam('code'))) { //if authorization code exists in url param
                         grant_type = OauthGrantType.Authorization_Code;
                         if (allowed_grant_types.includes(grant_type)) {
-                            getNewOauthToken()
+                            getNewOauthToken();
                         } else {
                             params.callback(false);
                         }
@@ -113,7 +113,7 @@ export class Oauth {
                     else if(OauthUtils.assertAvailable(params.username) && OauthUtils.assertAvailable(params.password)) {
                         grant_type = OauthGrantType.User_Credentials;
                         if (allowed_grant_types.includes(grant_type)) {
-                            getNewOauthToken()
+                            getNewOauthToken();
                         } else {
                             params.callback(false);
                         }
@@ -121,7 +121,7 @@ export class Oauth {
                     else {
                         grant_type = OauthGrantType.Client_Credentials;
                         if (allowed_grant_types.includes(grant_type)) {
-                            getNewOauthToken()
+                            getNewOauthToken();
                         } else {
                             params.callback(false);
                         }
@@ -288,7 +288,6 @@ export class Oauth {
          * @param refreshToken String
          * */
         let refreshOauthToken = (refreshToken:string) => {
-
             this.oauthRefreshToken(refreshToken,
                 /**Ajax Response callback
                  * @param token OauthTokenResponse
@@ -305,11 +304,14 @@ export class Oauth {
                         }
                         else if (OauthUtils.assertAvailable(token.error)){
                             if (typeof params.callback === 'function') {
-                                params.callback(false,token.errorDescription);
+                                params.callback(false, token.errorDescription);
+                                OauthStorage.clearAccess();
+                                getNewOauthToken();
                             }
                         }
                         else{
                             if (typeof params.callback === 'function') {
+                                OauthStorage.clearAccess();
                                 params.callback(false);
                             }
                         }
@@ -1175,7 +1177,6 @@ export class OauthUtils {
         }
         return true;
     }
-    
 
     /**Check if collection contains data
      *  @param object object

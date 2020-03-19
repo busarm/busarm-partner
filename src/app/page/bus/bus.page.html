@@ -27,10 +27,11 @@
     </ion-searchbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="ion-padding">
 
     <!--Refresher -->
     <ion-refresher
+            slot="fixed"
             [pullMin]="80"
             (ionRefresh)="refreshBusesView($event)">
         <ion-refresher-content

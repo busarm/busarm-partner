@@ -187,7 +187,6 @@ export class Api {
 
         /*Respond first from cache*/
         if (requestParams.cache && requestParams.loadCache) {
-
             //get cached response
             SessionManager.get(requestParams.cacheId, data => {
                 if (data) {
@@ -938,7 +937,7 @@ export class Api {
      * @param active
      * @param callback
      * */
-    public static toggleTicket(ticketId: string, typeId: string, active:boolean, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+    public static toggleTicket(ticketId: string, typeId: string, active:boolean|number|string, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
             url: Urls.apiTicketToggle,
             method: OauthRequestMethod.POST,

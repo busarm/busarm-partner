@@ -4,7 +4,7 @@ import {NavigationStart, Router, UrlTree} from "@angular/router";
 import {
     ActionSheetController,
     AlertController,
-    Events, IonRouterOutlet,
+    IonRouterOutlet,
     LoadingController, MenuController,
     ModalController,
     NavController,
@@ -31,9 +31,10 @@ import {Urls} from "./utils/Urls";
 import {Langs, Strings} from "./resources";
 import {Oauth, OauthGrantType, OauthUtils, OauthStorage} from "./utils/Oauth";
 import {CIPHER} from "./utils/CIPHER";
-import {NavigationOptions} from "@ionic/angular/dist/providers/nav-controller";
-import {EventsParams} from "./utils/EventsParams";
 import { environment } from '../environments/environment';
+import { Events } from './utils/Events';
+import { NavigationOptions } from '@ionic/angular/dist/providers/nav-controller';
+// import { NavigationOptions } from '@ionic/angular/providers/nav-controller';
 
 @Component({
     selector: 'app-root',
@@ -120,15 +121,13 @@ export class AppComponent {
             this.statusBar.styleDefault();
             this.splashScreen.hide();
 
-            /*Offline event*/
-            this.events.subscribe(EventsParams.Offline_Event, async () => {
-                await this.showNotConnectedMsg();
-            });
-
-            /*Online event*/
-            this.events.subscribe(EventsParams.Online_Event, async () => {
-                //Dismiss Toast
-                await this.hideToastMsg();
+            /*Network event*/
+            this.events.getNetworkObservable().subscribe(async (online) => {
+                if (online) {
+                    await this.hideToastMsg();
+                } else {
+                    await this.showNotConnectedMsg();
+                }
             });
         });
     }
@@ -318,8 +317,13 @@ export class AppComponent {
             message: Utils.convertHTMLEntity(msg),
             duration: duration,
             cssClass: type,
-            showCloseButton: showCloseButton,
-            closeButtonText: closeButton,
+            buttons: showCloseButton ? [
+                {
+                    text: closeButton,
+                    side: 'end',
+                    role: 'cancel'
+                }
+            ] : [],
             keyboardClose: true,
             position: position
         });
@@ -350,7 +354,7 @@ export class AppComponent {
             animated: true,
             keyboardClose: true,
         });
-        return await this.loader.present()
+        return await this.loader.present();
     }
 
     /**Hide Loading Dialog

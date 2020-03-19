@@ -33,18 +33,15 @@ export class AgentsPage extends PageController {
 
     /**Load Agents View*/
     public loadAgentsView(completed?: () => any) {
-
         /*Get Agents*/
         Api.getAgents((status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
                     this.agents = result.data;
-                }
-                else {
+                } else {
                     this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                 }
-            }
-            else {
+            } else {
                 this.showToastMsg(result, ToastType.ERROR);
             }
 
@@ -95,16 +92,13 @@ export class AgentsPage extends PageController {
                         if (result.status){
                             this.loadAgentsView();
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
-                        }
-                        else{
+                        } else{
                             this.showToastMsg(result.msg, ToastType.ERROR);
                         }
-                    }
-                    else {
+                    } else {
                         this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                     }
-                }
-                else {
+                } else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             });
@@ -112,25 +106,22 @@ export class AgentsPage extends PageController {
     }
 
     /**Toggle Agent active status*/
-    public toggleAgent(agentId: string, active: boolean|number) {
-        this.showLoading().then(()=>{
-            Api.toggleAgent(agentId, active?1:0,(status, result) => {
+    public toggleAgent(agent: UserInfo) {
+        this.showLoading().then(() => {
+            Api.toggleAgent(agent.agent_id, agent.is_active?1:0, (status, result) => {
                 this.hideLoading();
-                this.loadAgentsView();
                 if (status) {
                     if (this.assertAvailable(result)) {
-                        if (result.status){
+                        if (result.status) {
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
-                        }
-                        else{
+                        } else {
+                            this.loadAgentsView();
                             this.showToastMsg(result.msg, ToastType.ERROR);
                         }
-                    }
-                    else {
+                    } else {
                         this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                     }
-                }
-                else {
+                } else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             });
@@ -139,7 +130,7 @@ export class AgentsPage extends PageController {
 
     /**Show confirmation
      * */
-    public confirmMakeAdmin(user:UserInfo) {
+    public confirmMakeAdmin(user: UserInfo) {
         this.showAlert(
             this.strings.getString("make_admin_title_txt"),
             this.strings.getString("make_admin_msg_txt"),

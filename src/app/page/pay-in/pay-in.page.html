@@ -7,8 +7,8 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-    <ion-row justify-content-center  *ngIf="payIn!=null && payIn.action_required">
+<ion-content class="ion-padding">
+    <ion-row class="ion-justify-content-center"  *ngIf="payIn!=null && payIn.action_required">
         <ion-col size="12" class="cell cell-flex cell-flex-center">
             <ion-label class="cell cell-center section-title">{{strings.getString('new_request_txt')}}</ion-label>
         </ion-col>

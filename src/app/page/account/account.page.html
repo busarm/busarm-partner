@@ -10,9 +10,9 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="ion-padding">
     <ion-grid>
-        <ion-row justify-content-center wrap>
+        <ion-row class="ion-justify-content-center" wrap>
             <ion-col size-lg="6" size="12">
                 <ion-card *ngIf="userInfo!=null">
                     <ion-card-content>
@@ -80,7 +80,7 @@
                     </ion-card-content>
                 </ion-card>
             </ion-col>
-            <ion-col size-lg="6" size="12" no-padding>
+            <ion-col size-lg="6" size="12" class="ion-no-padding">
                 <ion-row wrap>
                     <ion-col size="12">
                         <ion-card *ngIf="userInfo!=null && userInfo.is_admin" (click)="showAgents()">
@@ -111,7 +111,7 @@
                             </ion-card-content>
                         </ion-card>
                     </ion-col>
-                    <ion-col size="12" padding>
+                    <ion-col size="12" class="ion-padding">
                         <ion-button expand="full" color="danger" (click)="confirmLogout()">
                             <ion-icon name="exit" color="secondary" slot="start">
                             </ion-icon>

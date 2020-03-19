@@ -4,7 +4,6 @@ import {OnDestroy, OnInit} from "@angular/core";
 import {AppComponent} from "../app.component";
 import {SessionManager} from "../utils/SessionManager";
 import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
-import {EventsParams} from "../utils/EventsParams";
 import { Params } from "@angular/router";
 
 export class PageController implements OnInit, OnDestroy {
@@ -79,11 +78,10 @@ export class PageController implements OnInit, OnDestroy {
     public async setCountry() {
         if (this.selectedCountry != null && this.userInfo.allow_multi_countries){
             this.instance.set_country(this.selectedCountry,  async (status, msg) => {
-                if (status){
-                    this.instance.events.publish(EventsParams.CountryChangeSuccessEvent);
-                }
-                else {
-                    this.instance.events.publish(EventsParams.CountryChangeFailedEvent);
+                if (status) {
+                    this.instance.events.publishCountryChangeEvent(true);
+                } else {
+                    this.instance.events.publishCountryChangeEvent(false);
                     await this.showToastMsg(msg?msg:Strings.getString("error_unexpected"), ToastType.ERROR);
                 }
             })

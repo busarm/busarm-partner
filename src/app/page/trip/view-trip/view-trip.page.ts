@@ -36,12 +36,9 @@ export class ViewTripPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-
         if (this.assertAvailable(this.trip)) {
-
             /*Preselect Bus type*/
             this.selectedBusType = this.trip.bus_type_id;
-
             this.loadTripView();
         }
         else {
@@ -103,12 +100,11 @@ export class ViewTripPage extends PageController {
                         result.data.tickets.forEach((value: TicketInfo)=>{
                             value.is_active = value.is_active == "1" || value.is_active == 1 || value.is_active == true;
                             value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 || value.allow_deactivate == true;
-                        })
+                        });
                         this.trip = result.data;
 
                         /*Get buses matching trip's bus type*/
                         Api.getBusesForType(this.trip.bus_type_id, (status, result) => {
-
                             if (status) {
                                 if (this.assertAvailable(result)) {
                                     this.buses = result.data;
@@ -290,8 +286,6 @@ export class ViewTripPage extends PageController {
 
     /**Update trip bus type*/
     public updateBusType(){
-
-        //Show Loader
         this.showLoading().then(()=>{
             Api.updateTripBusType(this.trip.trip_id, this.selectedBusType, (status, result) => {
                 this.hideLoading();
@@ -300,12 +294,10 @@ export class ViewTripPage extends PageController {
                         this.updated = true;
                         this.loadTripView();
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
-                    }
-                    else{
+                    } else{
                         this.showToastMsg(result.msg, ToastType.ERROR);
                     }
-                }
-                else{
+                } else{
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             });
@@ -342,16 +334,13 @@ export class ViewTripPage extends PageController {
                             this.updated = true;
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                             this.dismiss();
-                        }
-                        else{
+                        } else{
                             this.showToastMsg(result.msg, ToastType.ERROR);
                         }
-                    }
-                    else {
+                    } else {
                         this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                     }
-                }
-                else {
+                } else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             });
@@ -359,29 +348,25 @@ export class ViewTripPage extends PageController {
     }
 
     /**Toggle Trip Ticket*/
-    public toggleTripTicket(ticket: TicketInfo) {
+    public toggleTripTicket(ticket: TicketInfo) { 
         this.showLoading().then(()=>{
-            Api.toggleTicket(ticket.ticket_id, ticket.type_id, ticket.is_active, (status, result) => {
+            Api.toggleTicket(ticket.ticket_id, ticket.type_id, ticket.is_active?1:0, (status, result) => {
                 this.hideLoading();
                 if (status) {
                     if (this.assertAvailable(result)) {
                         if (result.status){
                             this.updated = true;
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
-                        }
-                        else{
+                        } else {
+                            this.loadTrip();
                             this.showToastMsg(result.msg, ToastType.ERROR);
                         }
-                    }
-                    else {
+                    } else {
                         this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                     }
-                }
-                else {
+                } else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
-                //Reload trip
-                this.loadTrip();
             });
         });
     }

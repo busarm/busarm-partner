@@ -6,7 +6,7 @@
         <ion-title>{{strings.getString("my_agents_txt")}}</ion-title>
     </ion-toolbar>
 </ion-header>
-<ion-content padding>
+<ion-content class="ion-padding">
 
     <!--Loading view - Show if Buses hasn't been loaded yet-->
     <div class="loader cell" *ngIf="agents==null">
@@ -29,7 +29,7 @@
                             <ion-col size="6" class="cell cell-flex cell-flex-left">
                                 <ion-toggle *ngIf="userInfo.agent_id != agent.agent_id && !agent.is_partner"
                                             color="success"
-                                            [(ngModel)]="agent.is_active" (ionChange)="toggleAgent(agent.agent_id,agent.is_active)">
+                                            [checked]="agent.is_active" (ionChange)="toggleAgent(agent)">
                                 </ion-toggle>
                             </ion-col>
                             <ion-col size="6" class="cell cell-flex cell-flex-right">
@@ -50,7 +50,7 @@
                                     <ion-col size="12">
                                         <ion-label class="cell-sub">{{agent.dial_code}}{{agent.phone}}</ion-label>
                                     </ion-col>
-                                    <ion-col size="12" no-padding *ngIf="agent.is_active && userInfo.agent_id != agent.agent_id && !agent.is_partner" class="cell cell-center cell-flex cell-flex-left">
+                                    <ion-col size="12" *ngIf="agent.is_active && userInfo.agent_id != agent.agent_id && !agent.is_partner" class="cell cell-center cell-flex cell-flex-left ion-no-padding">
                                         <ion-button color="dark" (click)="confirmDeleteAgent(agent)">
                                             <ion-icon color="danger" name="remove-circle" slot="start"> </ion-icon>
                                             {{strings.getString("delete_txt")}}
@@ -61,12 +61,12 @@
                                             {{strings.getString("make_admin_title_txt")}}
                                         </ion-button>
                                     </ion-col>
-                                    <ion-col size="12" no-padding *ngIf="agent.is_active && agent.is_admin && userInfo.agent_id != agent.agent_id && !agent.is_partner" class="cell cell-center  cell-flex cell-flex-left">
+                                    <ion-col size="12" *ngIf="agent.is_active && agent.is_admin && userInfo.agent_id != agent.agent_id && !agent.is_partner" class="cell cell-center cell-flex cell-flex-left ion-no-padding">
                                         <ion-button color="danger" (click)="confirmRemoveAdmin(agent)">
                                             {{strings.getString("remove_admin_title_txt")}}
                                         </ion-button>
                                     </ion-col>
-                                    <ion-col size="12" no-padding *ngIf="agent.is_active" class="cell cell-center  cell-flex cell-flex-left">
+                                    <ion-col size="12" *ngIf="agent.is_active" class="cell cell-center cell-flex cell-flex-left ion-no-padding">
                                         <ion-button color="primary" (click)="confirmForgotPassword(agent)">
                                             {{strings.getString("forgot_password_title_txt")}}
                                         </ion-button>

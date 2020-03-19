@@ -9,7 +9,7 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content padding>
+<ion-content class="ion-padding">
     <!--Booking info Card - Show if booking info has successfully loaded -->
     <ion-card id="bookingCard" *ngIf="bookingInfo!=null">
         <ion-card-header>
@@ -25,7 +25,7 @@
                 </ion-col>
             </ion-row>
         </ion-card-header>
-        <ion-card-content padding>
+        <ion-card-content class="ion-padding">
             <div>
                 <ion-segment [(ngModel)]="activeBookingSegment">
                     <ion-segment-button [value]="'summary'" class="cell cell-center  cell-flex cell-flex-center ">
