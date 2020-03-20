@@ -150,7 +150,7 @@ export class TripPage extends PageController{
             if (event) {
                 event.target.complete();
             }
-        })
+        });
     }
 
     /**Load Trips View*/
@@ -231,6 +231,4 @@ export class TripPage extends PageController{
             }
         }
     }
-
-
 }

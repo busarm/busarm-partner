@@ -198,9 +198,8 @@ export class AddTripPage extends PageController {
                 }
                 if (!found) {
                     this.selectedTickets.push(ticket);
-                    console.log(this.selectedTickets);
                 }
-            })
+            });
         }
     }
 

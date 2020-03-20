@@ -24,7 +24,6 @@ export class AddTicketPage extends PageController {
         await super.ngOnInit();
     }
     public ionViewDidEnter(){
-        console.log(this.country);
     }
 
     /**Add Ticket*/

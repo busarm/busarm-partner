@@ -81,7 +81,6 @@ export class SessionManager {
                     callback(value);
                 })
                 .catch((error) => {
-                    console.log(error);
                     callback(null);
                 });
         }

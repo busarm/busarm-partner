@@ -85,7 +85,6 @@ export class ViewTripPage extends PageController {
         this.loadTrip(completed);
     }
 
-    
     /**Load Trip*/
     public loadTrip(completed?: () => any) {
 
@@ -95,12 +94,16 @@ export class ViewTripPage extends PageController {
                 if (this.assertAvailable(result)) {
                     if (result.data) {
                         this.selectedBusType = result.data.bus_type_id;
-                        this.allowAddTicket = this.ticketTypes && result.data.tickets && result.data.tickets.length < this.ticketTypes.length;
+                        this.allowAddTicket = this.ticketTypes && result.data.tickets &&
+                                                result.data.tickets.length < this.ticketTypes.length;
                         this.allowDeactivateTicket = result.data.tickets && result.data.tickets.length > 1;
-                        result.data.tickets.forEach((value: TicketInfo)=>{
-                            value.is_active = value.is_active == "1" || value.is_active == 1 || value.is_active == true;
-                            value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 || value.allow_deactivate == true;
-                        });
+                        if (this.allowDeactivateTicket){
+                            result.data.tickets.forEach((value: TicketInfo)=>{
+                                value.is_active = value.is_active == "1" || value.is_active == 1 || value.is_active == true;
+                                value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 ||
+                                                            value.allow_deactivate == true;
+                            });
+                        }
                         this.trip = result.data;
 
                         /*Get buses matching trip's bus type*/
@@ -108,12 +111,10 @@ export class ViewTripPage extends PageController {
                             if (status) {
                                 if (this.assertAvailable(result)) {
                                     this.buses = result.data;
-                                }
-                                else {
+                                } else {
                                     this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                                 }
-                            }
-                            else {
+                            } else {
                                 this.showToastMsg(result, ToastType.ERROR);
                             }
 
@@ -122,14 +123,11 @@ export class ViewTripPage extends PageController {
                             }
                         });
                     }
-
-                }
-                else {
+                } else {
                     this.dismiss();
                     this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                 }
-            }
-            else {
+            } else {
                 this.showToastMsg(result, ToastType.ERROR);
             }
 
@@ -201,7 +199,7 @@ export class ViewTripPage extends PageController {
     }
 
     /**Process Add bus*/
-    private processAddTicket(ticket:TicketInfo){
+    private processAddTicket(ticket: TicketInfo){
 
         //Add ticket id
         ticket.ticket_id = this.trip.ticket_id;
@@ -257,7 +255,7 @@ export class ViewTripPage extends PageController {
                         this.loadTripView();
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
                     }
-                    else{
+                    else {
                         this.showToastMsg(result.msg, ToastType.ERROR);
                     }
                 }
@@ -349,16 +347,16 @@ export class ViewTripPage extends PageController {
 
     /**Toggle Trip Ticket*/
     public toggleTripTicket(ticket: TicketInfo) { 
-        this.showLoading().then(()=>{
-            Api.toggleTicket(ticket.ticket_id, ticket.type_id, ticket.is_active?1:0, (status, result) => {
+        this.showLoading().then(() => {
+            Api.toggleTicket(ticket.ticket_id, ticket.type_id, ticket.is_active ? 0 : 1, (status, result) => {
+                this.loadTrip();
                 this.hideLoading();
                 if (status) {
                     if (this.assertAvailable(result)) {
-                        if (result.status){
+                        if (result.status) {
                             this.updated = true;
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                         } else {
-                            this.loadTrip();
                             this.showToastMsg(result.msg, ToastType.ERROR);
                         }
                     } else {

@@ -108,14 +108,14 @@ export class AgentsPage extends PageController {
     /**Toggle Agent active status*/
     public toggleAgent(agent: UserInfo) {
         this.showLoading().then(() => {
-            Api.toggleAgent(agent.agent_id, agent.is_active?1:0, (status, result) => {
+            Api.toggleAgent(agent.agent_id, agent.is_active ? 0 : 1, (status, result) => {
+                this.loadAgentsView();
                 this.hideLoading();
                 if (status) {
                     if (this.assertAvailable(result)) {
                         if (result.status) {
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                         } else {
-                            this.loadAgentsView();
                             this.showToastMsg(result.msg, ToastType.ERROR);
                         }
                     } else {

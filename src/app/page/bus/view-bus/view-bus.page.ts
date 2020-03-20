@@ -157,7 +157,6 @@ export class ViewBusPage extends PageController {
 
     /**On Input change listener*/
     changeListener(event){
-        console.log(event);
         if (event && event.isTrusted) {
             this.readFile(event.target.files[0])
         }

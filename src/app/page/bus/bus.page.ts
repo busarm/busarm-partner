@@ -175,6 +175,5 @@ export class BusPage extends PageController{
             responseType: "text",
             observe: 'events'
         });
-        console.log(image);
     }
  }

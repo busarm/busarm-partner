@@ -260,7 +260,6 @@ export class AppComponent {
         await this.navCtrl.navigateRoot(url, options).then(value => {
             return value
         }).catch((err)=>{
-            console.log(err);
             return this.navCtrl.navigateRoot("home", options);
         });
     }

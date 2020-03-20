@@ -86,7 +86,7 @@
                 <ion-row *ngFor="let ticket of trip.tickets; let i = index" [attr.index]="i">
                     <ion-col size="12" class="cell cell-left  cell-flex cell-flex-left ion-no-padding">
                         <ion-toggle color="success" 
-                                    [disabled] = "!allowDeactivateTicket || !ticket.allow_deactivate"
+                                    [disabled]="!allowDeactivateTicket || !ticket.allow_deactivate"
                                     [checked]="ticket.is_active" (ionChange)="toggleTripTicket(ticket)">
                         </ion-toggle>
                     </ion-col>
