@@ -3,9 +3,9 @@ import {BookingInfo, TripInfo} from "../../../models/ApiResponse";
 import {PageController} from "../../page-controller";
 import {ModalController} from "@ionic/angular";
 import {ViewTripPage} from "../../trip/view-trip/view-trip.page";
-import {ToastType} from "../../../utils/Utils";
+import {ToastType} from "../../../libs/Utils";
 import {Strings} from "../../../resources";
-import {Api} from "../../../utils/Api"; 
+import {Api} from "../../../libs/Api"; 
 
 @Component({
   selector: 'app-view-booking',

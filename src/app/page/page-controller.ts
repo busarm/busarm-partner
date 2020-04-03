@@ -1,8 +1,8 @@
-import {ToastType, Utils} from "../utils/Utils";
+import {ToastType, Utils} from "../libs/Utils";
 import {Assets, Strings} from "../resources";
 import {OnDestroy, OnInit} from "@angular/core";
 import {AppComponent} from "../app.component";
-import {SessionManager} from "../utils/SessionManager";
+import {SessionManager} from "../libs/SessionManager";
 import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
 import { Params } from "@angular/router";
 

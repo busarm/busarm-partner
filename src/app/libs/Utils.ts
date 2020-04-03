@@ -1,6 +1,6 @@
 import * as CryptoJS from "crypto-js";
 import { Urls } from "./Urls"; 
-import { NetworkProvider } from "./NetworkProvider"; 
+import { NetworkProvider } from "../services/NetworkProvider"; 
 import { ENVIRONMENT } from "../../environments/environment";
 import { ENV } from "../../environments/ENV";
 
@@ -326,14 +326,13 @@ export class Utils {
      * @return string
      */
     static safeString(str: string): string {
-        if (str !== null
-            || str !== "") {
+        if (str !== null && typeof str !== 'undefined' && str !== "") {
             return str
                 .trim()
                 .replace(/[<>\/!#$%^&*~`,'"\[\]\\|{}]/gi, "");
         }
         else {
-            return str;
+            return "";
         }
     }
 }

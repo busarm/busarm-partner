@@ -1,16 +1,15 @@
 import {Component} from '@angular/core';
 import {AlertController, ModalController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
-import {NetworkProvider} from "../../utils/NetworkProvider";
-import {Api} from "../../utils/Api";
+import {NetworkProvider} from "../../services/NetworkProvider";
+import {Api} from "../../libs/Api";
 import {Strings} from "../../resources";
-import {ToastType} from "../../utils/Utils";
+import {ToastType} from "../../libs/Utils";
 import {BusType, BusInfo} from "../../models/ApiResponse";
 import {PageController} from "../page-controller";
 import {ViewBusPage} from "./view-bus/view-bus.page";
 import {AddBusPage} from "./add-bus/add-bus.page";
-import {EventsParams} from "../../utils/EventsParams";
-import { Events } from '../../utils/Events';
+import { Events } from '../../services/Events';
 
 @Component({
     selector: 'app-bus',

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PageController } from '../../../../page/page-controller';
-import { Utils } from '../../../../utils/Utils';
-import { OauthStorage } from '../../../../utils/Oauth';
-import { Urls } from '../../../../utils/Urls';
+import { Utils } from '../../../../libs/Utils';
+import { OauthStorage } from '../../../../libs/Oauth';
+import { Urls } from '../../../../libs/Urls';
  
 @Component({
   selector: 'app-authorize',

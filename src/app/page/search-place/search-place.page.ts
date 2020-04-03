@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../page-controller";
 import {ModalController, NavParams} from "@ionic/angular";
-import {ToastType, Utils} from "../../utils/Utils";
+import {ToastType, Utils} from "../../libs/Utils";
 import {Country} from "../../models/ApiResponse";
 import {Strings} from "../../resources";
 

@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {AlertController, ModalController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
-import {Api} from "../../utils/Api";
+import {Api} from "../../libs/Api";
 import {Strings} from "../../resources";
-import {ToastType} from "../../utils/Utils";
+import {ToastType} from "../../libs/Utils";
 import {
     BusType,
     LocationType,
@@ -14,7 +14,7 @@ import {
 import {PageController} from "../page-controller";
 import {ViewTripPage} from "./view-trip/view-trip.page";
 import {AddTripPage} from "./add-trip/add-trip.page";
-import { Events } from '../../utils/Events';
+import { Events } from '../../services/Events';
 
 @Component({
     selector: 'app-trip',

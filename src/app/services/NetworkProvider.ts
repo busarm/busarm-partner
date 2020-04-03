@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Network} from '@ionic-native/network/ngx';
 import {HttpClient} from "@angular/common/http";
-import {Urls} from "./Urls";
+import {Urls} from "../libs/Urls";
 import {AppComponent} from "../app.component";
 import { Events } from './Events';
 // import {Promise} from "q";

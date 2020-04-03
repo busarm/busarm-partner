@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {PayInTransaction} from "../../models/ApiResponse";
-import {ToastType} from "../../utils/Utils";
-import {Api} from "../../utils/Api";
+import {ToastType} from "../../libs/Utils";
+import {Api} from "../../libs/Api";
 import {PageController} from "../page-controller";
 
 @Component({

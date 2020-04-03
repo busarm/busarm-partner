@@ -10,8 +10,8 @@ import {
     PayOutTransaction,
     TripInfo
 } from "../../models/ApiResponse";
-import {ToastType, Utils} from "../../utils/Utils";
-import {Api} from "../../utils/Api";
+import {ToastType, Utils} from "../../libs/Utils";
+import {Api} from "../../libs/Api";
 import {Strings} from "../../resources";
 import {ViewTripPage} from "../trip/view-trip/view-trip.page";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner/ngx";
@@ -20,8 +20,7 @@ import {BookingsPage} from "../bookings/bookings.page";
 import {ViewBookingPage} from "../bookings/view-booking/view-booking.page";
 import {PayoutPage} from "../payout/payout.page";
 import {PayInPage} from "../pay-in/pay-in.page";
-import {EventsParams} from "../../utils/EventsParams";
-import { Events } from '../../utils/Events';
+import { Events } from '../../services/Events';
 
 @Component({
     selector: 'app-dashboard',
