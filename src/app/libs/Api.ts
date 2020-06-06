@@ -75,7 +75,7 @@ export class Api {
                     requestParams.headers = [];
                 }
 
-                requestParams.headers['X-Session-Token'] = Utils.safeString(session.session_token);
+                requestParams.headers['X-Session-Token'] = Utils.assertAvailable(session)?Utils.safeString(session.session_token):"";
                 if (requestParams.encrypt) {
                     if (session != null) {
                         CIPHER.encrypt(session.encryption_key, Utils.toJson(requestParams.params), (status, cipher) => {
@@ -969,7 +969,7 @@ export class Api {
                 if (result.status === 401 || result.status === 403) { // Failed to authorize api access
                     if (requestParams.callback) {
                                 requestParams.callback(false, Strings.getString("error_access_expired"), ApiResponseType.Authorization_error);
-                    }                  
+                    }
                 } else {
                     if (requestParams.cache) {
                         // get cached response

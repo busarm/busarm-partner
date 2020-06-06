@@ -34,7 +34,7 @@ export interface UsersObject {
     data?: UserInfo[];
 }
 
-export interface UserInfo{
+export interface UserInfo {
     id?: string;
     agent_id?: string;
     name?: string;
