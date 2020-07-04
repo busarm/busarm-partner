@@ -115,6 +115,215 @@ export class Api {
         new Api(requestParams);
     }
 
+    /**
+     * Process Api Request
+     * @param requestParams
+     * @param encryptedRequest
+     * @param encryptionKey
+     */
+    private processRequest(requestParams: ApiRequestParams, encryptedRequest: boolean, encryptionKey?: string) {
+      const processWithMethod = () => {
+          switch (requestParams.method) {
+              case OauthRequestMethod.DELETE:
+                  // return OauthRequest.delete(req);
+                  return NetworkProvider.getInstance().httpClient.delete(requestParams.url, {
+                      headers: requestParams.headers,
+                      params: requestParams.params,
+                      observe: 'response',
+                      responseType: 'text'
+                  });
+              case OauthRequestMethod.PUT:
+                  // return OauthRequest.put(req);
+                  return NetworkProvider.getInstance().httpClient.put(requestParams.url, requestParams.params, {
+                      headers: requestParams.headers,
+                      observe: 'response',
+                      responseType: 'text'
+                  });
+              case OauthRequestMethod.POST:
+                  // return OauthRequest.post(req);
+                  return NetworkProvider.getInstance().httpClient.post(requestParams.url, requestParams.params, {
+                      headers: requestParams.headers,
+                      observe: 'response',
+                      responseType: 'text'
+                  });
+              case OauthRequestMethod.GET:
+              default:
+                  // return OauthRequest.get(req);
+                  return NetworkProvider.getInstance().httpClient.get(requestParams.url, {
+                      observe: 'response',
+                      responseType: 'text',
+                      headers: requestParams.headers,
+                      params: requestParams.params,
+                  });
+
+          }
+      };
+
+      /*Respond first from cache*/
+      if (requestParams.cache && requestParams.loadCache) {
+          // get cached response
+          SessionManager.get(requestParams.cacheId, data => {
+              if (data) {
+                  if (requestParams.callback) {
+                      requestParams.callback(true, data, ApiResponseType.Api_Success);
+                      this.cacheLoaded = true;
+                  }
+              }
+          });
+      }
+
+      /*Process Request*/
+      requestParams.headers['Authorization'] =  OauthStorage.accessToken;
+      processWithMethod().subscribe(result => {
+          const encryptedResponse = result.headers.get('X-Encrypted')  == '1';
+          if (encryptedResponse) { // If Response is Encrypted
+              const integrity = result.headers.get('X-Integrity');
+              if (this.verifyIntegrity(result.body, integrity, encryptionKey)) { // Verify Integrity of response
+                  CIPHER.decrypt(encryptionKey, result.body, (status, plain) => {
+                      if (status) {
+                          this.processResponse(true, {
+                              ok: result.ok,
+                              status: result.status,
+                              statusText: result.statusText,
+                              clone: result.clone,
+                              type: result.type,
+                              url: result.url,
+                              headers: result.headers,
+                              body: plain,
+                          }, requestParams);
+                      } else {
+                          if (!this.cacheLoaded) {
+                              requestParams.callback(false, Strings.getString('error_unexpected'), ApiResponseType.unknown);
+                          }
+                      }
+                  });
+              } else {
+                  if (!this.cacheLoaded) {
+                      requestParams.callback(false, Strings.getString('error_unexpected'), ApiResponseType.unknown);
+                  }
+              }
+          } else {
+              this.processResponse(result.ok, result, requestParams);
+          }
+      }, err => {
+          this.processResponse(false, err, requestParams);
+      });
+    }
+
+    /**
+     * Process Api Response
+     * @param status
+     * @param result
+     * @param requestParams
+     */
+    private processResponse(status: boolean, result: HttpErrorResponse|HttpResponse<any>|any, requestParams: ApiRequestParams) {
+        if (result) {
+            if (status) {
+                const data = Utils.parseJson(result.body);
+                if (data) {
+                    if (data.status) {
+                        if (requestParams.cache) {
+
+                            // get cached response
+                            SessionManager.get(requestParams.cacheId, cachedData => {
+                                if (cachedData) {
+
+                                    // Compare new response to cached response
+                                    if (Utils.toJson(cachedData) != Utils.toJson(data)) {
+                                        if (requestParams.callback) {
+                                            requestParams.callback(true, data, ApiResponseType.Api_Success);
+                                        }
+                                        SessionManager.set(requestParams.cacheId, data); // cache response
+                                    } else {
+                                        if (!this.cacheLoaded) {
+                                            if (requestParams.callback) {
+                                                requestParams.callback(true, data, ApiResponseType.Api_Success);
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (requestParams.callback) {
+                                        requestParams.callback(true, data, ApiResponseType.Api_Success);
+                                    }
+                                    SessionManager.set(requestParams.cacheId, data); // cache response
+                                }
+                            });
+                        } else {
+                            if (requestParams.callback) {
+                                requestParams.callback(true, data, ApiResponseType.Api_Success);
+                            }
+                        }
+
+                    } else {
+                        if (Utils.assertAvailable(data.msg)) {
+                            if (requestParams.callback) {
+                                requestParams.callback(false, data.msg, ApiResponseType.Api_Error);
+                            }
+                        } else {
+                            if (requestParams.callback) {
+                                requestParams.callback(false, Strings.getString("error_unexpected"), ApiResponseType.Api_Error);
+                            }
+                        }
+                        SessionManager.remove(requestParams.cacheId); // remove cache
+                    }
+                } else {
+                    requestParams.callback(false, Strings.getString('error_unexpected'), ApiResponseType.unknown);
+                    SessionManager.remove(requestParams.cacheId); // remove cache
+                }
+            } else {
+                if (result.status === 401 || result.status === 403) { // Failed to authorize api access
+                    if (requestParams.callback) {
+                                requestParams.callback(false, Strings.getString("error_access_expired"), ApiResponseType.Authorization_error);
+                    }
+                } else {
+                    if (requestParams.cache) {
+                        // get cached response
+                        SessionManager.get(requestParams.cacheId, data => {
+                            if (data) {
+                                if (requestParams.callback) {
+                                    requestParams.callback(true, data, ApiResponseType.Api_Success);
+                                }
+                            } else {
+                                if (!this.cacheLoaded) {
+                                    if (requestParams.callback) {
+                                        requestParams.callback(false, Utils.assertAvailable(data) && Utils.assertAvailable(data.msg) ?
+                                            data.msg :
+                                            Strings.getString("error_unexpected"), ApiResponseType.unknown);
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        if (!this.cacheLoaded) {
+                            const data = result.body ? Utils.parseJson(result.body) : (result.error ? Utils.parseJson(result.body) : '');
+                            if (requestParams.callback) {
+                                requestParams.callback(false, Utils.assertAvailable(data) && Utils.assertAvailable(data.msg) ?
+                                    data.msg :
+                                    Strings.getString('error_unexpected'), ApiResponseType.unknown);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if (!this.cacheLoaded) {
+                if (requestParams.callback) {
+                    requestParams.callback(false, Strings.getString("error_unexpected"), ApiResponseType.unknown);
+                }
+            }
+        }
+    }
+
+    /**
+     * Verify integrity of response
+     * @param data string data gotten from response
+     * @param x_integrity string integrity of data to be compared with
+     * @param key string Encryption key
+     * */
+    private verifyIntegrity (data: string, x_integrity: string, key: string) {
+        return x_integrity === CIPHER.getDigest(data, CryptoJS.MD5(key).toString());
+    }
+
 
 
     /*----------------------- API FUNCTIONS ---------------------*/
@@ -785,237 +994,5 @@ export class Api {
             encrypt: true,
             callback: callback
         });
-    }
-
-    /**Secure access token
-     *
-     * @return {string}
-     */
-    private secureToken (requestParams: ApiRequestParams) {
-        if (requestParams.encrypt && requestParams.method != OauthRequestMethod.GET && requestParams.params) {
-            const method = String(requestParams.method).toLowerCase();
-            const data = requestParams.params;
-            let path = requestParams.url;
-            if (URL) {
-                const u = new URL(path);
-                path = u.origin + u.pathname;
-            }
-            const cnonce = CryptoJS.MD5(Utils.toJson(data));
-            const A1 = OauthStorage.accessToken;
-            const A2 = CryptoJS.MD5(`${method}:${path}`);
-            const integrity = CryptoJS.MD5(`${A1}:${cnonce}:${A2}`);
-            return OauthStorage.tokenType + ' ' + CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(OauthStorage.accessToken + '/' + integrity));
-        } else {
-            return OauthStorage.tokenType + ' ' + OauthStorage.accessToken;
-        }
-    }
-
-    /**
-     * Process Api Request
-     * @param requestParams
-     * @param encryptedRequest
-     * @param encryptionKey
-     */
-    private processRequest(requestParams: ApiRequestParams, encryptedRequest: boolean, encryptionKey?: string) {
-        const processWithMethod = () => {
-            switch (requestParams.method) {
-                case OauthRequestMethod.DELETE:
-                    // return OauthRequest.delete(req);
-                    return NetworkProvider.getInstance().httpClient.delete(requestParams.url, {
-                        headers: requestParams.headers,
-                        params: requestParams.params,
-                        observe: 'response',
-                        responseType: 'text'
-                    });
-                case OauthRequestMethod.PUT:
-                    // return OauthRequest.put(req);
-                    return NetworkProvider.getInstance().httpClient.put(requestParams.url, requestParams.params, {
-                        headers: requestParams.headers,
-                        observe: 'response',
-                        responseType: 'text'
-                    });
-                case OauthRequestMethod.POST:
-                    // return OauthRequest.post(req);
-                    return NetworkProvider.getInstance().httpClient.post(requestParams.url, requestParams.params, {
-                        headers: requestParams.headers,
-                        observe: 'response',
-                        responseType: 'text'
-                    });
-                case OauthRequestMethod.GET:
-                default:
-                    // return OauthRequest.get(req);
-                    return NetworkProvider.getInstance().httpClient.get(requestParams.url, {
-                        observe: 'response',
-                        responseType: 'text',
-                        headers: requestParams.headers,
-                        params: requestParams.params,
-                    });
-
-            }
-        };
-
-        /*Respond first from cache*/
-        if (requestParams.cache && requestParams.loadCache) {
-            // get cached response
-            SessionManager.get(requestParams.cacheId, data => {
-                if (data) {
-                    if (requestParams.callback) {
-                        requestParams.callback(true, data, ApiResponseType.Api_Success);
-                        this.cacheLoaded = true;
-                    }
-                }
-            });
-        }
-
-        /*Process Request*/
-        requestParams.headers['Authorization'] =  this.secureToken(requestParams);
-        processWithMethod().subscribe(result => {
-            const encryptedResponse = result.headers.get('X-Encrypted')  == '1';
-            if (encryptedResponse) { // If Response is Encrypted
-                const integrity = result.headers.get('X-Integrity');
-                if (this.verifyIntegrity(result.body, integrity, encryptionKey)) { // Verify Integrity of response
-                    CIPHER.decrypt(encryptionKey, result.body, (status, plain) => {
-                        if (status) {
-                            this.processResponse(true, {
-                                ok: result.ok,
-                                status: result.status,
-                                statusText: result.statusText,
-                                clone: result.clone,
-                                type: result.type,
-                                url: result.url,
-                                headers: result.headers,
-                                body: plain,
-                            }, requestParams);
-                        } else {
-                            if (!this.cacheLoaded) {
-                                requestParams.callback(false, Strings.getString('error_unexpected'), ApiResponseType.unknown);
-                            }
-                        }
-                    });
-                } else {
-                    if (!this.cacheLoaded) {
-                        requestParams.callback(false, Strings.getString('error_unexpected'), ApiResponseType.unknown);
-                    }
-                }
-            } else {
-                this.processResponse(result.ok, result, requestParams);
-            }
-        }, err => {
-            this.processResponse(false, err, requestParams);
-        });
-    }
-
-    /**
-     * Process Api Response
-     * @param status
-     * @param result
-     * @param requestParams
-     */
-    private processResponse(status: boolean, result: HttpErrorResponse|HttpResponse<any>|any, requestParams: ApiRequestParams) {
-        if (result) {
-            if (status) {
-                const data = Utils.parseJson(result.body);
-                if (data) {
-                    if (data.status) {
-                        if (requestParams.cache) {
-
-                            // get cached response
-                            SessionManager.get(requestParams.cacheId, cachedData => {
-                                if (cachedData) {
-
-                                    // Compare new response to cached response
-                                    if (Utils.toJson(cachedData) != Utils.toJson(data)) {
-                                        if (requestParams.callback) {
-                                            requestParams.callback(true, data, ApiResponseType.Api_Success);
-                                        }
-                                        SessionManager.set(requestParams.cacheId, data); // cache response
-                                    } else {
-                                        if (!this.cacheLoaded) {
-                                            if (requestParams.callback) {
-                                                requestParams.callback(true, data, ApiResponseType.Api_Success);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (requestParams.callback) {
-                                        requestParams.callback(true, data, ApiResponseType.Api_Success);
-                                    }
-                                    SessionManager.set(requestParams.cacheId, data); // cache response
-                                }
-                            });
-                        } else {
-                            if (requestParams.callback) {
-                                requestParams.callback(true, data, ApiResponseType.Api_Success);
-                            }
-                        }
-
-                    } else {
-                        if (Utils.assertAvailable(data.msg)) {
-                            if (requestParams.callback) {
-                                requestParams.callback(false, data.msg, ApiResponseType.Api_Error);
-                            }
-                        } else {
-                            if (requestParams.callback) {
-                                requestParams.callback(false, Strings.getString("error_unexpected"), ApiResponseType.Api_Error);
-                            }
-                        }
-                        SessionManager.remove(requestParams.cacheId); // remove cache
-                    }
-                } else {
-                    requestParams.callback(false, Strings.getString('error_unexpected'), ApiResponseType.unknown);
-                    SessionManager.remove(requestParams.cacheId); // remove cache
-                }
-            } else {
-                if (result.status === 401 || result.status === 403) { // Failed to authorize api access
-                    if (requestParams.callback) {
-                                requestParams.callback(false, Strings.getString("error_access_expired"), ApiResponseType.Authorization_error);
-                    }
-                } else {
-                    if (requestParams.cache) {
-                        // get cached response
-                        SessionManager.get(requestParams.cacheId, data => {
-                            if (data) {
-                                if (requestParams.callback) {
-                                    requestParams.callback(true, data, ApiResponseType.Api_Success);
-                                }
-                            } else {
-                                if (!this.cacheLoaded) {
-                                    if (requestParams.callback) {
-                                        requestParams.callback(false, Utils.assertAvailable(data) && Utils.assertAvailable(data.msg) ?
-                                            data.msg :
-                                            Strings.getString("error_unexpected"), ApiResponseType.unknown);
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        if (!this.cacheLoaded) {
-                            const data = result.body ? Utils.parseJson(result.body) : (result.error ? Utils.parseJson(result.body) : '');
-                            if (requestParams.callback) {
-                                requestParams.callback(false, Utils.assertAvailable(data) && Utils.assertAvailable(data.msg) ?
-                                    data.msg :
-                                    Strings.getString('error_unexpected'), ApiResponseType.unknown);
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            if (!this.cacheLoaded) {
-                if (requestParams.callback) {
-                    requestParams.callback(false, Strings.getString("error_unexpected"), ApiResponseType.unknown);
-                }
-            }
-        }
-    }
-
-    /**
-     * Verify integrity of response
-     * @param data string data gotten from response
-     * @param x_integrity string integrity of data to be compared with
-     * @param key string Encryption key
-     * */
-    private verifyIntegrity (data: string, x_integrity: string, key: string) {
-        return x_integrity === CIPHER.getDigest(data, CryptoJS.MD5(key).toString());
     }
 }
