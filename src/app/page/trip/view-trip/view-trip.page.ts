@@ -359,31 +359,33 @@ export class ViewTripPage extends PageController {
     }
 
     /**Toggle Trip Ticket*/
-    public toggleTripTicket(ticket: TicketInfo) {
-        this.showLoading().then(()=>{
-            Api.toggleTicket(ticket.ticket_id, ticket.type_id, ticket.is_active, (status, result) => {
-                this.hideLoading();
-                if (status) {
-                    if (this.assertAvailable(result)) {
-                        if (result.status){
-                            this.updated = true;
-                            this.showToastMsg(result.msg, ToastType.SUCCESS);
+    public toggleTripTicket(ticket: TicketInfo, toggle: boolean) {
+        if(ticket.is_active !== toggle) {
+            this.showLoading().then(()=>{
+                Api.toggleTicket(ticket.ticket_id, ticket.type_id, ticket.is_active, (status, result) => {
+                    this.hideLoading();
+                    if (status) {
+                        if (this.assertAvailable(result)) {
+                            if (result.status){
+                                this.updated = true;
+                                this.showToastMsg(result.msg, ToastType.SUCCESS);
+                            }
+                            else{
+                                this.showToastMsg(result.msg, ToastType.ERROR);
+                            }
                         }
-                        else{
-                            this.showToastMsg(result.msg, ToastType.ERROR);
+                        else {
+                            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                         }
                     }
                     else {
-                        this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                        this.showToastMsg(result, ToastType.ERROR);
                     }
-                }
-                else {
-                    this.showToastMsg(result, ToastType.ERROR);
-                }
-                //Reload trip
-                this.loadTrip();
+                    //Reload trip
+                    this.loadTrip();
+                });
             });
-        });
+        } 
     }
     
     /**Show Delete confirmation

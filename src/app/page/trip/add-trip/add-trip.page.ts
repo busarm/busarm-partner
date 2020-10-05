@@ -187,15 +187,13 @@ export class AddTripPage extends PageController {
     public async addTicket() {
         if (this.userInfo) {
             await this.showAddTicket(this.session.country, ticket => {
-                let found = false;
-                for (let i = 0; i < this.selectedTickets.length; i++) {
-                    let t = this.selectedTickets[i];
-                    if (t.type_id == ticket.type_id) {
-                        this.selectedTickets[i] = ticket;
-                        found = true;
-                        break;
+                let found = this.selectedTickets.some((selectedTicket, index) => {
+                    if (selectedTicket.type_id == ticket.type_id) {
+                        this.selectedTickets[index] = ticket;
+                        return true;
                     }
-                }
+                    return false;
+                })
                 if (!found) {
                     this.selectedTickets.push(ticket);
                     console.log(this.selectedTickets);
@@ -302,23 +300,26 @@ export class AddTripPage extends PageController {
         };
 
         if (place.address_components != null && place.address_components.length > 0) {
-            for (let i = 0; i < place.address_components.length; i++) {
-                let address = place.address_components[i];
-                for (let j = 0; j < address.types.length; j++) {
-                    if (address.types[j] == "locality" ||
-                        address.types[j] == "sublocality_level_1" ||
-                        address.types[j] == "administrative_area_level_2") {
-                        location.city = address.long_name;
-                    }
-                    else if (address.types[j] == "administrative_area_level_1") {
-                        location.province = address.long_name;
-                    }
-                    else if (address.types[j] == "country") {
-                        location.country = address.long_name;
-                        location.country_code = address.short_name;
-                    }
+            place.address_components.forEach(address => {
+                if (address.types != null && address.types.length > 0) {
+                    place.address_components.forEach(type => {
+                        switch (type) {
+                            case "country": 
+                                location.country = location.country ? location.country : address.long_name;
+                                location.country_code = location.country_code ? location.country_code : address.short_name;
+                                break;
+                            case "administrative_area_level_1": 
+                                location.province = location.province ? location.province : address.long_name;
+                                break;
+                            case "locality":
+                            case "administrative_area_level_2":
+                            case "sublocality_level_1":
+                                location.city = location.city ? location.city : address.long_name;
+                                break;
+                        }
+                    });
                 }
-            }
+            });
         }
 
         return location;

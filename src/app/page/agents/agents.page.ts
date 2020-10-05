@@ -79,16 +79,16 @@ export class AgentsPage extends PageController {
             {
                 title: this.strings.getString("yes_txt"),
                 callback: () => {
-                    this.deleteAgent(user.agent_id);
+                    this.deleteAgent(user);
                 }
             },
         );
     }
 
     /**Delete Agent*/
-    public deleteAgent(agentId: string) {
+    public deleteAgent(user: UserInfo) {
         this.showLoading().then(()=>{
-            Api.deleteAgent(agentId,(status, result) => {
+            Api.deleteAgent(user.agent_id,(status, result) => {
                 this.hideLoading();
                 if (status) {
                     if (this.assertAvailable(result)) {
@@ -112,29 +112,31 @@ export class AgentsPage extends PageController {
     }
 
     /**Toggle Agent active status*/
-    public toggleAgent(agentId: string, active: boolean|number) {
-        this.showLoading().then(()=>{
-            Api.toggleAgent(agentId, active?1:0,(status, result) => {
-                this.hideLoading();
-                this.loadAgentsView();
-                if (status) {
-                    if (this.assertAvailable(result)) {
-                        if (result.status){
-                            this.showToastMsg(result.msg, ToastType.SUCCESS);
+    public toggleAgent(user: UserInfo , toggle: boolean|number) {
+        if(user.is_active !== toggle) {
+            this.showLoading().then(()=>{
+                Api.toggleAgent(user.agent_id, toggle?1:0,(status, result) => {
+                    this.hideLoading();
+                    if (status) {
+                        if (this.assertAvailable(result)) {
+                            if (result.status){
+                                this.showToastMsg(result.msg, ToastType.SUCCESS);
+                            }
+                            else{
+                                this.showToastMsg(result.msg, ToastType.ERROR);
+                            }
                         }
-                        else{
-                            this.showToastMsg(result.msg, ToastType.ERROR);
+                        else {
+                            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                         }
                     }
                     else {
-                        this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                        this.showToastMsg(result, ToastType.ERROR);
                     }
-                }
-                else {
-                    this.showToastMsg(result, ToastType.ERROR);
-                }
+                    this.loadAgentsView();
+                });
             });
-        });
+        }
     }
 
     /**Show confirmation

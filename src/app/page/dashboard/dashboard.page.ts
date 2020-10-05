@@ -60,6 +60,7 @@ export class DashboardPage extends PageController {
 
         /*Country Change event*/
         this.events.subscribe(EventsParams.CountryChangeSuccessEvent, async () => {
+            await super.ngOnInit();
             this.loadDashboardView();
         });
         this.events.subscribe(EventsParams.CountryChangeFailedEvent, async () => {

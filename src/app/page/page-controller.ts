@@ -77,16 +77,19 @@ export class PageController implements OnInit, OnDestroy {
 
     /**Set Country*/
     public async setCountry() {
-        if (this.selectedCountry != null && this.userInfo.allow_multi_countries){
-            this.instance.set_country(this.selectedCountry,  async (status, msg) => {
-                if (status){
-                    this.instance.events.publish(EventsParams.CountryChangeSuccessEvent);
-                }
-                else {
-                    this.instance.events.publish(EventsParams.CountryChangeFailedEvent);
-                    await this.showToastMsg(msg?msg:Strings.getString("error_unexpected"), ToastType.ERROR);
-                }
-            })
+        if (this.selectedCountry != null && (this.selectedCountry != this.session.country.country_code) && this.userInfo.allow_multi_countries){
+            this.showLoading().then(()=>{
+                this.instance.set_country(this.selectedCountry,  async (status, msg) => {
+                    if (status){
+                        this.instance.events.publish(EventsParams.CountryChangeSuccessEvent);
+                    }
+                    else {
+                        this.instance.events.publish(EventsParams.CountryChangeFailedEvent);
+                        await this.showToastMsg(msg?msg:Strings.getString("error_unexpected"), ToastType.ERROR);
+                    }
+                    this.hideLoading();
+                }) 
+            });
         }
     }
 

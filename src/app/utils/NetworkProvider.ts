@@ -39,7 +39,7 @@ export class NetworkProvider {
 
     /**Start connection check*/
     public async initializeNetworkEvents() {
-        return await this.network.onchange().subscribe(()=>{
+        return await this.network.onChange().subscribe(()=>{
             return new Promise(resolve => {
                 this.pingServer(connected =>{
                     this.notify(connected,false);

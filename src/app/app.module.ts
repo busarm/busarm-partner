@@ -25,6 +25,7 @@ import {DEFAULT_TIMEOUT, TimeoutInterceptor} from "./utils/TimeoutInterceptor";
 import {Deeplinks} from "@ionic-native/deeplinks/ngx";
 import {environment} from "../environments/environment";
 import {AuthGuard} from "./utils/AuthGuard";
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 //Turn on production mode
 if(environment.production)
@@ -47,6 +48,7 @@ if(environment.production)
             driverOrder: ['indexeddb', 'localstorage', 'websql', 'sqlite']
         }),
         AppRoutingModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     ],
     providers: [
         [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }],

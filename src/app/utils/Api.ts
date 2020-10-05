@@ -67,31 +67,6 @@ export class Api {
         new Api(requestParams)
     }
 
-    /**Secure access token
-     *
-     * @return {string}
-     */
-    private secureToken (requestParams:ApiRequestParams){
-        if (requestParams.encrypt && requestParams.method != OauthRequestMethod.GET && requestParams.params) {
-            let method = String(requestParams.method).toLowerCase();
-            let data = requestParams.params;
-            let path = requestParams.url;
-            if (URL) {
-                let u = new URL(path);
-                path = u.origin + u.pathname;
-            }
-            let cnonce = CryptoJS.MD5(Utils.toJson(data));
-            let A1 = OauthStorage.accessToken;
-            let A2 = CryptoJS.MD5(`${method}:${path}`);
-            let integrity = CryptoJS.MD5(`${A1}:${cnonce}:${A2}`);
-            return OauthStorage.tokenType+' '+CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(OauthStorage.accessToken+'/'+integrity));
-        }
-        else {
-            return OauthStorage.tokenType+' '+OauthStorage.accessToken;
-        }
-    }
-
-
     /**
      * Constructor
      * @param {ApiRequestParams} requestParams
@@ -200,7 +175,8 @@ export class Api {
         }
 
         /*Process Request*/
-        requestParams.headers["Authorization"] =  this.secureToken(requestParams);
+        requestParams.headers["Authorization"] = OauthStorage.tokenType+' '+OauthStorage.accessToken;
+
         processWithMethod().subscribe(result => {
             let encryptedResponse = result.headers.get('X-Encrypted')  == "1";
             if (encryptedResponse){ // If Response is Encrypted

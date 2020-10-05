@@ -34,7 +34,9 @@
                 "glob": "**/*.svg",
                 "input": "src/assets/icon/svg",
                 "output": "./svg"
-              }
+              },
+              "src/manifest.json",
+              "src/manifest.json"
             ],
             "styles": [
               {
@@ -69,7 +71,8 @@
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
                 }
-              ]
+              ],
+              "serviceWorker": true
             },
             "ci": {
               "progress": false
@@ -115,7 +118,9 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "/assets"
-              }
+              },
+              "src/manifest.json",
+              "src/manifest.json"
             ]
           },
           "configurations": {

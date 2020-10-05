@@ -93,8 +93,8 @@ export class AppComponent {
 
         /*Initialize Oauth*/
         AppComponent._oauth = new Oauth({
-            clientId: "wecari_partner_app_M4NgNbnsCy",
-            clientSecret: "2627b1c45ef96be17b7a3de1cd4d3bad5172b1381f2b2100e41edebc68ec42e9",
+            clientId: environment.oauth_client_id,
+            clientSecret: environment.oauth_client_secret,
             authorizeUrl: Urls.oauthAuthorizeUrl,
             tokenUrl: Urls.oauthTokenUrl,
             verifyTokenUrl: Urls.oauthVerifyTokenUrl
@@ -552,7 +552,6 @@ export class AppComponent {
                         });
                     }
                     else {
-
                         if (Utils.assertAvailable(callback)) {
                             callback(false, result.msg?result.msg:Strings.getString("error_unexpected"), responseType);
                         }

@@ -15,7 +15,7 @@
         </ion-buttons>
     </ion-toolbar>
     <ion-searchbar
-            showCancelButton="true"
+            showCancelButton="focus"
             placeholder="{{strings.getString('bus_search_hint')}}"
             debounce="500"
             (input)="onInput($event)"
@@ -27,12 +27,13 @@
     </ion-searchbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="ion-padding">
 
     <!--Refresher -->
     <ion-refresher
             [pullMin]="80"
-            (ionRefresh)="refreshBusesView($event)">
+            (ionRefresh)="refreshBusesView($event)" 
+            slot="fixed">
         <ion-refresher-content
                 [pullingText]="strings.getString('pull_refresh_txt')"
                 [refreshingText]="strings.getString('refreshing_txt')"

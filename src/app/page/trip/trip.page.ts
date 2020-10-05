@@ -50,7 +50,12 @@ export class TripPage extends PageController{
 
         /*Country Change event*/
         this.events.subscribe(EventsParams.CountryChangeSuccessEvent, async () => {
+            await super.ngOnInit();
             this.loadTripsView();
+        });
+        this.events.subscribe(EventsParams.CountryChangeFailedEvent, async () => {
+            /*Set default country*/
+            this.selectedCountry = this.session.country.country_code;
         });
     }
 

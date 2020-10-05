@@ -8,7 +8,7 @@
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
-<ion-content padding>
+<ion-content class="ion-padding">
     <ion-card *ngIf="bus!=null">
         <ion-card-title class="cell cell-center  cell-center">
             {{strings.getString("info_txt")}}
@@ -49,7 +49,7 @@
                         </ion-icon>
                         {{strings.getString("add_txt")}}
                     </ion-button>
-                    <ion-button *ngIf="!platform.is('cordova')" no-padding color="primary">
+                    <ion-button *ngIf="!platform.is('cordova')" class="ion-no-padding" color="primary">
                         <input class="fileInput" id="fileInputBus" type="file" accept="image/*" (change)="changeListener($event)"/>
                         <label class="fileInputLabel" id="fileInputBusLabel" for="fileInputBus"><ion-icon name="images"> </ion-icon>{{strings.getString("upload_txt")}}</label>
                     </ion-button>
