@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
-import {AlertController, Events, ModalController} from "@ionic/angular";
+import {AlertController, ModalController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
-import {Api} from "../../utils/Api";
+import {Api} from "../../libs/Api";
 import {Strings} from "../../resources";
-import {ToastType} from "../../utils/Utils";
+import {ToastType} from "../../libs/Utils";
 import {
     BusType,
     LocationType,
@@ -14,7 +14,7 @@ import {
 import {PageController} from "../page-controller";
 import {ViewTripPage} from "./view-trip/view-trip.page";
 import {AddTripPage} from "./add-trip/add-trip.page";
-import {EventsParams} from "../../utils/EventsParams";
+import { Events } from '../../services/Events';
 
 @Component({
     selector: 'app-trip',
@@ -41,30 +41,34 @@ export class TripPage extends PageController{
     public async ngOnInit() {
         await super.ngOnInit();
 
-        /*Online event*/
-        this.events.subscribe(EventsParams.Online_Event, async () => {
-            await this.hideToastMsg();
-            if (!this.trips)
-                this.loadTripsView();
+        /*Network event*/
+        this.events.getNetworkObservable().subscribe(async (online) => {
+            if (online) {
+                await this.hideToastMsg();
+                if (!this.trips) {
+                    this.loadTripsView();
+                }
+            }
         });
 
-        /*Country Change event*/
-        this.events.subscribe(EventsParams.CountryChangeSuccessEvent, async () => {
-            await super.ngOnInit();
-            this.loadTripsView();
-        });
-        this.events.subscribe(EventsParams.CountryChangeFailedEvent, async () => {
-            /*Set default country*/
-            this.selectedCountry = this.session.country.country_code;
+        /*Contry Changed event*/
+        this.events.getCountryChangeObservable().subscribe(async (changed) => {
+            if (changed) {
+                this.loadTripsView();
+            }
+            else {
+                /*Set default country*/
+                this.selectedCountry = this.session.country.country_code;
+            }
         });
     }
 
     public async ionViewDidEnter(){
         /*Give time for components to load first*/
         this.setTimeout(() => {
-
-            if (!this.trips)
+            if (!this.trips){
                 this.loadTripsView();
+            }
 
         }, 500);
     }
@@ -150,7 +154,7 @@ export class TripPage extends PageController{
             if (event) {
                 event.target.complete();
             }
-        })
+        });
     }
 
     /**Load Trips View*/
@@ -231,6 +235,4 @@ export class TripPage extends PageController{
             }
         }
     }
-
-
 }

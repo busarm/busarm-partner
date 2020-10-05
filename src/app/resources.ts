@@ -6,7 +6,7 @@
  * based on their selection and also
  * to avoid duplicates
  * */
-import {Utils} from "./utils/Utils";
+import {Utils} from "./libs/Utils";
 
 /*----------DEFINE STRING KEYS---------------*/
 

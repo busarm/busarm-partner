@@ -21,10 +21,10 @@ import {File} from "@ionic-native/file/ngx";
 import {FilePath} from "@ionic-native/file-path/ngx";
 import {AES256} from "@ionic-native/aes-256/ngx";
 import {InAppBrowser} from "@ionic-native/in-app-browser/ngx";
-import {DEFAULT_TIMEOUT, TimeoutInterceptor} from "./utils/TimeoutInterceptor";
+import {DEFAULT_TIMEOUT, TimeoutInterceptor} from "./services/TimeoutInterceptor";
 import {Deeplinks} from "@ionic-native/deeplinks/ngx";
 import {environment} from "../environments/environment";
-import {AuthGuard} from "./utils/AuthGuard";
+import {AuthGuard} from "./services/AuthGuard";
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 //Turn on production mode

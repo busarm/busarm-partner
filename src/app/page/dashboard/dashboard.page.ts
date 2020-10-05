@@ -1,6 +1,6 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {PageController} from "../page-controller";
-import {Events, ModalController, Platform} from "@ionic/angular";
+import {ModalController, Platform} from "@ionic/angular";
 import {
     Booking,
     BookingInfo,
@@ -10,17 +10,14 @@ import {
     PayOutTransaction,
     TripInfo
 } from "../../models/ApiResponse";
-import {ToastType, Utils} from "../../utils/Utils";
-import {Api} from "../../utils/Api";
+import {ToastType, Utils} from "../../libs/Utils";
+import {Api} from "../../libs/Api";
 import {Strings} from "../../resources";
 import {ViewTripPage} from "../trip/view-trip/view-trip.page";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner/ngx";
 import {Chart} from 'chart.js';
-import {BookingsPage} from "../bookings/bookings.page";
 import {ViewBookingPage} from "../bookings/view-booking/view-booking.page";
-import {PayoutPage} from "../payout/payout.page";
-import {PayInPage} from "../pay-in/pay-in.page";
-import {EventsParams} from "../../utils/EventsParams";
+import { Events } from '../../services/Events';
 
 @Component({
     selector: 'app-dashboard',
@@ -51,22 +48,26 @@ export class DashboardPage extends PageController {
         /*Set default country*/
         this.selectedCountry = this.session.country.country_code;
 
-        /*Online event*/
-        this.events.subscribe(EventsParams.Online_Event, async () => {
-            await this.hideToastMsg();
-            if (!this.dashboard)
-                this.loadDashboardView();
+        /*Network event*/
+        this.events.getNetworkObservable().subscribe(async (online) => {
+            if (online) {
+                await this.hideToastMsg();
+                if (!this.dashboard) {
+                    this.loadDashboardView();
+                }
+            }
         });
 
-        /*Country Change event*/
-        this.events.subscribe(EventsParams.CountryChangeSuccessEvent, async () => {
-            await super.ngOnInit();
-            this.loadDashboardView();
+        /*Contry Changed event*/
+        this.events.getCountryChangeObservable().subscribe(async (changed) => {
+            if (changed) {
+                this.loadDashboardView();
+            } else {
+                /*Set default country*/
+                this.selectedCountry = this.session.country.country_code;
+            }
         });
-        this.events.subscribe(EventsParams.CountryChangeFailedEvent, async () => {
-            /*Set default country*/
-            this.selectedCountry = this.session.country.country_code;
-        });
+
     }
 
     public async ionViewDidEnter(){

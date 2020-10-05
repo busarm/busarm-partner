@@ -2,10 +2,10 @@ import {Component, Input, OnInit} from '@angular/core';
 import {PageController} from "../../page-controller";
 import {BusInfo, BusType, Country, TicketInfo, TicketType, TripInfo, TripStatus} from "../../../models/ApiResponse";
 import {ModalController} from "@ionic/angular";
-import {ToastType} from "../../../utils/Utils";
-import {Api} from "../../../utils/Api";
+import {ToastType} from "../../../libs/Utils";
+import {Api} from "../../../libs/Api";
 import {Strings} from "../../../resources";
-import {SessionManager} from "../../../utils/SessionManager";
+import {SessionManager} from "../../../libs/SessionManager";
 import {AddTicketPage} from "../add-ticket/add-ticket.page";
 import {AddBusPage} from "../../bus/add-bus/add-bus.page";
 import {ViewBusPage} from "../../bus/view-bus/view-bus.page";
@@ -36,12 +36,9 @@ export class ViewTripPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-
         if (this.assertAvailable(this.trip)) {
-
             /*Preselect Bus type*/
             this.selectedBusType = this.trip.bus_type_id;
-
             this.loadTripView();
         }
         else {
@@ -88,7 +85,6 @@ export class ViewTripPage extends PageController {
         this.loadTrip(completed);
     }
 
-    
     /**Load Trip*/
     public loadTrip(completed?: () => any) {
 
@@ -98,26 +94,27 @@ export class ViewTripPage extends PageController {
                 if (this.assertAvailable(result)) {
                     if (result.data) {
                         this.selectedBusType = result.data.bus_type_id;
-                        this.allowAddTicket = this.ticketTypes && result.data.tickets && result.data.tickets.length < this.ticketTypes.length;
+                        this.allowAddTicket = this.ticketTypes && result.data.tickets &&
+                                                result.data.tickets.length < this.ticketTypes.length;
                         this.allowDeactivateTicket = result.data.tickets && result.data.tickets.length > 1;
-                        result.data.tickets.forEach((value: TicketInfo)=>{
-                            value.is_active = value.is_active == "1" || value.is_active == 1 || value.is_active == true;
-                            value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 || value.allow_deactivate == true;
-                        })
+                        if (this.allowDeactivateTicket){
+                            result.data.tickets.forEach((value: TicketInfo)=>{
+                                value.is_active = value.is_active == "1" || value.is_active == 1 || value.is_active == true;
+                                value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 ||
+                                                            value.allow_deactivate == true;
+                            });
+                        }
                         this.trip = result.data;
 
                         /*Get buses matching trip's bus type*/
                         Api.getBusesForType(this.trip.bus_type_id, (status, result) => {
-
                             if (status) {
                                 if (this.assertAvailable(result)) {
                                     this.buses = result.data;
-                                }
-                                else {
+                                } else {
                                     this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                                 }
-                            }
-                            else {
+                            } else {
                                 this.showToastMsg(result, ToastType.ERROR);
                             }
 
@@ -126,14 +123,11 @@ export class ViewTripPage extends PageController {
                             }
                         });
                     }
-
-                }
-                else {
+                } else {
                     this.dismiss();
                     this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                 }
-            }
-            else {
+            } else {
                 this.showToastMsg(result, ToastType.ERROR);
             }
 
@@ -205,7 +199,7 @@ export class ViewTripPage extends PageController {
     }
 
     /**Process Add bus*/
-    private processAddTicket(ticket:TicketInfo){
+    private processAddTicket(ticket: TicketInfo){
 
         //Add ticket id
         ticket.ticket_id = this.trip.ticket_id;
@@ -261,7 +255,7 @@ export class ViewTripPage extends PageController {
                         this.loadTripView();
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
                     }
-                    else{
+                    else {
                         this.showToastMsg(result.msg, ToastType.ERROR);
                     }
                 }
@@ -290,8 +284,6 @@ export class ViewTripPage extends PageController {
 
     /**Update trip bus type*/
     public updateBusType(){
-
-        //Show Loader
         this.showLoading().then(()=>{
             Api.updateTripBusType(this.trip.trip_id, this.selectedBusType, (status, result) => {
                 this.hideLoading();
@@ -300,12 +292,10 @@ export class ViewTripPage extends PageController {
                         this.updated = true;
                         this.loadTripView();
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
-                    }
-                    else{
+                    } else{
                         this.showToastMsg(result.msg, ToastType.ERROR);
                     }
-                }
-                else{
+                } else{
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             });
@@ -342,16 +332,13 @@ export class ViewTripPage extends PageController {
                             this.updated = true;
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                             this.dismiss();
-                        }
-                        else{
+                        } else{
                             this.showToastMsg(result.msg, ToastType.ERROR);
                         }
-                    }
-                    else {
+                    } else {
                         this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                     }
-                }
-                else {
+                } else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             });

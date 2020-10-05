@@ -3,8 +3,8 @@ import {ModalController} from "@ionic/angular";
 import {InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import {PageController} from "../page-controller";
 import {UserInfo} from "../../models/ApiResponse";
-import {ToastType} from "../../utils/Utils";
-import {Api} from "../../utils/Api";
+import {ToastType} from "../../libs/Utils";
+import {Api} from "../../libs/Api";
 import {Strings} from "../../resources";
 import {AddAgentPage} from "./add-agent/add-agent.page";
 
@@ -33,18 +33,15 @@ export class AgentsPage extends PageController {
 
     /**Load Agents View*/
     public loadAgentsView(completed?: () => any) {
-
         /*Get Agents*/
         Api.getAgents((status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
                     this.agents = result.data;
-                }
-                else {
+                } else {
                     this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                 }
-            }
-            else {
+            } else {
                 this.showToastMsg(result, ToastType.ERROR);
             }
 
@@ -95,16 +92,13 @@ export class AgentsPage extends PageController {
                         if (result.status){
                             this.loadAgentsView();
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
-                        }
-                        else{
+                        } else{
                             this.showToastMsg(result.msg, ToastType.ERROR);
                         }
-                    }
-                    else {
+                    } else {
                         this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                     }
-                }
-                else {
+                } else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             });
@@ -141,7 +135,7 @@ export class AgentsPage extends PageController {
 
     /**Show confirmation
      * */
-    public confirmMakeAdmin(user:UserInfo) {
+    public confirmMakeAdmin(user: UserInfo) {
         this.showAlert(
             this.strings.getString("make_admin_title_txt"),
             this.strings.getString("make_admin_msg_txt"),

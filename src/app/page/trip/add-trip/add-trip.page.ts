@@ -5,8 +5,8 @@ import {DatePicker} from "@ionic-native/date-picker/ngx";
 import {PageController} from "../../page-controller";
 import {SearchPlacePage} from "../../search-place/search-place.page";
 import {AddTicketPage} from "../add-ticket/add-ticket.page";
-import {ToastType, Utils} from "../../../utils/Utils";
-import {Api} from "../../../utils/Api";
+import {ToastType, Utils} from "../../../libs/Utils";
+import {Api} from "../../../libs/Api";
 import {Strings} from "../../../resources";
 
 declare var google: any;
@@ -196,9 +196,8 @@ export class AddTripPage extends PageController {
                 })
                 if (!found) {
                     this.selectedTickets.push(ticket);
-                    console.log(this.selectedTickets);
                 }
-            })
+            });
         }
     }
 

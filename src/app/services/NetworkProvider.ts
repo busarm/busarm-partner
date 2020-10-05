@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Network} from '@ionic-native/network/ngx';
 import {HttpClient} from "@angular/common/http";
-import {Urls} from "./Urls";
-import {Events} from "@ionic/angular";
+import {Urls} from "../libs/Urls";
 import {AppComponent} from "../app.component";
-import {EventsParams} from "./EventsParams";
+import { Events } from './Events';
 // import {Promise} from "q";
 
 export enum ConnectionStatus {
@@ -22,7 +21,7 @@ export class NetworkProvider {
     private static instance: NetworkProvider;
 
     constructor(public network: Network,
-                public eventCtrl: Events,
+                public event: Events,
                 public httpClient: HttpClient) {}
 
     /**Initialize Network provider*/
@@ -53,13 +52,13 @@ export class NetworkProvider {
     private notify(connected:boolean,trigger:boolean = false):void{
         if (connected) {
             if (trigger && NetworkProvider.previousStatus != ConnectionStatus.Online) {
-                this.eventCtrl.publish(EventsParams.Online_Event);
+                this.event.publishNetworkEvent(true);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Online;
         }
         else {
             if (trigger && NetworkProvider.previousStatus != ConnectionStatus.Offline) {
-                this.eventCtrl.publish(EventsParams.Offline_Event);
+                this.event.publishNetworkEvent(false);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Offline;
         }

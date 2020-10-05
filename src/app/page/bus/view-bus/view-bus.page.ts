@@ -4,8 +4,8 @@ import {Camera,CameraOptions,PictureSourceType} from "@ionic-native/camera/ngx";
 import {File,FileEntry} from "@ionic-native/file/ngx";
 import {PageController} from "../../page-controller";
 import {BusImage, BusInfo, UserInfo} from "../../../models/ApiResponse";
-import {ToastType, Utils} from "../../../utils/Utils";
-import {Api} from "../../../utils/Api";
+import {ToastType, Utils} from "../../../libs/Utils";
+import {Api} from "../../../libs/Api";
 import {Strings} from "../../../resources";
 import {DestinationType} from "@ionic-native/camera";
 
@@ -157,7 +157,6 @@ export class ViewBusPage extends PageController {
 
     /**On Input change listener*/
     changeListener(event){
-        console.log(event);
         if (event && event.isTrusted) {
             this.readFile(event.target.files[0])
         }

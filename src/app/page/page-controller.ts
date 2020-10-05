@@ -1,10 +1,9 @@
-import {ToastType, Utils} from "../utils/Utils";
+import {ToastType, Utils} from "../libs/Utils";
 import {Assets, Strings} from "../resources";
 import {OnDestroy, OnInit} from "@angular/core";
 import {AppComponent} from "../app.component";
-import {SessionManager} from "../utils/SessionManager";
+import {SessionManager} from "../libs/SessionManager";
 import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
-import {EventsParams} from "../utils/EventsParams";
 import { Params } from "@angular/router";
 
 export class PageController implements OnInit, OnDestroy {
@@ -77,19 +76,15 @@ export class PageController implements OnInit, OnDestroy {
 
     /**Set Country*/
     public async setCountry() {
-        if (this.selectedCountry != null && (this.selectedCountry != this.session.country.country_code) && this.userInfo.allow_multi_countries){
-            this.showLoading().then(()=>{
-                this.instance.set_country(this.selectedCountry,  async (status, msg) => {
-                    if (status){
-                        this.instance.events.publish(EventsParams.CountryChangeSuccessEvent);
-                    }
-                    else {
-                        this.instance.events.publish(EventsParams.CountryChangeFailedEvent);
-                        await this.showToastMsg(msg?msg:Strings.getString("error_unexpected"), ToastType.ERROR);
-                    }
-                    this.hideLoading();
-                }) 
-            });
+        if (this.selectedCountry != null && this.userInfo.allow_multi_countries){
+            this.instance.set_country(this.selectedCountry,  async (status, msg) => {
+                if (status) {
+                    this.instance.events.publishCountryChangeEvent(true);
+                } else {
+                    this.instance.events.publishCountryChangeEvent(false);
+                    await this.showToastMsg(msg?msg:Strings.getString("error_unexpected"), ToastType.ERROR);
+                }
+            })
         }
     }
 

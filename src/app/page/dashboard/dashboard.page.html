@@ -51,6 +51,7 @@
 
     <!--Refresher -->
     <ion-refresher
+            slot="fixed"
             [pullMin]="80"
             (ionRefresh)="refreshDashboardView($event)"
             slot="fixed">
@@ -347,7 +348,7 @@
                                         </ion-list>
                                     </ion-col>
                                 </ion-row>
-                                <ion-row *ngIf="dashboard.transactions.payin.action_required" justify-content-center="">
+                                <ion-row *ngIf="dashboard.transactions.payin.action_required" class="ion-justify-content-center">
                                     <ion-col class="cell cell-flex cell-flex-center" >
                                         <ion-label class="small-text" color="danger">
                                             {{strings.getString("pay_before_txt")}} {{dashboard.transactions.payin.last_day_to_action}}
@@ -421,7 +422,7 @@
                                     </ion-col>
                                 </ion-row>
                                 <ion-row *ngIf="dashboard.transactions.payout.action_required"
-                                         justify-content-center="">
+                                         class="ion-justify-content-center">
                                     <ion-col size="12" class="cell cell-flex cell-flex-center cell-padding-3x">
                                         <ion-button color="primary"
                                                     (click)="showPayout(dashboard.transactions.payout)">
