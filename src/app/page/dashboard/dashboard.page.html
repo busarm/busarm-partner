@@ -9,7 +9,6 @@
                             (ionChange)="setCountry()">
                     <ion-select-option *ngFor="let country of session.countries"
                                        [value]="country.country_code">
-                        <span><ion-img [src]="country.country_img"> </ion-img></span>
                         {{country.country_name}}
                     </ion-select-option>
                 </ion-select>
@@ -25,7 +24,6 @@
                             (ionChange)="setCountry()">
                     <ion-select-option *ngFor="let country of session.countries"
                                        [value]="country.country_code">
-                        <span><ion-img [src]="country.country_img"> </ion-img></span>
                         {{country.country_name}}
                     </ion-select-option>
                 </ion-select>

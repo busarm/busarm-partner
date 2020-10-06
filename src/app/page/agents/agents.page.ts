@@ -106,10 +106,10 @@ export class AgentsPage extends PageController {
     }
 
     /**Toggle Agent active status*/
-    public toggleAgent(user: UserInfo , toggle: boolean|number) {
+    public toggleAgent(user: UserInfo , toggle: boolean) {
         if(user.is_active !== toggle) {
             this.showLoading().then(()=>{
-                Api.toggleAgent(user.agent_id, toggle?1:0,(status, result) => {
+                Api.toggleAgent(user.agent_id, toggle,(status, result) => {
                     this.hideLoading();
                     if (status) {
                         if (this.assertAvailable(result)) {

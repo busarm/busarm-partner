@@ -349,7 +349,7 @@ export class ViewTripPage extends PageController {
     public toggleTripTicket(ticket: TicketInfo, toggle: boolean) {
         if(ticket.is_active !== toggle) {
             this.showLoading().then(()=>{
-                Api.toggleTicket(ticket.ticket_id, ticket.type_id, ticket.is_active, (status, result) => {
+                Api.toggleTicket(ticket.ticket_id, ticket.type_id, toggle, (status, result) => {
                     this.hideLoading();
                     if (status) {
                         if (this.assertAvailable(result)) {

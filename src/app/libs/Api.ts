@@ -910,14 +910,14 @@ export class Api {
      * @param active
      * @param callback
      * */
-    public static toggleTicket(ticketId: string, typeId: string, active: boolean|number|string, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+    public static toggleTicket(ticketId: string, typeId: string, active: boolean, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
             url: Urls.apiTicketToggle,
             method: OauthRequestMethod.POST,
             params: {
                 ticketId: ticketId,
                 typeId: typeId,
-                active: active,
+                active: active ? 1 : 0,
             },
             cache: false,
             callback: callback
@@ -982,12 +982,12 @@ export class Api {
      * @param active
      * @param callback
      * */
-    public static toggleAgent(agentId: string, active: boolean|number, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+    public static toggleAgent(agentId: string, active: boolean, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
             method: OauthRequestMethod.POST,
             params: {
                 agentId: agentId,
-                active: active
+                active: active ? 1 : 0
             },
             url: Urls.apiUserToggle,
             cache: false,
