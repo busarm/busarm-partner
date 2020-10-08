@@ -50,6 +50,7 @@ export class DashboardPage extends PageController {
 
         /*Network event*/
         this.events.getNetworkObservable().subscribe(async (online) => {
+            await super.ngOnInit();
             if (online) {
                 await this.hideToastMsg();
                 if (!this.dashboard) {
@@ -60,6 +61,7 @@ export class DashboardPage extends PageController {
 
         /*Contry Changed event*/
         this.events.getCountryChangeObservable().subscribe(async (changed) => {
+            await super.ngOnInit();
             if (changed) {
                 this.loadDashboardView();
             } else {

@@ -35,6 +35,7 @@ export class BusPage extends PageController{
         await super.ngOnInit();
         /*Network event*/
         this.events.getNetworkObservable().subscribe(async (online) => {
+            await super.ngOnInit();
             if (online) {
                 await this.hideToastMsg();
                 if (!this.buses) {
@@ -45,6 +46,7 @@ export class BusPage extends PageController{
 
         /*Contry Changed event*/
         this.events.getCountryChangeObservable().subscribe(async (changed) => {
+            await super.ngOnInit();
             if (changed) {
                 this.loadBusesView();
             }

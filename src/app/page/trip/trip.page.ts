@@ -43,6 +43,7 @@ export class TripPage extends PageController{
 
         /*Network event*/
         this.events.getNetworkObservable().subscribe(async (online) => {
+            await super.ngOnInit();
             if (online) {
                 await this.hideToastMsg();
                 if (!this.trips) {
@@ -53,6 +54,7 @@ export class TripPage extends PageController{
 
         /*Contry Changed event*/
         this.events.getCountryChangeObservable().subscribe(async (changed) => {
+            await super.ngOnInit();
             if (changed) {
                 this.loadTripsView();
             }

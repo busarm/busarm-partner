@@ -203,12 +203,9 @@ export class AccountPage extends PageController {
     /**Logout user*/
     public logout() {
         this.showLoading().then(() => {
-            Api.logout((status, result) => {
+            Api.logout(() => {
                 SessionManager.logout();
                 this.hideLoading();
-                if (!status) {
-                    this.showToastMsg(result, ToastType.ERROR);
-                }
             });
         });
     }
