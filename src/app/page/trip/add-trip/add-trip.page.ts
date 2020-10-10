@@ -301,7 +301,7 @@ export class AddTripPage extends PageController {
         if (place.address_components != null && place.address_components.length > 0) {
             place.address_components.forEach(address => {
                 if (address.types != null && address.types.length > 0) {
-                    place.address_components.forEach(type => {
+                    address.types.forEach(type => {
                         switch (type) {
                             case "country": 
                                 location.country = location.country ? location.country : address.long_name;
