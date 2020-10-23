@@ -124,7 +124,7 @@ export class LoginPage extends PageController {
                 title: this.strings.getString('yes_txt'),
                 callback: async  () => {
                     // Trigger Oauth email login
-                    const state = await Utils.getCurrentInstance();
+                    const state = Utils.getCurrentSignature();
                     this.oauth.oauthAuthorizeWithEmail(
                         ['agent'],
                         Urls.partnerOauthRedirectUrl,

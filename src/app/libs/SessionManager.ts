@@ -147,7 +147,7 @@ export class SessionManager {
     static setSession(session: ValidateSessionObject, callback?: (status: boolean) => any) {
         this.set(this.session_info, session, callback);
     }
-
+    
     /**
      * Logout user
      * @param redirectUri 

@@ -427,7 +427,7 @@ export class AppComponent {
                         AppComponent.oauth.authorizeAccess({
                             scope: ['agent'],
                             grant_type: OauthGrantType.Auto,
-                            state: await Utils.getCurrentInstance(),
+                            state: Utils.getCurrentSignature(),
                             callback: async (token, msg) => {
                                 if (token) {  // Token Available
                                     await this.validate_session(async (status, msg, responseType) => {

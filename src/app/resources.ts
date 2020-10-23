@@ -173,7 +173,8 @@ export enum Keys {
     privacy_policy_txt,
     go_to_app_txt,
     pay_before_txt,
-    authorizing_txt
+    authorizing_txt,
+    error_authorize_txt
 }
 
 export type StringKey = keyof typeof Keys;
@@ -349,6 +350,7 @@ const English: String = {
     go_to_app_txt:"Go to Wecari App",
     pay_before_txt:"Pay before:",
     authorizing_txt: "Authorizing access. Please wait ...",
+    error_authorize_txt: "Failed to authorize access",
 
 };
 

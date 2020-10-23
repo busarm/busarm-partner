@@ -4,6 +4,11 @@ export interface SimpleResponseObject {
     data?: any|string;
 }
 
+export interface PingObject extends SimpleResponseObject  {
+    env?: string;
+    ip?: string; 
+}
+
 export interface ValidateSessionObject extends SimpleResponseObject  {
     updated?: boolean;
     session_token?: string;

@@ -3,8 +3,9 @@ import {Network} from '@ionic-native/network/ngx';
 import {HttpClient} from "@angular/common/http";
 import {Urls} from "../libs/Urls";
 import {AppComponent} from "../app.component";
-import { Events } from './Events';
-// import {Promise} from "q";
+import {Events} from './Events';
+import {SessionManager} from '../libs/SessionManager';
+import {PingObject} from "../models/ApiResponse";
 
 export enum ConnectionStatus {
     Unknown,
@@ -67,7 +68,8 @@ export class NetworkProvider {
     /**Ping online server to check if connected*/
     private pingServer(callback: (connected: boolean) => any) {
         this.httpClient.get(this.pingUrl)
-            .subscribe(() => {
+            .subscribe((data:PingObject) => {
+                localStorage.setItem('current_ip', data.ip);
                 callback(true);
             }, () => {
                 callback(false);

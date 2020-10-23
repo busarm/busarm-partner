@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { PageController } from '../../../../page/page-controller';
-import { Utils } from '../../../../libs/Utils';
+import { ToastType, Utils } from '../../../../libs/Utils';
 import { OauthStorage } from '../../../../libs/Oauth';
 import { Urls } from '../../../../libs/Urls';
+import { Strings } from '../../.../../../../resources';
  
 @Component({
   selector: 'app-authorize',
@@ -21,18 +22,20 @@ export class AuthorizePage extends PageController {
     let params = await this.getQueryParams()
 
     //Get Authorization code and validate state
-    if(params && params.code && params.state && params.state == (await Utils.getCurrentInstance())){
+    if(params && params.code && params.state && params.state == (Utils.getCurrentSignature())){
       this.oauth.oauthTokenWithAuthorizationCode(params.code, Urls.partnerOauthRedirectUrl, (token) =>{
         if(token.accessToken){
           OauthStorage.saveAccess(token);
           this.instance.goHome();
         }
         else {
+          this.showToastMsg(Strings.getString("error_authorize_txt"), ToastType.ERROR);
           this.instance.goToLogin();
         }
       });
     }
     else {
+      this.showToastMsg(Strings.getString("error_authorize_txt"), ToastType.ERROR);
       this.instance.goToLogin();
     }
   }

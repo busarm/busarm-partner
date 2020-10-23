@@ -29,26 +29,18 @@ export class Utils {
         return str.substring(0, show_count)+new Array(str.length - show_count).join(with_char);
     }
 
-    /**Return Current Instance hash
+    /**Return Current Signature
      * */
-    static async getCurrentInstance() {
-        return await new Promise(async (resolve:((data:string)=>any)) => {
-            let date = new Date();
-            resolve(String(CryptoJS.MD5(
-                Utils.harold(date.getHours()) + "-" +
-                Utils.harold(date.getDay()) + "-" +
-                Utils.harold(date.getMonth()) + "-" +
-                Utils.harold(date.getFullYear())))+
-                "/"+
-                String(CryptoJS.SHA256(location.host)));
-        });
+    static getCurrentSignature() {
+        let date = new Date();
+        return String(CryptoJS.MD5(Utils.harold(date.getDay()) + "-" + Utils.harold(date.getMonth()) + "-" + Utils.harold(date.getFullYear()) + "|" + localStorage.getItem('current_ip') + "|" + location.host));
     }
 
     /**Pares Html entities*/
     static convertHTMLEntity(text){
         const span = document.createElement('span');
         return text
-            .replace(/&[#A-Za-z0-9]+;/gi, (entity,position,text)=> {
+            .replace(/&[#A-Za-z0-9]+;/gi, (entity: any, position: any, text: any)=> {
                 span.innerHTML = entity;
                 return span.innerText;
             });
