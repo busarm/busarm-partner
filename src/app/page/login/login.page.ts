@@ -8,6 +8,8 @@ import {ToastType, Utils} from '../../libs/Utils';
 import {NetworkProvider} from '../../services/NetworkProvider';
 import {SessionManager} from '../../libs/SessionManager';
 import { Urls } from '../../libs/Urls';
+import { ENVIRONMENT } from 'environments/environment';
+import { ENV } from 'environments/ENV';
 
 @Component({
   selector: 'app-login',
@@ -126,7 +128,7 @@ export class LoginPage extends PageController {
                     // Trigger Oauth email login
                     const state = Utils.getCurrentSignature();
                     this.oauth.oauthAuthorizeWithEmail(
-                        ['agent'],
+                        ENVIRONMENT == ENV.TEST ?  ['agent', 'tester'] :  ['agent'],
                         Urls.partnerOauthRedirectUrl,
                         this.username,
                         state);
