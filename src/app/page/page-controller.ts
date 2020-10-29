@@ -128,7 +128,6 @@ export class PageController implements OnInit, OnDestroy {
         });
     }
 
-
     /**
      * Get Route params
      * @param path 
