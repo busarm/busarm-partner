@@ -36,10 +36,19 @@ export class ViewTripPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
+    }
+
+    public ngOnDestroy(){
+        this.trip = null;
+        this.buses = null;
+        super.ngOnDestroy();
+    }
+
+    public ionViewDidEnter(){
         if (this.assertAvailable(this.trip)) {
             /*Preselect Bus type*/
             this.selectedBusType = this.trip.bus_type_id;
-            this.loadTripView();
+            this.loadTripView(false);
         }
         else {
             this.showToastMsg(this.strings.getString("error_unexpected"), ToastType.ERROR);
@@ -47,10 +56,8 @@ export class ViewTripPage extends PageController {
         }
     }
 
-    public async ionViewDidEnter(){}
-
     /**Load Trip View*/
-    public loadTripView(completed?: () => any) {
+    public async loadTripView(refresh: boolean = true, completed?: () => any) {
 
         /*Get Trip status*/
         Api.getAllStatusList((status, result) => {
@@ -81,47 +88,22 @@ export class ViewTripPage extends PageController {
             }
         });
 
-        /*Get trips*/
-        this.loadTrip(completed);
+        if(refresh){
+            /*Get trips*/
+            this.loadTrip(completed);
+        }
+        else {
+            this.processTrip(this.trip, completed);
+        }
     }
 
     /**Load Trip*/
-    public loadTrip(completed?: () => any) {
-
-        /*Get trips*/
+    public async loadTrip(completed?: () => any) {
         Api.getTrip(this.trip.trip_id, (status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
                     if (result.data) {
-                        this.selectedBusType = result.data.bus_type_id;
-                        this.allowAddTicket = this.ticketTypes && result.data.tickets &&
-                                                result.data.tickets.length < this.ticketTypes.length;
-                        this.allowDeactivateTicket = result.data.tickets && result.data.tickets.length > 1;
-                        if (this.allowDeactivateTicket){
-                            result.data.tickets.forEach((value: TicketInfo)=>{
-                                value.is_active = value.is_active == "1" || value.is_active == 1 || value.is_active == true;
-                                value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 ||
-                                                            value.allow_deactivate == true;
-                            });
-                        }
-                        this.trip = result.data;
-
-                        /*Get buses matching trip's bus type*/
-                        Api.getBusesForType(this.trip.bus_type_id, (status, result) => {
-                            if (status) {
-                                if (this.assertAvailable(result)) {
-                                    this.buses = result.data;
-                                } else {
-                                    this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-                                }
-                            } else {
-                                this.showToastMsg(result, ToastType.ERROR);
-                            }
-
-                            if (this.assertAvailable(completed)) {
-                                completed();
-                            }
-                        });
+                        this.processTrip(result.data, completed);
                     }
                 } else {
                     this.dismiss();
@@ -135,6 +117,40 @@ export class ViewTripPage extends PageController {
                 completed();
             }
         });
+    }
+    
+    /**Process Trip*/
+    public async processTrip(trip: TripInfo, completed?: () => any) {
+
+        this.selectedBusType = trip.bus_type_id;
+        this.allowAddTicket = this.ticketTypes && trip.tickets &&
+                                trip.tickets.length < this.ticketTypes.length;
+        this.allowDeactivateTicket = trip.tickets && trip.tickets.length > 1;
+        if (this.allowDeactivateTicket){
+            trip.tickets.forEach((value: TicketInfo)=>{
+                value.is_active = value.is_active == "1" || value.is_active == 1 || value.is_active == true;
+                value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 ||
+                                            value.allow_deactivate == true;
+            });
+        }
+        this.trip = trip;
+        
+        /*Get buses matching trip's bus type*/
+        Api.getBusesForType(this.trip.bus_type_id, (status, result) => {
+            if (status) {
+                if (this.assertAvailable(result)) {
+                    this.buses = result.data;
+                } else {
+                    this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                }
+            } else {
+                this.showToastMsg(result, ToastType.ERROR);
+            }
+        });
+
+        if (this.assertAvailable(completed)) {
+            completed();
+        }
     }
 
     /**Launch Select view*/

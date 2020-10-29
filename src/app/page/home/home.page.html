@@ -1,7 +1,7 @@
 
 
 <!--Menu Controller-->
-<ion-menu *ngIf="!platform.is('mobile')" size="start" menuId="home">
+<ion-menu *ngIf="!platform.is('mobile')" size="start" menuId="home" contentId="home-router">
     <ion-header>
         <ion-toolbar color="primary">
             <div align="center" class="logoContainer">
@@ -41,7 +41,8 @@
         </ion-list>
     </ion-content>
 </ion-menu>
-<ion-router-outlet *ngIf="!platform.is('mobile')" main><!--Home Content will display in here-->
+<ion-router-outlet id="home-router" *ngIf="!platform.is('mobile')">
+    <!--Home Content will display in here-->
 </ion-router-outlet>
 
 <!--Tab Controller-->

@@ -27,12 +27,12 @@ export class BusPage extends PageController{
                 public modalCtrl: ModalController,
                 public events: Events,
                 public network: Network) {
-
         super();
     }
 
     public async ngOnInit() {
         await super.ngOnInit();
+
         /*Network event*/
         this.events.getNetworkObservable().subscribe(async (online) => {
             await super.ngOnInit();
@@ -57,15 +57,15 @@ export class BusPage extends PageController{
         }); 
     }
 
+    public ngOnDestroy(){
+        this.buses = null;
+        super.ngOnDestroy();
+    }
+
     public async ionViewDidEnter(){
-
-        /*Give time for components to load first*/
-        this.setTimeout(() => {
-
-            if (!this.buses)
-                this.loadBusesView();
-
-        }, 500);
+        if (!this.buses) {
+            this.loadBusesView();
+        }
     }
 
     /**Search input event

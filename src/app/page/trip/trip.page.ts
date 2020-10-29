@@ -63,16 +63,17 @@ export class TripPage extends PageController{
                 this.selectedCountry = this.session.country.country_code;
             }
         });
+    } 
+
+    public ngOnDestroy(){
+        this.trips = null;
+        super.ngOnDestroy();
     }
 
     public async ionViewDidEnter(){
-        /*Give time for components to load first*/
-        this.setTimeout(() => {
-            if (!this.trips){
-                this.loadTripsView();
-            }
-
-        }, 500);
+        if (!this.trips){
+            this.loadTripsView();
+        }
     }
 
     /**Search input event

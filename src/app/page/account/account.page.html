@@ -63,9 +63,8 @@
                                         <ion-label class="cell-sub">{{userInfo.partner_name}}</ion-label>
                                     </div>
                                     <div>
-                                        <ion-label class="cell-title">{{userInfo.name}} - ({{
-                                            userInfo.is_partner?"Partner":userInfo.is_admin?"Admin":userInfo.is_agent?"Agent":"User"
-                                            }})
+                                        <ion-label class="cell-title">{{userInfo.name}} 
+                                            ({{userInfo.is_partner ? strings.getString('owner_txt') : (userInfo.is_admin ? strings.getString('admin_txt') : (userInfo.is_agent ? strings.getString('agent_txt') : strings.getString('user_txt')))}})
                                         </ion-label>
                                     </div>
                                     <div>

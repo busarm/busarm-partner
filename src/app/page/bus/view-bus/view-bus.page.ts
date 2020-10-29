@@ -32,15 +32,19 @@ export class ViewBusPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-        if (this.assertAvailable(this.bus)) {
-            this.loadBusView();
-        }
-        else {
+    }
+    
+    public ngOnDestroy(){
+        this.bus = null;
+        super.ngOnDestroy();
+    }
+
+    public async ionViewDidEnter(){
+        if (!this.assertAvailable(this.bus)) {
             this.showToastMsg(this.strings.getString("error_unexpected"), ToastType.ERROR);
             this.modalCtrl.dismiss();
         }
     }
-    public async ionViewDidEnter(){}
 
     /**Load Bus View*/
     public loadBusView(completed?: () => any) {

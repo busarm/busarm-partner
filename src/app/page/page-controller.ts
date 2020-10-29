@@ -5,6 +5,7 @@ import {AppComponent} from "../app.component";
 import {SessionManager} from "../libs/SessionManager";
 import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
 import { Params } from "@angular/router";
+import { MD5 } from "crypto-js";
 
 export class PageController implements OnInit, OnDestroy {
 
@@ -16,7 +17,7 @@ export class PageController implements OnInit, OnDestroy {
     public session: ValidateSessionObject = null;
     public userInfo: UserInfo = null;
     public static timer: number = null;
-
+    public routeKey: string = null;
 
     /**Global Constructor*/
     protected constructor() {
@@ -28,8 +29,14 @@ export class PageController implements OnInit, OnDestroy {
     public async ngOnInit() {
         await this.getSession();
         await this.getUserInfo();
+        this.routeKey = await this.getRouteKey();
     }
-    public ngOnDestroy(){}
+    public ngOnDestroy(){
+        if(this.routeKey){
+            SessionManager.remove(this.routeKey); //remove params after use
+            this.routeKey = null;
+        }
+    }
     public ionViewDidEnter(){}
     public ionViewDidLeave(){}
 
@@ -110,8 +117,8 @@ export class PageController implements OnInit, OnDestroy {
      * @param params 
      */
     public async setRouteParams(path:string, params:any){
-        return await new Promise<boolean>((resolve: (data: boolean) => any) => {
-            SessionManager.set('route_'+Utils.safeString(path), params, data => {
+        return await new Promise<boolean>(async (resolve: (data: boolean) => any) => {
+            SessionManager.set((await this.getRouteKey(path)), params, data => {
                 if (data) {
                     resolve(true);
                 } else {
@@ -127,16 +134,24 @@ export class PageController implements OnInit, OnDestroy {
      * @param path 
      */
     public async getRouteParams(path?:string){
-        return await new Promise<any>((resolve: (data: any) => any) => {
-            let key ='route_'+Utils.safeString((path?path:this.instance.router.url));
-            SessionManager.get(key, data => {
+        return new Promise<any>(async (resolve: (data: any) => any) => {
+            SessionManager.get((path ? (await this.getRouteKey(path)) : this.routeKey), data => {
                 if (data) {
                     resolve(data);
-                    SessionManager.remove(key); //remove params after use
                 } else {
                     resolve(null);
                 }
             });
+        });
+    }
+
+    /**
+     * Get Route params
+     * @param path 
+     */
+    public async getRouteKey(path?:string){
+        return new Promise<any>((resolve: (data: any) => any) => {
+            resolve('route_'+MD5(Utils.safeString((path?path:this.instance.router.url))).toString());
         });
     }
 
