@@ -45,9 +45,16 @@ export class OauthStorage {
     /** Set data - localstorage
      * @param name  name
      * @param value  value*/
-    static setData(name, value) {
-        if (typeof localStorage !== 'undefined') {
-            localStorage.setItem(name, value);
+    static setData(name, value, temporary = false) {
+        if(temporary){
+            if (typeof localStorage !== 'undefined') {
+                localStorage.setItem(name, value);
+            }
+        }
+        else {
+            if (typeof sessionStorage !== 'undefined') {
+                sessionStorage.setItem(name, value);
+            }
         }
     }
 
@@ -688,7 +695,7 @@ export class Oauth {
             throw new Error('\'redirect_url\' Required');
         }
 
-        OauthStorage.setData('oauth_state', state);
+        OauthStorage.setData('oauth_state', state, true);
         const params = {
             client_id: this.clientId,
             scope: scope.join(' '),
@@ -717,7 +724,7 @@ export class Oauth {
             throw new Error('\'redirect_url\' Required');
         }
 
-        OauthStorage.setData('oauth_state', state);
+        OauthStorage.setData('oauth_state', state, true);
         const params = {
             client_id: this.clientId,
             scope: scope.join(' '),
@@ -748,7 +755,7 @@ export class Oauth {
             throw new Error('\'scope\' Required');
         }
 
-        OauthStorage.setData('oauth_state', state);
+        OauthStorage.setData('oauth_state', state, true);
         const params = {
             client_id: this.clientId,
             scope: scope.join(' '),

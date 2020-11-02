@@ -2,7 +2,7 @@
  * the all data stored in the session
  * */
 import {SecureStorageObject} from "@ionic-native/secure-storage/ngx";
-import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
+import {PingObject, UserInfo, ValidateSessionObject} from "../models/ApiResponse";
 import {Utils} from "./Utils";
 import {AppComponent} from "../app.component";
 import {Storage} from "@ionic/storage";
@@ -11,6 +11,7 @@ export class SessionManager {
 
     private static session_info = "session_info";
     private static user_info = "user_info";
+    private static ping = "ping";
 
     private static context: AppComponent;
     private static sessionManager: SessionManager;
@@ -117,7 +118,6 @@ export class SessionManager {
         localStorage.clear();
     }
 
-
     /** Get User Info from session
      * @param callback
      * */
@@ -131,6 +131,21 @@ export class SessionManager {
      * */
     static setUserInfo(user: UserInfo, callback?: (status: boolean) => any) {
         this.set(this.user_info, user,callback)
+    }
+
+    /** Get Ping Data from session
+     * @param callback
+     * */
+    static getPing(callback: (data: PingObject) => any) {
+        return this.get(this.ping,callback)
+    }
+
+    /**Save Ping Data to session
+     * @param ping
+     * @param callback
+     * */
+    static setPing(ping: PingObject, callback?: (status: boolean) => any) {
+        this.set(this.ping, ping,callback)
     }
 
     /**Get Session Token

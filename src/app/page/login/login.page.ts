@@ -63,9 +63,6 @@ export class LoginPage extends PageController {
                     username: this.username,
                     password: this.password,
                     callback: async (token, msg) => {
-                        console.log('Login Response');
-                        console.log(token);
-                        console.log(msg);
                         if (token) {
                             await this.instance.validate_session( async (status, msg, responseType) => {
                                 // Hide Loader
@@ -126,12 +123,11 @@ export class LoginPage extends PageController {
                 title: this.strings.getString('yes_txt'),
                 callback: async  () => {
                     // Trigger Oauth email login
-                    const state = Utils.getCurrentSignature();
                     this.oauth.oauthAuthorizeWithEmail(
                         ENVIRONMENT == ENV.TEST ?  ['agent', 'tester'] :  ['agent'],
                         Urls.partnerOauthRedirectUrl,
                         this.username,
-                        state);
+                        Utils.getCurrentSignature(await this.instance.getPingStatus()));
                 }
             },
         );

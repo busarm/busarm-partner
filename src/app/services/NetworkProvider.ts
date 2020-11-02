@@ -69,7 +69,7 @@ export class NetworkProvider {
     private pingServer(callback: (connected: boolean) => any) {
         this.httpClient.get(this.pingUrl)
             .subscribe((data:PingObject) => {
-                localStorage.setItem('current_ip', data.ip);
+                SessionManager.setPing(data);
                 callback(true);
             }, () => {
                 callback(false);

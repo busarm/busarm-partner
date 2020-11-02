@@ -3,6 +3,7 @@ import { Urls } from "./Urls";
 import { NetworkProvider } from "../services/NetworkProvider"; 
 import { ENVIRONMENT } from "../../environments/environment";
 import { ENV } from "../../environments/ENV";
+import { PingObject } from "../models/ApiResponse";
 
 /**This hold Global Javascript functions
  * which you want to be accessible
@@ -31,9 +32,10 @@ export class Utils {
 
     /**Return Current Signature
      * */
-    static getCurrentSignature() {
+    static getCurrentSignature(ping: PingObject) {
         let date = new Date();
-        return String(CryptoJS.MD5(Utils.harold(date.getDay()) + "-" + Utils.harold(date.getMonth()) + "-" + Utils.harold(date.getFullYear()) + "|" + localStorage.getItem('current_ip') + "|" + location.host));
+        let ip = ping ? ping.ip : '';
+        return String(CryptoJS.MD5(Utils.harold(date.getDay()) + "-" + Utils.harold(date.getMonth()) + "-" + Utils.harold(date.getFullYear()) + "|" + ip + "|" + location.host));
     }
 
     /**Pares Html entities*/

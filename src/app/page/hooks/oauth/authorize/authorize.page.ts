@@ -22,7 +22,7 @@ export class AuthorizePage extends PageController {
     let params = await this.getQueryParams()
 
     //Get Authorization code and validate state
-    if(params && params.code && params.state && params.state == (Utils.getCurrentSignature())){
+    if(params && params.code && params.state && params.state == (Utils.getCurrentSignature(await this.instance.getPingStatus()))){
       this.oauth.oauthTokenWithAuthorizationCode(params.code, Urls.partnerOauthRedirectUrl, (token) =>{
         if(token.accessToken){
           OauthStorage.saveAccess(token);

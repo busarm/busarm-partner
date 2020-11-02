@@ -273,8 +273,9 @@ export class Api {
             } else {
                 if (result.status === 401 || result.status === 403) { // Failed to authorize api access
                     if (requestParams.callback) {
-                                requestParams.callback(false, Strings.getString("error_access_expired"), ApiResponseType.Authorization_error);
+                        requestParams.callback(false, Strings.getString("error_access_expired"), ApiResponseType.Authorization_error);
                     }
+                    SessionManager.logout();
                 } else {
                     if (requestParams.cache) {
                         // get cached response

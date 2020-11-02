@@ -3,7 +3,7 @@ import {Assets, Strings} from "../resources";
 import {OnDestroy, OnInit} from "@angular/core";
 import {AppComponent} from "../app.component";
 import {SessionManager} from "../libs/SessionManager";
-import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
+import {PingObject, UserInfo, ValidateSessionObject} from "../models/ApiResponse";
 import { Params } from "@angular/router";
 import { MD5 } from "crypto-js";
 
@@ -16,8 +16,9 @@ export class PageController implements OnInit, OnDestroy {
     public selectedCountry: string = null;
     public session: ValidateSessionObject = null;
     public userInfo: UserInfo = null;
-    public static timer: number = null;
     public routeKey: string = null;
+
+    public static timer: number = null;
 
     /**Global Constructor*/
     protected constructor() {

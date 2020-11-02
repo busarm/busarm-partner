@@ -29,11 +29,13 @@ import {ToastType, Utils} from './libs/Utils';
 import {Api, ApiResponseType} from './libs/Api';
 import {Urls} from './libs/Urls';
 import {Langs, Strings} from './resources';
-import {Oauth, OauthGrantType, OauthUtils, OauthStorage} from './libs/Oauth';
+import {Oauth, OauthGrantType, OauthUtils} from './libs/Oauth';
 import {CIPHER} from './libs/CIPHER';
-import { environment } from '../environments/environment';
+import { ENVIRONMENT, environment } from '../environments/environment';
 import { Events } from './services/Events';
 import { NavigationOptions } from '@ionic/angular/dist/providers/nav-controller';
+import { PingObject } from './models/ApiResponse';
+import { ENV } from '../environments/ENV';
 // import { NavigationOptions } from '@ionic/angular/providers/nav-controller';
 
 @Component({
@@ -141,6 +143,21 @@ export class AppComponent {
 
     /*Current Navigated Page*/
     public currentPage: {id: number, url: string} = null;
+
+    /**Get Ping Status
+     * @return {PingObject}
+     */
+    public async getPingStatus(){
+        return await new Promise<PingObject>((resolve: (data: PingObject) => any) => {
+            SessionManager.getPing(data => {
+                if (data) {
+                    resolve(data);
+                } else {
+                    resolve(null);
+                }
+            });
+        });
+    }
 
     /**
      * Register Pop State changes
@@ -422,18 +439,22 @@ export class AppComponent {
         return new Promise(async (resolve: (status: boolean) => any) => {
             if (!this.authAttempted || reattempt) {
                 this.authAttempted = true;
+                //Check internet connection
                 NetworkProvider.checkConnection(async connected => {
                     if (connected) {
+                        //Authorize
                         AppComponent.oauth.authorizeAccess({
-                            scope: ['agent'],
+                            scope: ENVIRONMENT == ENV.TEST ?  ['agent', 'tester'] :  ['agent'],
                             grant_type: OauthGrantType.Auto,
-                            state: Utils.getCurrentSignature(),
+                            state: Utils.getCurrentSignature(await this.getPingStatus()),
                             callback: async (token, msg) => {
-                                if (token) {  // Token Available
+                                if (token) {  
+                                    //Validate Session
                                     await this.validate_session(async (status, msg, responseType) => {
                                         if (status) {
                                             resolve(true);
                                             this.authorized = true;
+                                            this.hideLoadingScreen();
                                         } else {
                                             this.authorized = false;
                                             switch (responseType) {
@@ -456,9 +477,9 @@ export class AppComponent {
                                                     this.authorized = false;
                                                     if (Utils.assertAvailable(msg)) { await this.showToastMsg(msg, ToastType.ERROR); }
                                                     resolve(false);
+                                                    this.hideLoadingScreen();
                                             }
                                         }
-                                        this.hideLoadingScreen();
                                     });
                                 } else { // Failed ot get token
                                     this.authAttempted = false;
@@ -478,7 +499,6 @@ export class AppComponent {
                                 resolve(false);
                             });
                         });
-                        this.hideLoadingScreen();
                     }
                 });
             } else {
