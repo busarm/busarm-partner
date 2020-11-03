@@ -124,7 +124,7 @@ export class LoginPage extends PageController {
                 callback: async  () => {
                     // Trigger Oauth email login
                     this.oauth.oauthAuthorizeWithEmail(
-                        ENVIRONMENT == ENV.TEST ?  ['agent', 'tester'] :  ['agent'],
+                        ENVIRONMENT == ENV.TEST ?  ['openid', 'user', 'agent', 'tester'] :  ['openid', 'user', 'agent'],
                         Urls.partnerOauthRedirectUrl,
                         this.username,
                         Utils.getCurrentSignature(await this.instance.getPingStatus()));

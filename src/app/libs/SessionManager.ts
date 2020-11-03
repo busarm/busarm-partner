@@ -6,6 +6,7 @@ import {PingObject, UserInfo, ValidateSessionObject} from "../models/ApiResponse
 import {Utils} from "./Utils";
 import {AppComponent} from "../app.component";
 import {Storage} from "@ionic/storage";
+import { OauthStorage } from "./Oauth";
 
 export class SessionManager {
 
@@ -169,6 +170,7 @@ export class SessionManager {
      */
     static async logout(redirectUri?:string) {
         this.clear();
+        OauthStorage.clearAccess();
         this.context.authorized = false;
         await this.context.goToLogin(redirectUri?{queryParams:{redirectUri: redirectUri}}:{});
         if (!this.context.loaded) {

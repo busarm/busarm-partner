@@ -444,7 +444,7 @@ export class AppComponent {
                     if (connected) {
                         //Authorize
                         AppComponent.oauth.authorizeAccess({
-                            scope: ENVIRONMENT == ENV.TEST ?  ['agent', 'tester'] :  ['agent'],
+                            scope: ENVIRONMENT == ENV.TEST ?  ['openid', 'user', 'agent', 'tester'] :  ['openid', 'user', 'agent'],
                             grant_type: OauthGrantType.Auto,
                             state: Utils.getCurrentSignature(await this.getPingStatus()),
                             callback: async (token, msg) => {
