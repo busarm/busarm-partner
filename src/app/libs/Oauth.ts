@@ -47,13 +47,13 @@ export class OauthStorage {
      * @param value  value*/
     static setData(name, value, temporary = false) {
         if(temporary){
-            if (typeof localStorage !== 'undefined') {
-                localStorage.setItem(name, value);
+            if (typeof sessionStorage !== 'undefined') {
+                sessionStorage.setItem(name, value);
             }
         }
         else {
-            if (typeof sessionStorage !== 'undefined') {
-                sessionStorage.setItem(name, value);
+            if (typeof localStorage !== 'undefined') {
+                localStorage.setItem(name, value);
             }
         }
     }
@@ -62,9 +62,19 @@ export class OauthStorage {
      * @param name  name
      * */
     static getData(name) {
-        if (typeof localStorage !== 'undefined') {
-            return localStorage.getItem(name);
+        if (typeof sessionStorage !== 'undefined') {
+            let data = sessionStorage.getItem(name);
+            if(OauthUtils.assertAvailable(data)){
+                return data;
+            }
         }
+        if (typeof localStorage !== 'undefined') {
+            let data = localStorage.getItem(name);
+            if(OauthUtils.assertAvailable(data)){
+                return data;
+            }
+        }
+        return null;
     }
 
     /** Set data - localStorage
@@ -74,12 +84,18 @@ export class OauthStorage {
         if (typeof localStorage !== 'undefined') {
             return localStorage.removeItem(name);
         }
+        if (typeof sessionStorage !== 'undefined') {
+            return sessionStorage.removeItem(name);
+        }
     }
 
     /**Clear all user data*/
     static clearAll() {
         if (typeof localStorage !== 'undefined') {
             return localStorage.clear();
+        }
+        if (typeof sessionStorage !== 'undefined') {
+            return sessionStorage.clear();
         }
     }
 
