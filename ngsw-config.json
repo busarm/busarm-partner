@@ -2,7 +2,7 @@
   "index": "/index.html",
   "assetGroups": [
     {
-      "name": "app_v6",
+      "name": "app_v7",
       "installMode": "prefetch",
       "resources": {
         "files": [

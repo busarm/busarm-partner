@@ -82,20 +82,20 @@ export class OauthStorage {
      * */
     static removeData(name) {
         if (typeof localStorage !== 'undefined') {
-            return localStorage.removeItem(name);
+            localStorage.removeItem(name);
         }
         if (typeof sessionStorage !== 'undefined') {
-            return sessionStorage.removeItem(name);
+            sessionStorage.removeItem(name);
         }
     }
 
     /**Clear all user data*/
-    static clearAll() {
+    static clearAll(withTemp = false) {
         if (typeof localStorage !== 'undefined') {
-            return localStorage.clear();
+            localStorage.clear();
         }
-        if (typeof sessionStorage !== 'undefined') {
-            return sessionStorage.clear();
+        if (withTemp && typeof sessionStorage !== 'undefined') {
+            sessionStorage.clear();
         }
     }
 
