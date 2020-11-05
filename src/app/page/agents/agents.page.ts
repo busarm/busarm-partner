@@ -15,7 +15,9 @@ import {AddAgentPage} from "./add-agent/add-agent.page";
 })
 export class AgentsPage extends PageController {
 
-    agents: UserInfo[];
+    searchText: string = null;
+    agents: UserInfo[] = null;
+    currentAgents: UserInfo[] = null;
 
     constructor(public modalCtrl: ModalController,
                 private iab: InAppBrowser) {
@@ -24,12 +26,56 @@ export class AgentsPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
+    }
+
+    public async ionViewDidEnter(){
         if (this.userInfo && (this.userInfo.is_admin || this.userInfo.is_partner)){
             this.loadAgentsView();
         }
     }
 
-    public async ionViewDidEnter(){}
+    
+    /**Search input event
+     * */
+    public onInput(event,isSearch=false) {
+        if (event.isTrusted) {
+            this.searchText = event.target.value;
+            if (this.assertAvailable(this.searchText) && this.searchText.length > 0) {
+                if (isSearch) { //Only perform action if search pressed
+                    if (this.assertAvailable(this.agents)) {
+                        this.currentAgents = [];
+                        for (let index in this.agents) {
+                            let agent:UserInfo = this.agents[index];
+                            let reg = new RegExp(this.searchText, 'gi');
+                            if (agent.name.match(reg) || agent.email.match(reg)) {
+                                this.currentAgents.push(agent)
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                this.onClear(event);
+            }
+        }
+    }
+
+    /**Reset Search bar*/
+    public onClear(event) {
+        if (event.isTrusted) {
+            this.searchText = null;
+            this.currentAgents = this.agents;
+        }
+    }
+
+    /**Refresh View*/
+    public refreshBusesView(event?) {
+        this.loadAgentsView(() => {
+            if (event) {
+                event.target.complete();
+            }
+        })
+    }
 
     /**Load Agents View*/
     public loadAgentsView(completed?: () => any) {
@@ -37,7 +83,7 @@ export class AgentsPage extends PageController {
         Api.getAgents((status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
-                    this.agents = result.data;
+                    this.agents = this.currentAgents = result.data;
                 } else {
                     this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                 }

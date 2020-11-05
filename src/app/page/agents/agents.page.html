@@ -4,25 +4,55 @@
             <ion-back-button defaultHref="/home/account"> </ion-back-button>
         </ion-buttons>
         <ion-title>{{strings.getString("my_agents_txt")}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="refreshBusesView()">
+                <ion-icon slot="icon-only" class="secondary" name="refresh">
+                </ion-icon>
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
+    <ion-searchbar
+            showCancelButton="focus"
+            placeholder="{{strings.getString('agent_search_hint')}}"
+            debounce="500"
+            (input)="onInput($event)"
+            (search)="onInput($event,true)"
+            (clear)="onClear($event)"
+            (cancel)="onClear($event)"
+            [animated]="true"
+            [(ngModel)]="searchText">
+    </ion-searchbar>
 </ion-header>
 <ion-content class="ion-padding">
 
+    <!--Refresher -->
+    <ion-refresher
+            slot="fixed"
+            [pullMin]="80"
+            (ionRefresh)="refreshBusesView($event)" 
+            slot="fixed">
+        <ion-refresher-content
+                [pullingText]="strings.getString('pull_refresh_txt')"
+                [refreshingText]="strings.getString('refreshing_txt')"
+                [refreshingSpinner]="'circles'">
+        </ion-refresher-content>
+    </ion-refresher>
+
     <!--Loading view - Show if Buses hasn't been loaded yet-->
-    <div class="loader cell" *ngIf="agents==null">
+    <div class="loader cell" *ngIf="currentAgents==null">
         <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
         <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
     </div>
 
     <!--No User view -->
-    <div class="loader cell" *ngIf="agents!=null && agents.length <= 0">
+    <div class="loader cell" *ngIf="currentAgents!=null && currentAgents.length <= 0">
         <img src="{{assets.getPath('not_found')}}"/>
         <ion-label class="cell-content">{{strings.getString('not_found_txt')}}</ion-label>
     </div>
 
-    <ion-grid *ngIf="agents!=null && agents.length > 0">
+    <ion-grid *ngIf="currentAgents!=null && currentAgents.length > 0">
         <ion-row wrap>
-            <ion-col size="12" size-md="6" *ngFor="let agent of agents; let i = index" [attr.index]="i">
+            <ion-col size="12" size-md="6" *ngFor="let agent of currentAgents; let i = index" [attr.index]="i">
                 <ion-card>
                     <ion-card-header>
                         <ion-row>

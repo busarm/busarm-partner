@@ -177,6 +177,7 @@ export enum Keys {
     error_authorize_txt,
     owner_txt, 
     user_txt,
+    agent_search_hint,
 }
 
 export type StringKey = keyof typeof Keys;
@@ -355,7 +356,7 @@ const English: String = {
     error_authorize_txt: "Failed to authorize access",
     owner_txt: "Owner",
     user_txt: "User",
-
+    agent_search_hint: "Search name or email",
 };
 
 

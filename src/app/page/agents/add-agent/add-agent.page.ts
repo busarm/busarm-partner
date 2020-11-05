@@ -27,10 +27,11 @@ export class AddAgentPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-        this.dialCode = this.userInfo.dial_code;
     }
 
-    public async ionViewDidEnter(){}
+    public async ionViewDidEnter(){
+        this.dialCode = this.session.country.dial_code;
+    }
 
     /**Add Bus*/
     public add(){
