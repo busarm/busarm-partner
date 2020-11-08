@@ -178,6 +178,7 @@ export enum Keys {
     owner_txt, 
     user_txt,
     agent_search_hint,
+    save_account_info,
 }
 
 export type StringKey = keyof typeof Keys;
@@ -357,6 +358,7 @@ const English: String = {
     owner_txt: "Owner",
     user_txt: "User",
     agent_search_hint: "Search name or email",
+    save_account_info: "Save account information",
 };
 
 

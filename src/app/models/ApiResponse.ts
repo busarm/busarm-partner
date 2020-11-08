@@ -22,9 +22,13 @@ export interface ConfigObject {
     booking_cancellation:string,
     payment:string,
     google_api_key:string,
+    account_id:number,
     account_name:string,
+    account_number:string,
     bank_name:string,
-    account_number:string
+    swift_code:string,
+    branch_name:string,
+    branch_code:string
 }
 
 /*----USER INFO RESPONSE ------*/
@@ -62,6 +66,17 @@ export interface UserInfo {
     permissions?:string[],
     allow_international?: boolean|number;
     allow_multi_countries?: boolean|number;
+    bank_account?: BankAccountObject;
+}
+
+export interface BankAccountObject {
+    account_id:number,
+    account_name:string,
+    account_number:string,
+    bank_name:string,
+    swift_code:string,
+    branch_name:string,
+    branch_code:string
 }
 
 export interface Country {

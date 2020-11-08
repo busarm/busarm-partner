@@ -16,6 +16,7 @@ export class PayoutPage extends PageController {
     receiverName: string;
     receiverBank: string;
     receiverAccount: string;
+    saveAccount: boolean = false;
 
     constructor() {
         super();
@@ -26,6 +27,14 @@ export class PayoutPage extends PageController {
         this.payout = await this.getRouteParams();
         if(!this.payout){
             this.loadPayout();
+        }
+    }
+
+    public ionViewDidEnter(){
+        if(this.userInfo.bank_account){
+            this.receiverName = this.userInfo.bank_account.account_name;
+            this.receiverAccount = this.userInfo.bank_account.account_number;
+            this.receiverBank = this.userInfo.bank_account.bank_name;
         }
     }
 
@@ -49,6 +58,10 @@ export class PayoutPage extends PageController {
 
     /**Submit request form*/
     public submit(){
+        let save = this.saveAccount && (!this.userInfo.bank_account || (this.userInfo.bank_account && (this.receiverAccount != this.userInfo.bank_account.account_name ||
+            this.receiverAccount != this.userInfo.bank_account.account_number ||
+            this.receiverBank != this.userInfo.bank_account.bank_name)));
+
         let payoutRequest = {
             receiverName:this.receiverName,
             receiverBank:this.receiverBank,
@@ -57,6 +70,7 @@ export class PayoutPage extends PageController {
             dateTo:this.payout.to,
             currencyCode:this.payout.currency_code,
             amount:this.payout.balance,
+            saveAccount: save ? 1 : 0
         };
         this.showLoading().then(()=>{
             Api.addPayoutRequest(payoutRequest, (status, result) => {

@@ -53,6 +53,11 @@
                     <ion-label position="stacked">{{strings.getString('receiver_account_txt')}}</ion-label>
                     <ion-input required name="account" [(ngModel)]="receiverAccount" type="text"> </ion-input>
                 </ion-item>
+                <ion-item [lines]="'none'">
+                    <ion-label color="primary" class="x-small-text">{{strings.getString('save_account_info')}}</ion-label>
+                    <ion-checkbox name="save_account" slot="start" color="primary" [(ngModel)]="saveAccount">
+                    </ion-checkbox>
+                </ion-item>
                 <br>
                 <div class="cell cell-center danger">
                     <span class="x-small-text">{{payout.info}}</span>

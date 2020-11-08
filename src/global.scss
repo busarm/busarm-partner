@@ -138,7 +138,7 @@ ion-item {
   cursor: pointer;
 
   ion-label{
-    z-index: 4;
+    z-index: 1;
   }
 }
 
@@ -689,31 +689,31 @@ input {
     font-weight: bold;
   }
   .xxx-large-text {
-    font-size: 32px;
+    font-size: 32px !important;
   }
   .xx-large-text {
-    font-size: 28px;
+    font-size: 28px !important;
   }
   .x-large-text {
-    font-size: 22px;
+    font-size: 22px !important;
   }
   .large-text {
-    font-size: 20px;
+    font-size: 20px !important;
   }
   .medium-text {
-    font-size: 18px;
+    font-size: 18px !important;
   }
   .normal-text {
-    font-size: 16px;
+    font-size: 16px !important;
   }
   .small-text {
-    font-size: 14px;
+    font-size: 14px !important;
   }
   .x-small-text {
-    font-size: 12px;
+    font-size: 12px !important;
   }
   .xx-small-text {
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   &.ok {
