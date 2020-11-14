@@ -303,16 +303,14 @@ export class AddTripPage extends PageController {
                 if (address.types != null && address.types.length > 0) {
                     address.types.forEach(type => {
                         switch (type) {
-                            case "country": 
+                            case "country":
                                 location.country = location.country ? location.country : address.long_name;
                                 location.country_code = location.country_code ? location.country_code : address.short_name;
                                 break;
-                            case "administrative_area_level_1": 
+                            case "administrative_area_level_1":
                                 location.province = location.province ? location.province : address.long_name;
                                 break;
                             case "locality":
-                            case "administrative_area_level_2":
-                            case "sublocality_level_1":
                                 location.city = location.city ? location.city : address.long_name;
                                 break;
                         }
