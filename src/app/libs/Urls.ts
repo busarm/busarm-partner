@@ -95,6 +95,8 @@ export class Urls{
     public static apiPayInRequest:string;
     public static apiPayoutRequest:string;
     public static googleApiUrl:string;
+    public static apiLocation:string;
+    public static apiLocations:string;
 
     /**Initialize Urls
      * */
@@ -147,7 +149,9 @@ export class Urls{
         this.apiGetPayin = Urls.apiBaseUrl + "agent/Transaction/payin";
         this.apiGetPayout = Urls.apiBaseUrl + "agent/Transaction/payout";
         this.apiPayInRequest = Urls.apiBaseUrl + "agent/Transaction/payInRequest";
-        this.apiPayoutRequest = Urls.apiBaseUrl + "agent/Transaction/payoutRequest";
+        this.apiPayoutRequest = Urls.apiBaseUrl + "agent/Transaction/payoutRequest"
+        this.apiLocation = Urls.apiBaseUrl + "agent/Location";
+        this.apiLocations = Urls.apiBaseUrl + "agent/Location/list";
 
         /*Custom Urls*/
         this.googleApiUrl = "https://maps.googleapis.com/maps/api/js?key=<key>&libraries=places"

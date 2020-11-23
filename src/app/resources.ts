@@ -179,6 +179,16 @@ export enum Keys {
     user_txt,
     agent_search_hint,
     save_account_info,
+    my_locations_txt,
+    delete_location_title_txt,
+    delete_location_msg_txt,
+    my_location_search_hint,
+    select_location_txt,
+    city_txt,
+    province_txt,
+    latitude_txt,
+    longitude_txt,
+    address_txt,
 }
 
 export type StringKey = keyof typeof Keys;
@@ -359,6 +369,16 @@ const English: String = {
     user_txt: "User",
     agent_search_hint: "Search name or email",
     save_account_info: "Save account information",
+    delete_location_title_txt: "Delete Location",
+    delete_location_msg_txt: "Are you sure you want to delete this location?",
+    my_locations_txt: "My Locations",
+    my_location_search_hint: "Search address or city or province",
+    select_location_txt: "Select Location",
+    city_txt: "City",
+    province_txt: "Province/State/Region",
+    latitude_txt: "Latitude",
+    longitude_txt: "Longitude",
+    address_txt: "Longitude",
 };
 
 

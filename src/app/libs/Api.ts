@@ -16,7 +16,8 @@ import {
     ValidateSessionObject,
     BookingsInfoObject,
     PayInTransactionObject,
-    PayOutTransactionObject
+    PayOutTransactionObject,
+    LocationObject
 } from '../models/ApiResponse';
 import {Utils, ToastType} from './Utils';
 import {SessionManager} from './SessionManager';
@@ -491,6 +492,18 @@ export class Api {
         });
     }
 
+    /**Get Partner Locations Data
+     * @param callback
+     * @param loadCache
+     * */
+    public static getLocations(callback: (status: boolean, result: LocationObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            url: Urls.apiLocations,
+            cache: true,
+            loadCache: true,
+            callback: callback
+        });
+    }
 
     /**Get Active trips for booking
      * @param minDate
@@ -693,7 +706,7 @@ export class Api {
      * @param tickets
      * @param callback
      * */
-    public static addNewTrip(pickup: any, dropoff: any, date: string, busTypeId: number, statusId: number, tickets: any, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+    public static addNewTrip(pickup: number, dropoff: number, date: string, busTypeId: number, statusId: number, tickets: any, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
             method: OauthRequestMethod.POST,
             params: {
@@ -738,6 +751,22 @@ export class Api {
             },
             url: Urls.apiTripBus,
             cache: false,
+            callback: callback
+        });
+    }
+
+    
+    /**Post Location details
+     * @param bus
+     * @param callback
+     * */
+    public static addLocation(location: any, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            method: OauthRequestMethod.POST,
+            params: {
+                location: location
+            },
+            url: Urls.apiLocation,
             callback: callback
         });
     }
@@ -905,6 +934,24 @@ export class Api {
         });
     }
 
+    /**Update Location
+     * @param locId
+     * @param active
+     * @param callback
+     * */
+    public static updateLocation(locId: number, active: boolean, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            url: Urls.apiLocation,
+            method: OauthRequestMethod.PUT,
+            params: {
+                loc_id: locId,
+                is_active: active ? 1 : 0,
+            },
+            cache: false,
+            callback: callback
+        });
+    }
+
     /**Toggle Ticket
      * @param ticketId
      * @param typeId
@@ -921,6 +968,25 @@ export class Api {
                 active: active ? 1 : 0,
             },
             cache: false,
+            callback: callback
+        });
+    }
+
+    /**Togle Agent
+     * @param agentId
+     * @param active
+     * @param callback
+     * */
+    public static toggleAgent(agentId: string, active: boolean, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            method: OauthRequestMethod.POST,
+            params: {
+                agentId: agentId,
+                active: active ? 1 : 0
+            },
+            url: Urls.apiUserToggle,
+            cache: false,
+            encrypt: true,
             callback: callback
         });
     }
@@ -978,21 +1044,19 @@ export class Api {
         });
     }
 
-    /**Togle Agent
-     * @param agentId
+    /**Delete Location
+     * @param locId
      * @param active
      * @param callback
      * */
-    public static toggleAgent(agentId: string, active: boolean, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+    public static deleteLocation(locId: number, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
-            method: OauthRequestMethod.POST,
+            url: Urls.apiLocation,
+            method: OauthRequestMethod.DELETE,
             params: {
-                agentId: agentId,
-                active: active ? 1 : 0
+                loc_id: locId
             },
-            url: Urls.apiUserToggle,
             cache: false,
-            encrypt: true,
             callback: callback
         });
     }

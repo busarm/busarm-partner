@@ -13,34 +13,17 @@
     <form #tripForm="ngForm" (ngSubmit)="submit()" autocomplete="off">
         <ion-item>
             <ion-label position="stacked">{{strings.getString('pickup_txt')}}</ion-label>
-            <ion-input required name="pickup" (click)="selectOrigin($event)" [value]="selectedPickup!=null?selectedPickup.name:''"
+            <ion-input required name="pickup" (click)="selectOrigin($event)" [value]="selectedPickup!=null?selectedPickup.loc_name:''"
                        [readonly]="true" placeholder="{{strings.getString('select_pickup_txt')}}" type="text"
                        #triporigin>
             </ion-input>
         </ion-item>
-        <ion-item>
-            <ion-label position="stacked">{{strings.getString('type_txt')}}</ion-label>
-            <ion-select required name="pickupType" placeholder="{{strings.getString('select_type_txt')}}" [(ngModel)]="selectedPickupLocationType">
-                <ion-select-option *ngFor="let type of locationTypes" [value]="type.id">
-                    {{type.name}}
-                </ion-select-option>
-            </ion-select>
-        </ion-item>
         <br>
         <ion-item>
             <ion-label position="stacked">{{strings.getString('dropoff_txt')}}</ion-label>
-            <ion-input required name="dropoff" (click)="selectDestination($event)" [value]="selectedDropOff!=null?selectedDropOff.name:''"
+            <ion-input required name="dropoff" (click)="selectDestination($event)" [value]="selectedDropOff!=null?selectedDropOff.loc_name:''"
                        [readonly]="true" placeholder="{{strings.getString('select_dropoff_txt')}}" type="text">
             </ion-input>
-        </ion-item>
-        <ion-item>
-            <ion-label position="stacked">{{strings.getString('type_txt')}}</ion-label>
-            <ion-select required name="dropoffType" placeholder="{{strings.getString('select_type_txt')}}"
-                        [(ngModel)]="selectedDropOffLocationType">
-                <ion-select-option *ngFor="let type of locationTypes" [value]="type.id">
-                    {{type.name}}
-                </ion-select-option>
-            </ion-select>
         </ion-item>
         <br>
         <ion-item>

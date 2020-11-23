@@ -1,13 +1,13 @@
 import {Component, Input} from '@angular/core';
 import {ModalController, NavParams, Platform} from "@ionic/angular";
-import {BusType, Country, LocationType, TicketInfo, TicketType,  TripStatus} from "../../../models/ApiResponse";
+import {BusType, Country, Location, LocationType, TicketInfo, TicketType,  TripStatus} from "../../../models/ApiResponse";
 import {DatePicker} from "@ionic-native/date-picker/ngx";
 import {PageController} from "../../page-controller";
-import {SearchPlacePage} from "../../search-place/search-place.page";
 import {AddTicketPage} from "../add-ticket/add-ticket.page";
 import {ToastType, Utils} from "../../../libs/Utils";
 import {Api} from "../../../libs/Api";
 import {Strings} from "../../../resources";
+import { LocationsPage } from '../../locations/locations.page';
 
 declare var google: any;
 
@@ -19,7 +19,6 @@ declare var google: any;
 export class AddTripPage extends PageController {
 
     @Input() statusList: TripStatus[];
-    @Input() locationTypes: LocationType[];
     @Input() busTypes: BusType[];
     @Input() ticketTypes: TicketType[];
 
@@ -32,9 +31,9 @@ export class AddTripPage extends PageController {
         this.minDate.getMonth() + 1,
         this.minDate.getDate());
 
-    selectedPickup: LocationObject;
+    selectedPickup: Location;
     selectedPickupLocationType: number;
-    selectedDropOff: LocationObject;
+    selectedDropOff: Location;
     selectedDropOffLocationType: number;
     selectedStatus: number;
     selectedBusType: number;
@@ -153,8 +152,7 @@ export class AddTripPage extends PageController {
     public async selectOrigin(event) {
         if (event.isTrusted) {
             if (this.userInfo) {
-                this.selectLocation(this.session.country, this.strings.getString('select_pickup_txt'), place => {
-                    let location = this.processLocation(place);
+                this.selectLocation(this.strings.getString('select_pickup_txt'), location => {
                     if (this.userInfo.allow_international || (location.country_code == this.session.country.country_code || location.country == this.session.country.country_name)){
                         this.selectedPickup = location
                     }
@@ -170,9 +168,8 @@ export class AddTripPage extends PageController {
     public async selectDestination(event) {
         if (event.isTrusted) {
             if (this.userInfo) {
-                this.selectLocation(this.session.country, this.strings.getString('select_dropoff_txt'), place => {
-                    let location = this.processLocation(place);
-                    if (this.userInfo.allow_international || (location.country_code == this.session.country.country_code || location.country == this.session.country.country_name)){
+                this.selectLocation(this.strings.getString('select_dropoff_txt'), (location: Location) => {
+                    if (this.userInfo.allow_international || (location.country_code == this.session.country.country_code || location.country_name == this.session.country.country_name)){
                         this.selectedDropOff = location
                     }
                     else {
@@ -209,13 +206,12 @@ export class AddTripPage extends PageController {
     }
 
     /**Launch location selector*/
-    async selectLocation(country: Country, title: string, callback: (place: any) => any) {
-
+    async selectLocation(title: string, callback: (place: any) => any) {
         let chooseModal = await this.modalCtrl.create({
-            component: SearchPlacePage,
+            component: LocationsPage,
             componentProps: {
                 title: title,
-                country: country
+                selector: true
             }
         });
         chooseModal.onDidDismiss().then(data => {
@@ -254,12 +250,10 @@ export class AddTripPage extends PageController {
                 " " + this.getTimeString(new Date(this.selectedTIme))
         }
 
-        this.selectedPickup.type = String(this.selectedPickupLocationType);
-        this.selectedDropOff.type = String(this.selectedDropOffLocationType);
         this.showLoading().then(() => {
             Api.addNewTrip(
-                this.selectedPickup,
-                this.selectedDropOff,
+                this.selectedPickup.loc_id,
+                this.selectedDropOff.loc_id,
                 date,
                 this.selectedBusType,
                 this.selectedStatus,
@@ -288,57 +282,10 @@ export class AddTripPage extends PageController {
         return Utils.toJson(data);
     }
 
-
-    /**Load Selected LocationObject*/
-    private processLocation(place): LocationObject {
-        let location: LocationObject = {
-            name: place.name,
-            address: place.formatted_address,
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-        };
-
-        if (place.address_components != null && place.address_components.length > 0) {
-            place.address_components.forEach(address => {
-                if (address.types != null && address.types.length > 0) {
-                    address.types.forEach(type => {
-                        switch (type) {
-                            case "country":
-                                location.country = location.country ? location.country : address.long_name;
-                                location.country_code = location.country_code ? location.country_code : address.short_name;
-                                break;
-                            case "administrative_area_level_1":
-                                location.province = location.province ? location.province : address.long_name;
-                                break;
-                            case "locality":
-                                location.city = location.city ? location.city : address.long_name;
-                                break;
-                        }
-                    });
-                }
-            });
-        }
-
-        return location;
-    }
-
-
     /**Close Modal*/
     async dismiss(success?: boolean) {
         const modal = await this.modalCtrl.getTop();
         if(modal)
             modal.dismiss(success);
     }
-}
-
-interface LocationObject {
-    name?: string,
-    address?: string,
-    city?: string,
-    province?: string,
-    country?: string,
-    country_code?: string,
-    lat?: string,
-    lng?: string,
-    type?: string,
 }

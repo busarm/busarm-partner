@@ -168,6 +168,11 @@ export class AccountPage extends PageController {
         this.navigate("agents");
     }
 
+    /**Show Locations page*/
+    public showLocations(){
+        this.navigate("locations");
+    }
+
     /**Show Support page*/
     public showSupport(){
         this.iab.create(Urls.support+"?access_token="+OauthStorage.accessToken,'_blank',{

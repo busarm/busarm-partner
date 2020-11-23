@@ -27,7 +27,6 @@ export class TripPage extends PageController{
     trips: TripInfo[] = null;
     currentTrips: TripInfo[] = null;
     statusList: TripStatus[] = null;
-    locationTypes: LocationType[] = null;
     busTypes: BusType[] = null;
     ticketTypes: TicketType[] = null;
 
@@ -120,7 +119,6 @@ export class TripPage extends PageController{
             component: AddTripPage,
             componentProps: {
                 statusList: this.statusList,
-                locationTypes: this.locationTypes,
                 busTypes: this.busTypes,
                 ticketTypes: this.ticketTypes,
             }
@@ -168,15 +166,6 @@ export class TripPage extends PageController{
             if (status) {
                 if (this.assertAvailable(result)) {
                     this.statusList = result.data;
-                }
-            }
-        });
-
-        /*Get Location Types*/
-        Api.getLocationTypes((status, result) => {
-            if (status) {
-                if (this.assertAvailable(result)) {
-                    this.locationTypes = result.data;
                 }
             }
         });

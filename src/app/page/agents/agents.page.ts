@@ -69,7 +69,7 @@ export class AgentsPage extends PageController {
     }
 
     /**Refresh View*/
-    public refreshBusesView(event?) {
+    public refreshAgentsView(event?) {
         this.loadAgentsView(() => {
             if (event) {
                 event.target.complete();

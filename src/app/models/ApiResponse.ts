@@ -284,6 +284,42 @@ export interface BusType{
 }
 
 
+/*----LOCATION REQUEST ------*/
+
+export interface LocationRequest {
+    name?: string,
+    address?: string,
+    city?: string,
+    province?: string,
+    country?: string,
+    country_code?: string,
+    lat?: string,
+    lng?: string,
+    type?: string,
+}
+
+/*----LOCATION RESPONSE ------*/
+
+export interface LocationObject extends SimpleResponseObject  {
+    data?: LocationType[];
+}
+
+export interface Location{
+    is_active?: boolean|number|string,
+    loc_id?: number,
+    loc_name?: string,
+    loc_address?: string,
+    lat?: number,
+    lng?: number, 
+    type_id?: number, 
+    city_id?: number, 
+    city_name?: string, 
+    prov_code?: string,
+    prov_name?: string,
+    country_code?: string,
+    country_name?: string,
+}
+
 /*----LOCATION TYPE RESPONSE ------*/
 
 export interface LocationTypeObject extends SimpleResponseObject  {
