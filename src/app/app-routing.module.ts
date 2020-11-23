@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
+import { LocationsPage } from './page/locations/locations.page';
 import { AuthGuard } from './services/AuthGuard';
 
 const rootRouts: Routes = [

@@ -7,8 +7,8 @@ import {IonicModule} from '@ionic/angular';
 import {AddTripPage} from './add-trip.page';
 import {AddTicketPageModule} from "../add-ticket/add-ticket.module";
 import {AddTicketPage} from "../add-ticket/add-ticket.page";
-import { LocationsPageModule } from '../../locations/locations.module';
-import { LocationsPage } from '../../locations/locations.page';
+import { LocationsModalModule } from '../../locations/locations.modal.module';
+import { LocationsModal } from '../../locations/locations.modal';
 
 
 @NgModule({
@@ -17,12 +17,12 @@ import { LocationsPage } from '../../locations/locations.page';
         FormsModule,
         IonicModule,
         AddTicketPageModule,
-        LocationsPageModule
+        LocationsModalModule
     ],
     declarations: [AddTripPage],
     entryComponents: [
         AddTicketPage,
-        LocationsPage
+        LocationsModal
     ]
 })
 export class AddTripPageModule {

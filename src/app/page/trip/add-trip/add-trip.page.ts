@@ -7,7 +7,7 @@ import {AddTicketPage} from "../add-ticket/add-ticket.page";
 import {ToastType, Utils} from "../../../libs/Utils";
 import {Api} from "../../../libs/Api";
 import {Strings} from "../../../resources";
-import { LocationsPage } from '../../locations/locations.page';
+import { LocationsModal } from '../../locations/locations.modal';
 
 declare var google: any;
 
@@ -208,7 +208,7 @@ export class AddTripPage extends PageController {
     /**Launch location selector*/
     async selectLocation(title: string, callback: (place: any) => any) {
         let chooseModal = await this.modalCtrl.create({
-            component: LocationsPage,
+            component: LocationsModal,
             componentProps: {
                 title: title,
                 selector: true

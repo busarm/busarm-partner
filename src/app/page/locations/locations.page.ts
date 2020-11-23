@@ -36,6 +36,13 @@ export class LocationsPage extends PageController {
         }
     }
 
+    /*Get Filterred Current Location */
+    public filterCurrentLocations(){
+        if(this.selector){
+            return this.currentLocations.filter(x => x.is_active == true);
+        }
+        return this.currentLocations;
+    }
     
     /**Search input event
      * */
@@ -50,7 +57,8 @@ export class LocationsPage extends PageController {
                             let location:Location = this.locations[index];
                             let reg = new RegExp(this.searchText, 'gi');
                             if (location.loc_name.match(reg) || location.city_name.match(reg) || location.prov_name.match(reg)) {
-                                this.currentLocations.push(location)
+                                this.currentLocations.push(location);
+                                this.currentLocations = this.filterCurrentLocations();
                             }
                         }
                     }
@@ -67,6 +75,7 @@ export class LocationsPage extends PageController {
         if (event.isTrusted) {
             this.searchText = null;
             this.currentLocations = this.locations;
+            this.currentLocations = this.filterCurrentLocations();
         }
     }
 
@@ -96,6 +105,7 @@ export class LocationsPage extends PageController {
             if (status) {
                 if (this.assertAvailable(result)) {
                     this.locations = this.currentLocations = result.data;
+                                this.currentLocations = this.filterCurrentLocations();
                 } else {
                     this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
                 }

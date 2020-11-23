@@ -189,6 +189,7 @@ export enum Keys {
     latitude_txt,
     longitude_txt,
     address_txt,
+    add_location_txt,
 }
 
 export type StringKey = keyof typeof Keys;
@@ -379,6 +380,7 @@ const English: String = {
     latitude_txt: "Latitude",
     longitude_txt: "Longitude",
     address_txt: "Longitude",
+    add_location_txt: "Add Location",
 };
 
 
