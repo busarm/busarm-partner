@@ -31,9 +31,7 @@ export class LocationsPage extends PageController {
     }
 
     public async ionViewDidEnter(){
-        if (this.userInfo && (this.userInfo.is_admin || this.userInfo.is_partner)){
-            this.loadLocationsView();
-        }
+        this.loadLocationsView();
     }
 
     /*Get Filterred Current Location */

@@ -54,14 +54,8 @@ export class AddTripPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-
-        //Load google api if not available
-        if (typeof google === 'undefined') {
-            if (this.session && this.session.configs && this.session.configs.google_api_key){
-                Utils.loadGoogleApi(this.session.configs.google_api_key);
-            }
-        }
     }
+    
     public ionViewDidEnter(){}
 
     public async showDatePicker() {
