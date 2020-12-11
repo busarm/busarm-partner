@@ -57,7 +57,7 @@
                     <ion-card-header>
                         <ion-row>
                             <ion-col size="6" class="cell cell-flex cell-flex-left">
-                                <ion-toggle *ngIf="userInfo.agent_id != agent.agent_id && !agent.is_partner"
+                                <ion-toggle *ngIf="userInfo.agent_id != agent.agent_id && !agent.is_partner && !(agent.is_admin && userInfo.is_admin && !userInfo.is_partner)"
                                             color="success"
                                             [checked] = "agent.is_active"
                                             (ionChange)="toggleAgent(agent, !agent.is_active)">
@@ -81,7 +81,7 @@
                                     <ion-col size="12">
                                         <ion-label class="cell-sub">{{agent.dial_code}}{{agent.phone}}</ion-label>
                                     </ion-col>
-                                    <ion-col size="12" *ngIf="agent.is_active && userInfo.agent_id != agent.agent_id && !agent.is_partner" class="cell cell-center cell-flex cell-flex-left ion-no-padding">
+                                    <ion-col size="12" *ngIf="agent.is_active && userInfo.agent_id != agent.agent_id && !agent.is_partner && !(agent.is_admin && userInfo.is_admin && !userInfo.is_partner)" class="cell cell-center cell-flex cell-flex-left ion-no-padding">
                                         <ion-button color="dark" (click)="confirmDeleteAgent(agent)">
                                             <ion-icon color="danger" name="remove-circle" slot="start"> </ion-icon>
                                             {{strings.getString("delete_txt")}}
@@ -92,7 +92,7 @@
                                             {{strings.getString("make_admin_title_txt")}}
                                         </ion-button>
                                     </ion-col>
-                                    <ion-col size="12" *ngIf="agent.is_active && agent.is_admin && userInfo.agent_id != agent.agent_id && !agent.is_partner" class="cell cell-center  cell-flex cell-flex-left ion-no-padding">
+                                    <ion-col size="12" *ngIf="agent.is_active && agent.is_admin && userInfo.agent_id != agent.agent_id && !agent.is_partner && !(agent.is_admin && userInfo.is_admin && !userInfo.is_partner)" class="cell cell-center  cell-flex cell-flex-left ion-no-padding">
                                         <ion-button color="danger" (click)="confirmRemoveAdmin(agent)">
                                             {{strings.getString("remove_admin_title_txt")}}
                                         </ion-button>
