@@ -164,14 +164,19 @@ export class Utils {
         return false;
     }
 
-    /**Get a safe form of stIntring to store,
+    /**Get a safe form of Int to store,
      * eliminating null and 'undefined'
      * @param item
-     *  @return number
+     * @return number
      *  */
     static safeInt(item): number {
         if (Utils.assertAvailable(item)) {
-            return item;
+            try {
+                return parseInt(item);
+            } catch (error) {
+                console.log(error);
+                return 0;
+            }
         }
         return 0;
     }

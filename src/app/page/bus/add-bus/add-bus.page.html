@@ -57,9 +57,10 @@
                 <ion-item>
                     <ion-label position="stacked">{{strings.getString('bus_type_txt')}}</ion-label>
                     <ion-select name="busType" required placeholder="{{strings.getString('select_bus_type_txt')}}"
-                                [(ngModel)]="selectedBusType">
+                                [(ngModel)]="selectedBusType"
+                                (ionChange)="setBusType()">
                         <ion-select-option *ngFor="let type of busTypes" [value]="type.id">
-                            {{type.name}} ({{type.seats}})
+                            {{type.name}}
                         </ion-select-option>
                     </ion-select>
                 </ion-item>
@@ -68,6 +69,12 @@
                     <ion-label position="stacked">{{strings.getString('plate_no_txt')}}</ion-label>
                     <ion-input name="busPlateNumber" required [(ngModel)]="busPlateNumber"
                                placeholder="{{strings.getString('enter_bus_plate_no_txt')}}" type="TEXT"></ion-input>
+                </ion-item>
+                <br>
+                <ion-item>
+                    <ion-label position="stacked">{{strings.getString('seats_txt')}}</ion-label>
+                    <ion-input name="busSeats" required [(ngModel)]="busSeats"
+                               placeholder="{{strings.getString('enter_bus_seats_txt')}}" type="NUMBER"></ion-input>
                 </ion-item>
                 <br>
                 <ion-item>

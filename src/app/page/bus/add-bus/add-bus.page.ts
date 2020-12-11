@@ -17,6 +17,7 @@ export class AddBusPage extends PageController {
 
     @Input() selectedBusType: number;
     busPlateNumber: string;
+    busSeats: number;
     busDesc: string;
 
     constructor(private modalCtrl: ModalController) {
@@ -27,6 +28,16 @@ export class AddBusPage extends PageController {
         await super.ngOnInit();
     }
     public async ionViewDidEnter(){}
+
+    /**Set bus seats for selected type*/
+    public setBusType(){
+        if(this.selectedBusType){
+            let type = this.busTypes.find(type => Utils.safeInt(type.id) == this.selectedBusType);
+            if(type && Utils.safeInt(type.seats) != this.busSeats){
+                this.busSeats =  Utils.safeInt(type.seats);
+            }
+        }
+    }
 
     /**Add Bus*/
     public add(bus?:BusInfo){
@@ -41,17 +52,15 @@ export class AddBusPage extends PageController {
                 if (Utils.assertAvailable(this.busPlateNumber)) {
 
                     let bus:BusInfo|any = {};
-                    for (let i = 0; i<this.busTypes.length; i++){
-                        let type:BusType = this.busTypes[i];
-                        if (type.id == String(this.selectedBusType)){
-                            bus = {
-                                plate_num:this.busPlateNumber,
-                                description:this.busDesc,
-                                type:type.id,
-                                return:1,
-                            };
-                            break;
-                        }
+                    let type = this.busTypes.find(type => Utils.safeInt(type.id) == this.selectedBusType);
+                    if (type){
+                        bus = {
+                            plate_num:this.busPlateNumber,
+                            description:this.busDesc,
+                            seats:this.busSeats,
+                            type:type.id,
+                            return:1,
+                        };
                     }
 
                     //Show Loader
@@ -82,7 +91,6 @@ export class AddBusPage extends PageController {
             }
         }
     }
-
 
     /**Close Modal*/
     async dismiss(bus?:BusInfo){
