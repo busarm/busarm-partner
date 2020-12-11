@@ -114,15 +114,16 @@ export class Utils {
                 s.remove();
             }
             let script:HTMLScriptElement = document.createElement('script');
-            script.type = "application/javascript";
+            script.referrerPolicy = "origin";
+            script.type = "text/javascript";
             script.id = String(hash);
-            document.head.appendChild(script);
+            script.src = url;
             script.onload = function () {
                 if (Utils.assertAvailable(callback)) {
                     callback();
                 }
             };
-            script.src = url;
+            window.document.body.appendChild(script);
         }
     }
 
