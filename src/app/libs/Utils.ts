@@ -49,8 +49,8 @@ export class Utils {
     }
 
     /**Load Google Api*/
-    static loadGoogleApi(key:string){
-        Utils.load_script(Urls.googleApiUrl.replace("<key>",key))
+    static loadGoogleApi(key:string, callback?){
+        Utils.load_script(Urls.googleApiUrl.replace("<key>",key), callback)
     }
 
 

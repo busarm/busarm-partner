@@ -1,9 +1,8 @@
-import {Component, Input} from '@angular/core';
+import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {PageController} from "../page-controller";
 import {ModalController, NavParams} from "@ionic/angular";
-import {ToastType, Utils} from "../../libs/Utils";
+import {Utils} from "../../libs/Utils";
 import {Country} from "../../models/ApiResponse";
-import {Strings} from "../../resources";
 
 declare var google: any;
 
@@ -17,6 +16,8 @@ export class SearchPlacePage extends PageController {
 
     @Input() title: string;
     @Input() country: Country;
+
+    @ViewChild('mapRef') mapElement: ElementRef<HTMLDivElement>;
 
     public searchText: string = null;
     public googleAutoComplete = null;
@@ -37,21 +38,19 @@ export class SearchPlacePage extends PageController {
     public async ngOnInit() {
         await super.ngOnInit();
         if (typeof google !== 'undefined') {
-
             this.googleAutoComplete = new google.maps.places.AutocompleteService();
             this.geocoder = new google.maps.Geocoder();
             this.initMap();
         }
-        else{
-
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-
+        else {
             //Load Google Api
             if (this.session && this.session.configs && this.session.configs.google_api_key){
-                Utils.loadGoogleApi(this.session.configs.google_api_key);
+                Utils.loadGoogleApi(this.session.configs.google_api_key, () => {   
+                    this.googleAutoComplete = new google.maps.places.AutocompleteService();
+                    this.geocoder = new google.maps.Geocoder();
+                    this.initMap();
+                });
             }
-
-            this.dismiss();
         }
     }
     public ionViewDidEnter(){}
@@ -60,8 +59,7 @@ export class SearchPlacePage extends PageController {
     private initMap() {
 
         this.bounds = new google.maps.LatLng(parseFloat(this.country.lat), parseFloat(this.country.lng));
-        this.map = new google.maps.Map(
-            document.getElementById('map'), {center: this.bounds, zoom: 7});
+        this.map = new google.maps.Map(this.mapElement.nativeElement, {center: this.bounds, zoom: 7});
 
 
         //Listen for any clicks on the map.

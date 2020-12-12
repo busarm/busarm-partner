@@ -9,8 +9,12 @@ import {ViewTripPage} from './view-trip.page';
 import {SelectStatusPage} from "./select-status/select-status.page";
 import {SelectStatusPageModule} from "./select-status/select-status.module";
 
-import {AddBusPageModule} from '../../bus/add-bus/add-bus.module';
-import {AddBusPage} from '../../bus/add-bus/add-bus.page';
+import { AddBusPageModule } from '../../bus/add-bus/add-bus.module';
+import { AddBusPage } from '../../bus/add-bus/add-bus.page';
+import { ViewBusPageModule } from '../../bus/view-bus/view-bus.module';
+import { ViewBusPage } from '../../bus/view-bus/view-bus.page';
+import { AddTicketPageModule } from '../add-ticket/add-ticket.module';
+import { AddTicketPage } from '../add-ticket/add-ticket.page';
 
 @NgModule({
     imports: [
@@ -18,12 +22,16 @@ import {AddBusPage} from '../../bus/add-bus/add-bus.page';
         FormsModule,
         IonicModule,
         SelectStatusPageModule,
-        AddBusPageModule
+        AddTicketPageModule,
+        AddBusPageModule,
+        ViewBusPageModule
     ],
     declarations: [ViewTripPage],
     entryComponents: [
         SelectStatusPage,
-        AddBusPage
+        AddTicketPage,
+        AddBusPage,
+        ViewBusPage
     ]
 })
 export class ViewTripPageModule {
