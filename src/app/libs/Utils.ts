@@ -182,6 +182,22 @@ export class Utils {
         return 0;
     }
 
+    /**Get a safe form of Float to store,
+     * eliminating null and 'undefined'
+     * @param item
+     * @return number
+     *  */
+    static safeFloat(item): number {
+        if (Utils.assertAvailable(item)) {
+            try {
+                return parseFloat(item);
+            } catch (error) {
+                console.log(error);
+                return 0;
+            }
+        }
+        return 0;
+    }
 
     /**Check if item is nut null, undefined or empty
      * eliminating null and 'undefined'

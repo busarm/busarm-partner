@@ -44,7 +44,7 @@
                                             <label class="fileInputLabel" id="fileInputLogoLabel" for="fileInputLogo"><ion-icon color="primary" name="images"> </ion-icon>{{strings.getString("upload_txt")}}</label>
                                         </ion-button>
                                     </ion-col>
-                                    <ion-col size-md="2" size="12" *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='')" class="cell cell-flex cell-flex-center">
+                                    <ion-col size-md="2" size="12" *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='') && userInfo.is_admin" class="cell cell-flex cell-flex-center">
                                         <ion-button *ngIf="!platform.is('cordova')" 
                                                     style="height: 30px!important;width: 30px!important;" 
                                                     class="iconBt">
@@ -106,16 +106,16 @@
                     <ion-col size="12">
                         <ion-card>
                             <ion-card-content>
-                                <ion-item (click)="showSupport()">
+                                <ion-item (click)="showSupport()" detail>
                                     {{strings.getString('support_txt')}}
                                 </ion-item>
-                                <ion-item (click)="showTerms()">
+                                <ion-item (click)="showTerms()" detail>
                                     {{strings.getString('terms_and_condition_txt')}}
                                 </ion-item>
-                                <ion-item (click)="showPrivacy()">
+                                <ion-item (click)="showPrivacy()" detail>
                                     {{strings.getString('privacy_policy_txt')}}
                                 </ion-item>
-                                <ion-item (click)="showApp()">
+                                <ion-item (click)="showApp()" detail>
                                     {{strings.getString('go_to_app_txt')}}
                                 </ion-item>
                             </ion-card-content>

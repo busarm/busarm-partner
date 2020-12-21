@@ -1,15 +1,15 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {PageController} from "../../page-controller";
-import {BusInfo, BusType, Country, TicketInfo, TicketType, TripInfo, TripStatus} from "../../../models/ApiResponse";
+import {BusInfo, BusType, Location, SeatsInfo, TicketInfo, TicketType, TripInfo, TripStatus} from "../../../models/ApiResponse";
 import {ModalController} from "@ionic/angular";
-import {ToastType} from "../../../libs/Utils";
+import {ToastType, Utils} from "../../../libs/Utils";
 import {Api} from "../../../libs/Api";
 import {Strings} from "../../../resources";
-import {SessionManager} from "../../../libs/SessionManager";
 import {AddTicketPage} from "../add-ticket/add-ticket.page";
 import {AddBusPage} from "../../bus/add-bus/add-bus.page";
 import {ViewBusPage} from "../../bus/view-bus/view-bus.page";
 import {SelectStatusPage} from "./select-status/select-status.page";
+import { AddTripPage } from '../add-trip/add-trip.page';
 
 @Component({
     selector: 'app-view-trip',
@@ -46,8 +46,6 @@ export class ViewTripPage extends PageController {
 
     public ionViewDidEnter(){
         if (this.assertAvailable(this.trip)) {
-            /*Preselect Bus type*/
-            this.selectedBusType = this.trip.bus_type_id;
             this.loadTripView(false);
         }
         else {
@@ -69,7 +67,7 @@ export class ViewTripPage extends PageController {
         });
 
         /*Get Bus Types*/
-        Api.getBusTypes((status, result) => {
+        Api.getPartnerBusTypes((status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
                     this.busTypes = result.data;
@@ -318,6 +316,43 @@ export class ViewTripPage extends PageController {
         });
     }
 
+    
+    /**Process Repeat Trip
+     * */
+    public async repeatTrip() {
+        let pickup:Location = {
+            loc_id: Utils.safeInt(this.trip.pickup_loc_id),
+            loc_name: this.trip.pickup_loc_name, 
+            
+        }
+        let dropoff:Location = {
+            loc_id: Utils.safeInt(this.trip.dropoff_loc_id),
+            loc_name: this.trip.dropoff_loc_name, 
+        }
+        // Pass only Active and Upcomming status
+        let status = this.statusList ? this.statusList.filter(status => status.status_id == '1' || status.status_id == '2') : [];
+
+        let chooseModal = await this.modalCtrl.create({
+            component: AddTripPage,
+            componentProps: {
+                statusList: status,
+                busTypes: this.busTypes,
+                ticketTypes: this.ticketTypes,
+                selectedPickup: pickup,
+                selectedDropOff: dropoff,
+                selectedBusType: this.trip.bus_type_id,
+                selectedStatus: '2',
+                selectedTickets: this.trip.tickets
+            }
+        });
+        chooseModal.onDidDismiss().then(data => {
+            if (data.data) {
+                this.dismiss();
+            }
+        });
+        return await chooseModal.present();
+    }
+
     /**Show Delete confirmation
      * */
     public confirmDelete() {
@@ -335,7 +370,6 @@ export class ViewTripPage extends PageController {
             },
         );
     }
-
 
     /**Delete Trip*/
     public deleteTrip(tripId: string) {
@@ -391,6 +425,36 @@ export class ViewTripPage extends PageController {
         } 
     }
     
+    /**Reseave trip seat*/
+    public reserveTripSeat(seat: SeatsInfo, toggle: boolean) {
+        if((seat.status=='reserved') !== toggle && seat.status!='booked' || seat.status!='locked') {
+            this.showLoading().then(()=>{
+                Api.researveSeat(seat.trip_id, seat.seat_id, !toggle, (status, result) => {
+                    this.hideLoading();
+                    if (status) {
+                        if (this.assertAvailable(result)) {
+                            if (result.status){
+                                this.updated = true;
+                                this.showToastMsg(result.msg, ToastType.SUCCESS);
+                            }
+                            else{
+                                this.showToastMsg(result.msg, ToastType.ERROR);
+                            }
+                        }
+                        else {
+                            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                        }
+                    }
+                    else {
+                        this.showToastMsg(result, ToastType.ERROR);
+                    }
+                    //Reload trip
+                    this.loadTrip();
+                });
+            });
+        } 
+    }
+
     /**Show Delete confirmation
      * */
     public confirmDeleteBus(bus:BusInfo) {
@@ -436,7 +500,6 @@ export class ViewTripPage extends PageController {
         });
     }
 
-
     /**Get Status class for trip status*/
     public getTripStatusClass(status: string): string {
         if (this.assertAvailable(status)) {
@@ -450,6 +513,41 @@ export class ViewTripPage extends PageController {
                     return "status-ok";
                 case "8":
                     return "status-warn";
+            }
+        }
+    }
+
+    /**Get Status class for trip seat status*/
+    public getTripSeatStatusClass(status: string): string {
+        if (this.assertAvailable(status)) {
+            switch (status) {
+                case "booked":
+                    return "status-ok";
+                case "locked":
+                    return "status-cancel";
+                case "reserved":
+                    return "status-warn";
+                case "available":
+                default:
+                    return "status-default";
+            }
+        }
+    }
+
+
+    /**Get Status text for trip seat status*/
+    public getTripSeatStatusText(status: string): string {
+        if (this.assertAvailable(status)) {
+            switch (status) {
+                case "booked":
+                    return this.strings.getString('booked_txt');
+                case "locked":
+                    return this.strings.getString('locked_txt');
+                case "reserved":
+                    return this.strings.getString('reserved_txt');
+                case "available":
+                default:
+                    return this.strings.getString('available_txt');
             }
         }
     }

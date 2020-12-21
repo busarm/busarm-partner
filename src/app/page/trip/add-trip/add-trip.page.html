@@ -30,10 +30,10 @@
             <ion-label position="stacked">{{strings.getString('date_txt')}}</ion-label>
             <ion-input *ngIf="platform.is('cordova')" required name="date" [readonly]="true" (click)="showDatePicker()"
                        [value]="selectedDateTime!=null?selectedDateTime:''"
-                       placeholder="{{strings.getString('select_date_txt')}}" type="text">
+                       placeholder="{{strings.getString('select_depart_date_txt')}}" type="text">
             </ion-input>
             <ion-datetime *ngIf="!platform.is('cordova')"  required name="date"
-                          [(ngModel)]="selectedDate" placeholder="{{strings.getString('select_date_txt')}}"
+                          [(ngModel)]="selectedDate" placeholder="{{strings.getString('select_depart_date_txt')}}"
                           [min]="getDateString(minDate)"
                           [max]="getDateString(maxDate)"
                           display-format="YYYY-MM-DD"
@@ -44,7 +44,7 @@
         <ion-item *ngIf="!platform.is('cordova')">
             <ion-label position="stacked">{{strings.getString('time_txt')}}</ion-label>
             <ion-datetime required name="time"
-                          [(ngModel)]="selectedTIme" placeholder="{{strings.getString('select_time_txt')}}"
+                          [(ngModel)]="selectedTime" placeholder="{{strings.getString('select_time_txt')}}"
                           display-format="HH:mm"
                           picker-format="HH:mm">
             </ion-datetime>
@@ -63,14 +63,14 @@
         <ion-item>
             <ion-label position="stacked">{{strings.getString('bus_type_txt')}}</ion-label>
             <ion-select required name="busType" *ngIf="busTypes!=null && busTypes.length>0"
-                        placeholder="{{strings.getString('select_bus_type_txt')}}" [(ngModel)]="selectedBusType">
+                        placeholder="{{strings.getString('select_bus_type_txt')}}" 
+                        [(ngModel)]="selectedBusType">
                 <ion-select-option *ngFor="let type of busTypes" [value]="type.id">
                     {{type.name}}
                 </ion-select-option>
             </ion-select>
             <ion-input required name="busType" [disabled]="true" *ngIf="busTypes==null || busTypes.length<1"
                        [value]="strings.getString('no_bus_txt')">
-
             </ion-input>
         </ion-item>
         <br>

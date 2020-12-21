@@ -22,6 +22,14 @@ export class AddTripPage extends PageController {
     @Input() busTypes: BusType[];
     @Input() ticketTypes: TicketType[];
 
+    // Optional
+    @Input() selectedPickup: Location;
+    @Input() selectedDropOff: Location;
+    @Input() selectedBusType: number;
+    @Input() selectedStatus: number;
+    @Input() selectedTickets: TicketInfo[] = [];
+
+
     //Min current day
     minDate: Date = new Date();
 
@@ -31,16 +39,10 @@ export class AddTripPage extends PageController {
         this.minDate.getMonth() + 1,
         this.minDate.getDate());
 
-    selectedPickup: Location;
-    selectedPickupLocationType: number;
-    selectedDropOff: Location;
-    selectedDropOffLocationType: number;
-    selectedStatus: number;
-    selectedBusType: number;
     selectedDateTime: string = null;
     selectedDate: string = null;
-    selectedTIme: string = null;
-    selectedTickets: TicketInfo[] = [];
+    selectedTime: string = null;
+
     platform: Platform;
 
     constructor(private modalCtrl: ModalController,
@@ -56,7 +58,8 @@ export class AddTripPage extends PageController {
         await super.ngOnInit();
     }
     
-    public ionViewDidEnter(){}
+    public ionViewDidEnter(){ 
+    }
 
     public async showDatePicker() {
         this.datePicker
@@ -241,7 +244,7 @@ export class AddTripPage extends PageController {
         let date = this.selectedDateTime;
         if (!Utils.assertAvailable(date)) {
             date = this.getDateString(new Date(this.selectedDate)) +
-                " " + this.getTimeString(new Date(this.selectedTIme))
+                " " + this.getTimeString(new Date(this.selectedTime))
         }
 
         this.showLoading().then(() => {

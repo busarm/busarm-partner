@@ -69,6 +69,9 @@ export enum Keys {
     trip_search_hint,
     no_trip_txt,
     booked_txt,
+    reserved_txt,
+    reserve_txt,
+    locked_txt,
     available_txt,
     view_txt,
     edit_txt,
@@ -88,7 +91,7 @@ export enum Keys {
     select_dropoff_txt,
     date_txt,
     time_txt,
-    select_date_txt,
+    select_depart_date_txt,
     select_time_txt,
     status_txt,
     select_status_txt,
@@ -191,6 +194,9 @@ export enum Keys {
     longitude_txt,
     address_txt,
     add_location_txt,
+    bus_seat_size_error,
+    select_date_txt,
+    repeat_txt,
 }
 
 export type StringKey = keyof typeof Keys;
@@ -260,7 +266,10 @@ const English: String = {
     trip_search_hint: "Search name, location, city, agent etc.",
     no_trip_txt: "No Trip Available",
     booked_txt: "Booked",
+    locked_txt: "Locked",
+    reserved_txt: "Reserved",
     available_txt: "Available",
+    reserve_txt: "Reserve",
     view_txt: "View",
     edit_txt: "Edit",
     update_txt: "Update",
@@ -279,7 +288,7 @@ const English: String = {
     select_dropoff_txt: "Select Drop-off Address",
     date_txt: "Date",
     time_txt: "Time",
-    select_date_txt: "Select Departure Date",
+    select_depart_date_txt: "Select Departure Date",
     select_time_txt: "Select Departure Time",
     status_txt: "Status",
     select_status_txt: "Select Trip Status",
@@ -383,6 +392,10 @@ const English: String = {
     longitude_txt: "Longitude",
     address_txt: "Longitude",
     add_location_txt: "Add Location",
+    bus_seat_size_error: "Bus seats must be greater than {0}",
+    select_date_txt: "Select Date",
+    repeat_txt: "Repeat"
+
 };
 
 
@@ -465,8 +478,20 @@ export class Strings {
             }
         }
     }
-}
 
+    /**
+     * Format String
+     * @param str string
+     */
+    public static format(str: string, ...args) {
+        return str.replace(/{(\d+)}/g, function(match, number) { 
+          return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+          ;
+        });
+      };
+}
 
 export class Assets {
     public static getPath(name: AssetKey) {

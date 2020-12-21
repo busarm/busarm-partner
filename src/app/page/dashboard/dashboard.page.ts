@@ -145,16 +145,20 @@ export class DashboardPage extends PageController {
                             new Chart(element.getContext('2d'), {
                                 type: 'pie',
                                 data: {
-                                    labels: [this.strings.getString("booked_txt"), this.strings.getString("available_txt")],
+                                    labels: [this.strings.getString("booked_txt"), this.strings.getString("locked_txt"), this.strings.getString("reserved_txt"), this.strings.getString("available_txt")],
                                     datasets: [{
-                                        data: [parseInt(trip.booked_seats), parseInt(trip.available_seats)],
+                                        data: [parseInt(trip.booked_seats), parseInt(trip.locked_seats), parseInt(trip.reserved_seats), parseInt(trip.available_seats)],
                                         backgroundColor: [
+                                            'rgb(46, 139, 87)',
+                                            'rgb(95, 95, 95)',
+                                            'rgba(223, 168, 48,1)',
                                             'rgba(84, 142, 171,1)',
-                                            'rgba(223, 99, 45,1)',
                                         ],
                                         hoverBackgroundColor: [
+                                            'rgb(35, 107, 67)',
+                                            'rgb(55, 55, 55)',
+                                            'rgb(155, 115, 40)',
                                             "rgb(56, 89, 115)",
-                                            "rgb(155, 70, 32)",
                                         ]
                                     }]
                                 }
@@ -189,13 +193,13 @@ export class DashboardPage extends PageController {
                                         'rgba(223, 99, 45,1)',
                                         'rgba(223, 168, 48,1)',
                                         'rgb(46, 139, 87)',
-                                        '#5f5f5f',
+                                        'rgb(95, 95, 95)',
                                     ],
                                     hoverBackgroundColor: [
                                         'rgb(155, 70, 32)',
                                         'rgb(155, 115, 40)',
                                         'rgb(35, 107, 67)',
-                                        '#373737',
+                                        'rgb(55, 55, 55)',
                                     ]
                                 }]
                             }

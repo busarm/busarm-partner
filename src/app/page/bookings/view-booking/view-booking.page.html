@@ -86,36 +86,46 @@
                         </ion-label>
                     </ion-col>
                 </ion-row>
-                <ion-list *ngSwitchCase="'ticket'">
-                    <ion-row class="cell cell-center ">
-                        <ion-col class="cell cell-center  cell-flex cell-flex-center ">
-                            <ion-label class="cell-title">{{strings.getString('type_txt')}}</ion-label>
-                        </ion-col>
-                        <ion-col class="cell cell-center  cell-flex cell-flex-center ">
-                            <ion-label class="cell-title">{{strings.getString('qty_txt')}}</ion-label>
-                        </ion-col>
-                        <ion-col class="cell cell-center  cell-flex cell-flex-center ">
-                            <ion-label class="cell-title">{{strings.getString('unit_price_txt')}}</ion-label>
-                        </ion-col>
-                        <ion-col class="cell cell-center  cell-flex cell-flex-center ">
-                            <ion-label class="cell-title">{{strings.getString('amount_txt')}}</ion-label>
-                        </ion-col>
-                    </ion-row>
-                    <ion-row *ngFor="let ticket of bookingInfo.tickets; let i = index" [attr.index]="i">
-                        <ion-col class="cell cell-center  cell-flex cell-flex-center ">
-                            <ion-label class="cell-content">{{ticket.name}}</ion-label>
-                        </ion-col>
-                        <ion-col class="cell cell-center  cell-flex cell-flex-center ">
-                            <ion-label class="cell-content">{{ticket.qty}}</ion-label>
-                        </ion-col>
-                        <ion-col class="cell cell-center  cell-flex cell-flex-center ">
-                            <ion-label class="cell-content">{{ticket.currency_code}} {{ticket.price}}</ion-label>
-                        </ion-col>
-                        <ion-col class="cell cell-center  cell-flex cell-flex-center ">
-                            <ion-label class="cell-content">{{ticket.currency_code}} {{ticket.amount}}</ion-label>
-                        </ion-col>
-                    </ion-row>
-                </ion-list>
+                <ion-row *ngSwitchCase="'ticket'">
+                    <ion-col size="12" class="cell cell-center">
+                        <ion-list>
+                            <ion-row class="cell cell-center ">
+                                <ion-col class="cell cell-center  cell-flex cell-flex-center ">
+                                    <ion-label class="cell-title">{{strings.getString('type_txt')}}</ion-label>
+                                </ion-col>
+                                <ion-col class="cell cell-center  cell-flex cell-flex-center ">
+                                    <ion-label class="cell-title">{{strings.getString('qty_txt')}}</ion-label>
+                                </ion-col>
+                                <ion-col class="cell cell-center  cell-flex cell-flex-center ">
+                                    <ion-label class="cell-title">{{strings.getString('unit_price_txt')}}</ion-label>
+                                </ion-col>
+                                <ion-col class="cell cell-center  cell-flex cell-flex-center ">
+                                    <ion-label class="cell-title">{{strings.getString('amount_txt')}}</ion-label>
+                                </ion-col>
+                            </ion-row>
+                            <ion-row *ngFor="let ticket of bookingInfo.tickets; let i = index" [attr.index]="i">
+                                <ion-col class="cell cell-center  cell-flex cell-flex-center ">
+                                    <ion-label class="cell-content">{{ticket.name}}</ion-label>
+                                </ion-col>
+                                <ion-col class="cell cell-center  cell-flex cell-flex-center ">
+                                    <ion-label class="cell-content">{{ticket.qty}}</ion-label>
+                                </ion-col>
+                                <ion-col class="cell cell-center  cell-flex cell-flex-center ">
+                                    <ion-label class="cell-content">{{ticket.currency_code}} {{ticket.price}}</ion-label>
+                                </ion-col>
+                                <ion-col class="cell cell-center  cell-flex cell-flex-center ">
+                                    <ion-label class="cell-content">{{ticket.currency_code}} {{ticket.amount}}</ion-label>
+                                </ion-col>
+                            </ion-row>
+                        </ion-list>
+                    </ion-col>
+                    <ion-col size="12" class="cell cell-center">
+                        <ion-label class="cell cell-center">
+                            <div class="cell-title">{{strings.getString('seats_txt')}}</div>
+                            <div class="cell-content">{{getBookingSeatsText(bookingInfo.seats)}}</div>
+                        </ion-label> 
+                    </ion-col>
+                </ion-row>
             </div>
             <div>
                 <ion-label class="cell cell-center ">

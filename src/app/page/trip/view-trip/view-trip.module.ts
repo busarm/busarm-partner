@@ -15,6 +15,8 @@ import { ViewBusPageModule } from '../../bus/view-bus/view-bus.module';
 import { ViewBusPage } from '../../bus/view-bus/view-bus.page';
 import { AddTicketPageModule } from '../add-ticket/add-ticket.module';
 import { AddTicketPage } from '../add-ticket/add-ticket.page';
+import { AddTripPageModule } from '../add-trip/add-trip.module';
+import { AddTripPage } from '../add-trip/add-trip.page';
 
 @NgModule({
     imports: [
@@ -24,14 +26,16 @@ import { AddTicketPage } from '../add-ticket/add-ticket.page';
         SelectStatusPageModule,
         AddTicketPageModule,
         AddBusPageModule,
-        ViewBusPageModule
+        ViewBusPageModule,
+        AddTripPageModule,
     ],
     declarations: [ViewTripPage],
     entryComponents: [
         SelectStatusPage,
         AddTicketPage,
         AddBusPage,
-        ViewBusPage
+        ViewBusPage,
+        AddTripPage,
     ]
 })
 export class ViewTripPageModule {

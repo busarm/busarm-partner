@@ -25,10 +25,20 @@
             [animated]="true"
             [(ngModel)]="searchText">
     </ion-searchbar>
+    <!-- Date selector -->
+    <ion-item  color="primary" class="cell cell-center" position="fixed" detail detailIcon="arrow-down">
+        <ion-datetime name="date"
+                    [(ngModel)]="selectedDate" placeholder="{{strings.getString('select_date_txt')}}"
+                    [min]="getDateString(minDate)"
+                    [max]="getDateString(maxDate)"
+                    (ionChange)="refreshTripsView()"
+                    display-format="MMMM YYYY"
+                    picker-format="YYYY-MMMM">
+        </ion-datetime>
+    </ion-item> 
 </ion-header>
 
 <ion-content class="ion-padding">
-
     <!--Refresher -->
     <ion-refresher
             slot="fixed"

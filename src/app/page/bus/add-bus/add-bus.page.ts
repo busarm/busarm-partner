@@ -14,8 +14,9 @@ export class AddBusPage extends PageController {
 
     @Input() busTypes: BusType[];
     @Input() buses: BusInfo[] = null;
-
     @Input() selectedBusType: number;
+
+    busType: BusType;
     busPlateNumber: string;
     busSeats: number;
     busDesc: string;
@@ -32,9 +33,9 @@ export class AddBusPage extends PageController {
     /**Set bus seats for selected type*/
     public setBusType(){
         if(this.selectedBusType){
-            let type = this.busTypes.find(type => Utils.safeInt(type.id) == this.selectedBusType);
-            if(type && Utils.safeInt(type.seats) != this.busSeats){
-                this.busSeats =  Utils.safeInt(type.seats);
+            this.busType = this.busTypes.find(type => Utils.safeInt(type.id) == this.selectedBusType);
+            if(this.busType){
+                this.busSeats =  Utils.safeInt(this.busType.seats);
             }
         }
     }
@@ -52,13 +53,16 @@ export class AddBusPage extends PageController {
                 if (Utils.assertAvailable(this.busPlateNumber)) {
 
                     let bus:BusInfo|any = {};
-                    let type = this.busTypes.find(type => Utils.safeInt(type.id) == this.selectedBusType);
-                    if (type){
+                    if (this.busType){
+                        if (this.busSeats < Utils.safeInt(this.busType.seats)){
+                            this.showToastMsg(this.strings.format(this.strings.getString('bus_seat_size_error'), this.busType.seats), ToastType.ERROR);
+                            return false;
+                        }
                         bus = {
                             plate_num:this.busPlateNumber,
                             description:this.busDesc,
                             seats:this.busSeats,
-                            type:type.id,
+                            type:this.busType.id,
                             return:1,
                         };
                     }

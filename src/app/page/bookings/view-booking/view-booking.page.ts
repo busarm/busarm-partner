@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {BookingInfo, TripInfo} from "../../../models/ApiResponse";
+import {BookingInfo, SeatsInfo, TripInfo} from "../../../models/ApiResponse";
 import {PageController} from "../../page-controller";
 import {ModalController} from "@ionic/angular";
 import {ViewTripPage} from "../../trip/view-trip/view-trip.page";
@@ -27,6 +27,20 @@ export class ViewBookingPage extends PageController {
         if (this.bookingInfo==null){
             this.instance.goHome();
         }
+    }
+
+    /**Get Status class for booking status*/
+    public getBookingSeatsText(seats: SeatsInfo[]): string {
+        let text = '';
+        seats.forEach((seat, index)=>{
+            if(index==0){
+                text+=(seat.seat_id);
+            }
+            else {
+                text+=(', '+seat.seat_id);
+            }
+        })
+        return text.trim();
     }
 
     /**Get Status class for booking status*/

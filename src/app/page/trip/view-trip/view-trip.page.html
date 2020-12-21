@@ -22,7 +22,7 @@
                     </ion-button>
                 </ion-col>
                 <ion-col size="6" class="cell cell-center cell-flex cell-flex-right">
-                    <div class="cell cell-center  cell-flex cell-flex-center  {{getTripStatusClass(trip.status_id)}}">
+                    <div class="cell cell-center  cell-flex cell-flex-center {{getTripStatusClass(trip.status_id)}}">
                         {{trip.status}}
                     </div>
                 </ion-col>
@@ -60,8 +60,21 @@
                         <div class="cell-content">{{trip.booked_seats}}</div>
                     </ion-label>
                     <ion-label class="cell cell-center ">
+                        <div class="cell-title">{{strings.getString('locked_txt')}}</div>
+                        <div class="cell-content">{{trip.locked_seats}}</div>
+                    </ion-label>
+                    <ion-label class="cell cell-center ">
+                        <div class="cell-title">{{strings.getString('reserved_txt')}}</div>
+                        <div class="cell-content">{{trip.reserved_seats}}</div>
+                    </ion-label>
+                    <ion-label class="cell cell-center ">
+                        <div class="cell-title">{{strings.getString('available_txt')}}</div>
+                        <div class="cell-content">{{trip.available_seats}}</div>
+                    </ion-label>
+                    <ion-label class="cell cell-center ">
                         <div class="cell-title">{{strings.getString('agent_txt')}}</div>
-                        <div class="cell-content">{{trip.agent_email}}</div>
+                        <div class="cell-content">{{trip.agent_name}}</div>
+                        <div class="cell-sub">{{trip.agent_email}}</div>
                     </ion-label>
                 </ion-col>
             </ion-row>
@@ -84,28 +97,56 @@
         <ion-card-content>
             <ion-list>
                 <ion-row *ngFor="let ticket of trip.tickets; let i = index" [attr.index]="i">
-                    <ion-col size="12" class="cell cell-left  cell-flex cell-flex-left ion-no-padding">
+                    <ion-col size="12" size-md="3" class="cell cell-left  cell-flex cell-flex-left ion-no-padding">
                         <ion-toggle color="success" 
                                     [disabled] = "!allowDeactivateTicket || !ticket.allow_deactivate"
                                     [checked] = "ticket.is_active"
                                     (ionChange)="toggleTripTicket(ticket, !ticket.is_active)">
                         </ion-toggle>
                     </ion-col>
-                    <ion-col size="4" class="cell cell-center  cell-flex cell-flex-center">
+                    <ion-col size="4" size-md="3" class="cell cell-center  cell-flex cell-flex-center">
                         <ion-label class="cell-content">
                             {{ticket.name}}
                         </ion-label>
                     </ion-col>
-                    <ion-col size="5" class="cell cell-center  cell-flex cell-flex-center ">
+                    <ion-col size="5" size-md="4" class="cell cell-center  cell-flex cell-flex-center ">
                         <ion-label class="cell-content">
                             {{ticket.description}}
                         </ion-label>
                     </ion-col>
-                    <ion-col size="3" class="cell cell-center  cell-flex cell-flex-center ">
+                    <ion-col size="3" size-md="2" class="cell cell-center  cell-flex cell-flex-center ">
                         <ion-label class="cell-content">
                             {{ticket.currency_code}} {{ticket.price}}
                         </ion-label>
                     </ion-col>
+                </ion-row>
+            </ion-list>
+        </ion-card-content>
+    </ion-card>
+    <ion-card>
+        <ion-card-title class="cell cell-center ">
+            {{strings.getString("seats_txt")}}
+        </ion-card-title>
+        <ion-card-content>
+            <ion-list>
+                <ion-row *ngFor="let seat of trip.trip_seats; let i = index" [attr.index]="i">
+                    <ion-col size="4" class="cell cell-left  cell-flex cell-flex-left ion-no-padding">
+                        <ion-toggle color="success" 
+                                    [disabled] = "seat.status=='booked' || seat.status=='locked'"
+                                    [checked] = "seat.status!='reserved'"
+                                    (ionChange)="reserveTripSeat(seat, seat.status=='reserved')">
+                        </ion-toggle>
+                    </ion-col>
+                    <ion-col size="4" class="cell cell-center  cell-flex cell-flex-center">
+                        <ion-label class="cell-content">
+                            {{seat.seat_id}}
+                        </ion-label>
+                    </ion-col>
+                    <ion-col size="4" class="cell cell-center  cell-flex cell-flex-center ">
+                        <div class="cell cell-center  cell-flex cell-flex-center {{getTripSeatStatusClass(seat.status)}}">
+                            {{getTripSeatStatusText(seat.status)}}
+                        </div> 
+                    </ion-col> 
                 </ion-row>
             </ion-list>
         </ion-card-content>
@@ -197,6 +238,11 @@
         </ion-card-content>
     </ion-card>
     <br>
+    <div class="cell cell-center ">
+        <ion-button expand="full" class="ok large-text" (click)="repeatTrip()">
+            {{strings.getString("repeat_txt")}}
+        </ion-button>
+    </div>
     <div class="cell cell-center ">
         <ion-button expand="full" class="danger large-text" (click)="confirmDelete()">
             {{strings.getString("delete_txt")}}

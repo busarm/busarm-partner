@@ -431,18 +431,24 @@ export class Api {
             },
             cache: true,
             loadCache: true,
+            cacheId: String(Utils.hashString(Urls.apiTrip + tripId)),
             callback: callback
         });
     }
 
     /**Get agent trip list
+     * @param date
      * @param callback
      * */
-    public static getTrips(callback: (status: boolean, result: TripsInfoObject | string | any, responseType: ApiResponseType) => any) {
+    public static getTrips(date, callback: (status: boolean, result: TripsInfoObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
             url: Urls.apiTrips,
+            params: {
+                date: date
+            },
             cache: true,
             loadCache: true,
+            cacheId: String(Utils.hashString(Urls.apiTrips + date)),
             callback: callback
         });
     }
@@ -459,6 +465,7 @@ export class Api {
             },
             cache: true,
             loadCache: true,
+            cacheId: String(Utils.hashString(Urls.apiBus + busId)),
             callback: callback
         });
     }
@@ -488,7 +495,8 @@ export class Api {
             },
             cache: true,
             loadCache: true,
-            callback: callback
+            cacheId: String(Utils.hashString(Urls.apiBuses + typeId)),
+            callback: callback,
         });
     }
 
@@ -566,10 +574,10 @@ export class Api {
      * */
     public static getBookingInfo(referenceCode: string, callback: (status: boolean, result: BookingInfoObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
+            url: Urls.apiGetBookingInfo,
             params: {
                 reference_code: referenceCode
             },
-            url: Urls.apiGetBookingInfo,
             cache: true,
             cacheId: String(Utils.hashString(Urls.apiGetBookingInfo + referenceCode)),
             callback: callback
@@ -588,7 +596,6 @@ export class Api {
         });
     }
 
-
     /**Get All Status List
      * @param callback
      * */
@@ -600,7 +607,6 @@ export class Api {
             callback: callback
         });
     }
-
 
     /**Get All Bus Types
      * @param callback
@@ -656,11 +662,11 @@ export class Api {
      * */
     public static verifyUserBooking(bookingId: string, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
+            url: Urls.apiVerifyBooking,
             method: OauthRequestMethod.POST,
             params: {
                 booking_id: bookingId
             },
-            url: Urls.apiVerifyBooking,
             encrypt: true,
             callback: callback
         });
@@ -987,6 +993,26 @@ export class Api {
             url: Urls.apiUserToggle,
             cache: false,
             encrypt: true,
+            callback: callback
+        });
+    }
+
+    /**Reserve Seat
+     * @param tripId
+     * @param seatId
+     * @param toggle
+     * @param callback
+     * */
+    public static researveSeat(tripId: string, seatId: string, toggle: boolean, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            url: Urls.apiTripReserve,
+            method: OauthRequestMethod.POST,
+            params: {
+                tripId: tripId,
+                seatId: seatId,
+                toggle: toggle ? 1 : 0,
+            },
+            cache: false,
             callback: callback
         });
     }

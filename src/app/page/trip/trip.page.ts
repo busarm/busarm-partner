@@ -3,10 +3,9 @@ import {AlertController, ModalController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
 import {Api} from "../../libs/Api";
 import {Strings} from "../../resources";
-import {ToastType} from "../../libs/Utils";
+import {ToastType, Utils} from "../../libs/Utils";
 import {
     BusType,
-    LocationType,
     TicketType,
     TripInfo,
     TripStatus
@@ -23,6 +22,20 @@ import { Events } from '../../services/Events';
 })
 export class TripPage extends PageController{
 
+    // Current
+    currentDate: Date = new Date();
+
+    //Max Plus 1 month
+    maxDate: Date = new Date(
+        this.currentDate.getFullYear(),
+        this.currentDate.getMonth() + 1);
+
+    //Min - Max Minus 1 year
+    minDate: Date = new Date(
+        this.maxDate.getFullYear() - 1,
+        this.maxDate.getMonth());
+
+    selectedDate: string = null;
     searchText: string = null;
     trips: TripInfo[] = null;
     currentTrips: TripInfo[] = null;
@@ -62,6 +75,9 @@ export class TripPage extends PageController{
                 this.selectedCountry = this.session.country.country_code;
             }
         });
+
+        // Set date
+        this.selectedDate = this.getDateString(this.currentDate);
     } 
 
     public ngOnDestroy(){
@@ -103,6 +119,18 @@ export class TripPage extends PageController{
                 this.onClear(event);
             }
         }
+    }
+
+    /**Return Date string for selected date
+     * */
+    public getDateString(selectedDate: Date) {
+        if (Utils.assertAvailable(selectedDate)) {
+            let year = selectedDate.getFullYear(),
+                month = selectedDate.getMonth(),
+                day = selectedDate.getDate();
+            return year + "-" + Utils.harold(month + 1) + "-" + Utils.harold(day)
+        }
+        return null;
     }
 
     /**Reset Search bar*/
@@ -149,6 +177,11 @@ export class TripPage extends PageController{
         return await chooseModal.present();
     }
 
+    /**Clear date*/
+    public clearDate() {
+        this.selectedDate = null
+    }
+    
     /**Refresh View*/
     public refreshTripsView(event?) {
         this.loadTripsView(() => {
@@ -189,7 +222,7 @@ export class TripPage extends PageController{
         });
 
         /*Get trips*/
-        Api.getTrips((status, result) => {
+        Api.getTrips(this.selectedDate?this.getDateString(new Date(this.selectedDate)):'', (status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
                     this.searchText = null;

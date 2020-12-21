@@ -73,6 +73,7 @@ export class Urls{
     public static apiTicket:string;
     public static apiTicketToggle:string;
     public static apiTripBus:string;
+    public static apiTripReserve:string;
     public static apiBusImage:string;
     public static apiGetDashboard:string;
     public static apiGetBookings:string;
@@ -130,6 +131,7 @@ export class Urls{
         this.apiTrip = Urls.apiBaseUrl + "agent/Trip";
         this.apiTrips = Urls.apiBaseUrl + "agent/Trip/list";
         this.apiTripBus = Urls.apiBaseUrl + "agent/Trip/bus";
+        this.apiTripReserve = Urls.apiBaseUrl + "agent/Trip/reserve";
         this.apiBus = Urls.apiBaseUrl + "agent/Bus";
         this.apiBuses = Urls.apiBaseUrl + "agent/Bus/list";
         this.apiBusImage = Urls.apiBaseUrl + "agent/Bus/image";

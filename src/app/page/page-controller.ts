@@ -190,7 +190,7 @@ export class PageController implements OnInit, OnDestroy {
     /**Show Toast*/
     public showToastMsg(msg: string,
                         type: ToastType,
-                        duration: number = 3000,
+                        duration: number = 10000,
                         showCloseButton: boolean = true,
                         closeButton: string = Utils.convertHTMLEntity("&times;"),
                         onDismiss?: (data: any, role: string) => any,

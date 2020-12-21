@@ -32,7 +32,7 @@
                                     <ion-label class="cell-title cell-left">{{strings.getString("seats_txt")}} - {{bus.seats}}</ion-label>
                                 </div>
                                 <div>
-                                    <ion-label class="cell-content cell-left">{{bus.description}}</ion-label>
+                                    <ion-label class="cell-content cell-left">{{bus.type}}</ion-label>
                                 </div>
                             </div>
                         </ion-col>
@@ -74,7 +74,8 @@
                 <ion-item>
                     <ion-label position="stacked">{{strings.getString('seats_txt')}}</ion-label>
                     <ion-input name="busSeats" required [(ngModel)]="busSeats"
-                               placeholder="{{strings.getString('enter_bus_seats_txt')}}" type="NUMBER"></ion-input>
+                                min="{{busType?busType.seats:0}}"
+                                placeholder="{{strings.getString('enter_bus_seats_txt')}}" type="NUMBER"></ion-input>
                 </ion-item>
                 <br>
                 <ion-item>
