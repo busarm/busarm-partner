@@ -517,6 +517,20 @@ export class ViewTripPage extends PageController {
         }
     }
 
+    /**Chek if trip is still open*/
+    public checkIsOpen(status: string): boolean {
+        if (this.assertAvailable(status)) {
+            switch (status) {
+                case "3":
+                case "7":
+                case "8":
+                    return false;
+                default:
+                    return true;
+            }
+        }
+    }
+
     /**Get Status class for trip seat status*/
     public getTripSeatStatusClass(status: string): string {
         if (this.assertAvailable(status)) {

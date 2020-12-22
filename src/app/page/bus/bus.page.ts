@@ -70,19 +70,17 @@ export class BusPage extends PageController{
 
     /**Search input event
      * */
-    public onInput(event,isSearch=false) {
+    public onInput(event,isSearch?) {
         if (event.isTrusted) {
             this.searchText = event.target.value;
-            if (this.assertAvailable(this.searchText) && this.searchText.length > 0) {
-                if (isSearch) { //Only perform action if search pressed
-                    if (this.assertAvailable(this.buses)) {
-                        this.currentBuses = [];
-                        for (let index in this.buses) {
-                            let bus:BusInfo = this.buses[index];
-                            let reg = new RegExp(this.searchText, 'gi');
-                            if (bus.plate_num.match(reg)) {
-                                this.currentBuses.push(bus)
-                            }
+            if (this.assertAvailable(this.searchText) && this.searchText.length > 1) {
+                if (this.assertAvailable(this.buses)) {
+                    this.currentBuses = [];
+                    for (let index in this.buses) {
+                        let bus:BusInfo = this.buses[index];
+                        let reg = new RegExp(this.searchText, 'gi');
+                        if (bus.plate_num.match(reg)) {
+                            this.currentBuses.push(bus)
                         }
                     }
                 }

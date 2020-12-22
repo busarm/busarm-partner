@@ -44,20 +44,18 @@ export class LocationsPage extends PageController {
     
     /**Search input event
      * */
-    public onInput(event,isSearch=false) {
+    public onInput(event,isSearch?) {
         if (event.isTrusted) {
             this.searchText = event.target.value;
-            if (this.assertAvailable(this.searchText) && this.searchText.length > 0) {
-                if (isSearch) { //Only perform action if search pressed
-                    if (this.assertAvailable(this.locations)) {
-                        this.currentLocations = [];
-                        for (let index in this.locations) {
-                            let location:Location = this.locations[index];
-                            let reg = new RegExp(this.searchText, 'gi');
-                            if (location.loc_name.match(reg) || location.city_name.match(reg) || location.prov_name.match(reg)) {
-                                this.currentLocations.push(location);
-                                this.currentLocations = this.filterCurrentLocations();
-                            }
+            if (this.assertAvailable(this.searchText) && this.searchText.length > 1) {
+                if (this.assertAvailable(this.locations)) {
+                    this.currentLocations = [];
+                    for (let index in this.locations) {
+                        let location:Location = this.locations[index];
+                        let reg = new RegExp(this.searchText, 'gi');
+                        if (location.loc_name.match(reg) || location.city_name.match(reg) || location.prov_name.match(reg)) {
+                            this.currentLocations.push(location);
+                            this.currentLocations = this.filterCurrentLocations();
                         }
                     }
                 }

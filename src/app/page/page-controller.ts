@@ -38,8 +38,11 @@ export class PageController implements OnInit, OnDestroy {
             this.routeKey = null;
         }
     }
-    public ionViewDidEnter(){}
-    public ionViewDidLeave(){}
+    public ionViewDidEnter(){
+        this.hideLoading();
+    }
+    public ionViewDidLeave(){
+    }
 
 
     /**Get App instance*/

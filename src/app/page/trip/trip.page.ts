@@ -93,24 +93,22 @@ export class TripPage extends PageController{
 
     /**Search input event
      * */
-    public onInput(event,isSearch=false) {
+    public onInput(event,isSearch?) {
         if (event.isTrusted) {
             this.searchText = event.target.value;
-            if (this.assertAvailable(this.searchText) && this.searchText.length > 0) {
-                if (isSearch) { //Only perform action if search pressed
-                    if (this.assertAvailable(this.trips)) {
-                        this.currentTrips = [];
-                        for (let index in this.trips) {
-                            let trip = this.trips[index];
-                            let reg = new RegExp(this.searchText, 'gi');
-                            if (trip.pickup_loc_name.match(reg) ||
-                                trip.pickup_city.match(reg) ||
-                                trip.dropoff_loc_name.match(reg) ||
-                                trip.dropoff_city.match(reg) ||
-                                trip.agent_email.match(reg)) {
+            if (this.assertAvailable(this.searchText) && this.searchText.length > 1) {
+                if (this.assertAvailable(this.trips)) {
+                    this.currentTrips = [];
+                    for (let index in this.trips) {
+                        let trip = this.trips[index];
+                        let reg = new RegExp(this.searchText, 'gi');
+                        if (trip.pickup_loc_name.match(reg) ||
+                            trip.pickup_city.match(reg) ||
+                            trip.dropoff_loc_name.match(reg) ||
+                            trip.dropoff_city.match(reg) ||
+                            trip.agent_email.match(reg)) {
 
-                                this.currentTrips.push(trip)
-                            }
+                            this.currentTrips.push(trip)
                         }
                     }
                 }

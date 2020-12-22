@@ -80,7 +80,7 @@
             </ion-row>
         </ion-card-content>
     </ion-card>
-    <ion-card *ngIf="trip!=null && trip.tickets!=null && trip.tickets.length>0">
+    <ion-card *ngIf="trip!=null && checkIsOpen(trip.status_id) && trip.tickets!=null && trip.tickets.length>0">
         <ion-card-title class="cell cell-center ">
             {{strings.getString("ticket_txt")}}
         </ion-card-title>
@@ -123,7 +123,7 @@
             </ion-list>
         </ion-card-content>
     </ion-card>
-    <ion-card>
+    <ion-card *ngIf="trip!=null && checkIsOpen(trip.status_id)">
         <ion-card-title class="cell cell-center ">
             {{strings.getString("seats_txt")}}
         </ion-card-title>
@@ -151,7 +151,7 @@
             </ion-list>
         </ion-card-content>
     </ion-card>
-    <ion-card *ngIf="trip!=null && trip.bus==null">
+    <ion-card *ngIf="trip!=null && checkIsOpen(trip.status_id) && trip.bus==null">
         <ion-card-title class="cell cell-center ">
             {{strings.getString("bus_type_txt")}}
         </ion-card-title>
@@ -181,7 +181,7 @@
             </ion-row>
         </ion-card-content>
     </ion-card>
-    <ion-card>
+    <ion-card *ngIf="trip!=null && checkIsOpen(trip.status_id)">
         <ion-card-title class="cell cell-center ">
             {{strings.getString("bus_txt")}}
         </ion-card-title>

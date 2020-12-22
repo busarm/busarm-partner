@@ -281,21 +281,16 @@ export class DashboardPage extends PageController {
      * @param event
      * @param {boolean} isSearch
      */
-    public onInput(event,isSearch=false) {
+    public onInput(event,isSearch?) {
         if (event.isTrusted) {
-            this.referenceCode = event.target.value;
-            if (this.assertAvailable(this.referenceCode) && this.referenceCode.length > 0) {
-                if (isSearch) { //Only perform action if search pressed
-                    this.referenceCode = this.referenceCode.toUpperCase();
-                    if (this.referenceCode.length >= 6) {
-                        this.findBooking(this.referenceCode);
-                    }
-                }
+            if (event.target.value && event.target.value.length > 7) {
+                this.referenceCode = event.target.value.toUpperCase();
+                this.findBooking(this.referenceCode);
             }
             else {
                 this.onClear(event);
             }
-        }
+        } 
     }
 
     /**Reset Search bar

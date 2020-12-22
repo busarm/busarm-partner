@@ -37,19 +37,17 @@ export class AgentsPage extends PageController {
     
     /**Search input event
      * */
-    public onInput(event,isSearch=false) {
+    public onInput(event,isSearch?) {
         if (event.isTrusted) {
             this.searchText = event.target.value;
-            if (this.assertAvailable(this.searchText) && this.searchText.length > 0) {
-                if (isSearch) { //Only perform action if search pressed
-                    if (this.assertAvailable(this.agents)) {
-                        this.currentAgents = [];
-                        for (let index in this.agents) {
-                            let agent:UserInfo = this.agents[index];
-                            let reg = new RegExp(this.searchText, 'gi');
-                            if (agent.name.match(reg) || agent.email.match(reg)) {
-                                this.currentAgents.push(agent)
-                            }
+            if (this.assertAvailable(this.searchText) && this.searchText.length > 1) {
+                if (this.assertAvailable(this.agents)) {
+                    this.currentAgents = [];
+                    for (let index in this.agents) {
+                        let agent:UserInfo = this.agents[index];
+                        let reg = new RegExp(this.searchText, 'gi');
+                        if (agent.name.match(reg) || agent.email.match(reg)) {
+                            this.currentAgents.push(agent)
                         }
                     }
                 }

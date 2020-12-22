@@ -17,12 +17,12 @@
     <ion-searchbar
             showCancelButton="focus"
             placeholder="{{strings.getString('trip_search_hint')}}"
-            debounce="500"
             (input)="onInput($event)"
             (search)="onInput($event,true)"
             (clear)="onClear($event)"
             (cancel)="onClear($event)"
             [animated]="true"
+            inputmode="search"
             [(ngModel)]="searchText">
     </ion-searchbar>
     <!-- Date selector -->
