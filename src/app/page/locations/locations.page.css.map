@@ -2,8 +2,8 @@
     "version": 3,
     "mappings": "",
     "sources": [
-        "agents.page.scss"
+        "locations.page.scss"
     ],
     "names": [],
-    "file": "agents.page.css"
+    "file": "locations.page.css"
 }

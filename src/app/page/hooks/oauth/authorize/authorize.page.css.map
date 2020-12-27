@@ -2,8 +2,8 @@
     "version": 3,
     "mappings": "",
     "sources": [
-        "pay-in.page.scss"
+        "authorize.page.scss"
     ],
     "names": [],
-    "file": "pay-in.page.css"
+    "file": "authorize.page.css"
 }

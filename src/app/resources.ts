@@ -197,6 +197,17 @@ export enum Keys {
     bus_seat_size_error,
     select_date_txt,
     repeat_txt,
+    share_bus_txt,
+    share_txt,
+    no_bus_sharing_txt,
+    delete_bus_share_title_txt,
+    delete_bus_share_msg_txt,
+    enter_account_id_txt,
+    enter_partner_name_txt,
+    partner_account_id_txt,
+    partner_name_txt,
+    update_available_title,
+    update_available_msg,
 }
 
 export type StringKey = keyof typeof Keys;
@@ -394,8 +405,18 @@ const English: String = {
     add_location_txt: "Add Location",
     bus_seat_size_error: "Bus seats must be greater than {0}",
     select_date_txt: "Select Date",
-    repeat_txt: "Repeat"
-
+    repeat_txt: "Repeat",
+    share_bus_txt: "Share Bus",
+    share_txt: "Share",
+    no_bus_sharing_txt: "Bus is currently not shared with anyone",
+    delete_bus_share_title_txt: "Stop Sharing",
+    delete_bus_share_msg_txt: "Are you sure you want to stop sharing bus with this partner?",
+    enter_account_id_txt: "Enter Partner Account Id to share with",
+    enter_partner_name_txt: "Enter Partner Name",
+    partner_account_id_txt: "Partner Account ID",
+    partner_name_txt: "Partner Name",
+    update_available_title: "Update Available",
+    update_available_msg: "A new version is available. Do you want to load it?"
 };
 
 

@@ -36,6 +36,7 @@ import { Events } from './services/Events';
 import { NavigationOptions } from '@ionic/angular/dist/providers/nav-controller';
 import { PingObject } from './models/ApiResponse';
 import { ENV } from '../environments/ENV';
+import { SwUpdate } from '@angular/service-worker';
 // import { NavigationOptions } from '@ionic/angular/providers/nav-controller';
 
 @Component({
@@ -44,7 +45,40 @@ import { ENV } from '../environments/ENV';
 })
 export class AppComponent {
 
-    constructor(public platform: Platform,
+    /**Get app instance*/
+    public static get oauth(): Oauth {
+        return AppComponent._oauth;
+    }
+
+    /**Get app instance*/
+    public static get instance(): AppComponent {
+        return AppComponent._instance;
+    }
+
+    private static _oauth: Oauth;
+    private static _instance: AppComponent;
+
+    @ViewChild('loaderDiv') loadingScreen: ElementRef;
+    @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
+
+    private toast;
+    private loader;
+    private alert;
+
+
+    /*Defines whether or not
+    the app has been completed loading or not*/
+    public loaded = false;
+
+    /*User Authorization*/
+    public authAttempted = false;
+    public authorized = false;
+
+    /*Current Navigated Page*/
+    public currentPage: {id: number, url: string} = null;
+
+    constructor(private swUpdate: SwUpdate,
+                public platform: Platform,
                 public router: Router,
                 public deeplinks: Deeplinks,
                 public navCtrl: NavController,
@@ -81,6 +115,9 @@ export class AppComponent {
             verifyTokenUrl: Urls.oauthVerifyTokenUrl
         });
 
+        /*Subscribe to any updates*/
+        this.subscribeToUpdates();
+
         /*All set ready to go*/
         platform.ready().then(async () => {
 
@@ -112,37 +149,25 @@ export class AppComponent {
         });
     }
 
-    /**Get app instance*/
-    public static get oauth(): Oauth {
-        return AppComponent._oauth;
+    /**Subscribe to any updates */
+    private subscribeToUpdates(): void {
+        if (this.swUpdate.available) {
+            this.swUpdate.available.subscribe(() => {
+            this.showAlert(
+                Strings.getString("update_available_title"),
+                Strings.getString("update_available_msg"),
+                {
+                    title: Strings.getString("no_txt")
+                },
+                {
+                    title: Strings.getString("yes_txt"),
+                    callback: () => {
+                        window.location.reload();
+                    }
+                },
+            )});
+        }
     }
-
-    /**Get app instance*/
-    public static get instance(): AppComponent {
-        return AppComponent._instance;
-    }
-
-    private static _oauth: Oauth;
-    private static _instance: AppComponent;
-
-    @ViewChild('loaderDiv') loadingScreen: ElementRef;
-    @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
-
-    private toast;
-    private loader;
-    private alert;
-
-
-    /*Defines whether or not
-    the app has been completed loading or not*/
-    public loaded = false;
-
-    /*User Authorization*/
-    public authAttempted = false;
-    public authorized = false;
-
-    /*Current Navigated Page*/
-    public currentPage: {id: number, url: string} = null;
 
     /**Get Ping Status
      * @return {PingObject}

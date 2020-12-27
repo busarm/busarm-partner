@@ -60,6 +60,7 @@ export interface UserInfo {
     partner_name?: string;
     partner_active?:  boolean|number;
     partner_verified?:  boolean|number;
+    account_id?: string;
     suspended?: string;
     verified?: string;
     country?: Country;
@@ -260,8 +261,16 @@ export interface BusInfo{
     description?: string,
     seats?: string,
     type?: string,
+    shared?: string,
+    shared_partners?: BusSharedPartner[],
     type_id?: string
     images?:BusImage[]
+}
+
+export interface BusSharedPartner{
+    bus_id?: string,
+    partner_id?: string,
+    title?: string
 }
 
 export interface BusImage{

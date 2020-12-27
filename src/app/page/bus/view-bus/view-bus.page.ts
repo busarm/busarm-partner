@@ -3,11 +3,12 @@ import {ActionSheetController, ModalController, Platform} from "@ionic/angular";
 import {Camera,CameraOptions,PictureSourceType} from "@ionic-native/camera/ngx";
 import {File,FileEntry} from "@ionic-native/file/ngx";
 import {PageController} from "../../page-controller";
-import {BusImage, BusInfo, UserInfo} from "../../../models/ApiResponse";
+import {BusImage, BusInfo, BusSharedPartner, UserInfo} from "../../../models/ApiResponse";
 import {ToastType, Utils} from "../../../libs/Utils";
 import {Api} from "../../../libs/Api";
 import {Strings} from "../../../resources";
 import {DestinationType} from "@ionic-native/camera";
+import { ShareBusPage } from '../share-bus/share-bus.page';
 
 @Component({
     selector: 'app-view-bus',
@@ -220,6 +221,24 @@ export class ViewBusPage extends PageController {
         });
     }
 
+    /**
+     * Show Share bus page
+     */
+    public async shareBus(){
+        let chooseModal = await this.modalCtrl.create({
+            component: ShareBusPage,
+            componentProps: {
+                busId: this.bus.id
+            }
+        });
+        chooseModal.onDidDismiss().then(data => {
+            if (data.data == true) {
+                this.loadBusView();
+            }
+        });
+        return await chooseModal.present();
+    }
+
     /**Show Delete confirmation
      * */
     public confirmDeleteImage(image:BusImage) {
@@ -266,6 +285,51 @@ export class ViewBusPage extends PageController {
         });
     }
 
+
+    /**Show Delete confirmation
+     * */
+    public confirmDeleteSharedBus(shared: BusSharedPartner) {
+        this.showAlert(
+            this.strings.getString("delete_bus_share_title_txt"),
+            this.strings.getString("delete_bus_share_msg_txt"),
+            {
+                title: this.strings.getString("no_txt")
+            },
+            {
+                title: this.strings.getString("yes_txt"),
+                callback: () => {
+                    this.deleteSharedBus(shared);
+                }
+            },
+        );
+    }
+
+    /**Delete Shared Bus*/
+    public deleteSharedBus(shared: BusSharedPartner) {
+        this.showLoading().then(()=>{
+            Api.deleteSharedBus(shared.bus_id, shared.partner_id,(status, result) => {
+                this.hideLoading();
+                if (status) {
+                    if (this.assertAvailable(result)) {
+                        if (result.status){
+                            this.updated = true;
+                            this.loadBusView();
+                            this.showToastMsg(result.msg, ToastType.SUCCESS);
+                        }
+                        else{
+                            this.showToastMsg(result.msg, ToastType.ERROR);
+                        }
+                    }
+                    else {
+                        this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                    }
+                }
+                else {
+                    this.showToastMsg(result, ToastType.ERROR);
+                }
+            });
+        });
+    }
 
     async dismiss() {
         const modal = await this.modalCtrl.getTop();

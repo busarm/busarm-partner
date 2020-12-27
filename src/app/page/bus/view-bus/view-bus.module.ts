@@ -5,14 +5,20 @@ import {FormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 
 import {ViewBusPage} from './view-bus.page';
+import { ShareBusPageModule } from '../share-bus/share-bus.module';
+import { ShareBusPage } from '../share-bus/share-bus.page';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        IonicModule
+        IonicModule,
+        ShareBusPageModule
     ],
-    declarations: [ViewBusPage]
+    declarations: [ViewBusPage],
+    entryComponents: [
+        ShareBusPage
+    ]
 })
 export class ViewBusPageModule {
 }

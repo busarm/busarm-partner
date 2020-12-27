@@ -2,8 +2,8 @@
     "version": 3,
     "mappings": "",
     "sources": [
-        "pay-in.page.scss"
+        "share-bus.page.scss"
     ],
     "names": [],
-    "file": "pay-in.page.css"
+    "file": "share-bus.page.css"
 }

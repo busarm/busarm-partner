@@ -804,6 +804,24 @@ export class Api {
         });
     }
 
+    /**Post Bus Share Info
+     * @param busId
+     * @param accountId
+     * @param title
+     * @param callback
+     * */
+    public static addSharedBus(busId: any, accountId: any, title: any, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            method: OauthRequestMethod.POST,
+            params: {
+                busId: busId,
+                accountId: accountId,
+                title: title
+            },
+            url: Urls.apiBusShare,
+            callback: callback
+        });
+    }
 
     /**Post Bus Image
      * @param formData
@@ -1048,6 +1066,24 @@ export class Api {
                 imageId: imageId
             },
             url: Urls.apiBusImage,
+            cache: false,
+            callback: callback
+        });
+    }
+
+    /**Delete Share bus
+     * @param busId
+     * @param imageId
+     * @param callback
+     * */
+    public static deleteSharedBus(busId: string, partnerId: string, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            method: OauthRequestMethod.DELETE,
+            params: {
+                busId: busId,
+                partnerId: partnerId
+            },
+            url: Urls.apiBusShare,
             cache: false,
             callback: callback
         });

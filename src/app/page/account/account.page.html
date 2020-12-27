@@ -60,7 +60,7 @@
                             <ion-col size-sm="7" size="12" class="cell cell-flex cell-flex-center">
                                 <div class="cell cell-center cell-left">
                                     <div>
-                                        <ion-label class="cell-sub">{{userInfo.partner_name}}</ion-label>
+                                        <ion-label class="cell-title cell-sub">{{userInfo.partner_name}}</ion-label>
                                     </div>
                                     <div>
                                         <ion-label class="cell-title">{{userInfo.name}} 
@@ -72,6 +72,9 @@
                                     </div>
                                     <div>
                                         <ion-label class="cell-content">{{userInfo.dial_code}}{{userInfo.phone}}</ion-label>
+                                    </div>
+                                    <div>
+                                        <ion-label id="accountIdLb" class="cell-content"><strong>Account ID - </strong>{{userInfo.account_id}}</ion-label>
                                     </div>
                                 </div>
                             </ion-col>
