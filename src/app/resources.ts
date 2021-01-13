@@ -208,6 +208,8 @@ export enum Keys {
     partner_name_txt,
     update_available_title,
     update_available_msg,
+    payment_made_txt,
+    payment_type
 }
 
 export type StringKey = keyof typeof Keys;
@@ -378,7 +380,7 @@ const English: String = {
     account_name_txt:"Account Name",
     bank_name_txt:"Bank Name",
     account_number_txt:"Account Number",
-    payment_info_txt:"Please make payment to the following bank account and submit your payment reference number for verification of your payment.",
+    payment_info_txt:"Please make payment to the following bank account and include the Payment Reference number below in the reference field of your payment.",
     action_confirm_msg_txt:"Are you sure you want to continue?",
     invalid_location:"Invalid location selected",
     support_txt:"Support",
@@ -416,7 +418,9 @@ const English: String = {
     partner_account_id_txt: "Partner Account ID",
     partner_name_txt: "Partner Name",
     update_available_title: "Update Available",
-    update_available_msg: "A new version is available. Do you want to load it?"
+    update_available_msg: "A new version is available. Do you want to load it?",
+    payment_made_txt: "I've made payment",
+    payment_type: "Payment Type",
 };
 
 

@@ -124,6 +124,7 @@ export interface BookingInfo{
     tickets?:BookingTicketInfo[],
     qrcode_url?:string,
     seats: SeatsInfo[],
+    payment_type:string
 }
 
 
@@ -421,6 +422,7 @@ export interface PayInTransaction{
     action_required:boolean,
     requests:PayInTransactionRequest[],
     info:string,
+    payment_reference:string,
 }
 
 export interface PayOutTransactionRequest {
@@ -463,6 +465,7 @@ export interface Bookings{
     verified: Booking[],
     pending: Booking[],
     unpaid: Booking[],
+    paid: Booking[],
     canceled?: Booking[],
 }
 

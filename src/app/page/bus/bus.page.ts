@@ -108,7 +108,7 @@ export class BusPage extends PageController{
             }
         });
         chooseModal.onDidDismiss().then(data => {
-            if (data.data === true) {
+            if (data.data) {
                 this.loadBusesView();
             }
         });
@@ -124,7 +124,7 @@ export class BusPage extends PageController{
             }
         });
         chooseModal.onDidDismiss().then(data => {
-            if (data.data == true) {
+            if (data.data) {
                 this.loadBusesView();
             }
         });

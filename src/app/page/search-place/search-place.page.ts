@@ -37,7 +37,7 @@ export class SearchPlacePage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-        if (typeof google !== 'undefined') {
+        if (google && typeof google !== 'undefined') {
             this.googleAutoComplete = new google.maps.places.AutocompleteService();
             this.geocoder = new google.maps.Geocoder();
             this.initMap();

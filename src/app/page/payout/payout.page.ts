@@ -91,14 +91,15 @@ export class PayoutPage extends PageController {
         if (this.assertAvailable(status)) {
             switch (status) {
                 case "0":
-                case "16":
+                case "17":
                     return "status-warn";
-                case "15":
+                case "16":
                     return "status-cancel";
-                case "14":
+                case "15":
                     return "status-error";
-                case "13":
+                case "14":
                     return "status-ok";
+                case "18":
                 default:
                     return "status-cancel";
             }

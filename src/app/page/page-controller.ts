@@ -18,7 +18,8 @@ export class PageController implements OnInit, OnDestroy {
     public userInfo: UserInfo = null;
     public routeKey: string = null;
 
-    public static timer: number = null;
+    public timer: number = null;
+    public interval: number = null;
 
     /**Global Constructor*/
     protected constructor() {
@@ -42,6 +43,7 @@ export class PageController implements OnInit, OnDestroy {
         this.hideLoading();
     }
     public ionViewDidLeave(){
+        clearInterval(this.interval);
     }
 
 
@@ -238,12 +240,24 @@ export class PageController implements OnInit, OnDestroy {
      * @param stopPrevious 
      */
     public setTimeout(handler?: TimerHandler, timeout?: number, stopPrevious: boolean = true) {
-        if (stopPrevious && PageController.timer) {
-            clearTimeout(PageController.timer);
+        if (stopPrevious && this.timer) {
+            clearTimeout(this.timer);
         }
-        PageController.timer = setTimeout(handler, timeout)
+        this.timer = setTimeout(handler, timeout)
     }
 
+    /**
+     * Set Interval
+     * @param handler 
+     * @param timeout 
+     * @param stopPrevious 
+     */
+    public setInterval(handler?: TimerHandler, timeout?: number, stopPrevious: boolean = true) {
+        if (stopPrevious && this.interval) {
+            clearInterval(this.interval);
+        }
+        this.interval = setInterval(handler, timeout)
+    }
 
     /*backButtonEvent() {
         this.platform.backButton.subscribe(async () => {

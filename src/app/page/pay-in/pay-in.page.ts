@@ -15,7 +15,6 @@ export class PayInPage extends PageController {
     accountName: string;
     bankName: string;
     accountNumber: string;
-    paymentReference: string;
 
     constructor() {
         super();
@@ -53,7 +52,7 @@ export class PayInPage extends PageController {
     /**Submit request form*/
     public submit() {
         let payInRequest = {
-            paymentReference: this.paymentReference,
+            paymentReference: this.payIn.payment_reference,
             dateFrom: this.payIn.from,
             dateTo: this.payIn.to,
             currencyCode: this.payIn.currency_code,
@@ -78,14 +77,15 @@ export class PayInPage extends PageController {
         if (this.assertAvailable(status)) {
             switch (status) {
                 case "0":
-                case "16":
+                case "17":
                     return "status-warn";
-                case "15":
+                case "16":
                     return "status-cancel";
-                case "14":
+                case "15":
                     return "status-error";
-                case "13":
+                case "14":
                     return "status-ok";
+                case "18":
                 default:
                     return "status-cancel";
             }

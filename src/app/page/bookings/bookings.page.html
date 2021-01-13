@@ -36,7 +36,7 @@
                             </ion-label>
                         </div>
                         <div class="cell cell-center ">
-                            <ion-button *ngIf="booking.status_id!='10'" color="primary" (click)="findBooking(booking.booking_id)">
+                            <ion-button *ngIf="booking.status_id!='10' && booking.status_id!='13'" color="primary" (click)="findBooking(booking.booking_id)">
                                 <ion-icon slot="start" name="open"> </ion-icon>
                                 {{strings.getString("view_txt")}}
                             </ion-button>

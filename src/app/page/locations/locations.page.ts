@@ -124,7 +124,7 @@ export class LocationsPage extends PageController {
             }
         });
         chooseModal.onDidDismiss().then(data => {
-            if (data.data === true) {
+            if (data.data) {
                 this.loadLocationsView();
             }
         });

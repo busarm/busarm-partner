@@ -75,9 +75,6 @@ export class TripPage extends PageController{
                 this.selectedCountry = this.session.country.country_code;
             }
         });
-
-        // Set date
-        this.selectedDate = this.getDateString(this.currentDate);
     } 
 
     public ngOnDestroy(){
@@ -87,6 +84,7 @@ export class TripPage extends PageController{
 
     public async ionViewDidEnter(){
         if (!this.trips){
+            this.selectedDate = this.selectedDate || this.currentDate.toString();
             this.loadTripsView();
         }
     }

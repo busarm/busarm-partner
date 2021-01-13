@@ -51,6 +51,8 @@ export class ViewBookingPage extends PageController {
                     return "status-cancel";
                 case "12":
                     return "status-warn";
+                case "13":
+                    return "status-default";
                 case "11":
                     return "status-ok";
                 case "10":

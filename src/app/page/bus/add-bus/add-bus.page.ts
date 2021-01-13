@@ -73,8 +73,8 @@ export class AddBusPage extends PageController {
                             this.hideLoading();
                             if (status){
                                 if (result.status){
-                                    this.dismiss(result.data);
                                     this.showToastMsg(result.msg, ToastType.SUCCESS);
+                                    this.dismiss(result.data);
                                 }
                                 else{
                                     this.showToastMsg(result.msg, ToastType.ERROR);

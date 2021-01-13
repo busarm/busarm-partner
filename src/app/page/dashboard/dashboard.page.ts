@@ -18,6 +18,9 @@ import {BarcodeScanner} from "@ionic-native/barcode-scanner/ngx";
 import {Chart} from 'chart.js';
 import {ViewBookingPage} from "../bookings/view-booking/view-booking.page";
 import { Events } from '../../services/Events';
+import { MD5 } from 'crypto-js';
+import { ENVIRONMENT } from '../../../environments/environment';
+import { ENV } from '../../../environments/ENV';
 
 @Component({
     selector: 'app-dashboard',
@@ -73,14 +76,17 @@ export class DashboardPage extends PageController {
     }
 
     public async ionViewDidEnter(){
-
         /*Give time for components to load first*/
         this.setTimeout(() => {
-
             /*Init Dashboard*/
             if (!this.dashboard)
                 this.loadDashboardView();
         }, 500);
+        
+        /*Refresh dashboard every 10 secs*/
+        this.setInterval(() => {
+            this.loadDashboardView();
+        }, ENVIRONMENT == ENV.PROD ? 5000 : 10000);
     }
 
     /** Set up dashboard contents
@@ -178,6 +184,7 @@ export class DashboardPage extends PageController {
                             data: {
                                 labels: [
                                     this.strings.getString("unpaid_txt"),
+                                    this.strings.getString("paid_txt"),
                                     this.strings.getString("pending_txt"),
                                     this.strings.getString("verified_txt"),
                                     this.strings.getString("canceled_txt"),
@@ -185,18 +192,21 @@ export class DashboardPage extends PageController {
                                 datasets: [{
                                     data: [
                                         this.dashboard.bookings.unpaid.length,
+                                        this.dashboard.bookings.paid.length,
                                         this.dashboard.bookings.pending.length,
                                         this.dashboard.bookings.verified.length,
                                         this.dashboard.bookings.canceled.length,
                                     ],
                                     backgroundColor: [
                                         'rgba(223, 99, 45,1)',
+                                        'rgba(84, 142, 171,1)',
                                         'rgba(223, 168, 48,1)',
                                         'rgb(46, 139, 87)',
                                         'rgb(95, 95, 95)',
                                     ],
                                     hoverBackgroundColor: [
                                         'rgb(155, 70, 32)',
+                                        "rgb(56, 89, 115)",
                                         'rgb(155, 115, 40)',
                                         'rgb(35, 107, 67)',
                                         'rgb(55, 55, 55)',
@@ -325,6 +335,8 @@ export class DashboardPage extends PageController {
                     return "status-cancel";
                 case "12":
                     return "status-warn";
+                case "13":
+                    return "status-default";
                 case "11":
                     return "status-ok";
                 case "10":
@@ -386,7 +398,7 @@ export class DashboardPage extends PageController {
             if (status) {
                 //Save user data to session
                 if (this.assertAvailable(result)) {
-                    if (result.data) {
+                    if (result.data && (String(MD5(Utils.toJson(this.dashboard))) != String(MD5(Utils.toJson(result.data))))) {
                         this.dashboard = result.data;
                         await this.initDashboard();
                     }

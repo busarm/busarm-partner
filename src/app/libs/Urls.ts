@@ -15,7 +15,7 @@ export class Urls{
                 return "https://staging.wecari.com/";
             case ENV.DEV:
             default:
-                return "http://localhost/wecari.com/app/";
+                return "http://localhost/";
         }
     }
     public static get apiBaseUrl():string {
@@ -26,7 +26,7 @@ export class Urls{
                 return "https://api.staging.wecari.com/";
             case ENV.DEV:
             default:
-                return "http://localhost/wecari.com/api/";
+                return "http://localhost:8080/";
         }
     };
     public static get oauthBaseUrl():string {
@@ -37,7 +37,7 @@ export class Urls{
                 return "https://oauth.staging.wecari.com/";
             case ENV.DEV:
             default:
-                return "http://localhost/wecari.com/oauth/";
+                return "http://localhost:8000/";
         }
     };
     public static get partnerBaseUrl():string {

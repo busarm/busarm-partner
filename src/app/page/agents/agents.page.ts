@@ -101,7 +101,7 @@ export class AgentsPage extends PageController {
             component: AddAgentPage
         });
         chooseModal.onDidDismiss().then(data => {
-            if (data.data === true) {
+            if (data.data) {
                 this.loadAgentsView();
             }
         });

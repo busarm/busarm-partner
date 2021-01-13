@@ -34,7 +34,7 @@ export class AddLocationPage extends PageController {
         await super.ngOnInit();
 
         //Load google api if not available
-        if (typeof google === 'undefined') {
+        if (!google || typeof google === 'undefined') {
             if (this.session && this.session.configs && this.session.configs.google_api_key){
                 Utils.loadGoogleApi(this.session.configs.google_api_key);
             }
