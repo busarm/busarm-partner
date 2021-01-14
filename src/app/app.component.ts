@@ -443,7 +443,8 @@ export class AppComponent {
         this.alert = await this.alertCtrl.create({
             header: title,
             message: Utils.convertHTMLEntity(message),
-            buttons: buttons
+            buttons: buttons,
+            backdropDismiss: !(primaryBt || secondaryBt)
         });
         return await this.alert.present();
     }
