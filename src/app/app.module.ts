@@ -1,4 +1,4 @@
-import {enableProdMode, NgModule} from '@angular/core';
+import {enableProdMode, ErrorHandler, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouteReuseStrategy} from '@angular/router';
 
@@ -27,9 +27,22 @@ import {environment} from "../environments/environment";
 import {AuthGuard} from "./services/AuthGuard";
 import { ServiceWorkerModule } from '@angular/service-worker';
 
+import Bugsnag from '@bugsnag/js'
+import {BugsnagErrorHandler} from '@bugsnag/plugin-angular'
+
 //Turn on production mode
 if(environment.production)
     enableProdMode();
+
+// Configure Bugsnag
+if(environment.bugsnag_key){
+    Bugsnag.start({ apiKey: environment.bugsnag_key });
+}
+
+// Create a factory which will return the Bugsnag error handler
+export function errorHandlerFactory() {
+    return new BugsnagErrorHandler()
+}
 
 @NgModule({
     declarations: [AppComponent],
@@ -68,7 +81,8 @@ if(environment.production)
         FilePath,
         AES256,
         InAppBrowser,
-        Deeplinks
+        Deeplinks,
+        { provide: ErrorHandler, useFactory: errorHandlerFactory }
     ],
     bootstrap: [AppComponent]
 })

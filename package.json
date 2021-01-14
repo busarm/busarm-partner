@@ -23,6 +23,8 @@
     "@angular/pwa": "^0.12.4",
     "@angular/router": "^7.2.16",
     "@angular/service-worker": "^7.2.16",
+    "@bugsnag/js": "^7.5.6",
+    "@bugsnag/plugin-angular": "^7.5.6",
     "@ionic-native/aes-256": "^5.28.0",
     "@ionic-native/app-version": "^5.28.0",
     "@ionic-native/barcode-scanner": "^5.28.0",
