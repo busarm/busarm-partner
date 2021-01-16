@@ -23,7 +23,7 @@ import {AES256} from "@ionic-native/aes-256/ngx";
 import {InAppBrowser} from "@ionic-native/in-app-browser/ngx";
 import {DEFAULT_TIMEOUT, TimeoutInterceptor} from "./services/TimeoutInterceptor";
 import {Deeplinks} from "@ionic-native/deeplinks/ngx";
-import {environment} from "../environments/environment";
+import {ENVIRONMENT, CONFIGS} from "../environments/environment";
 import {AuthGuard} from "./services/AuthGuard";
 import { ServiceWorkerModule } from '@angular/service-worker';
 
@@ -31,12 +31,18 @@ import Bugsnag from '@bugsnag/js'
 import {BugsnagErrorHandler} from '@bugsnag/plugin-angular'
 
 //Turn on production mode
-if(environment.production)
+if(CONFIGS.production){
     enableProdMode();
+}
 
 // Configure Bugsnag
-if(environment.bugsnag_key){
-    Bugsnag.start({ apiKey: environment.bugsnag_key });
+if(CONFIGS.bugsnag_key){
+    Bugsnag.start({ 
+        apiKey: CONFIGS.bugsnag_key,
+        releaseStage: ENVIRONMENT.toString(),
+        appVersion: CONFIGS.app_version,
+        appType: "HTTP"
+    });
 }
 
 // Create a factory which will return the Bugsnag error handler
@@ -61,7 +67,7 @@ export function errorHandlerFactory() {
             driverOrder: ['indexeddb', 'localstorage', 'websql', 'sqlite']
         }),
         AppRoutingModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: CONFIGS.production }),
     ],
     providers: [
         [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }],
@@ -82,7 +88,7 @@ export function errorHandlerFactory() {
         AES256,
         InAppBrowser,
         Deeplinks,
-        { provide: ErrorHandler, useFactory: errorHandlerFactory }
+        {provide: ErrorHandler, useFactory: errorHandlerFactory}
     ],
     bootstrap: [AppComponent]
 })

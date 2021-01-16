@@ -381,8 +381,7 @@ export interface Dashboard{
         bookings:{
             currency_code:string,
             amount:number,
-            cash:number,
-            banked_in:number,
+            amount_details:AmmoutDetails[],
         },
         payin:PayInTransaction,
         payout:PayOutTransaction
@@ -396,6 +395,13 @@ export interface Alert {
     title:string,
     desc:string,
     action:string,
+}
+
+export interface AmmoutDetails{
+    title:string,
+    currency_code:string,
+    amount:number,
+    info:string,
 }
 
 export interface PayInTransactionRequest {
@@ -413,6 +419,7 @@ export interface PayInTransactionRequest {
 export interface PayInTransaction{
     currency_code:string,
     amount:number,
+    amount_details:AmmoutDetails[],
     paid:number,
     overpaid:number,
     balance:number,
@@ -442,6 +449,7 @@ export interface PayOutTransactionRequest {
 export interface PayOutTransaction{
     currency_code:string,
     amount:number,
+    amount_details:AmmoutDetails[],
     paid:number,
     overpaid:number,
     balance:number,

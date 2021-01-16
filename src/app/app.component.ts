@@ -31,7 +31,7 @@ import {Urls} from './libs/Urls';
 import {Langs, Strings} from './resources';
 import {Oauth, OauthGrantType, OauthUtils} from './libs/Oauth';
 import {CIPHER} from './libs/CIPHER';
-import { ENVIRONMENT, environment } from '../environments/environment';
+import { ENVIRONMENT, CONFIGS } from '../environments/environment';
 import { Events } from './services/Events';
 import { NavigationOptions } from '@ionic/angular/dist/providers/nav-controller';
 import { PingObject } from './models/ApiResponse';
@@ -108,8 +108,8 @@ export class AppComponent {
 
         /*Initialize Oauth*/
         AppComponent._oauth = new Oauth({
-            clientId: environment.oauth_client_id,
-            clientSecret: environment.oauth_client_secret,
+            clientId: CONFIGS.oauth_client_id,
+            clientSecret: CONFIGS.oauth_client_secret,
             authorizeUrl: Urls.oauthAuthorizeUrl,
             tokenUrl: Urls.oauthTokenUrl,
             verifyTokenUrl: Urls.oauthVerifyTokenUrl
@@ -543,14 +543,14 @@ export class AppComponent {
                 return value;
             })
             .catch(() => {
-                return environment.app_version;
+                return CONFIGS.app_version;
             });
         const appName = await this.appVersion.getAppName()
             .then(value => {
                 return value;
             })
             .catch(() => {
-                return environment.app_name;
+                return CONFIGS.app_name;
             });
 
         const platform = this.platform.is('android') ?

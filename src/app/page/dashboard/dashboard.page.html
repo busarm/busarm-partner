@@ -85,8 +85,7 @@
             <!--Active trip grid-->
             <ion-grid *ngIf=" dashboard.active_trips!=null && dashboard.active_trips.length > 0">
                 <ion-row class="ion-justify-content-center" wrap>
-                    <ion-col size="12" size-md="6" size-xl="4"
-                             *ngFor="let trip of dashboard.active_trips; let i = index" [attr.index]="i">
+                    <ion-col size="12" size-md="6" size-xl="4" *ngFor="let trip of dashboard.active_trips; let i = index" [attr.index]="i">
                         <ion-card>
                             <ion-card-header>
                                 <ion-row>
@@ -152,8 +151,7 @@
                         placeholder="{{strings.getString('select_month_txt')}}"
                         [(ngModel)]="selectedBookingMonth"
                         (ionChange)="loadDashboardView()">
-                <ion-select-option *ngFor="let month of bookingMonths; let i = index" [attr.index]="i"
-                                   [value]="i">
+                <ion-select-option *ngFor="let month of bookingMonths; let i = index" [attr.index]="i" [value]="i">
                     {{month.display_date}}
                 </ion-select-option>
             </ion-select>
@@ -248,6 +246,7 @@
 
             <!--Transactions grid-->
             <ion-grid>
+                <!-- Booking Transaction -->
                 <ion-row class="ion-justify-content-center ion-align-items-center">
                     <ion-col size="12" size-md="6" size-xl="6">
                         <ion-card>
@@ -266,36 +265,130 @@
                                             {{dashboard.transactions.bookings.amount}}
                                         </ion-label>
                                     </ion-col>
+                                </ion-row>
+                                <ion-list class="ion-justify-content-center" *ngIf="dashboard.transactions.bookings.amount_details">
+                                    <ion-row *ngFor="let detail of dashboard.transactions.bookings.amount_details;">
+                                        <ion-col size="1" class="cell-flex cell-flex-center">
+                                            <ion-label class="x-small-text">&bull;</ion-label>
+                                        </ion-col>
+                                        <ion-col size="11">
+                                            <ion-row>
+                                                <ion-col size="8">
+                                                    <ion-label class="x-small-text">{{detail.title}}</ion-label>
+                                                </ion-col>
+                                                <ion-col size="4">
+                                                    <ion-label class="x-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                </ion-col>
+                                            </ion-row>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-list>
+                            </ion-card-content>
+                        </ion-card>
+                    </ion-col>
+                </ion-row>
+                <!-- Pay-in / Payout Transaction -->
+                <ion-row class="ion-justify-content-center ion-align-items-center">
+                    <!-- Payout (Revenue) -->
+                    <ion-col size="12" size-md="6" size-xl="6">
+                        <ion-card>
+                            <ion-card-content>
+                                <ion-row class="ion-justify-content-center" wrap>
+                                    <ion-col size="12" position="center" class="cell cell-center ion-no-padding">
+                                        <ion-label class="x-large-text bold">{{strings.getString('revenue_txt')}}
+                                        </ion-label>
+                                    </ion-col>
+                                    <ion-col size="12" position="center" class="cell cell-center ion-no-padding">
+                                        <ion-row>
+                                            <ion-col size="12" position="center">
+                                                <ion-label class="small-text" color="dark">
+                                                    {{strings.getString('balance_txt')}}
+                                                </ion-label>
+                                            </ion-col>
+                                            <ion-col size="12" position="center">
+                                                <ion-label class="xxx-large-text bold" color="success">
+                                                    {{dashboard.transactions.payout.currency_code}}
+                                                    {{dashboard.transactions.payout.balance}}
+                                                </ion-label>
+                                            </ion-col>
+                                        </ion-row>
+                                    </ion-col>
                                     <ion-col size="12" position="center" class="cell">
                                         <ion-list>
+                                            <ion-col class="cell">
+                                                <ion-item class="cell">
+                                                    <ion-col size="8" size-sm="6" size-xs="5">
+                                                        <ion-label>{{strings.getString('total_txt')}}</ion-label>
+                                                    </ion-col>
+                                                    <ion-col size="4" size-sm="6" size-xs="7">
+                                                        <ion-label>
+                                                            {{dashboard.transactions.payout.currency_code}}
+                                                            {{dashboard.transactions.payout.amount}}
+                                                        </ion-label>
+                                                    </ion-col>
+                                                </ion-item>
+                                                <ion-list size="12" *ngIf="dashboard.transactions.payout.amount_details">
+                                                    <ion-row *ngFor="let detail of dashboard.transactions.payout.amount_details;">
+                                                        <ion-col size="1" class="cell-flex cell-flex-center">
+                                                            <ion-label class="x-small-text">&bull;</ion-label>
+                                                        </ion-col>
+                                                        <ion-col size="11">
+                                                            <ion-row>
+                                                                <ion-col size-md="3" size-sm="3" size="8">
+                                                                    <ion-label class="x-small-text">{{detail.title}}</ion-label>
+                                                                </ion-col>
+                                                                <ion-col size-md="2" size-sm="3" size="4">
+                                                                    <ion-label class="x-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                                </ion-col>
+                                                                <ion-col size-md="7" size-sm="6" size="12" *ngIf="detail.info">
+                                                                    <ion-label class="xx-small-text cell-padding-auto color-normal" >
+                                                                        <ion-icon class="color-normal" name="information-circle-outline" slot="start"></ion-icon>
+                                                                        {{detail.info}}
+                                                                    </ion-label>
+                                                                </ion-col>
+                                                            </ion-row>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                </ion-list>
+                                            </ion-col>
                                             <ion-item class="cell">
                                                 <ion-col size="8" size-sm="6" size-xs="5">
-                                                    <ion-label>{{strings.getString('cash_txt')}}</ion-label>
+                                                    <ion-label>{{strings.getString('paid_txt')}}</ion-label>
                                                 </ion-col>
                                                 <ion-col size="4" size-sm="6" size-xs="7">
-                                                    <ion-label>{{dashboard.transactions.payout.currency_code}}
-                                                        {{dashboard.transactions.bookings.cash}}
+                                                    <ion-label>
+                                                        {{dashboard.transactions.payout.currency_code}}
+                                                        {{dashboard.transactions.payout.paid}}
                                                     </ion-label>
                                                 </ion-col>
                                             </ion-item>
                                             <ion-item class="cell">
                                                 <ion-col size="8" size-sm="6" size-xs="5">
-                                                    <ion-label>{{strings.getString('banked_in_txt')}}</ion-label>
+                                                    <ion-label>{{strings.getString('overpaid_txt')}}</ion-label>
                                                 </ion-col>
                                                 <ion-col size="4" size-sm="6" size-xs="7">
-                                                    <ion-label>{{dashboard.transactions.bookings.currency_code}}
-                                                        {{dashboard.transactions.bookings.banked_in}}
+                                                    <ion-label>
+                                                        {{dashboard.transactions.payout.currency_code}}
+                                                        {{dashboard.transactions.payout.overpaid}}
                                                     </ion-label>
                                                 </ion-col>
                                             </ion-item>
                                         </ion-list>
                                     </ion-col>
                                 </ion-row>
+                                <ion-row *ngIf="dashboard.transactions.payout.action_required"
+                                         class="ion-justify-content-center">
+                                    <ion-col size="12" class="cell cell-flex cell-flex-center cell-padding-3x">
+                                        <ion-button color="primary"
+                                                    (click)="showPayout(dashboard.transactions.payout)">
+                                            {{strings.getString("request_payout_txt")}}
+                                        </ion-button>
+                                    </ion-col>
+                                </ion-row>
                             </ion-card-content>
                         </ion-card>
                     </ion-col>
-                </ion-row>
-                <ion-row class="ion-justify-content-center ion-align-items-center">
+                    <!-- Payin (Fees)-->
                     <ion-col size="12" size-md="6" size-xl="6">
                         <ion-card>
                             <ion-card-content>
@@ -321,22 +414,49 @@
                                     </ion-col>
                                     <ion-col size="12" position="center" class="cell">
                                         <ion-list>
-                                            <ion-item class="cell">
-                                                <ion-col size="8" size-sm="6" size-xs="5">
-                                                    <ion-label>{{strings.getString('total_txt')}}</ion-label>
-                                                </ion-col>
-                                                <ion-col size="4" size-sm="6" size-xs="7">
-                                                    <ion-label>{{dashboard.transactions.payin.currency_code}}
-                                                        {{dashboard.transactions.payin.amount}}
-                                                    </ion-label>
-                                                </ion-col>
-                                            </ion-item>
+                                            <ion-col class="cell">
+                                                <ion-item class="cell">
+                                                    <ion-col size="8" size-sm="6" size-xs="5">
+                                                        <ion-label>{{strings.getString('total_txt')}}</ion-label>
+                                                    </ion-col>
+                                                    <ion-col size="4" size-sm="6" size-xs="7">
+                                                        <ion-label>
+                                                            {{dashboard.transactions.payin.currency_code}}
+                                                            {{dashboard.transactions.payin.amount}}
+                                                        </ion-label>
+                                                    </ion-col>
+                                                </ion-item>
+                                                <ion-list size="12" *ngIf="dashboard.transactions.payin.amount_details">
+                                                    <ion-row *ngFor="let detail of dashboard.transactions.payin.amount_details;">
+                                                        <ion-col size="1" class="cell-flex cell-flex-center">
+                                                            <ion-label class="x-small-text">&bull;</ion-label>
+                                                        </ion-col>
+                                                        <ion-col size="11">
+                                                            <ion-row>
+                                                                <ion-col size-md="3" size-sm="3" size="8">
+                                                                    <ion-label class="x-small-text">{{detail.title}}</ion-label>
+                                                                </ion-col>
+                                                                <ion-col size-md="2" size-sm="3" size="4">
+                                                                    <ion-label class="x-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                                </ion-col>
+                                                                <ion-col size-md="7" size-sm="6" size="12" *ngIf="detail.info">
+                                                                    <ion-label class="xx-small-text cell-padding-auto color-normal" >
+                                                                        <ion-icon class="color-normal" name="information-circle-outline" slot="start"></ion-icon>
+                                                                        {{detail.info}}
+                                                                    </ion-label>
+                                                                </ion-col>
+                                                            </ion-row>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                </ion-list>
+                                            </ion-col>
                                             <ion-item class="cell">
                                                 <ion-col size="8" size-sm="6" size-xs="5">
                                                     <ion-label>{{strings.getString('paid_txt')}}</ion-label>
                                                 </ion-col>
                                                 <ion-col size="4" size-sm="6" size-xs="7">
-                                                    <ion-label>{{dashboard.transactions.payin.currency_code}}
+                                                    <ion-label>
+                                                        {{dashboard.transactions.payin.currency_code}}
                                                         {{dashboard.transactions.payin.paid}}
                                                     </ion-label>
                                                 </ion-col>
@@ -346,7 +466,8 @@
                                                     <ion-label>{{strings.getString('overpaid_txt')}}</ion-label>
                                                 </ion-col>
                                                 <ion-col size="4" size-sm="6" size-xs="7">
-                                                    <ion-label>{{dashboard.transactions.payin.currency_code}}
+                                                    <ion-label>
+                                                        {{dashboard.transactions.payin.currency_code}}
                                                         {{dashboard.transactions.payin.overpaid}}
                                                     </ion-label>
                                                 </ion-col>
@@ -363,76 +484,6 @@
                                     <ion-col size="12" class="cell cell-flex cell-flex-center cell-padding-3x">
                                         <ion-button color="primary" (click)="showPayIn(dashboard.transactions.payin)">
                                             {{strings.getString("make_payment_txt")}}
-                                        </ion-button>
-                                    </ion-col>
-                                </ion-row>
-                            </ion-card-content>
-                        </ion-card>
-                    </ion-col>
-                    <ion-col size="12" size-md="6" size-xl="6">
-                        <ion-card>
-                            <ion-card-content>
-                                <ion-row class="ion-justify-content-center" wrap>
-                                    <ion-col size="12" position="center" class="cell cell-center ion-no-padding">
-                                        <ion-label class="x-large-text bold">{{strings.getString('payout_txt')}}
-                                        </ion-label>
-                                    </ion-col>
-                                    <ion-col size="12" position="center" class="cell cell-center ion-no-padding">
-                                        <ion-row>
-                                            <ion-col size="12" position="center">
-                                                <ion-label class="small-text" color="dark">
-                                                    {{strings.getString('balance_txt')}}
-                                                </ion-label>
-                                            </ion-col>
-                                            <ion-col size="12" position="center">
-                                                <ion-label class="xxx-large-text bold" color="success">
-                                                    {{dashboard.transactions.payout.currency_code}}
-                                                    {{dashboard.transactions.payout.balance}}
-                                                </ion-label>
-                                            </ion-col>
-                                        </ion-row>
-                                    </ion-col>
-                                    <ion-col size="12" position="center" class="cell">
-                                        <ion-list>
-                                            <ion-item class="cell">
-                                                <ion-col size="8" size-sm="6" size-xs="5">
-                                                    <ion-label>{{strings.getString('total_txt')}}</ion-label>
-                                                </ion-col>
-                                                <ion-col size="4" size-sm="6" size-xs="7">
-                                                    <ion-label>{{dashboard.transactions.payout.currency_code}}
-                                                        {{dashboard.transactions.payout.amount}}
-                                                    </ion-label>
-                                                </ion-col>
-                                            </ion-item>
-                                            <ion-item class="cell">
-                                                <ion-col size="8" size-sm="6" size-xs="5">
-                                                    <ion-label>{{strings.getString('paid_txt')}}</ion-label>
-                                                </ion-col>
-                                                <ion-col size="4" size-sm="6" size-xs="7">
-                                                    <ion-label>{{dashboard.transactions.payout.currency_code}}
-                                                        {{dashboard.transactions.payout.paid}}
-                                                    </ion-label>
-                                                </ion-col>
-                                            </ion-item>
-                                            <ion-item class="cell">
-                                                <ion-col size="8" size-sm="6" size-xs="5">
-                                                    <ion-label>{{strings.getString('overpaid_txt')}}</ion-label>
-                                                </ion-col>
-                                                <ion-col size="4" size-sm="6" size-xs="7">
-                                                    <ion-label>{{dashboard.transactions.payout.currency_code}}
-                                                        {{dashboard.transactions.payout.overpaid}}
-                                                    </ion-label>
-                                                </ion-col>
-                                            </ion-item>
-                                        </ion-list>
-                                    </ion-col>
-                                </ion-row>
-                                <ion-row *ngIf="dashboard.transactions.payout.action_required"
-                                         class="ion-justify-content-center">
-                                    <ion-col size="12" class="cell cell-flex cell-flex-center cell-padding-3x">
-                                        <ion-button color="primary"
-                                                    (click)="showPayout(dashboard.transactions.payout)">
-                                            {{strings.getString("request_payout_txt")}}
                                         </ion-button>
                                     </ion-col>
                                 </ion-row>

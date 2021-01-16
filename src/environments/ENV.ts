@@ -1,5 +1,5 @@
 export enum ENV {
-    PROD,
-    TEST,
-    DEV
+    PROD = 'Production',
+    TEST = 'Testing',
+    DEV = 'Development'
 }

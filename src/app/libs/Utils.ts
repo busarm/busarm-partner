@@ -1,8 +1,5 @@
 import * as CryptoJS from "crypto-js";
 import { Urls } from "./Urls"; 
-import { NetworkProvider } from "../services/NetworkProvider"; 
-import { ENVIRONMENT } from "../../environments/environment";
-import { ENV } from "../../environments/ENV";
 import { PingObject } from "../models/ApiResponse";
 
 /**This hold Global Javascript functions

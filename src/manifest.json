@@ -1,7 +1,7 @@
 {
   "name": "Wecari Partner",
   "short_name": "Wecari Partner",
-  "version":  "1.0.26",
+  "version":  "1.0.27",
   "theme_color": "#3f5f44",
   "background_color": "#ffffff",
   "display": "standalone",

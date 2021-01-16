@@ -3,9 +3,10 @@ import {Assets, Strings} from "../resources";
 import {OnDestroy, OnInit} from "@angular/core";
 import {AppComponent} from "../app.component";
 import {SessionManager} from "../libs/SessionManager";
-import {PingObject, UserInfo, ValidateSessionObject} from "../models/ApiResponse";
+import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
 import { Params } from "@angular/router";
 import { MD5 } from "crypto-js";
+import { ENVIRONMENT, CONFIGS } from "../../environments/environment";
 
 export class PageController implements OnInit, OnDestroy {
 
@@ -55,6 +56,11 @@ export class PageController implements OnInit, OnDestroy {
     /**Get oauth instance*/
     get oauth() {
         return AppComponent.oauth;
+    }
+
+    /**Get app environment*/
+    get version(){
+        return CONFIGS.app_version;
     }
 
     /**Get Session Info
