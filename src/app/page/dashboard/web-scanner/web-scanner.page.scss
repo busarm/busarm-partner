@@ -1,0 +1,16 @@
+ion-content {
+    --background:black;
+    margin: auto;
+    object-fit: contain;
+
+    #toolbar{
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+    }
+    #scanner-container {
+        height: 100% !important;
+    }
+
+}

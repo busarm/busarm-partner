@@ -199,7 +199,7 @@ export class AccountPage extends PageController {
 
     /**Show App page*/
     public showApp(){
-        this.iab.create(Urls.baseUrl+"?access_token="+OauthStorage.accessToken,'_blank',{
+        this.iab.create(Urls.appUrl+"?access_token="+OauthStorage.accessToken,'_blank',{
             zoom:"no",
             hardwareback:"yes"
         });

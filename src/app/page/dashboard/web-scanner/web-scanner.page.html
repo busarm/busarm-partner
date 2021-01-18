@@ -1,0 +1,28 @@
+<ion-content class="ion-padding ion-justify-content-center ion-align-items-center">
+    <ion-toolbar id="toolbar" color="transparent">
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">
+                <ion-icon color='secondary' slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <div id="scanner-container" class="cell cell-flex cell-flex-center">
+        <zxing-scanner #scanner id="scanner"> </zxing-scanner>
+    </div>
+    <ion-fab *ngIf="flashAllowed || multiDeviceAllowed" vertical="bottom" horizontal="center" slot="fixed">
+        <ion-fab-button>
+            <ion-icon name="options"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-list *ngIf="flashAllowed" side="end">
+            <ion-fab-button (click)="toggleFlash()">
+                <ion-icon *ngIf="!flashEnabled" color="primary" name="flash"></ion-icon>
+                <ion-icon *ngIf="flashEnabled" color="primary" name="flash-off"></ion-icon>
+            </ion-fab-button>
+        </ion-fab-list>
+        <ion-fab-list *ngIf="multiDeviceAllowed" side="start">
+            <ion-fab-button (click)="changeMediaDevice()">
+                <ion-icon color="primary" name="reverse-camera"></ion-icon>
+            </ion-fab-button>
+        </ion-fab-list>
+    </ion-fab> 
+</ion-content>

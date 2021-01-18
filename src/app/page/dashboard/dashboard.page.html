@@ -496,9 +496,15 @@
     </div>
 
     <br><br><br>
-    <ion-fab *ngIf="dashboard!=null && dashboard.active_trips!=null && platform.is('cordova')" vertical="bottom"
+    <ion-fab *ngIf="dashboard!=null && platform.is('cordova')" vertical="bottom"
              horizontal="end" slot="fixed">
         <ion-fab-button (click)="showScanCode()">
+            <ion-icon name="qr-scanner"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+    <ion-fab *ngIf="dashboard!=null && !platform.is('cordova') && webScanAvailable" vertical="bottom"
+             horizontal="end" slot="fixed">
+        <ion-fab-button (click)="showWebScanCode()">
             <ion-icon name="qr-scanner"></ion-icon>
         </ion-fab-button>
     </ion-fab>

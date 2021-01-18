@@ -516,6 +516,7 @@ export class Api {
     /**Get Active trips for booking
      * @param minDate
      * @param maxDate
+     * @param noAction
      * @param callback
      * */
     public static getDashboard(minDate, maxDate, callback: (status: boolean, result: DashboardObject | string | any, responseType: ApiResponseType) => any) {
@@ -525,7 +526,7 @@ export class Api {
             loadCache: false,
             params: {
               min_date: minDate,
-              max_date: maxDate,
+              max_date: maxDate
             },
             cacheId: String(Utils.hashString(Urls.apiGetDashboard + minDate + maxDate)),
             callback: callback

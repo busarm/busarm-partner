@@ -1,4 +1,4 @@
-import {enableProdMode, ErrorHandler, NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, enableProdMode, ErrorHandler, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouteReuseStrategy} from '@angular/router';
 
@@ -36,7 +36,7 @@ if(CONFIGS.production){
 }
 
 // Configure Bugsnag
-if(CONFIGS.bugsnag_key){
+if(CONFIGS.bugsnag_key != ""){
     Bugsnag.start({ 
         apiKey: CONFIGS.bugsnag_key,
         releaseStage: ENVIRONMENT.toString(),
@@ -47,7 +47,7 @@ if(CONFIGS.bugsnag_key){
 
 // Create a factory which will return the Bugsnag error handler
 export function errorHandlerFactory() {
-    return new BugsnagErrorHandler()
+    return CONFIGS.bugsnag_key != "" ? new BugsnagErrorHandler() : new ErrorHandler()
 }
 
 @NgModule({

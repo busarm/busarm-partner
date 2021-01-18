@@ -7,7 +7,7 @@ import {ENV} from "../../environments/ENV";
 export class Urls{
 
     /*Base Urls*/
-    public static get baseUrl():string {
+    public static get appUrl():string {
         switch (ENVIRONMENT){
             case ENV.PROD:
                 return "https://wecari.com/";
@@ -40,7 +40,7 @@ export class Urls{
                 return "http://localhost:8000/";
         }
     };
-    public static get partnerBaseUrl():string {
+    public static get baseUrl():string {
         switch (ENVIRONMENT){
             case ENV.PROD:
                 return "https://partner.wecari.com/";
@@ -105,10 +105,10 @@ export class Urls{
     public static init(){
 
         /*Generic Urls*/
-        this.support = Urls.baseUrl + "support/";
-        this.termsUrl = Urls.baseUrl + "terms/";
-        this.privacyUrl = Urls.baseUrl + "privacy/";
-        this.partnerOauthRedirectUrl = Urls.partnerBaseUrl + "hooks/oauth/authorize"
+        this.support = Urls.appUrl + "support/";
+        this.termsUrl = Urls.appUrl + "terms/";
+        this.privacyUrl = Urls.appUrl + "privacy/";
+        this.partnerOauthRedirectUrl = Urls.baseUrl + "hooks/oauth/authorize"
 
         /*Oauth Urls*/
         this.oauthAuthorizeUrl = Urls.oauthBaseUrl + "authorize/request";

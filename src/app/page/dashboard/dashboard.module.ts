@@ -9,6 +9,8 @@ import { ViewBookingPage } from '../bookings/view-booking/view-booking.page';
 import { ViewBookingPageModule } from '../bookings/view-booking/view-booking.module';
 import { ViewTripPageModule } from '../trip/view-trip/view-trip.module';
 import { ViewTripPage } from '../trip/view-trip/view-trip.page';
+import { WebScannerPage } from './web-scanner/web-scanner.page';
+import { WebScannerPageModule } from './web-scanner/web-scanner.module';
 
 
 @NgModule({
@@ -17,12 +19,14 @@ import { ViewTripPage } from '../trip/view-trip/view-trip.page';
         FormsModule,
         IonicModule,
         ViewBookingPageModule,
-        ViewTripPageModule
+        ViewTripPageModule,
+        WebScannerPageModule
     ],
     declarations: [DashboardPage],
     entryComponents: [
         ViewBookingPage,
-        ViewTripPage
+        ViewTripPage,
+        WebScannerPage
     ]
 })
 export class DashboardPageModule {

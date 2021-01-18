@@ -21,6 +21,7 @@ import { Events } from '../../services/Events';
 import { MD5 } from 'crypto-js';
 import { ENVIRONMENT } from '../../../environments/environment';
 import { ENV } from '../../../environments/ENV';
+import { WebScannerPage } from './web-scanner/web-scanner.page';
 
 @Component({
     selector: 'app-dashboard',
@@ -37,6 +38,8 @@ export class DashboardPage extends PageController {
     bookingMonths: BookingMonth[] = null;
 
     private alertShowing = false;
+
+    public webScanAvailable = false;
 
     constructor(public modalCtrl: ModalController,
                 public events: Events,
@@ -73,6 +76,10 @@ export class DashboardPage extends PageController {
             }
         });
 
+        /*Check if web scanning available */
+        if(!this.platform.is('cordova')){
+            this.checkMediaDevice();
+        }
     }
 
     public async ionViewDidEnter(){
@@ -87,6 +94,23 @@ export class DashboardPage extends PageController {
         this.setInterval(() => {
             this.loadDashboardView();
         }, ENVIRONMENT == ENV.PROD ? 5000 : 10000);
+    }
+
+    /**Check if Media Device is available */
+    private checkMediaDevice(){
+        if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            let checking=["videoinput"];
+            navigator.mediaDevices.enumerateDevices()
+            .then((devices)=> {
+                this.webScanAvailable = devices.some(device => checking.includes(device.kind));
+            })
+            .catch(() => {
+                this.webScanAvailable = false;
+            });
+        }
+        else {
+            this.webScanAvailable = true;
+        }
     }
 
     /** Set up dashboard contents
@@ -280,11 +304,26 @@ export class DashboardPage extends PageController {
         }).then(barcodeData => {
             if (Utils.assertAvailable(barcodeData.text)) {
                 this.referenceCode = barcodeData.text;
-                this.findBooking(this.referenceCode);
+                this.findBooking();
             }
         }).catch(e => {
             this.showToastMsg(e, ToastType.ERROR);
         });
+    }
+
+    /**Launch scan Qr Code for Web
+     */
+    async showWebScanCode() {
+        let chooseModal = await this.modalCtrl.create({
+            component: WebScannerPage
+        });
+        chooseModal.onDidDismiss().then((data) => {
+            if(data.data){
+                this.referenceCode = data.data;
+                this.findBooking();
+            }
+        });
+        return await chooseModal.present();
     }
 
     /**Search input event
@@ -295,10 +334,7 @@ export class DashboardPage extends PageController {
         if (event.isTrusted) {
             if (event.target.value && event.target.value.length > 7) {
                 this.referenceCode = event.target.value.toUpperCase();
-                this.findBooking(this.referenceCode);
-            }
-            else {
-                this.onClear(event);
+                this.findBooking();
             }
         } 
     }
@@ -365,26 +401,30 @@ export class DashboardPage extends PageController {
         return await chooseModal.present();
     }
 
-    /**Search booking for reference number
-     * @param {string} ref_code
+    /**
+     * Search booking for reference number
      */
-    private findBooking(ref_code: string) {
-        this.showLoading().then(()=>{
-            Api.getBookingInfo(ref_code, (status, result) => {
-                this.hideLoading();
-                if (status) {
-                    if (this.assertAvailable(result)) {
-                        this.showBooking(result.data);
+    private findBooking() {
+        if(this.referenceCode){
+            this.showLoading().then(()=>{
+                Api.getBookingInfo(this.referenceCode, (status, result) => {
+                    this.hideLoading();
+                    if (status) {
+                        if (this.assertAvailable(result)) {
+                            this.showBooking(result.data);
+                        }
+                        else {
+                            this.referenceCode = null;
+                            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                        }
                     }
                     else {
-                        this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                        this.referenceCode = null;
+                        this.showToastMsg(result, ToastType.ERROR);
                     }
-                }
-                else {
-                    this.showToastMsg(result, ToastType.ERROR);
-                }
+                });
             });
-        });
+        }
     }
 
     /**Load Active Trips View

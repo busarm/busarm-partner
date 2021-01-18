@@ -116,7 +116,7 @@ export enum Keys {
     delete_trip_title_txt,
     delete_trip_msg_txt,
     delete_bus_title_txt,
-    delete_bus_msg_txt, 
+    delete_bus_msg_txt,
     delete_image_title_txt,
     delete_image_msg_txt,
     select_image_source_txt,
@@ -179,7 +179,7 @@ export enum Keys {
     pay_before_txt,
     authorizing_txt,
     error_authorize_txt,
-    owner_txt, 
+    owner_txt,
     user_txt,
     agent_search_hint,
     save_account_info,
@@ -209,7 +209,9 @@ export enum Keys {
     update_available_title,
     update_available_msg,
     payment_made_txt,
-    payment_type
+    payment_type,
+    permission_required_txt,
+    no_camera_permission_msg,
 }
 
 export type StringKey = keyof typeof Keys;
@@ -421,6 +423,8 @@ const English: String = {
     update_available_msg: "A new version is available. Do you want to load it?",
     payment_made_txt: "I've made payment",
     payment_type: "Payment Type",
+    permission_required_txt: "Permission Required",
+    no_camera_permission_msg: "Failed to get camera. Please ensure this app has permission to access camera"
 };
 
 
@@ -460,7 +464,7 @@ enum AssetId {
     loading_page = "imgs/loading_page.gif",
     no_trip = "imgs/no_trip.png",
     not_found = "imgs/not_found.png",
-    powered_by_google = "imgs/powered_by_google.png",
+    powered_by_google = "imgs/powered_by_google.png"
 }
 
 export type AssetKey = keyof typeof AssetId;
@@ -509,7 +513,7 @@ export class Strings {
      * @param str string
      */
     public static format(str: string, ...args) {
-        return str.replace(/{(\d+)}/g, function(match, number) { 
+        return str.replace(/{(\d+)}/g, function(match, number) {
           return typeof args[number] != 'undefined'
             ? args[number]
             : match
