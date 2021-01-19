@@ -38,6 +38,7 @@ export class WebScannerPage extends PageController {
                 if(device){
                     this.scanner.device = device;
                     this.scanner.enable = true;
+                    this.scanner.torch = false;
                     this.scanner.autofocusEnabled = true;
                     this.scanner.previewFitMode = 'contain';
                     this.scanner.timeBetweenScans = 1000;
@@ -67,9 +68,9 @@ export class WebScannerPage extends PageController {
             navigator.mediaDevices.enumerateDevices()
             .then((devices)=> {
                 this.mediaDevices = devices.filter(device => checking.includes(device.kind));
-                this.multiDeviceAllowed = this.mediaDevices && this.mediaDevices.length >= 1; // TODO make > 1
+                this.multiDeviceAllowed = this.mediaDevices && this.mediaDevices.length >= 2; // TODO make > 1
                 if(callback){
-                    callback(this.mediaDevices[0]);
+                    callback(this.multiDeviceAllowed?this.mediaDevices[1]:this.mediaDevices[0]);
                 }
             })
             .catch(() => {
@@ -116,8 +117,8 @@ export class WebScannerPage extends PageController {
      */
     public async toggleFlash(){
         if(this.scanner){
-            this.scanner.torch = !this.scanner.torch;
-            this.flashEnabled = this.scanner.torch;
+            this.flashEnabled = !this.flashEnabled;
+            this.scanner.torch = this.flashEnabled;
         }
     }
 
