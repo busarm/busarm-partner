@@ -139,7 +139,7 @@ export class AppComponent {
             this.splashScreen.hide();
 
             /*Network event*/
-            this.events.getNetworkObservable().subscribe(async (online) => {
+            this.events.networkChange.subscribe(async (online) => {
                 if (online) {
                     await this.hideToastMsg();
                 } else {

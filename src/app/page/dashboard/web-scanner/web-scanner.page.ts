@@ -1,11 +1,10 @@
-import {Component, Input, ViewChild} from '@angular/core';
-import {PageController} from "../../page-controller";
+import {Component, ViewChild} from '@angular/core';
 import {ModalController} from "@ionic/angular";
-import {BusInfo, BusType} from "../../../models/ApiResponse";
-import {ToastType, Utils} from "../../../libs/Utils";
-import {Api} from "../../../libs/Api";
-import { ZXingScannerComponent } from 'angular-weblineindia-qrcode-scanner';
-import { BarcodeFormat } from 'angular-weblineindia-qrcode-scanner/library';
+import {ZXingScannerComponent} from '@zxing/ngx-scanner';
+import {BarcodeFormat} from '@zxing/library';
+import {PageController} from "../../page-controller";
+import {ToastType} from "../../../libs/Utils";
+import {Events} from '../../../services/Events';
 
 @Component({
     selector: 'app-web-scanner',
@@ -26,50 +25,71 @@ export class WebScannerPage extends PageController {
     selectedDeviceindex:number = 0;
     
 
-    constructor(private modalCtrl: ModalController) {
+    constructor(private modalCtrl: ModalController, 
+                public event: Events) {
         super();
         this.allowedFormats = [ BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX /*, ...*/ ];
     }
 
     public async ngOnInit() {
         await super.ngOnInit();
-        this.scanner.enable = true;
-        this.scanner.autofocusEnabled = true;
-        this.scanner.previewFitMode = 'contain';
+        this.scanner.autostarted.subscribe(()=>{
+            this.checkMediaDevice((device)=>{
+                if(device){
+                    this.scanner.device = device;
+                    this.scanner.enable = true;
+                    this.scanner.autofocusEnabled = true;
+                    this.scanner.previewFitMode = 'contain';
+                    this.scanner.timeBetweenScans = 1000;
+                    this.scanner.formats = this.allowedFormats;
+                }
+                else {
+                    this.showToastMsg(this.strings.getString('no_camera_msg'), ToastType.ERROR, 3000);
+                    this.dismiss();
+                }
+            });
+        });
         this.scanner.torchCompatible.subscribe((enabled: boolean)=>{
             this.flashAllowed = enabled;
         });
         this.scanner.scanSuccess.subscribe((code: any) => {
-            this.dismiss(code);
+            this.event.webScannerResult.emit(code);
         })
         this.checkPermission();
-        this.checkMediaDevice();
     }
     
     
     /* Check media camera devices
      * */
-    private checkMediaDevice(){
+    private checkMediaDevice(callback?:(device?:MediaDeviceInfo)=>any){
         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
             let checking=["videoinput"];
             navigator.mediaDevices.enumerateDevices()
             .then((devices)=> {
                 this.mediaDevices = devices.filter(device => checking.includes(device.kind));
                 this.multiDeviceAllowed = this.mediaDevices && this.mediaDevices.length >= 1; // TODO make > 1
+                if(callback){
+                    callback(this.mediaDevices[0]);
+                }
             })
             .catch(() => {
                 this.mediaDevices = [];
+                if(callback){
+                    callback();
+                }
             });
         }
         else {
             this.mediaDevices = [];
+            if(callback){
+                callback();
+            }
         }
     }
     /* Check camera Permission
      * */
     public checkPermission(callback?:(granted:boolean)=>any) {
         this.scanner.askForPermission().then((granted) => {
-            console.log('Camera Permission '+granted);
             if(!granted){
                 this.showAlert(
                     this.strings.getString("permission_required_txt"),
@@ -95,8 +115,10 @@ export class WebScannerPage extends PageController {
      * @param toggle 
      */
     public async toggleFlash(){
-        this.scanner.torch = !this.scanner.torch;
-        this.flashEnabled = this.scanner.torch;
+        if(this.scanner){
+            this.scanner.torch = !this.scanner.torch;
+            this.flashEnabled = this.scanner.torch;
+        }
     }
 
     /**
@@ -104,23 +126,28 @@ export class WebScannerPage extends PageController {
      */
     public async changeMediaDevice(){
         if(this.multiDeviceAllowed){
-            if(this.selectedDeviceindex+1 > this.mediaDevices.length-1){
-                this.scanner.device = this.mediaDevices[0]
-                this.selectedDeviceindex = 0;
+            if(this.selectedDeviceindex+1 >= this.mediaDevices.length){
+                if(this.scanner && !this.scanner.isCurrentDevice(this.mediaDevices[0])){
+                    this.scanner.device = this.mediaDevices[0]
+                    this.selectedDeviceindex = 0;
+                }
             }
             else {
-                this.scanner.device = this.mediaDevices[this.selectedDeviceindex+1]
-                this.selectedDeviceindex = this.selectedDeviceindex+1;
+                if(this.scanner && !this.scanner.isCurrentDevice(this.mediaDevices[this.selectedDeviceindex+1])){
+                    this.scanner.device = this.mediaDevices[this.selectedDeviceindex+1]
+                    this.selectedDeviceindex = this.selectedDeviceindex+1;
+                }
             }
         }
     }
 
     /**Close Modal*/
-    async dismiss(code?:string){
-        this.scanner.enable = false;
-        this.scanner.ngOnDestroy();
+    async dismiss(){
+        if(this.scanner){
+            this.scanner.enable = false;
+            this.scanner.ngOnDestroy();
+        }
         const modal = await this.modalCtrl.getTop();
-        if(modal)
-            modal.dismiss(Utils.assertAvailable(code)?code:false);
+        if(modal) modal.dismiss();
     }
 }

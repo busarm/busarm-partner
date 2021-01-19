@@ -55,7 +55,7 @@ export class DashboardPage extends PageController {
         this.selectedCountry = this.session.country.country_code;
 
         /*Network event*/
-        this.events.getNetworkObservable().subscribe(async (online) => {
+        this.events.networkChange.subscribe(async (online) => {
             await super.ngOnInit();
             if (online) {
                 await this.hideToastMsg();
@@ -65,8 +65,8 @@ export class DashboardPage extends PageController {
             }
         });
 
-        /*Contry Changed event*/
-        this.events.getCountryChangeObservable().subscribe(async (changed) => {
+        /*Country Changed event*/
+        this.events.countryChange.subscribe(async (changed) => {
             await super.ngOnInit();
             if (changed) {
                 this.loadDashboardView();
@@ -78,7 +78,17 @@ export class DashboardPage extends PageController {
 
         /*Check if web scanning available */
         if(!this.platform.is('cordova')){
+
             this.checkMediaDevice();
+
+            /*Web scanner event*/
+            this.events.webScannerResult.subscribe(async (code) => {
+                await super.ngOnInit();
+                if(code){
+                    this.referenceCode = code;
+                    this.findBooking();
+                }
+            });
         }
     }
 
@@ -296,7 +306,7 @@ export class DashboardPage extends PageController {
 
     /**Launch scan Qr Code page
      */
-    showScanCode() {
+    async showScanCode() {
         this.barcodeScanner.scan({
             resultDisplayDuration: 0,
             disableSuccessBeep: false,
@@ -316,12 +326,6 @@ export class DashboardPage extends PageController {
     async showWebScanCode() {
         let chooseModal = await this.modalCtrl.create({
             component: WebScannerPage
-        });
-        chooseModal.onDidDismiss().then((data) => {
-            if(data.data){
-                this.referenceCode = data.data;
-                this.findBooking();
-            }
         });
         return await chooseModal.present();
     }
@@ -404,11 +408,14 @@ export class DashboardPage extends PageController {
     /**
      * Search booking for reference number
      */
+    private isFindBookingProcessing = false;
     private findBooking() {
-        if(this.referenceCode){
+        if(this.referenceCode && !this.isFindBookingProcessing){
             this.showLoading().then(()=>{
+                this.isFindBookingProcessing = true;
                 Api.getBookingInfo(this.referenceCode, (status, result) => {
                     this.hideLoading();
+                    this.isFindBookingProcessing = false;
                     if (status) {
                         if (this.assertAvailable(result)) {
                             this.showBooking(result.data);

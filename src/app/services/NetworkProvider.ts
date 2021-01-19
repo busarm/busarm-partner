@@ -53,13 +53,13 @@ export class NetworkProvider {
     private notify(connected:boolean,trigger:boolean = false):void{
         if (connected) {
             if (trigger && NetworkProvider.previousStatus != ConnectionStatus.Online) {
-                this.event.publishNetworkEvent(true);
+                this.event.networkChange.emit(true);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Online;
         }
         else {
             if (trigger && NetworkProvider.previousStatus != ConnectionStatus.Offline) {
-                this.event.publishNetworkEvent(false);
+                this.event.networkChange.emit(false);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Offline;
         }

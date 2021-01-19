@@ -55,8 +55,7 @@ interface ApiRequestParams {
  * reused globally whenever needed
  * */
 export class Api {
-
-
+    
     /**
      * Constructor
      * @param {ApiRequestParams} requestParams

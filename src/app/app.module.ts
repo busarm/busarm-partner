@@ -1,4 +1,4 @@
-import {CUSTOM_ELEMENTS_SCHEMA, enableProdMode, ErrorHandler, NgModule} from '@angular/core';
+import {enableProdMode, ErrorHandler, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouteReuseStrategy} from '@angular/router';
 
@@ -10,9 +10,6 @@ import {Device} from "@ionic-native/device/ngx";
 import {AppVersion} from "@ionic-native/app-version/ngx";
 import {SecureStorage} from "@ionic-native/secure-storage/ngx";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner/ngx";
-
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {IonicStorageModule} from "@ionic/storage";
 import {Camera} from "@ionic-native/camera/ngx";
@@ -21,14 +18,18 @@ import {File} from "@ionic-native/file/ngx";
 import {FilePath} from "@ionic-native/file-path/ngx";
 import {AES256} from "@ionic-native/aes-256/ngx";
 import {InAppBrowser} from "@ionic-native/in-app-browser/ngx";
-import {DEFAULT_TIMEOUT, TimeoutInterceptor} from "./services/TimeoutInterceptor";
 import {Deeplinks} from "@ionic-native/deeplinks/ngx";
-import {ENVIRONMENT, CONFIGS} from "../environments/environment";
-import {AuthGuard} from "./services/AuthGuard";
-import { ServiceWorkerModule } from '@angular/service-worker';
+import {ServiceWorkerModule} from '@angular/service-worker';
 
 import Bugsnag from '@bugsnag/js'
 import {BugsnagErrorHandler} from '@bugsnag/plugin-angular'
+
+import {ENVIRONMENT, CONFIGS} from "../environments/environment";
+import {AuthGuard} from "./services/AuthGuard";
+import {DEFAULT_TIMEOUT, TimeoutInterceptor} from "./services/TimeoutInterceptor";
+
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
 
 //Turn on production mode
 if(CONFIGS.production){
@@ -67,7 +68,7 @@ export function errorHandlerFactory() {
             driverOrder: ['indexeddb', 'localstorage', 'websql', 'sqlite']
         }),
         AppRoutingModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: CONFIGS.production }),
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: CONFIGS.production })
     ],
     providers: [
         [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }],

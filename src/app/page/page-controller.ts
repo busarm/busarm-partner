@@ -1,12 +1,12 @@
-import {ToastType, Utils} from "../libs/Utils";
-import {Assets, Strings} from "../resources";
 import {OnDestroy, OnInit} from "@angular/core";
-import {AppComponent} from "../app.component";
-import {SessionManager} from "../libs/SessionManager";
-import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
 import { Params } from "@angular/router";
 import { MD5 } from "crypto-js";
-import { ENVIRONMENT, CONFIGS } from "../../environments/environment";
+import {AppComponent} from "../app.component";
+import {ToastType, Utils} from "../libs/Utils";
+import {Assets, Strings} from "../resources";
+import {SessionManager} from "../libs/SessionManager";
+import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
+import { CONFIGS } from "../../environments/environment";
 
 export class PageController implements OnInit, OnDestroy {
 
@@ -99,9 +99,9 @@ export class PageController implements OnInit, OnDestroy {
             this.showLoading().then(()=>{
                 this.instance.set_country(this.selectedCountry,  async (status, msg) => {
                     if (status) {
-                        this.instance.events.publishCountryChangeEvent(true);
+                        this.instance.events.countryChange.emit(true);
                     } else {
-                        this.instance.events.publishCountryChangeEvent(false);
+                        this.instance.events.countryChange.emit(false);
                         await this.showToastMsg(msg?msg:Strings.getString("error_unexpected"), ToastType.ERROR);
                     }
                     this.hideLoading();

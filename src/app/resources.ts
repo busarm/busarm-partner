@@ -212,6 +212,7 @@ export enum Keys {
     payment_type,
     permission_required_txt,
     no_camera_permission_msg,
+    no_camera_msg,
 }
 
 export type StringKey = keyof typeof Keys;
@@ -424,7 +425,8 @@ const English: String = {
     payment_made_txt: "I've made payment",
     payment_type: "Payment Type",
     permission_required_txt: "Permission Required",
-    no_camera_permission_msg: "Failed to get camera. Please ensure this app has permission to access camera"
+    no_camera_permission_msg: "Failed to get camera. Please ensure this app has permission to access camera",
+    no_camera_msg: "Failed to get camera"
 };
 
 

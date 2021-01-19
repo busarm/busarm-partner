@@ -1,6 +1,6 @@
 {
   "name": "wecari-partner",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "author": "Ionic Framework",
   "homepage": "https://partner.wecari.com/",
   "scripts": {
@@ -46,7 +46,7 @@
     "@ionic/storage": "^2.2.0",
     "@types/chart.js": "^2.9.15",
     "@types/crypto-js": "^3.1.43",
-    "angular-weblineindia-qrcode-scanner": "^1.0.0",
+    "@zxing/ngx-scanner": "^3.0.1",
     "chart.js": "^2.9.3",
     "cordova-android": "7.1.4",
     "cordova-browser": "5.0.4",
