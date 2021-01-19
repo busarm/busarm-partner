@@ -24,6 +24,7 @@ export class WebScannerPage extends PageController {
     mediaDevices:MediaDeviceInfo[] = [];
     selectedDeviceindex:number = 0;
     
+    lastScanned:{timestamp:number,code:string} = null
 
     constructor(private modalCtrl: ModalController, 
                 public event: Events) {
@@ -54,11 +55,28 @@ export class WebScannerPage extends PageController {
             this.flashAllowed = enabled;
         });
         this.scanner.scanSuccess.subscribe((code: any) => {
-            this.event.webScannerResult.emit(code);
+            console.log(this.canScanAgain(code));
+            if(this.canScanAgain(code)){
+                this.lastScanned = {timestamp: Date.now(), code:code};
+                this.event.webScannerResult.emit(code);
+            }
         })
         this.checkPermission();
     }
     
+    /** 
+     * Check if can scan code again 
+     * This is to prevent scanning the same code
+     * too many times at an instance
+     * @param code
+     * @param interval - default 5s
+     * @return boolean 
+     */
+    private canScanAgain(code:string, interval = 5000){
+        return !(this.lastScanned 
+                && this.lastScanned.code === code 
+                && this.lastScanned.timestamp+interval >= Date.now());
+    }
     
     /* Check media camera devices
      * */
@@ -70,7 +88,8 @@ export class WebScannerPage extends PageController {
                 this.mediaDevices = devices.filter(device => checking.includes(device.kind));
                 this.multiDeviceAllowed = this.mediaDevices && this.mediaDevices.length >= 2; // TODO make > 1
                 if(callback){
-                    callback(this.multiDeviceAllowed?this.mediaDevices[1]:this.mediaDevices[0]);
+                    this.selectedDeviceindex = this.multiDeviceAllowed ? 1 : 0;
+                    callback(this.mediaDevices[this.selectedDeviceindex]);
                 }
             })
             .catch(() => {
@@ -109,7 +128,13 @@ export class WebScannerPage extends PageController {
         })
     }
 
-    public async ionViewDidEnter(){}
+    public async ionViewDidEnter(){
+        super.ionViewDidEnter();
+    }
+    
+    public ionViewDidLeave(){
+        super.ionViewDidLeave();
+    }
 
     /**
      * Toggle Flash on & off
