@@ -123,6 +123,8 @@ export class AppComponent {
 
             /*Register Back button event*/
             this.registerPopStateChanged();
+            this.platform.backButton.subscribe(() => {
+            });
 
             /*Initialize Encryption*/
             CIPHER.init(this);
@@ -188,11 +190,11 @@ export class AppComponent {
      * Register Pop State changes
      */
     public registerPopStateChanged() {
-        if (this.platform.is('cordova')) {
+        if (this.platform.backButton) {  // Back button press listner - before action
             this.platform.backButton.subscribe(async () => {
                 await this.processPopState(true);
             });
-        } else {
+        } else { // Popstate Event - after action
             this.router.events.subscribe(value => {
                if (value instanceof NavigationStart)  {
                    this.currentPage = {
@@ -209,10 +211,10 @@ export class AppComponent {
         }
     }
 
-    @HostListener('document:ionBackButton', ['$event'])
-    private async overrideHardwareBackAction($event: any) {
-        return await this.processPopState(true);
-    }
+    // @HostListener('document:ionBackButton', ['$event'])
+    // private async overrideHardwareBackAction($event: any) {
+    //     return await this.processPopState(true);
+    // }
 
     /**Process Pop State changes
      * @param backPressed

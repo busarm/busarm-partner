@@ -93,6 +93,7 @@ export class DashboardPage extends PageController {
     }
 
     public async ionViewDidEnter(){
+        super.ionViewDidEnter();
         /*Give time for components to load first*/
         this.setTimeout(() => {
             /*Init Dashboard*/

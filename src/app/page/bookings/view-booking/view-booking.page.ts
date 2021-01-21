@@ -29,6 +29,11 @@ export class ViewBookingPage extends PageController {
         }
     }
 
+    public ngOnDestroy(){
+        this.bookingInfo = null;
+        super.ngOnDestroy();
+    }
+
     /**Get Status class for booking status*/
     public getBookingSeatsText(seats: SeatsInfo[]): string {
         let text = '';

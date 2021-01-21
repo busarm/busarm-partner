@@ -50,7 +50,7 @@
                 </ion-list>
                 <br>
                 <ion-list>
-                    <ion-row>
+                    <ion-row *ngIf="payIn.from!=null && payIn.from!=''">
                         <ion-col size-md="4" size="12" class="cell">
                             <ion-label class="cell-label small-text">{{strings.getString('from_txt')}}</ion-label>
                         </ion-col>
@@ -58,7 +58,7 @@
                             <ion-label>{{payIn.from}}</ion-label>
                         </ion-col>
                     </ion-row>
-                    <ion-row>
+                    <ion-row *ngIf="payIn.to!=null && payIn.to!=''">
                         <ion-col size-md="4" size="12" class="cell">
                             <ion-label class="cell-label small-text">{{strings.getString('to_txt')}}</ion-label>
                         </ion-col>

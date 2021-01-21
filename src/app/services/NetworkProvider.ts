@@ -39,14 +39,14 @@ export class NetworkProvider {
 
     /**Start connection check*/
     public async initializeNetworkEvents() {
-        return await this.network.onChange().subscribe(()=>{
+        return this.network ? await this.network.onChange().subscribe(()=>{
             return new Promise(resolve => {
                 this.pingServer(connected =>{
                     this.notify(connected,false);
                     resolve(connected);
                 });
             })
-        });
+        }) : null;
     }
 
     /**Notify response*/

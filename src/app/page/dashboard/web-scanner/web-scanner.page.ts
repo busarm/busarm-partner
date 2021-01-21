@@ -37,13 +37,12 @@ export class WebScannerPage extends PageController {
         this.scanner.autostarted.subscribe(()=>{
             this.checkMediaDevice((device)=>{
                 if(device){
-                    this.scanner.device = device;
-                    this.scanner.enable = true;
                     this.scanner.torch = false;
                     this.scanner.autofocusEnabled = true;
                     this.scanner.previewFitMode = 'contain';
-                    this.scanner.timeBetweenScans = 1000;
                     this.scanner.formats = this.allowedFormats;
+                    this.scanner.timeBetweenScans = 0;
+                    this.scanner.device = device;
                 }
                 else {
                     this.showToastMsg(this.strings.getString('no_camera_msg'), ToastType.ERROR, 3000);
@@ -55,7 +54,6 @@ export class WebScannerPage extends PageController {
             this.flashAllowed = enabled;
         });
         this.scanner.scanSuccess.subscribe((code: any) => {
-            console.log(this.canScanAgain(code));
             if(this.canScanAgain(code)){
                 this.lastScanned = {timestamp: Date.now(), code:code};
                 this.event.webScannerResult.emit(code);
@@ -86,7 +84,7 @@ export class WebScannerPage extends PageController {
             navigator.mediaDevices.enumerateDevices()
             .then((devices)=> {
                 this.mediaDevices = devices.filter(device => checking.includes(device.kind));
-                this.multiDeviceAllowed = this.mediaDevices && this.mediaDevices.length >= 2; // TODO make > 1
+                this.multiDeviceAllowed = this.mediaDevices && (this.mediaDevices.length >= 2); // TODO make > 1
                 if(callback){
                     this.selectedDeviceindex = this.multiDeviceAllowed ? 1 : 0;
                     callback(this.mediaDevices[this.selectedDeviceindex]);
@@ -169,10 +167,6 @@ export class WebScannerPage extends PageController {
 
     /**Close Modal*/
     async dismiss(){
-        if(this.scanner){
-            this.scanner.enable = false;
-            this.scanner.ngOnDestroy();
-        }
         const modal = await this.modalCtrl.getTop();
         if(modal) modal.dismiss();
     }

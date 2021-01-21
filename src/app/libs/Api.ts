@@ -579,6 +579,7 @@ export class Api {
                 reference_code: referenceCode
             },
             cache: true,
+            loadCache: true,
             cacheId: String(Utils.hashString(Urls.apiGetBookingInfo + referenceCode)),
             callback: callback
         });

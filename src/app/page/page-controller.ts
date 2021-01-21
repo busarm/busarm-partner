@@ -35,6 +35,9 @@ export class PageController implements OnInit, OnDestroy {
         this.routeKey = await this.getRouteKey();
     }
     public ngOnDestroy(){
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
         if(this.routeKey){
             SessionManager.remove(this.routeKey); //remove params after use
             this.routeKey = null;
@@ -44,7 +47,9 @@ export class PageController implements OnInit, OnDestroy {
         this.hideLoading();
     }
     public ionViewDidLeave(){
-        clearInterval(this.interval);
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
     }
 
 

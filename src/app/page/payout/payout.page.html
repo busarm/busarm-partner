@@ -15,7 +15,7 @@
         <ion-col size-md="8" size-lg="6">
             <form #payoutForm="ngForm" (ngSubmit)="submit()" autocomplete="off">
                 <ion-list>
-                    <ion-row>
+                    <ion-row *ngIf="payout.to!=null && payout.to!=''">
                         <ion-col size="4" class="cell">
                             <ion-label class="cell-label small-text">{{strings.getString('from_txt')}}</ion-label>
                         </ion-col>
@@ -23,7 +23,7 @@
                             <ion-label>{{payout.from}}</ion-label>
                         </ion-col>
                     </ion-row>
-                    <ion-row>
+                    <ion-row *ngIf="payout.to!=null && payout.to!=''">
                         <ion-col size="4" class="cell">
                             <ion-label class="cell-label small-text">{{strings.getString('to_txt')}}</ion-label>
                         </ion-col>
