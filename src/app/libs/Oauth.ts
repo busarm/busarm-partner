@@ -149,13 +149,35 @@ export class OauthStorage {
 /**Common Functions*/
 export class OauthUtils {
 
+    /**Check if token is a JWT token and return claims if so
+     *  @return string
+     * */
+    static parseJWT(token: string) {
+        let split = token.split('.') 
+        return split && split.length == 3 ? atob(split[1]) : null;
+    }
+
+    /**Check if JWT Token has expired
+     *  @return boolean
+     * */
+    static hasJWTExpired(token: string) {
+        let data = this.parseJson(this.parseJWT(token));
+        let exp = data ? data['exp']  : null;
+        return exp ? parseInt(exp) < (Math.floor(Date.now() / 1000) + 10) : true; // + 10 to account for any network latency
+    }
 
     /**Check if token has expired
      *  @return boolean
      * */
-    static hasTokenExpired() {
-        if (OauthUtils.assertAvailable(OauthStorage.accessToken) && OauthUtils.assertAvailable(OauthStorage.expiresIn)) {
-            return parseInt(OauthStorage.expiresIn) < (Math.floor(Date.now() / 1000 ) + 10); // + 10 to account for network letency
+    static hasTokenExpired(token?: string) {
+        token = token || OauthStorage.accessToken;
+        if(OauthUtils.assertAvailable(token)){
+            if(OauthUtils.parseJWT(token) && !OauthUtils.hasJWTExpired(token)){
+                return false;
+            }
+            else if (OauthUtils.assertAvailable(OauthStorage.expiresIn)) {
+                return parseInt(OauthStorage.expiresIn) < (Math.floor(Date.now() / 1000 ) + 10); // + 10 to account for any network latency
+            }
         }
         return true;
     }
@@ -285,17 +307,14 @@ export class OauthUtils {
 
     /** Parse Json string to object
      *  @param json string
-     *  @return String
+     *  @return object
      *  */
-    static parseJson(json) {
-        let result = '';
+    static parseJson(json: string) {
         try {
-            result = JSON.parse(json);
+            return JSON.parse(json);
         } catch (e) {
-            console.log(e);
+            return null;
         }
-
-        return result;
     }
 
 
@@ -570,7 +589,6 @@ export class Oauth {
                     break;
                 case OauthGrantType.Client_Credentials:
                 default:
-
                     // Get token
                     this.oauthTokenWithClientCredentials(scope,
                         /**Ajax Response callback
@@ -601,7 +619,7 @@ export class Oauth {
                                     params.callback(false);
                                 }
                             }
-                        });
+                    });
                     break;
             }
         };
@@ -645,64 +663,48 @@ export class Oauth {
 
         if (OauthUtils.assertAvailable(OauthUtils.getUrlParam('access_token'))) {
             const accessToken = OauthUtils.getUrlParam('access_token');
-            // Verify current token
-            this.oauthVerifyToken(accessToken,
-                /**Ajax Response callback
-                 * @param verify OauthVerificationResponse
-                 * @param xhr XMLHttpRequest | ActiveXObject
-                 * */
-                (verify, xhr) => {
-                    if (OauthUtils.assertAvailable(verify) && OauthUtils.assertAvailable(verify.success) && verify.success == true) {
-                        if (typeof params.callback === 'function') {
-                            OauthStorage.accessToken = accessToken;
-                            params.callback(OauthUtils.assertAvailable(accessToken) ? accessToken : true);
-                        }
-                    } else {
-                        if (typeof params.callback === 'function') {
-                            params.callback(false);
-                        }
-                    }
-                });
+            if(!OauthUtils.hasTokenExpired(accessToken)){
+                if (typeof params.callback === 'function') {
+                    params.callback(OauthUtils.assertAvailable(accessToken) ? accessToken : true);
+                }
+            }
+            else {
+                if (typeof params.callback === 'function') {
+                    params.callback(false);
+                }               
+            }
         } else {
             const accessToken = OauthStorage.accessToken;
-
+            const refreshToken = OauthStorage.refreshToken;
             /*Token available, check for refreshing*/
             if (OauthUtils.assertAvailable(accessToken)) {
-
-                // Verify current token
-                this.oauthVerifyToken(accessToken,
-                    /**Ajax Response callback
-                     * @param verify OauthVerificationResponse
-                     * @param xhr XMLHttpRequest | ActiveXObject
-                     * */
-                    (verify, xhr) => {
-                        if (OauthUtils.assertAvailable(verify) && OauthUtils.assertAvailable(verify.success) && verify.success == true) {
-                            if (typeof params.callback === 'function') {
-                                params.callback(OauthUtils.assertAvailable(accessToken) ? accessToken : true);
-                            }
-                        } else {
-                            if (OauthUtils.hasTokenExpired()) {
-                                // expired - get refresh token
-                                const refreshToken = OauthStorage.refreshToken;
-                                if (OauthUtils.assertAvailable(refreshToken)) {
-                                    // Try Refresh token
-                                    refreshOauthToken(refreshToken);
-                                } else {
-                                    // No refresh token get new token
-                                    getNewOauthToken();
-                                }
-                            } else {
-                                if (typeof params.callback === 'function') {
-                                    params.callback(false);
-                                }
-                            }
-                        }
-                    });
+                if(!OauthUtils.hasTokenExpired(accessToken)){
+                    if (typeof params.callback === 'function') {
+                        params.callback(OauthUtils.assertAvailable(accessToken) ? accessToken : true);
+                    }
+                }
+                else {
+                    // Expired - get refresh token
+                    if (OauthUtils.assertAvailable(refreshToken)) {
+                        // Try Refresh token
+                        refreshOauthToken(refreshToken);
+                    } else {
+                        // No refresh token get new token
+                        getNewOauthToken();
+                    }                  
+                }
             } else {
                 // No token - get new token
                 getNewOauthToken();
             }
         }
+    }
+
+    /**
+     * Check if authorization has expired
+     */
+    hasExpired(){
+        return OauthUtils.hasTokenExpired();
     }
 
     /**Oauth Authorization

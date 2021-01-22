@@ -123,7 +123,7 @@ export class AccountPage extends PageController {
                     if (this.assertAvailable(result)) {
                         if (result.status) {
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
-                            this.instance.get_user_info((status)=>{
+                            this.instance.getUser((status)=>{
                                 if(status){
                                     this.getUserInfo();
                                 }

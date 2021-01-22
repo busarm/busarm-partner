@@ -12,6 +12,7 @@ const rootRouts: Routes = [
     {path: 'pay-in', loadChildren: './page/pay-in/pay-in.module#PayInPageModule', canActivate: [AuthGuard]},
     {path: 'payout', loadChildren: './page/payout/payout.module#PayoutPageModule', canActivate: [AuthGuard]},
     {path: 'locations', loadChildren: './page/locations/locations.module#LocationsPageModule', canActivate: [AuthGuard]},
+    {path: 'web-scanner', loadChildren: './page/dashboard/web-scanner/web-scanner.module#WebScannerPageModule', canActivate: [AuthGuard]},
 ];
 
 @NgModule({

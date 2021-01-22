@@ -21,7 +21,7 @@ import { Events } from '../../services/Events';
 import { MD5 } from 'crypto-js';
 import { ENVIRONMENT } from '../../../environments/environment';
 import { ENV } from '../../../environments/ENV';
-import { WebScannerPage } from './web-scanner/web-scanner.page';
+// import { WebScannerPage } from './web-scanner/web-scanner.page';
 
 @Component({
     selector: 'app-dashboard',
@@ -325,10 +325,7 @@ export class DashboardPage extends PageController {
     /**Launch scan Qr Code for Web
      */
     async showWebScanCode() {
-        let chooseModal = await this.modalCtrl.create({
-            component: WebScannerPage
-        });
-        return await chooseModal.present();
+        return this.navigate('web-scanner');
     }
 
     /**Search input event

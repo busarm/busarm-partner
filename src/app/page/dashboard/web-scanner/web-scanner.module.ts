@@ -6,13 +6,22 @@ import {IonicModule} from '@ionic/angular';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 import {WebScannerPage} from './web-scanner.page';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [ 
+    {
+        path: '',
+        component: WebScannerPage
+    }
+];
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         IonicModule,
-        ZXingScannerModule
+        ZXingScannerModule,
+        RouterModule.forChild(routes)
     ],
     declarations: [WebScannerPage]
 })

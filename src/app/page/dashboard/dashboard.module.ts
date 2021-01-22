@@ -9,8 +9,8 @@ import { ViewBookingPage } from '../bookings/view-booking/view-booking.page';
 import { ViewBookingPageModule } from '../bookings/view-booking/view-booking.module';
 import { ViewTripPageModule } from '../trip/view-trip/view-trip.module';
 import { ViewTripPage } from '../trip/view-trip/view-trip.page';
-import { WebScannerPage } from './web-scanner/web-scanner.page';
-import { WebScannerPageModule } from './web-scanner/web-scanner.module';
+// import { WebScannerPage } from './web-scanner/web-scanner.page';
+// import { WebScannerPageModule } from './web-scanner/web-scanner.module';
 
 
 @NgModule({
@@ -20,13 +20,13 @@ import { WebScannerPageModule } from './web-scanner/web-scanner.module';
         IonicModule,
         ViewBookingPageModule,
         ViewTripPageModule,
-        WebScannerPageModule
+        // WebScannerPageModule // If using it as a modal (Remove from app-routing tho)
     ],
     declarations: [DashboardPage],
     entryComponents: [
         ViewBookingPage,
         ViewTripPage,
-        WebScannerPage
+        // WebScannerPage // If using it as a modal (Remove from app-routing tho)
     ]
 })
 export class DashboardPageModule {

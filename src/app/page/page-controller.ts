@@ -43,8 +43,16 @@ export class PageController implements OnInit, OnDestroy {
             this.routeKey = null;
         }
     }
+    public ionViewWillEnter (){
+        this.hideLoading();
+    }
     public ionViewDidEnter(){
         this.hideLoading();
+    }
+    public ionViewWillLeave(){
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
     }
     public ionViewDidLeave(){
         if (this.interval) {
@@ -269,72 +277,4 @@ export class PageController implements OnInit, OnDestroy {
         }
         this.interval = setInterval(handler, timeout)
     }
-
-    /*backButtonEvent() {
-        this.platform.backButton.subscribe(async () => {
-            // close action sheet
-            try {
-                const element = await this.actionSheetCtrl.getTop();
-                if (element) {
-                    element.dismiss();
-                    return;
-                }
-            } catch (error) {
-            }
-
-            // close popover
-            try {
-                const element = await this.popoverCtrl.getTop();
-                if (element) {
-                    element.dismiss();
-                    return;
-                }
-            } catch (error) {
-            }
-
-            // close modal
-            try {
-                const element = await this.modalCtrl.getTop();
-                if (element) {
-                    element.dismiss();
-                    return;
-                }
-            } catch (error) {
-                console.log(error);
-
-            }
-
-            // close side menue
-            try {
-                const element = await this.menu.getOpen();
-                if (element !== null) {
-                    this.menu.close();
-                    return;
-                }
-
-            } catch (error) {
-            }
-
-            this.routerOutlets.forEach((outlet: IonRouterOutlet) => {
-                if (outlet && outlet.canGoBack()) {
-                    outlet.pop();
-                } else if (this.router.url === '/home') {
-                    if (new Date().getTime() - this.lastTimeBackPress < this.timePeriodToExit) {
-                        // this.platform.exitApp(); // Exit from app
-                        navigator['app'].exitApp(); // work for ionic 4
-
-                    } else {
-                        this.toast.show(
-                            `Press back again to exit App.`,
-                            '2000',
-                            'center')
-                            .subscribe(toast => {
-                                // console.log(JSON.stringify(toast));
-                            });
-                        this.lastTimeBackPress = new Date().getTime();
-                    }
-                }
-            });
-        });
-    }*/
 }

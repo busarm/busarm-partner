@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {ModalController} from "@ionic/angular";
+import {ModalController, NavController} from "@ionic/angular";
 import {ZXingScannerComponent} from '@zxing/ngx-scanner';
 import {BarcodeFormat} from '@zxing/library';
 import {PageController} from "../../page-controller";
@@ -26,7 +26,8 @@ export class WebScannerPage extends PageController {
     
     lastScanned:{timestamp:number,code:string} = null
 
-    constructor(private modalCtrl: ModalController, 
+    constructor(public navCtrl: NavController, 
+                private modalCtrl: ModalController, 
                 public event: Events) {
         super();
         this.allowedFormats = [ BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX /*, ...*/ ];
@@ -169,5 +170,6 @@ export class WebScannerPage extends PageController {
     async dismiss(){
         const modal = await this.modalCtrl.getTop();
         if(modal) modal.dismiss();
+        else this.navCtrl.pop();
     }
 }

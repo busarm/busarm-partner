@@ -1,11 +1,12 @@
-<ion-content class="ion-padding ion-justify-content-center ion-align-items-center">
-    <ion-toolbar id="toolbar" color="transparent">
-        <ion-buttons slot="end">
-            <ion-button (click)="dismiss()">
-                <ion-icon color='secondary' slot="icon-only" name="close"></ion-icon>
-            </ion-button>
+<ion-header>
+    <ion-toolbar color="transparent">
+        <ion-buttons slot="start">
+            <ion-back-button color='danger' defaultHref="/home/dashboard"> </ion-back-button>
         </ion-buttons>
+        <ion-title>{{strings.getString("scan_txt")}}</ion-title>
     </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding ion-justify-content-center ion-align-items-center">
     <div id="scanner-container" class="cell cell-flex cell-flex-center">
         <zxing-scanner #scanner id="scanner"> </zxing-scanner>
     </div>

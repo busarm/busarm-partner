@@ -37,7 +37,6 @@ import { NavigationOptions } from '@ionic/angular/dist/providers/nav-controller'
 import { PingObject } from './models/ApiResponse';
 import { ENV } from '../environments/ENV';
 import { SwUpdate } from '@angular/service-worker';
-// import { NavigationOptions } from '@ionic/angular/providers/nav-controller';
 
 @Component({
     selector: 'app-root',
@@ -123,8 +122,6 @@ export class AppComponent {
 
             /*Register Back button event*/
             this.registerPopStateChanged();
-            this.platform.backButton.subscribe(() => {
-            });
 
             /*Initialize Encryption*/
             CIPHER.init(this);
@@ -190,7 +187,7 @@ export class AppComponent {
      * Register Pop State changes
      */
     public registerPopStateChanged() {
-        if (this.platform.backButton) {  // Back button press listner - before action
+        if (this.platform.is('cordova') || this.platform.is('capacitor')) {  // Back button press listner - before action
             this.platform.backButton.subscribe(async () => {
                 await this.processPopState(true);
             });
@@ -211,11 +208,6 @@ export class AppComponent {
         }
     }
 
-    // @HostListener('document:ionBackButton', ['$event'])
-    // private async overrideHardwareBackAction($event: any) {
-    //     return await this.processPopState(true);
-    // }
-
     /**Process Pop State changes
      * @param backPressed
      * @param state
@@ -230,10 +222,8 @@ export class AppComponent {
                 const element = await this.actionSheetCtrl.getTop();
                 if (element) {
                     await element.dismiss();
-                    if (!backPressed) {
-                        if (state && state.navigationId !== currentPage.id) {
-                            await this.router.navigateByUrl(currentPage.url);
-                        }
+                    if (!backPressed && state && state.navigationId !== currentPage.id) {
+                        await this.router.navigateByUrl(currentPage.url);
                     }
                     return;
                 }
@@ -247,10 +237,8 @@ export class AppComponent {
                 const element = await this.popoverCtrl.getTop();
                 if (element) {
                     await element.dismiss();
-                    if (!backPressed) {
-                        if (state && state.navigationId !== currentPage.id) {
-                            await this.router.navigateByUrl(currentPage.url);
-                        }
+                    if (!backPressed && state && state.navigationId !== currentPage.id) {
+                        await this.router.navigateByUrl(currentPage.url);
                     }
                     return;
                 }
@@ -263,10 +251,8 @@ export class AppComponent {
                 const element = await this.modalCtrl.getTop();
                 if (element) {
                     await element.dismiss();
-                    if (!backPressed) {
-                        if (state && state.navigationId !== currentPage.id) {
-                            await this.router.navigateByUrl(currentPage.url);
-                        }
+                    if (!backPressed && state && state.navigationId !== currentPage.id) {
+                        await this.router.navigateByUrl(currentPage.url);
                     }
                     return;
                 }
@@ -279,24 +265,21 @@ export class AppComponent {
                 const element = await this.menu.getOpen();
                 if (element) {
                     await this.menu.close();
-                    if (!backPressed) {
-                        if (state && state.navigationId !== currentPage.id) {
-                            await this.router.navigateByUrl(currentPage.url);
-                        }
+                    if (!backPressed && state && state.navigationId !== currentPage.id) {
+                        await this.router.navigateByUrl(currentPage.url);
                     }
                     return;
                 }
             } catch (error) {}
         }
 
-        if (backPressed) { // Go back
-            if (this.routerOutlets) {
-                this.routerOutlets.forEach(async (outlet: IonRouterOutlet) => {
-                    if (outlet && outlet.canGoBack()) {
-                        await outlet.pop();
-                    }
-                });
-            }
+        // Go back
+        if (backPressed && this.routerOutlets) { 
+            this.routerOutlets.forEach(async (outlet: IonRouterOutlet) => {
+                if (outlet && outlet.canGoBack()) {
+                    await outlet.pop();
+                }
+            });
         }
     }
 
@@ -478,7 +461,7 @@ export class AppComponent {
                             callback: async (token, msg) => {
                                 if (token) {  
                                     //Validate Session
-                                    await this.validate_session(async (status, msg, responseType) => {
+                                    await this.validateSession(async (status, msg, responseType) => {
                                         if (status) {
                                             resolve(true);
                                             this.authorized = true;
@@ -509,7 +492,7 @@ export class AppComponent {
                                             }
                                         }
                                     });
-                                } else { // Failed ot get token
+                                } else { // Failed to get token
                                     this.authAttempted = false;
                                     this.authorized = false;
                                     if (Utils.assertAvailable(msg)) { await this.showToastMsg(msg, ToastType.ERROR); }
@@ -518,15 +501,47 @@ export class AppComponent {
                                 }
                             }
                         });
-                    } else {  // No internet connection
-                        this.authAttempted = false;
-                        this.showNotConnectedMsg(async () => {
-                            this.authorize(true).then(status => {
-                                resolve (status);
-                            }).catch(() => {
-                                resolve(false);
+                    } else {
+                        // Check if Authorization exists and hasn't expired
+                        if(!AppComponent.oauth.hasExpired()){
+                            // Check if session info available
+                            SessionManager.getSession(session => {
+                                if (session) {
+                                    // Check if user info available
+                                    SessionManager.getUserInfo(user => {
+                                        if (user) {
+                                            resolve(true);
+                                            this.authorized = true;
+                                            this.hideLoadingScreen();
+                                        } else {
+                                            this.authAttempted = false;
+                                            this.showNotConnectedMsg(async () => {
+                                                this.authorize(true).then(status => {
+                                                    resolve (status);
+                                                }).catch(() => {
+                                                    resolve(false);
+                                                });
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    this.authAttempted = false;
+                                    this.showNotConnectedMsg(async () => {
+                                        this.authorize(true).then(status => {
+                                            resolve (status);
+                                        }).catch(() => {
+                                            resolve(false);
+                                        });
+                                    });
+                                }
                             });
-                        });
+
+                        }
+                        else {
+                            this.authorized = false;
+                            resolve(false);
+                            this.hideLoadingScreen();
+                        }
                     }
                 });
             } else {
@@ -538,7 +553,7 @@ export class AppComponent {
 
     /**Validate existing session, or create one
      * */
-    public async validate_session(callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
+    public async validateSession(callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
 
         const appVersion = await this.appVersion.getVersionNumber()
             .then(value => {
@@ -597,7 +612,7 @@ export class AppComponent {
                         SessionManager.setSession(result, done => {
                             if (done) {
                                 // Get user info
-                                this.get_user_info(callback);
+                                this.getUser(callback);
                             } else {
                                 if (Utils.assertAvailable(callback)) {
                                     callback(done, Strings.getString('error_unexpected'), responseType);
@@ -625,7 +640,7 @@ export class AppComponent {
     }
 
     /**Get User Data*/
-    public get_user_info(callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
+    public getUser(callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
         Api.getUserInfo((status, result, responseType) => {
             if (status) {
                 if (Utils.assertAvailable(result)) {
@@ -674,7 +689,7 @@ export class AppComponent {
     public set_country(country_code: string, callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
         Api.setCountry(country_code, (status, result, responseType) => {
             if (status) {
-                this.validate_session(callback);
+                this.validateSession(callback);
             } else {
                 if (Utils.assertAvailable(callback)) {
                     callback(status, result, responseType);
@@ -690,7 +705,7 @@ export class AppComponent {
     public set_language(language_code: string, callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
         Api.setLanguage(language_code, (status, result, responseType) => {
             if (status) {
-                this.validate_session(callback);
+                this.validateSession(callback);
             } else {
                 if (Utils.assertAvailable(callback)) {
                     callback(status, result, responseType);

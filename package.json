@@ -1,6 +1,6 @@
 {
   "name": "wecari-partner",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "author": "Ionic Framework",
   "homepage": "https://partner.wecari.com/",
   "scripts": {
@@ -95,6 +95,7 @@
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^10.17.17",
     "codelyzer": "~4.5.0",
+    "cordova-plugin-telerik-imagepicker": "^2.2.4",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~3.1.4",
@@ -114,7 +115,9 @@
       "cordova-plugin-device": {},
       "cordova-plugin-app-version": {},
       "cordova-plugin-secure-storage": {},
-      "phonegap-plugin-barcodescanner": {},
+      "phonegap-plugin-barcodescanner": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
       "cordova-plugin-whitelist": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-splashscreen": {},
@@ -145,7 +148,8 @@
         "DEEPLINK_4_HOST": " ",
         "DEEPLINK_5_SCHEME": " ",
         "DEEPLINK_5_HOST": " "
-      }
+      },
+      "cordova-plugin-telerik-imagepicker": {}
     },
     "platforms": [
       "browser",

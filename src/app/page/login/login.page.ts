@@ -64,7 +64,7 @@ export class LoginPage extends PageController {
                     password: this.password,
                     callback: async (token, msg) => {
                         if (token) {
-                            await this.instance.validate_session( async (status, msg, responseType) => {
+                            await this.instance.validateSession( async (status, msg, responseType) => {
                                 // Hide Loader
                                 await this.hideLoading();
                                 if (status) {
