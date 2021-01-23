@@ -49,80 +49,96 @@ export class SessionManager {
     /** Set data - localStorage
      * @param key  key
      * @param callback
-     * @param value  value*/
-    static set(key:string, value:any, callback?: (status: boolean) => any)  {
+     * @param value  value
+     * @return Promise if no callback given
+     * */
+    static set(key:string, value:any, callback?: (status: boolean) => any):  Promise<boolean> {
         if (this.sessionManager.storage !=null){
-            this.sessionManager.storage.set(key, value)
+            return new Promise(async (resolve)=>{
+                this.sessionManager.storage.set(key, value)
                 .then(() => {
-                    if (Utils.assertAvailable(callback))callback(true);
+                    if (Utils.assertAvailable(callback)) callback(true);
+                    else resolve(true);
                 })
                 .catch(() => {
-                    if (Utils.assertAvailable(callback))callback(false);
+                    if (Utils.assertAvailable(callback)) callback(false);
+                    else resolve(false);
                 });
+            })
         }
         else {
-            if (typeof value === "object"){
-                localStorage.setItem(key,Utils.toJson(value));
-                if (Utils.assertAvailable(callback))callback(true);
-            }
-            else{
-                localStorage.setItem(key,value);
-                if (Utils.assertAvailable(callback))callback(true);
-            }
+            return new Promise((resolve)=>{
+                if (typeof value === "object") localStorage.setItem(key,Utils.toJson(value));
+                else localStorage.setItem(key,value);
+
+                if (Utils.assertAvailable(callback)) callback(true);
+                else resolve(true);
+            })
         }
     }
 
     /** Get data - localStorage
      * @param key  key
-     * @param callback
+     * @param callback 
+     * @return Promise if no callback given
      * */
-    static get(key:string, callback:(data:any)=>any){
+    static async get(key:string, callback?:(data:any)=>any): Promise<any> {
         if (this.sessionManager.storage !=null){
-            this.sessionManager.storage.get(key)
-                .then(value => {
-                    callback(value);
+            return new Promise(async (resolve)=>{
+                this.sessionManager.storage.get(key)
+                .then((value) => {
+                    if (Utils.assertAvailable(callback)) callback(value);
+                    else resolve(value);
                 })
-                .catch((error) => {
-                    callback(null);
+                .catch(() => {
+                    if (Utils.assertAvailable(callback)) callback(null);
+                    else resolve(null);
                 });
+            })
         }
         else {
-            let value = localStorage.getItem(key);
-            let obj = Utils.parseJson(value);
-            if (Utils.assertAvailable(obj)){
-                callback(obj);
-            }
-            else{
-                callback(value);
-            }
+            return new Promise((resolve)=>{
+                let value = localStorage.getItem(key);
+                let obj = Utils.parseJson(value);
+                if (Utils.assertAvailable(callback)) callback(Utils.assertAvailable(obj) ? obj : value);
+                else resolve(Utils.assertAvailable(obj) ? obj : value);
+            })
         }
     }
 
     /** Remove data - localStorage
      * @param key  string
      * */
-    static remove(key) {
+    static async remove(key: string): Promise<any> {
         if (this.sessionManager.storage !=null){
-            this.sessionManager.storage.remove(key);
+            return this.sessionManager.storage.remove(key);
         }
         else {
-            localStorage.removeItem(key);
+            return new Promise((resolve)=>{
+                localStorage.removeItem(key);
+                resolve(true);
+            })
         }
     }
 
     /** Remove all data - localStorage
      * */
-    static clear(){
+    static async clear(): Promise<any>{
         if (this.sessionManager.storage !=null){
-            this.sessionManager.storage.clear();
+            return this.sessionManager.storage.clear();
         }
-        localStorage.clear();
+        else {
+            return new Promise((resolve)=>{
+                localStorage.clear();
+                resolve(true);
+            })
+        }
     }
 
     /** Get User Info from session
      * @param callback
      * */
-    static getUserInfo(callback: (data: UserInfo) => any) {
+    static getUserInfo(callback?: (data: UserInfo) => any): Promise<UserInfo> {
         return this.get(this.user_info,callback)
     }
 
@@ -131,13 +147,13 @@ export class SessionManager {
      * @param callback
      * */
     static setUserInfo(user: UserInfo, callback?: (status: boolean) => any) {
-        this.set(this.user_info, user,callback)
+        return this.set(this.user_info, user,callback)
     }
 
     /** Get Ping Data from session
      * @param callback
      * */
-    static getPing(callback: (data: PingObject) => any) {
+    static getPing(callback?: (data: PingObject) => any): Promise<PingObject> {
         return this.get(this.ping,callback)
     }
 
@@ -146,13 +162,13 @@ export class SessionManager {
      * @param callback
      * */
     static setPing(ping: PingObject, callback?: (status: boolean) => any) {
-        this.set(this.ping, ping,callback)
+       return this.set(this.ping, ping,callback)
     }
 
     /**Get Session Token
      * @param callback
      * */
-    static getSession(callback: (data: ValidateSessionObject) => any) {
+    static getSession(callback?: (data: ValidateSessionObject) => any): Promise<ValidateSessionObject> {
         return this.get(this.session_info,callback);
     }
 
@@ -161,7 +177,7 @@ export class SessionManager {
      * @param callback
      * */
     static setSession(session: ValidateSessionObject, callback?: (status: boolean) => any) {
-        this.set(this.session_info, session, callback);
+        return this.set(this.session_info, session, callback);
     }
     
     /**

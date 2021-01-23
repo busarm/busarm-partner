@@ -82,11 +82,14 @@ export class NetworkProvider {
     }
 
     /**Check if connection available*/
-    public static checkConnection(callback: (connected: boolean) => any) {
+    public static checkConnection(callback?: (connected: boolean) => any): Promise<boolean> {
         /*Get Current network states*/
-        NetworkProvider.getInstance().pingServer(connected => {
-            NetworkProvider.getInstance().notify(connected,false);
-            callback(connected);
+        return new Promise((resolve) => {
+            NetworkProvider.getInstance().pingServer(connected => {
+                NetworkProvider.getInstance().notify(connected,false);
+                if(callback) callback(connected);
+                resolve(connected)
+            });
         });
     }
 }

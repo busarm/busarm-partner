@@ -56,6 +56,8 @@ interface ApiRequestParams {
  * */
 export class Api {
     
+    private cacheLoaded = false;
+
     /**
      * Constructor
      * @param {ApiRequestParams} requestParams
@@ -66,44 +68,42 @@ export class Api {
             requestParams.cacheId = String(Utils.hashString(requestParams.url));
         }
 
-        if (NetworkProvider.isOnline()) {
+        /**Start request */
+        this.start(requestParams);
+    }
 
-            /**Get Session Token First*/
-            SessionManager.getSession(session => {
-
-                if (requestParams.headers == null) {
-                    requestParams.headers = [];
-                }
-
-                requestParams.headers['X-Session-Token'] = Utils.assertAvailable(session)?Utils.safeString(session.session_token):"";
-                if (requestParams.encrypt) {
-                    if (session != null) {
-                        CIPHER.encrypt(session.encryption_key, Utils.toJson(requestParams.params), (status, cipher) => {
-                            if (status) {
-                                requestParams.params = {
-                                    data: cipher
-                                };
-                                requestParams.headers['X-Encrypted'] = '1';
-                                this.processRequest(requestParams, true, session.encryption_key);
-                            } else {
-                                this.processRequest(requestParams, false);
-                            }
-                        });
+    /**
+     * Start request
+     * @param requestParams ApiRequestParams
+     */
+    private async start(requestParams: ApiRequestParams){
+        
+        /**Get Session Token First*/
+        let session = await SessionManager.getSession();
+        if (requestParams.headers == null) {
+            requestParams.headers = [];
+        }
+        requestParams.headers['X-Session-Token'] = Utils.assertAvailable(session)?Utils.safeString(session.session_token):"";
+        if (requestParams.encrypt) {
+            if (session != null) {
+                CIPHER.encrypt(session.encryption_key, Utils.toJson(requestParams.params), (status, cipher) => {
+                    if (status) {
+                        requestParams.params = {
+                            data: cipher
+                        };
+                        requestParams.headers['X-Encrypted'] = '1';
+                        this.processRequest(requestParams, true, session.encryption_key);
                     } else {
                         this.processRequest(requestParams, false);
                     }
-                } else {
-                    this.processRequest(requestParams, false);
-                }
-            });
-        } else {
-            if (requestParams.callback) {
-                requestParams.callback(false, Strings.getString("error_connection"), ApiResponseType.Network_error);
+                });
+            } else {
+                this.processRequest(requestParams, false);
             }
+        } else {
+            this.processRequest(requestParams, false);
         }
     }
-
-    private cacheLoaded = false;
 
     /**
      * This Performs the request and returns the results
@@ -121,7 +121,7 @@ export class Api {
      * @param encryptedRequest
      * @param encryptionKey
      */
-    private processRequest(requestParams: ApiRequestParams, encryptedRequest: boolean, encryptionKey?: string) {
+    private async processRequest(requestParams: ApiRequestParams, encryptedRequest: boolean, encryptionKey?: string) {
       const processWithMethod = () => {
           switch (requestParams.method) {
               case OauthRequestMethod.DELETE:
@@ -161,15 +161,14 @@ export class Api {
 
       /*Respond first from cache*/
       if (requestParams.cache && requestParams.loadCache) {
-          // get cached response
-          SessionManager.get(requestParams.cacheId, data => {
-              if (data) {
-                  if (requestParams.callback) {
-                      requestParams.callback(true, data, ApiResponseType.Api_Success);
-                      this.cacheLoaded = true;
-                  }
+          // Get cached response
+          let cache = await SessionManager.get(requestParams.cacheId);
+          if (cache) {
+              if (requestParams.callback) {
+                  requestParams.callback(true, cache, ApiResponseType.Api_Success);
+                  this.cacheLoaded = true;
               }
-          });
+          }
       }
 
       /*Process Request*/
@@ -216,44 +215,40 @@ export class Api {
      * @param result
      * @param requestParams
      */
-    private processResponse(status: boolean, result: HttpErrorResponse|HttpResponse<any>|any, requestParams: ApiRequestParams) {
+    private async processResponse(status: boolean, result: HttpErrorResponse|HttpResponse<any>|any, requestParams: ApiRequestParams) {
         if (result) {
             if (status) {
                 const data = Utils.parseJson(result.body);
                 if (data) {
                     if (data.status) {
                         if (requestParams.cache) {
-
-                            // get cached response
-                            SessionManager.get(requestParams.cacheId, cachedData => {
-                                if (cachedData) {
-
-                                    // Compare new response to cached response
-                                    if (Utils.toJson(cachedData) != Utils.toJson(data)) {
-                                        if (requestParams.callback) {
-                                            requestParams.callback(true, data, ApiResponseType.Api_Success);
-                                        }
-                                        SessionManager.set(requestParams.cacheId, data); // cache response
-                                    } else {
-                                        if (!this.cacheLoaded) {
-                                            if (requestParams.callback) {
-                                                requestParams.callback(true, data, ApiResponseType.Api_Success);
-                                            }
-                                        }
-                                    }
-                                } else {
+                            // Get cached response
+                            let cache = await SessionManager.get(requestParams.cacheId);
+                            if (cache) {
+                                // Compare new response to cached response
+                                if (Utils.toJson(cache) != Utils.toJson(data)) {
                                     if (requestParams.callback) {
                                         requestParams.callback(true, data, ApiResponseType.Api_Success);
                                     }
                                     SessionManager.set(requestParams.cacheId, data); // cache response
+                                } else {
+                                    if (!this.cacheLoaded) {
+                                        if (requestParams.callback) {
+                                            requestParams.callback(true, data, ApiResponseType.Api_Success);
+                                        }
+                                    }
                                 }
-                            });
+                            } else {
+                                if (requestParams.callback) {
+                                    requestParams.callback(true, data, ApiResponseType.Api_Success);
+                                }
+                                SessionManager.set(requestParams.cacheId, data); // cache response
+                            }
                         } else {
                             if (requestParams.callback) {
                                 requestParams.callback(true, data, ApiResponseType.Api_Success);
                             }
                         }
-
                     } else {
                         if (Utils.assertAvailable(data.msg)) {
                             if (requestParams.callback) {
@@ -271,37 +266,50 @@ export class Api {
                     SessionManager.remove(requestParams.cacheId); // remove cache
                 }
             } else {
-                if (result.status === 401 || result.status === 403) { // Failed to authorize api access
+                const data = result.body ? Utils.parseJson(result.body) : (result.error ? Utils.parseJson(result.error) : '');
+                if (result.status === 401) { // Failed to authenticate api access
                     if (requestParams.callback) {
-                        requestParams.callback(false, Strings.getString("error_access_expired"), ApiResponseType.Authorization_error);
+                        requestParams.callback(false, data && data.msg ? data.msg : Strings.getString('error_access_expired'), ApiResponseType.Authorization_error);
                     }
                     SessionManager.logout();
+                } 
+                else if (result.status === 403) { // Failed to authorize access
+                    if (requestParams.callback) {
+                        requestParams.callback(false, data && data.msg ? data.msg : Strings.getString('error_access_expired'), ApiResponseType.Authorization_error);
+                    }
                 } else {
                     if (requestParams.cache) {
                         // get cached response
-                        SessionManager.get(requestParams.cacheId, data => {
-                            if (data) {
-                                if (requestParams.callback) {
-                                    requestParams.callback(true, data, ApiResponseType.Api_Success);
-                                }
-                            } else {
-                                if (!this.cacheLoaded) {
-                                    if (requestParams.callback) {
-                                        requestParams.callback(false, Utils.assertAvailable(data) && Utils.assertAvailable(data.msg) ?
-                                            data.msg :
-                                            Strings.getString("error_unexpected"), ApiResponseType.unknown);
+                        let cache = await SessionManager.get(requestParams.cacheId);
+                        if (cache) {
+                            // Check Internet connection
+                            if (!NetworkProvider.isOnline()) {
+                                NetworkProvider.checkConnection().then((connected)=>{
+                                    if(requestParams.callback){
+                                        requestParams.callback(true, cache, ApiResponseType.Api_Success);
+                                        if(!connected){
+                                            requestParams.callback(false, Strings.getString("error_connection"), ApiResponseType.Network_error);
+                                        }
                                     }
-                                }
+                                })
                             }
-                        });
+                            else if (requestParams.callback) {
+                                requestParams.callback(true, cache, ApiResponseType.Api_Success);
+                            }
+                        } else if (!this.cacheLoaded && requestParams.callback) {
+                            requestParams.callback(false, data && data.msg ? data.msg : Strings.getString('error_unexpected'), ApiResponseType.unknown);
+                        }
                     } else {
-                        if (!this.cacheLoaded) {
-                            const data = result.body ? Utils.parseJson(result.body) : (result.error ? Utils.parseJson(result.body) : '');
-                            if (requestParams.callback) {
-                                requestParams.callback(false, Utils.assertAvailable(data) && Utils.assertAvailable(data.msg) ?
-                                    data.msg :
-                                    Strings.getString('error_unexpected'), ApiResponseType.unknown);
-                            }
+                        // Check Internet connection
+                        if (!NetworkProvider.isOnline()) {
+                            NetworkProvider.checkConnection().then((connected)=>{
+                                if (requestParams.callback) {
+                                    requestParams.callback(false, Strings.getString("error_connection"), connected ?  ApiResponseType.unknown : ApiResponseType.Network_error);
+                                }
+                            })
+                        }
+                        else  if (!this.cacheLoaded && requestParams.callback) {
+                            requestParams.callback(false, Strings.getString("error_unexpected"), ApiResponseType.unknown);
                         }
                     }
                 }

@@ -37,6 +37,8 @@ export class DashboardPage extends PageController {
     dashboard: Dashboard = null;
     bookingMonths: BookingMonth[] = null;
 
+    private dashboardLoading = false;
+
     private alertShowing = false;
 
     public webScanAvailable = false;
@@ -98,12 +100,12 @@ export class DashboardPage extends PageController {
         this.setTimeout(() => {
             /*Init Dashboard*/
             if (!this.dashboard)
-                this.loadDashboardView();
+                this.loadDashboardView(true);
         }, 500);
         
         /*Refresh dashboard every 10 secs*/
         this.setInterval(() => {
-            this.loadDashboardView();
+            this.loadDashboardView(false);
         }, ENVIRONMENT == ENV.PROD ? 5000 : 10000);
     }
 
@@ -354,7 +356,7 @@ export class DashboardPage extends PageController {
      * @param event
      */
     public refreshDashboardView(event?) {
-        this.loadDashboardView(() => {
+        this.loadDashboardView(true, () => {
             if (event) {
                 this.onClear(event);
                 event.target.complete();
@@ -433,32 +435,31 @@ export class DashboardPage extends PageController {
     }
 
     /**Load Active Trips View
-     * @param {() => any} completed
-     * @return {Promise<void>}
+     * @param showError boolean
+     * @param completed {() => any}
      */
-    public async loadDashboardView(completed?: () => any) {
+    public async loadDashboardView(showError = false, completed?: () => any) {
+        if(this.dashboardLoading) {
+            if (this.assertAvailable(completed)) completed();
+            return;
+        }
+        
         let min_date = this.bookingMonths?this.bookingMonths[this.selectedBookingMonth].min_date:"";
         let max_date = this.bookingMonths?this.bookingMonths[this.selectedBookingMonth].max_date:"";
+        this.dashboardLoading = true;
         Api.getDashboard(min_date,max_date,async (status, result) => {
-            if (status) {
-                //Save user data to session
+            this.dashboardLoading = false;
+            if (status) { //Save user data to session
                 if (this.assertAvailable(result)) {
                     if (result.data && (String(MD5(Utils.toJson(this.dashboard))) != String(MD5(Utils.toJson(result.data))))) {
                         this.dashboard = result.data;
                         await this.initDashboard();
                     }
                 }
-                else {
-                    await this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-                }
+                else if(showError) await this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
             }
-            else {
-                await this.showToastMsg(result, ToastType.ERROR);
-            }
-
-            if (this.assertAvailable(completed)) {
-                completed();
-            }
+            else if(showError) await this.showToastMsg(result, ToastType.ERROR);
+            if (this.assertAvailable(completed)) completed();
         });
     }
 }
