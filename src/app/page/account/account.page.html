@@ -17,9 +17,9 @@
                 <ion-card *ngIf="userInfo!=null">
                     <ion-card-content>
                         <ion-row>
-                            <ion-col size-sm="5" size="12" class="cell cell-flex cell-flex-center">
+                            <ion-col size-sm="6" size="12" class="cell cell-flex cell-flex-center">
                                 <ion-row>
-                                    <ion-col size-md="10" size="12" class="cell cell-flex cell-flex-center">
+                                    <ion-col size="12" class="cell cell-flex cell-flex-center">
                                         <ion-img *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='')"
                                                 class="img thumbnail"
                                                 [src]="userInfo.partner_logo"
@@ -44,7 +44,7 @@
                                             <label class="fileInputLabel" id="fileInputLogoLabel" for="fileInputLogo"><ion-icon color="primary" name="images"> </ion-icon>{{strings.getString("upload_txt")}}</label>
                                         </ion-button>
                                     </ion-col>
-                                    <ion-col size-md="2" size="12" *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='') && userInfo.is_admin" class="cell cell-flex cell-flex-center">
+                                    <ion-col size="12" *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='') && userInfo.is_admin" class="cell cell-flex cell-flex-center">
                                         <ion-button *ngIf="!platform.is('cordova')" 
                                                     style="height: 30px!important;width: 30px!important;" 
                                                     class="iconBt">
@@ -57,7 +57,7 @@
                                     </ion-col>
                                 </ion-row>
                             </ion-col>
-                            <ion-col size-sm="7" size="12" class="cell cell-flex cell-flex-center">
+                            <ion-col size-sm="6" size="12" class="cell cell-flex cell-flex-center">
                                 <div class="cell cell-center cell-left">
                                     <div>
                                         <ion-label class="cell-title cell-sub">{{userInfo.partner_name}}</ion-label>

@@ -15,7 +15,7 @@
         <ion-col size-md="8" size-lg="6">
             <form #payoutForm="ngForm" (ngSubmit)="submit()" autocomplete="off">
                 <ion-list>
-                    <ion-row *ngIf="payout.to!=null && payout.to!=''">
+                    <ion-row *ngIf="payout.from!=null && payout.from!=''">
                         <ion-col size="4" class="cell">
                             <ion-label class="cell-label small-text">{{strings.getString('from_txt')}}</ion-label>
                         </ion-col>
@@ -39,21 +39,51 @@
                             <ion-label>{{payout.currency_code}} {{payout.balance}}</ion-label>
                         </ion-col>
                     </ion-row>
+                    <ion-row *ngIf="selectedMethod && payout.balance < selectedMethod.transfer_minimum">
+                        <ion-col size="4" class="cell">
+                            <ion-label class="cell-label small-text">{{strings.getString('fees_txt')}}</ion-label>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-label>{{payout.currency_code}} {{getFee()}}</ion-label>
+                        </ion-col>
+                        <ion-col class="cell" size="12">
+                            <ion-label class="x-small-text cell-padding-auto color-normal" >
+                                <ion-icon class="color-normal" name="information-circle-outline" slot="start"></ion-icon>
+                                {{getFeeAlert()}}
+                            </ion-label>
+                        </ion-col>
+                    </ion-row>
                 </ion-list>
                 <br>
-                <ion-item>
+                <ion-item *ngIf="payout.payment_methods!=null && payout.payment_methods.length > 1">
+                    <ion-label position="stacked">{{strings.getString('payment_method_txt')}}</ion-label>
+                    <ion-select required name="method" placeholder="{{strings.getString('select_payment_method_txt')}}"
+                                [(ngModel)]="selectedMethodId"
+                                (ionChange)="setMethod()">
+                        <ion-select-option *ngFor="let method of payout.payment_methods" [value]="method.method_id">
+                            {{method.method_name}}
+                        </ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item *ngIf="selectedMethod!=null && banks!=null">
+                    <ion-label position="stacked">{{strings.getString('receiver_bank_txt')}}</ion-label>
+                    <ion-select required name="bank"  interface="action-sheet"  placeholder="{{strings.getString('select_bank_txt')}}"
+                                [(ngModel)]="receiverBankCode"
+                                (ionChange)="setBank()">
+                        <ion-select-option *ngFor="let bank of banks" [value]="bank.code">
+                            {{bank.name}}
+                        </ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item *ngIf="banks!=null && receiverBankCode!=null">
                     <ion-label position="stacked">{{strings.getString('receiver_name_txt')}}</ion-label>
                     <ion-input required name="name" [(ngModel)]="receiverName" type="text"> </ion-input>
                 </ion-item>
-                <ion-item>
-                    <ion-label position="stacked">{{strings.getString('receiver_bank_txt')}}</ion-label>
-                    <ion-input required name="bank" [(ngModel)]="receiverBank" type="text"> </ion-input>
-                </ion-item>
-                <ion-item>
+                <ion-item *ngIf="banks!=null && receiverBankCode!=null">
                     <ion-label position="stacked">{{strings.getString('receiver_account_txt')}}</ion-label>
                     <ion-input required name="account" [(ngModel)]="receiverAccount" type="text"> </ion-input>
                 </ion-item>
-                <ion-item [lines]="'none'">
+                <ion-item  *ngIf="banks!=null && receiverBankCode!=null" [lines]="'none'">
                     <ion-label color="primary" class="x-small-text">{{strings.getString('save_account_info')}}</ion-label>
                     <ion-checkbox name="save_account" slot="start" color="primary" [(ngModel)]="saveAccount">
                     </ion-checkbox>
@@ -64,14 +94,13 @@
                 </div>
                 <div>
                     <ion-button expand="full" color="primary" type="submit"
-                                [disabled]="!payoutForm.form.valid">
+                                [disabled]="!payoutForm.form.valid || selectedMethod==null || receiverBankCode==null">
                         {{strings.getString("submit_txt")}}
                     </ion-button>
                 </div>
             </form>
         </ion-col>
     </ion-row>
-    <br>
     <br>
     <ion-row *ngIf="payout!=null && payout.requests!=null && payout.requests.length >= 1"> 
         <ion-col size="12" class="cell cell-flex cell-flex-center">
@@ -97,6 +126,12 @@
                         </ion-card-header>
                         <ion-card-content>
                             <div>
+                                <div *ngIf="request.status_info" class="cell cell-center cell-padding-2x">
+                                    <ion-label class="small-text color-warning" >
+                                        <ion-icon class="color-warning" name="information-circle-outline" slot="start"></ion-icon>
+                                        {{request.status_info}}
+                                    </ion-label>
+                                </div>
                                 <ion-label class="cell cell-center ">
                                     <div class="cell-title">{{strings.getString('receiver_name_txt')}}</div>
                                     <div class="cell-content">{{request.receiver_name}}</div>
@@ -106,7 +141,7 @@
                                     <div class="cell-content">{{request.receiver_bank}}</div>
                                 </ion-label>
                                 <ion-label class="cell cell-center ">
-                                    <div class="cell-title">{{strings.getString('receiver_bank_txt')}}</div>
+                                    <div class="cell-title">{{strings.getString('receiver_account_txt')}}</div>
                                     <div class="cell-content">{{request.receiver_account_no}}</div>
                                 </ion-label>
                                 <ion-label class="cell cell-center ">

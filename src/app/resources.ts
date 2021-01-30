@@ -169,7 +169,6 @@ export enum Keys {
     account_name_txt,
     bank_name_txt,
     account_number_txt,
-    payment_info_txt,
     action_confirm_msg_txt,
     invalid_location,
     support_txt,
@@ -209,10 +208,17 @@ export enum Keys {
     update_available_title,
     update_available_msg,
     payment_made_txt,
+    payment_not_made_txt,
     payment_type,
     permission_required_txt,
     no_camera_permission_msg,
     no_camera_msg,
+    select_bank_txt,
+    payment_method_txt,
+    select_payment_method_txt,
+    payout_fee_alert_txt,
+    pay_now_txt,
+    view_history_txt
 }
 
 export type StringKey = keyof typeof Keys;
@@ -379,11 +385,10 @@ const English: String = {
     new_request_txt:"New Request",
     receiver_name_txt:"Receiver's Name",
     receiver_bank_txt:"Receiver's Bank Name",
-    receiver_account_txt:"Receiver's Bank Account",
+    receiver_account_txt:"Receiver's Bank Account #",
     account_name_txt:"Account Name",
     bank_name_txt:"Bank Name",
     account_number_txt:"Account Number",
-    payment_info_txt:"Please make payment to the following bank account and include the Payment Reference number below in the reference field of your payment.",
     action_confirm_msg_txt:"Are you sure you want to continue?",
     invalid_location:"Invalid location selected",
     support_txt:"Support",
@@ -423,10 +428,17 @@ const English: String = {
     update_available_title: "Update Available",
     update_available_msg: "A new version is available. Do you want to load it?",
     payment_made_txt: "I've made payment",
+    payment_not_made_txt: "I've not paid",
     payment_type: "Payment Type",
     permission_required_txt: "Permission Required",
     no_camera_permission_msg: "Failed to get camera. Please ensure this app has permission to access camera",
-    no_camera_msg: "Failed to get camera"
+    no_camera_msg: "Failed to get camera",
+    select_bank_txt: "Select Bank",
+    payment_method_txt: "Payment Method",
+    select_payment_method_txt: "Select Payment Method",
+    payout_fee_alert_txt: "Transfer fee will apply for amount less than {0}",
+    pay_now_txt: "Pay Now",
+    view_history_txt: "View History",
 };
 
 
@@ -512,7 +524,9 @@ export class Strings {
 
     /**
      * Format String
+     * Strings should contain placeholders e.g {0}, {1}, {2} etc.
      * @param str string
+     * @param args
      */
     public static format(str: string, ...args) {
         return str.replace(/{(\d+)}/g, function(match, number) {

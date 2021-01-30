@@ -420,6 +420,11 @@ ion-card {
     background: white;
   }
 }
+ion-select {
+  width: 100%;
+
+  justify-content: center;
+}
 
 input, button {
   background: transparent;

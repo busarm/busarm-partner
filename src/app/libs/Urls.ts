@@ -94,6 +94,7 @@ export class Urls{
     public static apiVerify:string;
     public static apiGetPayin:string;
     public static apiGetPayout:string;
+    public static apiGetBanks:string;
     public static apiPayInRequest:string;
     public static apiPayoutRequest:string;
     public static googleApiUrl:string;
@@ -152,6 +153,7 @@ export class Urls{
         this.apiVerify = Urls.apiBaseUrl + "agent/User/verify";
         this.apiGetPayin = Urls.apiBaseUrl + "agent/Transaction/payin";
         this.apiGetPayout = Urls.apiBaseUrl + "agent/Transaction/payout";
+        this.apiGetBanks = Urls.apiBaseUrl + "agent/Transaction/banks";
         this.apiPayInRequest = Urls.apiBaseUrl + "agent/Transaction/payInRequest";
         this.apiPayoutRequest = Urls.apiBaseUrl + "agent/Transaction/payoutRequest"
         this.apiLocation = Urls.apiBaseUrl + "agent/Location";

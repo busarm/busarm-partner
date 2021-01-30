@@ -75,9 +75,7 @@ export interface BankAccountObject {
     account_name:string,
     account_number:string,
     bank_name:string,
-    swift_code:string,
-    branch_name:string,
-    branch_code:string
+    bank_code:string
 }
 
 export interface Country {
@@ -366,6 +364,11 @@ export interface PayOutTransactionObject extends SimpleResponseObject  {
     data?: PayOutTransaction;
 }
 
+/*------BANKS RESPONSE*/
+export interface BanksObject extends SimpleResponseObject  {
+    data?: Bank[];
+}
+
 /*------DASHBOARD RESPONSE*/
 
 export interface DashboardObject extends SimpleResponseObject {
@@ -407,6 +410,7 @@ export interface AmmoutDetails{
 export interface PayInTransactionRequest {
     request_id:number,
     status_id:string,
+    status_info:string,
     status:string,
     date_from:string,
     date_to:string,
@@ -414,6 +418,7 @@ export interface PayInTransactionRequest {
     currency_code:string,
     amount:number,
     date_created:string,
+    payment_url:string,
 }
 
 export interface PayInTransaction{
@@ -429,17 +434,21 @@ export interface PayInTransaction{
     action_required:boolean,
     requests:PayInTransactionRequest[],
     info:string,
+    alert:string,
     payment_reference:string,
+    payment_available: boolean
 }
 
 export interface PayOutTransactionRequest {
     request_id:number,
     status_id:string,
     status:string,
+    status_info:string,
     date_from:string,
     date_to:string,
     receiver_name:string,
     receiver_bank:string,
+    receiver_bank_code:string,
     receiver_account_no:string,
     currency_code:string,
     amount:number,
@@ -458,6 +467,33 @@ export interface PayOutTransaction{
     action_required:boolean,
     requests:PayOutTransactionRequest[],
     info:string,
+    payment_methods: PaymentMethod[]
+}
+
+export interface PaymentMethod{
+    method_id: string,
+    method_name?: string,
+    method_value?: string,
+    country_code?: string,
+    provider?: string,
+    fees: number,
+    fees_percent: number,
+    transfer_fee: number,
+    transfer_fee_percent?: number,
+    transfer_minimum?: number,
+    transfer_type?: string,
+    method_active?: number,
+    is_default?: number,
+    is_active?: number,
+    use_transfer?: number
+}
+
+export interface Bank{
+    name: string
+    code: string
+    country: string
+    currency: string
+    type: string
 }
 
 export interface BookingMonth{

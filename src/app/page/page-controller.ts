@@ -53,6 +53,10 @@ export class PageController implements OnInit, OnDestroy {
         if (this.interval) {
             clearInterval(this.interval);
         }
+        if(this.routeKey){
+            SessionManager.remove(this.routeKey); //remove params after use
+            this.routeKey = null;
+        }
     }
     public ionViewDidLeave(){
         if (this.interval) {
@@ -175,7 +179,7 @@ export class PageController implements OnInit, OnDestroy {
      */
     public async getRouteKey(path?:string){
         return new Promise<any>((resolve: (data: any) => any) => {
-            resolve('route_'+MD5(Utils.safeString((path?path:this.instance.router.url))).toString());
+            resolve(MD5('route_'+Utils.safeString((path?path:this.instance.router.url).replace('/',''))).toString());
         });
     }
 

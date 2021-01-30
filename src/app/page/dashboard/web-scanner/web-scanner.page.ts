@@ -85,7 +85,7 @@ export class WebScannerPage extends PageController {
             navigator.mediaDevices.enumerateDevices()
             .then((devices)=> {
                 this.mediaDevices = devices.filter(device => checking.includes(device.kind));
-                this.multiDeviceAllowed = this.mediaDevices && (this.mediaDevices.length >= 2); // TODO make > 1
+                this.multiDeviceAllowed = this.mediaDevices && (this.mediaDevices.length >= 2);
                 if(callback){
                     this.selectedDeviceindex = this.multiDeviceAllowed ? 1 : 0;
                     callback(this.mediaDevices[this.selectedDeviceindex]);

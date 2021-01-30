@@ -9,6 +9,30 @@ import { PingObject } from "../models/ApiResponse";
 
 export class Utils {
 
+    /** Parse Float
+     * @param str
+     * @return number
+     * */
+    static parseFloat(str: any) {
+        try {
+            return parseFloat(str);
+        } catch (error) {
+            return 0;
+        }
+    }
+
+    /** Parse Float
+     * @param str
+     * @return number
+     * */
+    static parseInt(str: any) {
+        try {
+            return parseInt(str);
+        } catch (error) {
+            return 0;
+        }
+    }
+
     /**Return url without it's url parameters
      * @param url Url to strip
      * @return string

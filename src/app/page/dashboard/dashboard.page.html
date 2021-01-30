@@ -102,7 +102,7 @@
                                     <ion-col size="12" position="center"
                                              class="cell cell-center cell-flex cell-flex-center">
                                         <div class="cell">
-                                            <canvas class="cell_chart" id="{{'canvas_'+trip.trip_id}}"> </canvas>
+                                            <canvas class="cell_chart" id="{{'canvas'+trip.trip_id}}"> </canvas>
                                         </div>
                                     </ion-col>
                                     <ion-col size="12" position="center"
@@ -177,7 +177,7 @@
                         <ion-row class="ion-justify-content-center" wrap>
                             <ion-col size="12" position="center" class="cell cell-center cell-flex cell-flex-center">
                                 <div class="cell">
-                                    <canvas class="cell_chart chart_max" id="canvas_bookings"> </canvas>
+                                    <canvas #canvasBookings class="cell_chart chart_max"> </canvas>
                                 </div>
                             </ion-col>
                             <ion-col size="12" position="center" class="cell">
@@ -376,12 +376,11 @@
                                         </ion-list>
                                     </ion-col>
                                 </ion-row>
-                                <ion-row *ngIf="dashboard.transactions.payout.action_required"
-                                         class="ion-justify-content-center">
+                                <ion-row *ngIf="dashboard.transactions.payout.action_required || (dashboard.transactions.payout.requests && dashboard.transactions.payout.requests.length >= 1)" class="ion-justify-content-center">
                                     <ion-col size="12" class="cell cell-flex cell-flex-center cell-padding-3x">
                                         <ion-button color="primary"
                                                     (click)="showPayout(dashboard.transactions.payout)">
-                                            {{strings.getString("request_payout_txt")}}
+                                            {{dashboard.transactions.payout.action_required ? strings.getString("request_payout_txt") : strings.getString("view_history_txt")}}
                                         </ion-button>
                                     </ion-col>
                                 </ion-row>
@@ -475,15 +474,15 @@
                                         </ion-list>
                                     </ion-col>
                                 </ion-row>
-                                <ion-row *ngIf="dashboard.transactions.payin.action_required" class="ion-justify-content-center">
-                                    <ion-col class="cell cell-flex cell-flex-center" >
+                                <ion-row *ngIf="dashboard.transactions.payin.action_required || (dashboard.transactions.payin.requests && dashboard.transactions.payin.requests.length >= 1)" class="ion-justify-content-center">
+                                    <ion-col *ngIf="dashboard.transactions.payin.action_required" class="cell cell-flex cell-flex-center" >
                                         <ion-label class="small-text" color="danger">
                                             {{strings.getString("pay_before_txt")}} {{dashboard.transactions.payin.last_day_to_action}}
                                         </ion-label>
                                     </ion-col>
                                     <ion-col size="12" class="cell cell-flex cell-flex-center cell-padding-3x">
                                         <ion-button color="primary" (click)="showPayIn(dashboard.transactions.payin)">
-                                            {{strings.getString("make_payment_txt")}}
+                                            {{dashboard.transactions.payin.action_required ? strings.getString("make_payment_txt") : strings.getString("view_history_txt")}}
                                         </ion-button>
                                     </ion-col>
                                 </ion-row>

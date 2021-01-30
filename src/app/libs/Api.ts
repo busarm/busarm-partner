@@ -17,7 +17,8 @@ import {
     BookingsInfoObject,
     PayInTransactionObject,
     PayOutTransactionObject,
-    LocationObject
+    LocationObject,
+    BanksObject
 } from '../models/ApiResponse';
 import {Utils, ToastType} from './Utils';
 import {SessionManager} from './SessionManager';
@@ -284,27 +285,37 @@ export class Api {
                         if (cache) {
                             // Check Internet connection
                             if (!NetworkProvider.isOnline()) {
-                                NetworkProvider.checkConnection().then((connected)=>{
-                                    if(requestParams.callback){
-                                        requestParams.callback(true, cache, ApiResponseType.Api_Success);
+                                if (requestParams.callback) {
+                                    requestParams.callback(true, cache, ApiResponseType.Api_Success);
+                                    NetworkProvider.checkConnection().then((connected)=>{
                                         if(!connected){
                                             requestParams.callback(false, Strings.getString("error_connection"), ApiResponseType.Network_error);
                                         }
-                                    }
-                                })
+                                    })
+                                }
                             }
                             else if (requestParams.callback) {
                                 requestParams.callback(true, cache, ApiResponseType.Api_Success);
                             }
                         } else if (!this.cacheLoaded && requestParams.callback) {
-                            requestParams.callback(false, data && data.msg ? data.msg : Strings.getString('error_unexpected'), ApiResponseType.unknown);
+                            // Check Internet connection
+                            if (!NetworkProvider.isOnline()) {
+                                NetworkProvider.checkConnection().then((connected)=>{
+                                    if (requestParams.callback) {
+                                        requestParams.callback(false, connected ? (data && data.msg ? data.msg : Strings.getString('error_unexpected')) : Strings.getString("error_connection"), connected ?  ApiResponseType.unknown : ApiResponseType.Network_error);
+                                    }
+                                })
+                            }
+                            else if (requestParams.callback) {
+                                requestParams.callback(false, data && data.msg ? data.msg : Strings.getString('error_unexpected'), ApiResponseType.unknown);
+                            }
                         }
                     } else {
                         // Check Internet connection
                         if (!NetworkProvider.isOnline()) {
                             NetworkProvider.checkConnection().then((connected)=>{
                                 if (requestParams.callback) {
-                                    requestParams.callback(false, Strings.getString("error_connection"), connected ?  ApiResponseType.unknown : ApiResponseType.Network_error);
+                                    requestParams.callback(false, connected ? Strings.getString("error_unexpected") : Strings.getString("error_connection"), connected ?  ApiResponseType.unknown : ApiResponseType.Network_error);
                                 }
                             })
                         }
@@ -540,6 +551,22 @@ export class Api {
         });
     }
 
+    /**Get Banks
+     * @param callback
+     * */
+    public static getBanks(countryCode:string, methodId:any, callback: (status: boolean, result: BanksObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            url: Urls.apiGetBanks,
+            params: {
+                countryCode: countryCode,
+                methodId: methodId
+            },
+            cache: true,
+            loadCache: true,
+            cacheId: String(Utils.hashString(Urls.apiGetBanks + countryCode + methodId)),
+            callback: callback
+        });
+    }
 
     /**Get Payin Transactions
      * @param callback

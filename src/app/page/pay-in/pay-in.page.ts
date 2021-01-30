@@ -3,6 +3,7 @@ import {PayInTransaction} from "../../models/ApiResponse";
 import {ToastType} from "../../libs/Utils";
 import {Api} from "../../libs/Api";
 import {PageController} from "../page-controller";
+import { Urls } from '../../libs/Urls';
 
 @Component({
     selector: 'app-pay-in',
@@ -62,14 +63,29 @@ export class PayInPage extends PageController {
             Api.addPayInRequest(payInRequest, (status, result) => {
                 this.hideLoading();
                 if (status) {
-                    this.showToastMsg(result.msg, ToastType.SUCCESS);
                     this.loadPayin();
+                    if(result.data && result.data.paymentUrl){
+                        this.gotoPayment(result.data.paymentUrl);
+                    }
+                    else {
+                        this.showToastMsg(result.msg, ToastType.SUCCESS);
+                    }
                 }
                 else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             });
         });
+    }
+
+    /**
+     * Open payment url
+     * @param paymentUrl 
+     */
+    public gotoPayment(paymentUrl){
+        paymentUrl+="&redirect_uri="+Urls.baseUrl+this.instance.router.url.replace('/', '');
+        this.ngOnDestroy();
+        window.open(paymentUrl, '_self');
     }
 
     /**Get Status class for status*/
