@@ -268,16 +268,33 @@
                                 </ion-row>
                                 <ion-list class="ion-justify-content-center" *ngIf="dashboard.transactions.bookings.amount_details">
                                     <ion-row *ngFor="let detail of dashboard.transactions.bookings.amount_details;">
-                                        <ion-col size="1" class="cell-flex cell-flex-center">
-                                            <ion-label class="x-small-text">&bull;</ion-label>
+                                        <ion-col size="1" class="cell cell-flex cell-flex-center">
+                                            <ion-label class="small-text">&bull;</ion-label>
                                         </ion-col>
-                                        <ion-col size="11">
+                                        <ion-col size="11" class="cell">
                                             <ion-row>
                                                 <ion-col size="8">
-                                                    <ion-label class="x-small-text">{{detail.title}}</ion-label>
+                                                    <ion-label class="small-text">{{detail.title}}</ion-label>
                                                 </ion-col>
                                                 <ion-col size="4">
-                                                    <ion-label class="x-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                    <ion-label class="small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                </ion-col>
+                                            </ion-row>
+                                        </ion-col>
+                                        <ion-col size="12" *ngIf="detail.amount_details">
+                                            <ion-row *ngFor="let detail of detail.amount_details;">
+                                                <ion-col size="1" class="cell cell-flex cell-flex-center">
+                                                    <ion-label class="x-small-text">&#8259;</ion-label>
+                                                </ion-col>
+                                                <ion-col size="11" class="cell">
+                                                    <ion-row>
+                                                        <ion-col size="8">
+                                                            <ion-label class="x-small-text">{{detail.title}}</ion-label>
+                                                        </ion-col>
+                                                        <ion-col size="4">
+                                                            <ion-label class="x-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                        </ion-col>
+                                                    </ion-row>
                                                 </ion-col>
                                             </ion-row>
                                         </ion-col>
@@ -329,22 +346,39 @@
                                                 </ion-item>
                                                 <ion-list size="12" *ngIf="dashboard.transactions.payout.amount_details">
                                                     <ion-row *ngFor="let detail of dashboard.transactions.payout.amount_details;">
-                                                        <ion-col size="1" class="cell-flex cell-flex-center">
-                                                            <ion-label class="x-small-text">&bull;</ion-label>
-                                                        </ion-col>
-                                                        <ion-col size="11">
+                                                        <ion-col size-md="3" size-sm="3" size="8">
                                                             <ion-row>
-                                                                <ion-col size-md="3" size-sm="3" size="8">
+                                                                <ion-col size="2" class="cell-flex cell-flex-center">
+                                                                    <ion-label class="x-small-text">&bull;</ion-label>
+                                                                </ion-col>
+                                                                <ion-col size="10" class="cell cell-left">
                                                                     <ion-label class="x-small-text">{{detail.title}}</ion-label>
                                                                 </ion-col>
-                                                                <ion-col size-md="2" size-sm="3" size="4">
-                                                                    <ion-label class="x-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                            </ion-row>
+                                                        </ion-col>
+                                                        <ion-col size-md="2" size-sm="3" size="4">
+                                                            <ion-label class="x-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                        </ion-col>
+                                                        <ion-col size-md="7" size-sm="6" size="12" *ngIf="detail.info">
+                                                            <ion-label class="xx-small-text cell-padding-auto color-normal" >
+                                                                <ion-icon class="color-normal" name="information-circle-outline" slot="start"></ion-icon>
+                                                                {{detail.info}}
+                                                            </ion-label>
+                                                        </ion-col>
+                                                        <ion-col class="cell" size="12" *ngIf="detail.amount_details">
+                                                            <ion-row *ngFor="let detail of detail.amount_details;">
+                                                                <ion-col size="8">
+                                                                    <ion-row>
+                                                                        <ion-col size="2" class="cell-flex cell-flex-center">
+                                                                            <ion-label class="xx-small-text">&#8259;</ion-label>
+                                                                        </ion-col>
+                                                                        <ion-col size="10" class="cell cell-left">
+                                                                            <ion-label class="xx-small-text">{{detail.title}}</ion-label>
+                                                                        </ion-col>
+                                                                    </ion-row>
                                                                 </ion-col>
-                                                                <ion-col size-md="7" size-sm="6" size="12" *ngIf="detail.info">
-                                                                    <ion-label class="xx-small-text cell-padding-auto color-normal" >
-                                                                        <ion-icon class="color-normal" name="information-circle-outline" slot="start"></ion-icon>
-                                                                        {{detail.info}}
-                                                                    </ion-label>
+                                                                <ion-col size="4">
+                                                                    <ion-label class="xx-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
                                                                 </ion-col>
                                                             </ion-row>
                                                         </ion-col>
@@ -427,22 +461,39 @@
                                                 </ion-item>
                                                 <ion-list size="12" *ngIf="dashboard.transactions.payin.amount_details">
                                                     <ion-row *ngFor="let detail of dashboard.transactions.payin.amount_details;">
-                                                        <ion-col size="1" class="cell-flex cell-flex-center">
-                                                            <ion-label class="x-small-text">&bull;</ion-label>
-                                                        </ion-col>
-                                                        <ion-col size="11">
+                                                        <ion-col size-md="3" size-sm="3" size="8">
                                                             <ion-row>
-                                                                <ion-col size-md="3" size-sm="3" size="8">
+                                                                <ion-col size="2" class="cell-flex cell-flex-center">
+                                                                    <ion-label class="x-small-text">&bull;</ion-label>
+                                                                </ion-col>
+                                                                <ion-col size="10" class="cell cell-left">
                                                                     <ion-label class="x-small-text">{{detail.title}}</ion-label>
                                                                 </ion-col>
-                                                                <ion-col size-md="2" size-sm="3" size="4">
-                                                                    <ion-label class="x-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                            </ion-row>
+                                                        </ion-col>
+                                                        <ion-col size-md="2" size-sm="3" size="4">
+                                                            <ion-label class="x-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
+                                                        </ion-col>
+                                                        <ion-col size-md="7" size-sm="6" size="12" *ngIf="detail.info">
+                                                            <ion-label class="xx-small-text cell-padding-auto color-normal" >
+                                                                <ion-icon class="color-normal" name="information-circle-outline" slot="start"></ion-icon>
+                                                                {{detail.info}}
+                                                            </ion-label>
+                                                        </ion-col>
+                                                        <ion-col class="cell" size="12" *ngIf="detail.amount_details">
+                                                            <ion-row *ngFor="let detail of detail.amount_details;">
+                                                                <ion-col size="8">
+                                                                    <ion-row>
+                                                                        <ion-col size="2" class="cell-flex cell-flex-center">
+                                                                            <ion-label class="xx-small-text">&#8259;</ion-label>
+                                                                        </ion-col>
+                                                                        <ion-col size="10" class="cell cell-left">
+                                                                            <ion-label class="xx-small-text">{{detail.title}}</ion-label>
+                                                                        </ion-col>
+                                                                    </ion-row>
                                                                 </ion-col>
-                                                                <ion-col size-md="7" size-sm="6" size="12" *ngIf="detail.info">
-                                                                    <ion-label class="xx-small-text cell-padding-auto color-normal" >
-                                                                        <ion-icon class="color-normal" name="information-circle-outline" slot="start"></ion-icon>
-                                                                        {{detail.info}}
-                                                                    </ion-label>
+                                                                <ion-col size="4">
+                                                                    <ion-label class="xx-small-text">{{detail.currency_code}} {{detail.amount}}</ion-label>
                                                                 </ion-col>
                                                             </ion-row>
                                                         </ion-col>

@@ -403,8 +403,9 @@ export interface Alert {
 export interface AmmoutDetails{
     title:string,
     currency_code:string,
-    amount:number,
     info:string,
+    amount:number,
+    amount_details:this[],
 }
 
 export interface PayInTransactionRequest {

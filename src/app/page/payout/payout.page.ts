@@ -67,7 +67,7 @@ export class PayoutPage extends PageController {
     /**
      * Load Banks
      */
-    private loadBanks(force = false){
+    private async loadBanks(force = false){
         if(!this.selectedMethod) {
             return;
         }
