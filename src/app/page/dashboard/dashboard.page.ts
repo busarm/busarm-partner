@@ -93,13 +93,13 @@ export class DashboardPage extends PageController {
     public async ionViewDidEnter(){
         super.ionViewDidEnter();
         /*Give time for components to load first*/
-        this.setTimeout(() => {
+        this.setTimeout(500).then(() => {
             /*Init Dashboard*/
             if (!this.dashboard)
                 this.loadDashboardView(true);
-        }, 500);
+        });
         
-        /*Refresh dashboard every 10 secs*/
+        /*Refresh dashboard periodically*/
         this.setInterval(() => {
             this.loadDashboardView(false);
         }, ENVIRONMENT == ENV.PROD ? 5000 : 10000);
@@ -178,7 +178,7 @@ export class DashboardPage extends PageController {
                 this.selectedBookingMonth = 0;
             }
 
-            setTimeout(()=>{
+            this.setTimeout(800, false).then(() => {
                 /*Active Trips*/
                 if (this.dashboard.active_trips) {
                     this.dashboard.active_trips.forEach((trip: TripInfo) => {
@@ -252,7 +252,7 @@ export class DashboardPage extends PageController {
                         }).update()
                     }
                 }
-            },800);
+            });
         }
     }
 

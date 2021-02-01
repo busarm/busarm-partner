@@ -36,16 +36,19 @@ export class PayoutPage extends PageController {
             this.receiverBankCode = this.userInfo.bank_account.bank_code;
         }
 
-        if(!this.payout){
-            this.loadPayout();
-        }
-        else {
-            if(this.payout.action_required && this.payout.payment_methods && this.payout.payment_methods.length == 1){
-                this.selectedMethod = this.payout.payment_methods[0];
-                this.selectedMethodId = this.selectedMethod.method_id;
-                this.loadBanks(true);
+        /*Give time for components to load first*/
+        this.setTimeout(500).then(() => { 
+            if(!this.payout){
+                this.loadPayout();
             }
-        }
+            else {
+                if(this.payout.action_required && this.payout.payment_methods && this.payout.payment_methods.length == 1){
+                    this.selectedMethod = this.payout.payment_methods[0];
+                    this.selectedMethodId = this.selectedMethod.method_id;
+                    this.loadBanks(true);
+                }
+            }
+        });
     }
 
     /**

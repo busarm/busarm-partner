@@ -520,6 +520,7 @@ export interface Booking{
     status: string,
     currency_code: string,
     total: number,
+    payment_type: string,
     date_created: string,
     updated_at: string
 }

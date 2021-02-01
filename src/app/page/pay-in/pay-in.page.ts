@@ -27,9 +27,13 @@ export class PayInPage extends PageController {
         this.bankName = this.session.configs.bank_name;
         this.accountNumber = this.session.configs.account_number;
         this.payIn = await this.getRouteParams();
-        if(!this.payIn){
-            this.loadPayin();
-        }
+        
+        /*Give time for components to load first*/
+        this.setTimeout(500).then(() => { 
+            if(!this.payIn){
+                this.loadPayin();
+            }
+        });
     }
 
     /**

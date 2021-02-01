@@ -19,8 +19,8 @@ export class PageController implements OnInit, OnDestroy {
     public userInfo: UserInfo = null;
     public routeKey: string = null;
 
-    public timer: number = null;
-    public interval: number = null;
+    public timer: any = null;
+    public interval: any = null;
 
     /**Global Constructor*/
     protected constructor() {
@@ -258,27 +258,29 @@ export class PageController implements OnInit, OnDestroy {
 
     /**
      * Set Timout
-     * @param handler 
-     * @param timeout 
+     * @param ms 
      * @param stopPrevious 
      */
-    public setTimeout(handler?: TimerHandler, timeout?: number, stopPrevious: boolean = true) {
-        if (stopPrevious && this.timer) {
-            clearTimeout(this.timer);
-        }
-        this.timer = setTimeout(handler, timeout)
+    public async setTimeout(ms?: number, stopPrevious: boolean = true) {
+        return new Promise((resolve) => {
+            if (stopPrevious && this.timer) {
+                clearTimeout(this.timer);
+            }
+            this.timer = setTimeout(resolve, ms)
+        });
     }
 
     /**
      * Set Interval
      * @param handler 
+     * @param ms 
      * @param timeout 
      * @param stopPrevious 
      */
-    public setInterval(handler?: TimerHandler, timeout?: number, stopPrevious: boolean = true) {
+    public async setInterval(handler?: TimerHandler, ms?: number, stopPrevious: boolean = true) {
         if (stopPrevious && this.interval) {
             clearInterval(this.interval);
         }
-        this.interval = setInterval(handler, timeout)
+        this.interval = setInterval(handler, ms)
     }
 }
