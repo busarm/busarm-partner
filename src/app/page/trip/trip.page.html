@@ -60,7 +60,8 @@
 
     <!--No trip view - Show if currentTrips has been loaded but is empty-->
     <div class="loader cell" *ngIf="currentTrips!=null && currentTrips.length <= 0">
-        <img src="{{assets.getPath('not_found')}}"/>
+        <ion-img [src]="assets.getPath('not_found')"> </ion-img>
+        <br>
         <ion-label class="cell-content">{{strings.getString('no_trip_txt')}}</ion-label>
     </div>
 

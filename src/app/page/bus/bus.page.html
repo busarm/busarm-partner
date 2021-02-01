@@ -42,7 +42,7 @@
         </ion-refresher-content>
     </ion-refresher>
 
-    <!--Loading view - Show if Buses hasn't been loaded yet-->
+    <!--Loading view - Show if nothing hasn't been loaded yet-->
     <div class="loader cell" *ngIf="currentBuses==null">
         <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
         <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
@@ -50,7 +50,8 @@
 
     <!--No bus view - Show if currentBuses has been loaded but is empty-->
     <div class="loader cell" *ngIf="currentBuses!=null && currentBuses.length <= 0">
-        <img src="{{assets.getPath('not_found')}}"/>
+        <ion-img [src]="assets.getPath('not_found')"> </ion-img>
+        <br>
         <ion-label class="cell-content">{{strings.getString('no_bus_txt')}}</ion-label>
     </div>
 

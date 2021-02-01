@@ -595,9 +595,14 @@ export class Api {
     /**Get Booking list
      * @param callback
      * */
-    public static getBookings(callback: (status: boolean, result: BookingsInfoObject | string | any, responseType: ApiResponseType) => any) {
+    public static getBookings(status:number, min_date:string, max_date:string, callback: (status: boolean, result: BookingsInfoObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
             url: Urls.apiGetBookings,
+            params: {
+                status: status,
+                min_date: min_date,
+                max_date: max_date,
+            },
             cache: true,
             callback: callback
         });

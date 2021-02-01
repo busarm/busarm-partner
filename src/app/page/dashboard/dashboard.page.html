@@ -182,44 +182,44 @@
                             </ion-col>
                             <ion-col size="12" position="center" class="cell">
                                 <ion-list>
-                                    <ion-item class="cell" (click)="showBookings(dashboard.bookings.unpaid)">
+                                    <ion-item class="cell" (click)="showBookings(10, dashboard.bookings.unpaid)">
                                         <ion-col size="8">
                                             <ion-label>{{strings.getString('unpaid_txt')}}</ion-label>
                                         </ion-col>
                                         <ion-col size="4">
-                                            <ion-label>{{dashboard.bookings.unpaid.length}}</ion-label>
+                                            <ion-label>{{dashboard.bookings.unpaid}}</ion-label>
                                         </ion-col>
                                     </ion-item>
-                                    <ion-item class="cell" (click)="showBookings(dashboard.bookings.paid)">
+                                    <ion-item class="cell" (click)="showBookings(13, dashboard.bookings.paid)">
                                         <ion-col size="8">
                                             <ion-label>{{strings.getString('paid_txt')}}</ion-label>
                                         </ion-col>
                                         <ion-col size="4">
-                                            <ion-label>{{dashboard.bookings.paid.length}}</ion-label>
+                                            <ion-label>{{dashboard.bookings.paid}}</ion-label>
                                         </ion-col>
                                     </ion-item>
-                                    <ion-item class="cell" (click)="showBookings(dashboard.bookings.pending)">
+                                    <ion-item class="cell" (click)="showBookings(12, dashboard.bookings.pending)">
                                         <ion-col size="8">
                                             <ion-label>{{strings.getString('pending_txt')}}</ion-label>
                                         </ion-col>
                                         <ion-col size="4">
-                                            <ion-label>{{dashboard.bookings.pending.length}}</ion-label>
+                                            <ion-label>{{dashboard.bookings.pending}}</ion-label>
                                         </ion-col>
                                     </ion-item>
-                                    <ion-item class="cell" (click)="showBookings(dashboard.bookings.verified)">
+                                    <ion-item class="cell" (click)="showBookings(11, dashboard.bookings.verified)">
                                         <ion-col size="8">
                                             <ion-label>{{strings.getString('verified_txt')}}</ion-label>
                                         </ion-col>
                                         <ion-col size="4">
-                                            <ion-label>{{dashboard.bookings.verified.length}}</ion-label>
+                                            <ion-label>{{dashboard.bookings.verified}}</ion-label>
                                         </ion-col>
                                     </ion-item>
-                                    <ion-item class="cell" (click)="showBookings(dashboard.bookings.canceled)">
+                                    <ion-item class="cell" (click)="showBookings(9, dashboard.bookings.canceled)">
                                         <ion-col size="8">
                                             <ion-label>{{strings.getString('canceled_txt')}}</ion-label>
                                         </ion-col>
                                         <ion-col size="4">
-                                            <ion-label>{{dashboard.bookings.canceled.length}}</ion-label>
+                                            <ion-label>{{dashboard.bookings.canceled}}</ion-label>
                                         </ion-col>
                                     </ion-item>
                                 </ion-list>

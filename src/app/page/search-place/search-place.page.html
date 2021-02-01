@@ -34,7 +34,8 @@
                     <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
                 </div>
                 <div class="cell loader" *ngIf="autoCompleteItems != null && autoCompleteItems.length<1">
-                    <img src="{{assets.getPath('not_found')}}"/>
+                    <ion-img [src]="assets.getPath('not_found')"> </ion-img>
+                    <br>
                     <ion-label class="cell-content">{{strings.getString('not_found_txt')}}</ion-label>
                 </div>
                 <ion-list *ngIf="autoCompleteItems!=null && autoCompleteItems.length>=1">

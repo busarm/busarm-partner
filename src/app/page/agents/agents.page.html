@@ -39,7 +39,7 @@
         </ion-refresher-content>
     </ion-refresher>
 
-    <!--Loading view - Show if Buses hasn't been loaded yet-->
+    <!--Loading view - Show if nothing hasn't been loaded yet-->
     <div class="loader cell" *ngIf="currentAgents==null">
         <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
         <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>

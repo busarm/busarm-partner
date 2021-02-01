@@ -507,11 +507,11 @@ export interface BookingMonth{
 }
 
 export interface Bookings{
-    verified: Booking[],
-    pending: Booking[],
-    unpaid: Booking[],
-    paid: Booking[],
-    canceled?: Booking[],
+    verified: number,
+    pending: number,
+    unpaid: number,
+    paid: number,
+    canceled?: number,
 }
 
 export interface Booking{

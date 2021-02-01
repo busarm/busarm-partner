@@ -226,11 +226,11 @@ export class DashboardPage extends PageController {
                                 ],
                                 datasets: [{
                                     data: [
-                                        this.dashboard.bookings.unpaid.length,
-                                        this.dashboard.bookings.paid.length,
-                                        this.dashboard.bookings.pending.length,
-                                        this.dashboard.bookings.verified.length,
-                                        this.dashboard.bookings.canceled.length,
+                                        this.dashboard.bookings.unpaid,
+                                        this.dashboard.bookings.paid,
+                                        this.dashboard.bookings.pending,
+                                        this.dashboard.bookings.verified,
+                                        this.dashboard.bookings.canceled,
                                     ],
                                     backgroundColor: [
                                         'rgba(223, 99, 45,1)',
@@ -279,9 +279,15 @@ export class DashboardPage extends PageController {
      * @param {Booking[]} bookings
      * @return {Promise<any>}
      */
-    async showBookings(bookings: Booking[]) {
-        if (bookings && bookings.length > 0) {
-            return this.navigate('bookings', bookings);
+    async showBookings(status:number, count:number) {
+        if (count > 0) {
+            let min_date = this.bookingMonths?this.bookingMonths[this.selectedBookingMonth].min_date:"";
+            let max_date = this.bookingMonths?this.bookingMonths[this.selectedBookingMonth].max_date:"";
+            return this.navigate('bookings', {
+                status: status,
+                min_date: min_date,
+                max_date: max_date,
+            });
         }
         else {
             return this.showToastMsg(Strings.getString("no_booking_txt"), ToastType.ERROR);

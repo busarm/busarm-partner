@@ -23,8 +23,11 @@ export class BookingsPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-        this.bookings = await this.getRouteParams();
-        if(!this.bookings){
+        let params = await this.getRouteParams();
+        if(params){
+            this.loadBookings(params.status, params.min_date, params.max_date);
+        }
+        else {
             this.loadBookings();
         }
     }
@@ -32,18 +35,15 @@ export class BookingsPage extends PageController {
     /**
      * Load Booking list
      */
-    private loadBookings(){
-        this.showLoading().then(()=>{
-            Api.getBookings(async (status, result) =>{
-                this.hideLoading();
-                if(status){
-                    this.bookings = result.data;
-                }
-                else {
-                    await this.showToastMsg(result, ToastType.ERROR);
-                    this.instance.goHome();
-                }
-            })
+    private async loadBookings(status?:number, min_date?:string, max_date?:string){
+        Api.getBookings(status, min_date, max_date, async (status, result) =>{
+            if(status){
+                this.bookings = result.data;
+            }
+            else {
+                await this.showToastMsg(result, ToastType.ERROR);
+                this.instance.goHome();
+            }
         })
     }
 

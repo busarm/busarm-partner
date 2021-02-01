@@ -7,6 +7,13 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
+
+    <!--Loading view - Show if nothing hasn't been loaded yet-->
+    <div class="loader cell" *ngIf="bookings==null">
+        <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
+        <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
+    </div>
+
     <ion-grid *ngIf="bookings!=null && bookings.length > 0">
         <ion-row wrap>
             <ion-col size="12" size-md="6" *ngFor="let booking of bookings; let i = index" [attr.index]="i">
