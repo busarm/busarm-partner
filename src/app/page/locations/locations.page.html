@@ -49,7 +49,7 @@
         <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
     </div>
 
-    <!--No User view -->
+    <!--Not found view -->
     <div class="loader cell" *ngIf="currentLocations!=null && currentLocations.length <= 0">
         <ion-img [src]="assets.getPath('not_found')"> </ion-img>
         <br>

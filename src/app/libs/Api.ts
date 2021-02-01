@@ -604,6 +604,8 @@ export class Api {
                 max_date: max_date,
             },
             cache: true,
+            loadCache: true,
+            cacheId: String(Utils.hashString(Urls.apiGetBookings + status + min_date + max_date)),
             callback: callback
         });
     }
@@ -619,7 +621,6 @@ export class Api {
                 reference_code: referenceCode
             },
             cache: true,
-            loadCache: true,
             cacheId: String(Utils.hashString(Urls.apiGetBookingInfo + referenceCode)),
             callback: callback
         });
