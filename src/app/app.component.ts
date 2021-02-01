@@ -455,7 +455,7 @@ export class AppComponent {
                     if (connected) {
                         //Authorize
                         AppComponent.oauth.authorizeAccess({
-                            scope: ENVIRONMENT == ENV.TEST ?  ['openid', 'user', 'agent', 'tester'] :  ['openid', 'user', 'agent'],
+                            scope: CONFIGS.oauth_scopes,
                             grant_type: OauthGrantType.Auto,
                             state: Utils.getCurrentSignature(await this.getPingStatus()),
                             callback: async (token, msg) => {
@@ -467,9 +467,9 @@ export class AppComponent {
                                             this.authorized = true;
                                             this.hideLoadingScreen();
                                         } else {
-                                            this.authorized = false;
                                             switch (responseType) {
                                                 case ApiResponseType.Authorization_error:
+                                                    this.authorized = false;
                                                     await this.showToastMsg(msg,
                                                         ToastType.ERROR,
                                                         86400 * 1000,
@@ -484,11 +484,34 @@ export class AppComponent {
                                                         });
                                                     break;
                                                 default:
-                                                    this.authAttempted = false;
-                                                    this.authorized = false;
-                                                    if (Utils.assertAvailable(msg)) { await this.showToastMsg(msg, ToastType.ERROR); }
-                                                    resolve(false);
-                                                    this.hideLoadingScreen();
+                                                    // Check if session info available
+                                                    SessionManager.getSession(async (session) => {
+                                                        if (session) {
+                                                            // Check if user info available
+                                                            SessionManager.getUserInfo(user => {
+                                                                if (user) {
+                                                                    resolve(true);
+                                                                    this.authorized = true;
+                                                                    this.hideLoadingScreen();
+                                                                } else {
+                                                                    this.authAttempted = false;
+                                                                    this.showNotConnectedMsg(async () => {
+                                                                        this.authorize(true).then(status => {
+                                                                            resolve (status);
+                                                                        }).catch(() => {
+                                                                            resolve(false);
+                                                                        });
+                                                                    });
+                                                                }
+                                                            });
+                                                        } else {
+                                                            this.authAttempted = false;
+                                                            this.authorized = false;
+                                                            if (Utils.assertAvailable(msg)) { await this.showToastMsg(msg, ToastType.ERROR); }
+                                                            resolve(false);
+                                                            this.hideLoadingScreen();
+                                                        }
+                                                    });
                                             }
                                         }
                                     });
@@ -535,7 +558,6 @@ export class AppComponent {
                                     });
                                 }
                             });
-
                         }
                         else {
                             this.authorized = false;

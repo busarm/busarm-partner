@@ -680,7 +680,7 @@ export class Oauth {
             if (OauthUtils.assertAvailable(accessToken)) {
                 if(!OauthUtils.hasTokenExpired(accessToken)){
                     if (typeof params.callback === 'function') {
-                        params.callback(OauthUtils.assertAvailable(accessToken) ? accessToken : true);
+                        params.callback(accessToken);
                     }
                 }
                 else {
@@ -1258,9 +1258,9 @@ export class OauthResponse {
     static parseVerificationResponse(result): OauthVerificationResponse | null {
         const data = OauthUtils.parseJson(result);
         const verify = new OauthVerificationResponse(data);
-        if (OauthUtils.assertAvailable(verify.success)) {
+        if (verify && OauthUtils.assertAvailable(verify.success)) {
             return verify;
-        } else if (OauthUtils.assertAvailable(verify.error)) {
+        } else if (verify && OauthUtils.assertAvailable(verify.error)) {
             return verify;
         }
         return null;
@@ -1273,9 +1273,9 @@ export class OauthResponse {
     static parseAuthorizationResponse(result: string) {
         const data = OauthUtils.parseJson(result);
         const code = new OauthAuthorizationResponse(data);
-        if (OauthUtils.assertAvailable(code.code)) {
+        if (code && OauthUtils.assertAvailable(code.code)) {
             return code;
-        } else if (OauthUtils.assertAvailable(code.error)) {
+        } else if (code && OauthUtils.assertAvailable(code.error)) {
             return code;
         }
         return null;
@@ -1288,9 +1288,9 @@ export class OauthResponse {
     static parseTokenResponse(result: string): OauthTokenResponse {
         const data = OauthUtils.parseJson(result);
         const token = new OauthTokenResponse(data);
-        if (OauthUtils.assertAvailable(token.accessToken)) {
+        if (token && OauthUtils.assertAvailable(token.accessToken)) {
             return token;
-        } else if (OauthUtils.assertAvailable(token.error)) {
+        } else if (token && OauthUtils.assertAvailable(token.error)) {
             return token;
         }
         return null;
@@ -1306,6 +1306,7 @@ export class OauthVerificationResponse {
     public errorDescription: string;
 
     constructor(data) {
+        if(!data) return;
         this.success = data['success'];
         this.error = data['error'];
         this.errorDescription = data['error_description'];
@@ -1320,6 +1321,7 @@ export class OauthAuthorizationResponse {
     public errorDescription: string;
 
     constructor(data) {
+        if(!data) return;
         this.state = data['state'];
         this.code = data['code'];
 
@@ -1338,7 +1340,8 @@ export class OauthTokenResponse {
     public error: string;
     public errorDescription: string;
 
-    constructor(data) {
+    constructor(data:[]) {
+        if(!data) return;
         this.accessToken = data['access_token'];
         this.refreshToken = data['refresh_token'];
         this.tokenType = data['token_type'];

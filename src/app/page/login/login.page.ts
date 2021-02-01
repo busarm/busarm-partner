@@ -1,15 +1,13 @@
-import { Component, Input} from '@angular/core';
+import { Component } from '@angular/core';
 
 import {Strings} from '../../resources';
 import {ApiResponseType} from '../../libs/Api';
 import {PageController} from '../page-controller';
 import {OauthGrantType} from '../../libs/Oauth';
 import {ToastType, Utils} from '../../libs/Utils';
-import {NetworkProvider} from '../../services/NetworkProvider';
 import {SessionManager} from '../../libs/SessionManager';
 import { Urls } from '../../libs/Urls';
-import { ENVIRONMENT } from '../../../environments/environment';
-import { ENV } from '../../../environments/ENV';
+import { CONFIGS} from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -119,7 +117,7 @@ export class LoginPage extends PageController {
                 callback: async  () => {
                     // Trigger Oauth email login
                     this.oauth.oauthAuthorizeWithEmail(
-                        ENVIRONMENT == ENV.TEST ?  ['openid', 'user', 'agent', 'tester'] :  ['openid', 'user', 'agent'],
+                        CONFIGS.oauth_scopes,
                         Urls.partnerOauthRedirectUrl,
                         this.username,
                         Utils.getCurrentSignature(await this.instance.getPingStatus()));

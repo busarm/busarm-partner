@@ -6,6 +6,7 @@ export const CONFIGS = {
     app_version: "1.0.37", 
     oauth_client_id: "wecari_partner_56823450923",
     oauth_client_secret: "15f625e7a398e734ed02859f3a338829",
+    oauth_scopes: ['openid', 'user', 'agent', 'tester'],
     bugsnag_key: "",
 };
 
