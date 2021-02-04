@@ -141,6 +141,7 @@ export class PayoutPage extends PageController {
                                 this.receiverBankCode != this.userInfo.bank_account.bank_code)));
 
         let payoutRequest = {
+            methodId:this.selectedMethodId,
             receiverName:this.receiverName,
             receiverBank:this.receiverBank,
             receiverBankCode:this.receiverBankCode,
