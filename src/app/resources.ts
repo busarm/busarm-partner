@@ -218,7 +218,8 @@ export enum Keys {
     select_payment_method_txt,
     payout_fee_alert_txt,
     pay_now_txt,
-    view_history_txt
+    view_history_txt,
+    you_receive_txt
 }
 
 export type StringKey = keyof typeof Keys;
@@ -439,6 +440,7 @@ const English: String = {
     payout_fee_alert_txt: "Transfer fee will apply for amount less than {0}",
     pay_now_txt: "Pay Now",
     view_history_txt: "View History",
+    you_receive_txt: "You Receive"
 };
 
 

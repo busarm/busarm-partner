@@ -9,7 +9,7 @@
 <ion-content class="ion-padding">
     <ion-row class="ion-justify-content-center"  *ngIf="payout!=null && payout.action_required">
         <ion-col size="12" class="cell cell-flex cell-flex-center">
-            <ion-label class="cell cell-center section-title">{{strings.getString('new_request_txt')}}</ion-label>
+            <ion-label class="cell cell-centersection-title">{{strings.getString('new_request_txt')}}</ion-label>
         </ion-col>
         <br>
         <ion-col size-md="8" size-lg="6">
@@ -89,7 +89,7 @@
                     </ion-checkbox>
                 </ion-item>
                 <br>
-                <div class="cell cell-center danger">
+                <div class="cell cell-centerdanger">
                     <span class="x-small-text">{{payout.info}}</span>
                 </div>
                 <div>
@@ -104,7 +104,7 @@
     <br>
     <ion-row *ngIf="payout!=null && payout.requests!=null && payout.requests.length >= 1"> 
         <ion-col size="12" class="cell cell-flex cell-flex-center">
-            <ion-label class="cell cell-center section-title">{{strings.getString('history_txt')}}</ion-label>
+            <ion-label class="cell cell-centersection-title">{{strings.getString('history_txt')}}</ion-label>
         </ion-col>
         <br>
         <ion-grid>
@@ -113,8 +113,8 @@
                     <ion-card>
                         <ion-card-header>
                             <ion-row>
-                                <ion-col size="4" class="cell cell-center cell-flex cell-flex-left">
-                                    <div class="cell cell-center  cell-flex cell-flex-center  {{getStatusClass(request.status_id)}}">
+                                <ion-col size="4" class="cell cell-centercell-flex cell-flex-left">
+                                    <div class="cell cell-center cell-flex cell-flex-center  {{getStatusClass(request.status_id)}}">
                                         {{request.status}}
                                     </div>
                                 </ion-col>
@@ -126,33 +126,47 @@
                         </ion-card-header>
                         <ion-card-content>
                             <div>
-                                <div *ngIf="request.status_info" class="cell cell-center cell-padding-2x">
+                                <div *ngIf="request.status_info" class="cell cell-centercell-padding-2x">
                                     <ion-label class="small-text color-warning" >
                                         <ion-icon class="color-warning" name="information-circle-outline" slot="start"></ion-icon>
                                         {{request.status_info}}
                                     </ion-label>
                                 </div>
-                                <ion-label class="cell cell-center ">
+                                <ion-label class="cell cell-center">
                                     <div class="cell-title">{{strings.getString('receiver_name_txt')}}</div>
                                     <div class="cell-content">{{request.receiver_name}}</div>
                                 </ion-label>
-                                <ion-label class="cell cell-center ">
+                                <ion-label class="cell cell-center">
                                     <div class="cell-title">{{strings.getString('receiver_bank_txt')}}</div>
                                     <div class="cell-content">{{request.receiver_bank}}</div>
                                 </ion-label>
-                                <ion-label class="cell cell-center ">
+                                <ion-label class="cell cell-center">
                                     <div class="cell-title">{{strings.getString('receiver_account_txt')}}</div>
                                     <div class="cell-content">{{request.receiver_account_no}}</div>
                                 </ion-label>
-                                <ion-label class="cell cell-center ">
+                                <ion-label class="cell cell-center">
                                     <div class="cell-title">{{strings.getString('from_txt')}}</div>
                                     <div class="cell-content">{{request.date_from}}</div>
                                 </ion-label>
-                                <ion-label class="cell cell-center ">
+                                <ion-label class="cell cell-center">
                                     <div class="cell-title">{{strings.getString('to_txt')}}</div>
                                     <div class="cell-content">{{request.date_to}}</div>
                                 </ion-label>
-                                <ion-label class="cell cell-center ">
+                                <div *ngIf="request.transfer_fee">
+                                    <ion-label class="cell cell-center">
+                                        <div class="cell-title">{{strings.getString('amount_txt')}}</div>
+                                        <div class="cell-content">{{request.currency_code}} {{request.amount}}</div>
+                                    </ion-label>
+                                    <ion-label class="cell cell-center">
+                                        <div class="cell-title">{{strings.getString('fees_txt')}}</div>
+                                        <div class="cell-content">{{request.currency_code}} {{request.transfer_fee}}</div>
+                                    </ion-label>
+                                    <ion-label class="cell cell-center">
+                                        <div class="cell-title">{{strings.getString('you_receive_txt')}}</div>
+                                        <h3 class="cell-content">{{request.currency_code}} {{request.amount-request.transfer_fee}}</h3>
+                                    </ion-label>
+                                </div>
+                                <ion-label *ngIf="!request.transfer_fee" class="cell cell-center">
                                     <div class="cell-title">{{strings.getString('amount_txt')}}</div>
                                     <h3 class="cell-content">{{request.currency_code}} {{request.amount}}</h3>
                                 </ion-label>

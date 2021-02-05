@@ -453,6 +453,7 @@ export interface PayOutTransactionRequest {
     receiver_account_no:string,
     currency_code:string,
     amount:number,
+    transfer_fee:number,
     date_created:string,
 }
 
