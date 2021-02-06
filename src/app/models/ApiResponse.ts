@@ -109,7 +109,7 @@ export interface BookingInfo{
     sub_total?: string;
     booking_fee?: string;
     total?: string;
-    isReserved?: string;
+    is_reserved?: string;
     status_id?: string;
     status: string;
     date_created?: string;
