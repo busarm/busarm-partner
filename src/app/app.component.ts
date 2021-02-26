@@ -323,8 +323,10 @@ export class AppComponent {
 
     /**Hide Initial Loading screen*/
     public hideLoadingScreen() {
-        this.loaded = true;
-        this.loadingScreen.nativeElement.style.display = 'none';
+        setTimeout(() => {
+            this.loaded = true;
+            this.loadingScreen.nativeElement.style.display = 'none';
+        }, 1000);
     }
 
     /**No Internet Connection Message
