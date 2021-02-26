@@ -44,6 +44,8 @@ import { SwUpdate } from '@angular/service-worker';
 })
 export class AppComponent {
 
+    public strings = Strings;
+
     /**Get app instance*/
     public static get oauth(): Oauth {
         return AppComponent._oauth;
@@ -64,6 +66,10 @@ export class AppComponent {
     private loader;
     private alert;
 
+
+    /*Defines whether or not
+    the app has been completed loading or not*/
+    public showEnvironmentBanner = ENVIRONMENT != ENV.PROD;
 
     /*Defines whether or not
     the app has been completed loading or not*/
@@ -146,6 +152,16 @@ export class AppComponent {
                 }
             });
         });
+    }
+
+    /**Get app environment*/
+    get environment(){
+        return ENVIRONMENT;
+    }
+
+    /**Get live url*/
+    get liveUrl(): String {
+        return Urls.baseUrl(ENV.PROD);
     }
 
     /**Subscribe to any updates */

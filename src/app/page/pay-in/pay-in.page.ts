@@ -87,7 +87,7 @@ export class PayInPage extends PageController {
      * @param paymentUrl 
      */
     public gotoPayment(paymentUrl){
-        paymentUrl+="&redirect_uri="+Urls.baseUrl+this.instance.router.url.replace('/', '');
+        paymentUrl+="&redirect_uri="+Urls.baseUrl()+this.instance.router.url.replace('/', '');
         this.ngOnDestroy();
         window.open(paymentUrl, '_self');
     }

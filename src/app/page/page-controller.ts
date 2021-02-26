@@ -75,7 +75,7 @@ export class PageController implements OnInit, OnDestroy {
         return AppComponent.oauth;
     }
 
-    /**Get app environment*/
+    /**Get app version*/
     get version(){
         return CONFIGS.app_version;
     }

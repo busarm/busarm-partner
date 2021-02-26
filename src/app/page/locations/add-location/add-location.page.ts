@@ -20,7 +20,9 @@ export class AddLocationPage extends PageController {
 
     selectedLocation: LocationRequest;
     selectedLocationType: number;
+    selectedLocationName: string;
     platform: Platform;
+    editLocationName: boolean = false;
 
     constructor(private modalCtrl: ModalController,
                 public navParams: NavParams,
@@ -36,7 +38,6 @@ export class AddLocationPage extends PageController {
         //Load google api if not available
         if (typeof google === 'undefined' || !google) {
             if (this.session && this.session.configs && this.session.configs.google_api_key){
-                console.log(this.session.configs);
                 Utils.loadGoogleApi(this.session.configs.google_api_key);
             }
         }
@@ -45,12 +46,16 @@ export class AddLocationPage extends PageController {
 
     /**Select place*/
     public async selectLocation(event) {
+        if(this.editLocationName){
+            return false;
+        }
         if (event.isTrusted) {
             if (this.userInfo) {
                 this.searchLocation(this.session.country, this.strings.getString('select_location_txt'), place => {
                     let location = this.processLocation(place);
                     if (this.userInfo.allow_international || (location.country_code == this.session.country.country_code || location.country == this.session.country.country_name)){
                         this.selectedLocation = location
+                        this.editLocationName = true;
                     }
                     else {
                         this.showToastMsg(Strings.getString("invalid_location"), ToastType.ERROR);
@@ -81,6 +86,7 @@ export class AddLocationPage extends PageController {
     /**Submit form*/
     public submit() {
         this.selectedLocation.type = String(this.selectedLocationType);
+        this.selectedLocation.name = this.assertAvailable(this.selectedLocationName) ? this.selectedLocationName : this.selectedLocation.name
         this.showLoading().then(() => {
             Api.addLocation( 
                 this.selectedLocation, 

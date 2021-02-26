@@ -40,8 +40,8 @@ export class Urls{
                 return "http://localhost:8000/";
         }
     };
-    public static get baseUrl():string {
-        switch (ENVIRONMENT){
+    public static baseUrl(env = ENVIRONMENT):string {
+        switch (env){
             case ENV.PROD:
                 return "https://partner.wecari.com/";
             case ENV.TEST:
@@ -109,7 +109,7 @@ export class Urls{
         this.support = Urls.appUrl + "support/";
         this.termsUrl = Urls.appUrl + "terms/";
         this.privacyUrl = Urls.appUrl + "privacy/";
-        this.partnerOauthRedirectUrl = Urls.baseUrl + "hooks/oauth/authorize"
+        this.partnerOauthRedirectUrl = Urls.baseUrl() + "hooks/oauth/authorize"
 
         /*Oauth Urls*/
         this.oauthAuthorizeUrl = Urls.oauthBaseUrl + "authorize/request";
