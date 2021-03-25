@@ -769,8 +769,42 @@ input {
 .cell-margin-auto{
   margin: auto;
 }
+.cell-margin-sm{
+  margin: 2px;
+}
+.cell-margin-top-sm{
+  margin-top: 2px;
+}
+.cell-margin-bottom-sm{
+  margin-bottom: 2px;
+}
+.cell-margin-md{
+  margin: 4px;
+}
+.cell-margin-top-md{
+  margin-top: 4px;
+}
+.cell-margin-bottom-md{
+  margin-bottom: 4px;
+}
+.cell-margin-2x{
+  margin: 8px;
+}
+.cell-margin-3x{
+  margin: 12px;
+}
+.cell-margin-4x{
+  margin: 16px;
+}
+
 .cell-padding-auto{
   padding: auto;
+}
+.cell-padding-sm{
+  padding: 2px;
+}
+.cell-padding-md{
+  padding: 4px;
 }
 .cell-padding-2x{
   padding: 8px;

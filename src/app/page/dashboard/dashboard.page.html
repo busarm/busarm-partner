@@ -150,7 +150,7 @@
             <ion-select *ngIf="bookingMonths!=null && bookingMonths.length>0"
                         placeholder="{{strings.getString('select_month_txt')}}"
                         [(ngModel)]="selectedBookingMonth"
-                        (ionChange)="loadDashboardView()">
+                        (ionChange)="selectMonth()">
                 <ion-select-option *ngFor="let month of bookingMonths; let i = index" [attr.index]="i" [value]="i">
                     {{month.display_date}}
                 </ion-select-option>

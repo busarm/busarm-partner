@@ -440,6 +440,19 @@ export class DashboardPage extends PageController {
         }
     }
 
+    
+
+    /**
+     * Select Month
+     */
+    public async selectMonth() {
+        this.showLoading().then(() => {
+            this.loadDashboardView(false, () => {
+                this.hideLoading();
+            })
+        })
+    }
+
     /**Load Active Trips View
      * @param force boolean
      * @param completed {() => any}

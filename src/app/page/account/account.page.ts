@@ -173,17 +173,9 @@ export class AccountPage extends PageController {
         this.navigate("locations");
     }
 
-    /**Show Support page*/
-    public showSupport(){
-        this.iab.create(Urls.support+"?access_token="+OauthStorage.accessToken,'_blank',{
-            zoom:"no",
-            hardwareback:"yes"
-        });
-    }
-
     /**Show Terms and Conditions page*/
     public showTerms(){
-        this.iab.create(Urls.termsUrl+"?access_token="+OauthStorage.accessToken,'_blank',{
+        this.iab.create(Urls.termsUrl,'_blank',{
             zoom:"no",
             hardwareback:"yes"
         });
@@ -191,7 +183,15 @@ export class AccountPage extends PageController {
 
     /**Show Privacy Policy page*/
     public showPrivacy(){
-        this.iab.create(Urls.privacyUrl+"?access_token="+OauthStorage.accessToken,'_blank',{
+        this.iab.create(Urls.privacyUrl,'_blank',{
+            zoom:"no",
+            hardwareback:"yes"
+        });
+    }
+
+    /**Show Support page*/
+    public showSupport(){
+        this.iab.create(Urls.support+"?access_token="+OauthStorage.accessToken,'_blank',{
             zoom:"no",
             hardwareback:"yes"
         });

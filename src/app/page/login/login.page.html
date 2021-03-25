@@ -1,24 +1,29 @@
-<ion-content class="ion-padding">
-    <ion-row class="ion-justify-content-center">
-        <ion-col size-md="6" size-lg="4">
+<ion-content>
+    <ion-row class="ion-align-items-center ion-justify-content-center">
+        <ion-col size="12" size-md="6">
+            <div align="center" class="logoContainer">
+                <img draggable="false" align="center" class="logo logoImg"
+                     src="{{assets.getPath('logo_dark')}}">
+                <img draggable="false" align="center" class="logo logoTxt"
+                     src="{{assets.getPath('logo_txt_dark')}}">
+                <h3 class="logoNameTxt">{{strings.getString("partner_txt")}}</h3>
+            </div>
+        </ion-col>
+        <ion-col size="12" size-md="6" class="cell cell-padding-4x">
+            <div class="cell cell-center">
+                <h1>{{strings.getString("login_txt")}}</h1>
+            </div>
             <form #loginForm="ngForm" (ngSubmit)="login()" autocomplete="off">
-                <div align="center" class="logoContainer">
-                    <img draggable="false" align="center" class="logo logoImg"
-                         src="{{assets.getPath('logo_dark')}}">
-                    <img draggable="false" align="center" class="logo logoTxt"
-                         src="{{assets.getPath('logo_txt_dark')}}">
-                    <h3 class="logoNameTxt">{{strings.getString("partner_txt")}}</h3>
-                </div>
                 <ion-row>
                     <ion-col>
-                        <ion-item>
-                            <ion-label color="primary" position="stacked">{{strings.getString("email_txt")}}</ion-label>
-                            <ion-input name="username" id="usernameField"
+                        <ion-item class="cell">
+                            <ion-label class="cell" color="primary" position="stacked">{{strings.getString("email_txt")}}</ion-label>
+                            <ion-input class="cell cell-margin-top-md cell-margin-bottom-sm" name="username" id="usernameField"
                                        type="text" required [(ngModel)]="username" #email> </ion-input>
                         </ion-item>
-                        <ion-item *ngIf="!forgottenPassword">
-                            <ion-label color="primary" position="stacked">{{strings.getString("password_txt")}}</ion-label>
-                            <ion-input name="password" id="passwordField"
+                        <ion-item class="cell" *ngIf="!forgottenPassword">
+                            <ion-label class="cell" color="primary" position="stacked">{{strings.getString("password_txt")}}</ion-label>
+                            <ion-input class="cell cell-margin-top-md cell-margin-bottom-sm" name="password" id="passwordField"
                                        type="password" required [(ngModel)]="password" #pass> </ion-input>
                         </ion-item>
                     </ion-col>

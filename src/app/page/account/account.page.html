@@ -23,7 +23,7 @@
                                         <ion-img *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='')"
                                                 class="img x-large"
                                                 [src]="userInfo.partner_logo"
-                                                cache=true>
+                                                cache="true">
                                         </ion-img>
                                         <ion-img *ngIf="(userInfo.partner_logo==null || userInfo.partner_logo=='') &&  (!userInfo.is_admin)"
                                                 class="img x-large"

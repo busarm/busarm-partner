@@ -11,6 +11,9 @@
           "/index.html",
           "/*.css",
           "/*.js"
+        ],
+        "urls": [
+          "https://cdn.wecari.com/*"
         ]
       }
     }, {
@@ -21,6 +24,9 @@
         "files": [
           "/assets/**",
           "/svg/**"
+        ],
+        "urls": [
+          "https://cdn.wecari.com/*"
         ]
       }
     }
