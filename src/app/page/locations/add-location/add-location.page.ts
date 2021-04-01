@@ -53,7 +53,7 @@ export class AddLocationPage extends PageController {
             if (this.userInfo) {
                 this.searchLocation(this.session.country, this.strings.getString('select_location_txt'), place => {
                     let location = this.processLocation(place);
-                    if (this.userInfo.allow_international || (location.country_code == this.session.country.country_code || location.country == this.session.country.country_name)){
+                    if ((this.session.configs.allow_international && this.userInfo.allow_international) || (location.country_code == this.session.country.country_code || location.country == this.session.country.country_name)){
                         this.selectedLocation = location
                         this.editLocationName = true;
                     }

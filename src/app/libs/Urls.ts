@@ -106,9 +106,9 @@ export class Urls{
     public static init(){
 
         /*Generic Urls*/
-        this.support = Urls.appUrl + "support/";
-        this.termsUrl = Urls.appUrl + "terms/";
-        this.privacyUrl = Urls.appUrl + "privacy/";
+        this.support = Urls.appUrl + "support";
+        this.termsUrl = Urls.appUrl + "terms";
+        this.privacyUrl = Urls.appUrl + "privacy";
         this.partnerOauthRedirectUrl = Urls.baseUrl() + "hooks/oauth/authorize"
 
         /*Oauth Urls*/

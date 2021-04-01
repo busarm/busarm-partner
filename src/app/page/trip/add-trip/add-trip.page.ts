@@ -149,13 +149,15 @@ export class AddTripPage extends PageController {
     public async selectOrigin(event) {
         if (event.isTrusted) {
             if (this.userInfo) {
-                this.selectLocation(this.strings.getString('select_pickup_txt'), location => {
-                    if (this.userInfo.allow_international || (location.country_code == this.session.country.country_code || location.country == this.session.country.country_name)){
+                this.selectLocation(this.strings.getString('select_pickup_txt'), (location: Location) => {
+                    if (((this.session.configs.allow_international && this.userInfo.allow_international) || (location.country_code == this.session.country.country_code || location.country_name == this.session.country.country_name)) 
+                        && (!this.selectedDropOff || location.loc_id != this.selectedDropOff.loc_id)){
                         this.selectedPickup = location
                     }
                     else {
-                        this.showToastMsg(Strings.getString("invalid_location"), ToastType.ERROR);
+                        this.showToastMsg(Strings.getString("invalid_location"), ToastType.ERROR, 5000);
                     }
+                    
                 });
             }
         }
@@ -166,11 +168,12 @@ export class AddTripPage extends PageController {
         if (event.isTrusted) {
             if (this.userInfo) {
                 this.selectLocation(this.strings.getString('select_dropoff_txt'), (location: Location) => {
-                    if (this.userInfo.allow_international || (location.country_code == this.session.country.country_code || location.country_name == this.session.country.country_name)){
+                    if (((this.session.configs.allow_international && this.userInfo.allow_international) || (location.country_code == this.session.country.country_code || location.country_name == this.session.country.country_name)) 
+                        && (!this.selectedPickup || location.loc_id != this.selectedPickup.loc_id)){
                         this.selectedDropOff = location
                     }
                     else {
-                        this.showToastMsg(Strings.getString("invalid_location"), ToastType.ERROR);
+                        this.showToastMsg(Strings.getString("invalid_location"), ToastType.ERROR, 5000);
                     }
                 });
             }
