@@ -142,16 +142,6 @@ ion-item {
   }
 }
 
-ion-modal {
-  .modal-wrapper {
-    @media (min-width: 768px) {
-      height: 85% !important;
-      width: 85% !important;  
-    }
- }
-}
-
-
 ion-icon {
 
   color: $themeColorDark;
