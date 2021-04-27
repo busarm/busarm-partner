@@ -2,7 +2,7 @@
  * all Requests Urls
  * */
 import {ENVIRONMENT} from "../../environments/environment";
-import {ENV} from "../../environments/ENV";
+import {ENV} from "../../environments/env";
 
 export class Urls{
 
@@ -118,46 +118,46 @@ export class Urls{
 
 
         /*Api Urls*/
-        this.pingUrl = Urls.apiBaseUrl + "Initialize/ping";
-        this.apiInitialize = Urls.apiBaseUrl + "Initialize";
-        this.apiLogout = Urls.apiBaseUrl + "Initialize/logout";
-        this.apiLanguage = Urls.apiBaseUrl + "Initialize/language";
-        this.apiCountry = Urls.apiBaseUrl + "Initialize/country";
-        this.apiUser = Urls.apiBaseUrl + "agent/User";
-        this.apiUserToggle = Urls.apiBaseUrl + "agent/User/toggle";
-        this.apiGetBusTypes = Urls.apiBaseUrl + "app/Bus/types";
-        this.apiGetTripsNewStatusList = Urls.apiBaseUrl + "app/Trip/newStatus";
-        this.apiGetTripsAllStatusList = Urls.apiBaseUrl + "app/Trip/allStatus";
-        this.apiGetLocationTypes = Urls.apiBaseUrl + "app/Location/types";
-        this.apiGetTicketTypes = Urls.apiBaseUrl + "app/Ticket/types";
-        this.apiTrip = Urls.apiBaseUrl + "agent/Trip";
-        this.apiTrips = Urls.apiBaseUrl + "agent/Trip/list";
-        this.apiTripBus = Urls.apiBaseUrl + "agent/Trip/bus";
-        this.apiTripReserve = Urls.apiBaseUrl + "agent/Trip/reserve";
-        this.apiBus = Urls.apiBaseUrl + "agent/Bus";
-        this.apiBuses = Urls.apiBaseUrl + "agent/Bus/list";
-        this.apiBusImage = Urls.apiBaseUrl + "agent/Bus/image";
-        this.apiBusShare = Urls.apiBaseUrl + "agent/Bus/share";
-        this.apiTicket = Urls.apiBaseUrl + "agent/Ticket";
-        this.apiTicketToggle = Urls.apiBaseUrl + "agent/Ticket/toggle";
+        this.pingUrl = Urls.apiBaseUrl + "initialize/ping";
+        this.apiInitialize = Urls.apiBaseUrl + "initialize";
+        this.apiLogout = Urls.apiBaseUrl + "initialize/logout";
+        this.apiLanguage = Urls.apiBaseUrl + "initialize/language";
+        this.apiCountry = Urls.apiBaseUrl + "initialize/country";
+        this.apiUser = Urls.apiBaseUrl + "agent/user";
+        this.apiUserToggle = Urls.apiBaseUrl + "agent/user/toggle";
+        this.apiGetBusTypes = Urls.apiBaseUrl + "app/bus/types";
+        this.apiGetTripsNewStatusList = Urls.apiBaseUrl + "app/trip/newstatus";
+        this.apiGetTripsAllStatusList = Urls.apiBaseUrl + "app/trip/allstatus";
+        this.apiGetLocationTypes = Urls.apiBaseUrl + "app/location/types";
+        this.apiGetTicketTypes = Urls.apiBaseUrl + "app/ticket/types";
+        this.apiTrip = Urls.apiBaseUrl + "agent/trip";
+        this.apiTrips = Urls.apiBaseUrl + "agent/trip/list";
+        this.apiTripBus = Urls.apiBaseUrl + "agent/trip/bus";
+        this.apiTripReserve = Urls.apiBaseUrl + "agent/trip/reserve";
+        this.apiBus = Urls.apiBaseUrl + "agent/bus";
+        this.apiBuses = Urls.apiBaseUrl + "agent/bus/list";
+        this.apiBusImage = Urls.apiBaseUrl + "agent/bus/image";
+        this.apiBusShare = Urls.apiBaseUrl + "agent/bus/share";
+        this.apiTicket = Urls.apiBaseUrl + "agent/ticket";
+        this.apiTicketToggle = Urls.apiBaseUrl + "agent/ticket/toggle";
         this.apiGetDashboard = Urls.apiBaseUrl + "agent/common/dashboard";
-        this.apiGetPartnerBusTypes = Urls.apiBaseUrl + "agent/Bus/types";
-        this.apiGetBookings = Urls.apiBaseUrl + "agent/Booking/tripList";
-        this.apiGetBookingInfo = Urls.apiBaseUrl + "agent/Booking/tripInfo";
-        this.apiVerifyBooking = Urls.apiBaseUrl + "agent/Booking/verifyTrip";
-        this.apiUpdateTripStatus = Urls.apiBaseUrl + "agent/Trip/status";
-        this.apiUpdateTripBusType = Urls.apiBaseUrl + "agent/Trip/busType";
-        this.apiUpdatePartnerLogo = Urls.apiBaseUrl + "agent/User/logo";
-        this.apiGetAgents = Urls.apiBaseUrl + "agent/User/list";
-        this.apiAdmin = Urls.apiBaseUrl + "agent/User/admin";
-        this.apiVerify = Urls.apiBaseUrl + "agent/User/verify";
-        this.apiGetPayin = Urls.apiBaseUrl + "agent/Transaction/payin";
-        this.apiGetPayout = Urls.apiBaseUrl + "agent/Transaction/payout";
-        this.apiGetBanks = Urls.apiBaseUrl + "agent/Transaction/banks";
-        this.apiPayInRequest = Urls.apiBaseUrl + "agent/Transaction/payInRequest";
-        this.apiPayoutRequest = Urls.apiBaseUrl + "agent/Transaction/payoutRequest"
-        this.apiLocation = Urls.apiBaseUrl + "agent/Location";
-        this.apiLocations = Urls.apiBaseUrl + "agent/Location/list";
+        this.apiGetPartnerBusTypes = Urls.apiBaseUrl + "agent/bus/types";
+        this.apiGetBookings = Urls.apiBaseUrl + "agent/booking/triplist";
+        this.apiGetBookingInfo = Urls.apiBaseUrl + "agent/booking/tripinfo";
+        this.apiVerifyBooking = Urls.apiBaseUrl + "agent/booking/verifytrip";
+        this.apiUpdateTripStatus = Urls.apiBaseUrl + "agent/trip/status";
+        this.apiUpdateTripBusType = Urls.apiBaseUrl + "agent/trip/bustype";
+        this.apiUpdatePartnerLogo = Urls.apiBaseUrl + "agent/user/logo";
+        this.apiGetAgents = Urls.apiBaseUrl + "agent/user/list";
+        this.apiAdmin = Urls.apiBaseUrl + "agent/user/admin";
+        this.apiVerify = Urls.apiBaseUrl + "agent/user/verify";
+        this.apiGetPayin = Urls.apiBaseUrl + "agent/transaction/payin";
+        this.apiGetPayout = Urls.apiBaseUrl + "agent/transaction/payout";
+        this.apiGetBanks = Urls.apiBaseUrl + "agent/transaction/banks";
+        this.apiPayInRequest = Urls.apiBaseUrl + "agent/transaction/payinrequest";
+        this.apiPayoutRequest = Urls.apiBaseUrl + "agent/transaction/payoutrequest"
+        this.apiLocation = Urls.apiBaseUrl + "agent/location";
+        this.apiLocations = Urls.apiBaseUrl + "agent/location/list";
 
         /*Custom Urls*/
         this.googleApiUrl = "https://maps.googleapis.com/maps/api/js?key=<key>&libraries=places"
