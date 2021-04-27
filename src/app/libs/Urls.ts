@@ -2,7 +2,7 @@
  * all Requests Urls
  * */
 import {ENVIRONMENT} from "../../environments/environment";
-import {ENV} from "../../environments/env";
+import {ENV} from "../../environments/ENV";
 
 export class Urls{
 
