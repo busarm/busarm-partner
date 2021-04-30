@@ -76,6 +76,22 @@ export class DashboardPage extends PageController {
             }
         });
 
+        /*Trips updated event*/
+        this.events.tripsUpdated.subscribe(async (updated) => {
+            await super.ngOnInit();
+            if (updated) {
+                this.loadDashboardView();
+            }
+        }); 
+
+        /*Bookings updated event*/
+        this.events.bookingsUpdated.subscribe(async (updated) => {
+            await super.ngOnInit();
+            if (updated) {
+                this.loadDashboardView();
+            }
+        }); 
+
         /*Check if web scanning available */
         if(!this.platform.is('cordova')){
             this.checkMediaDevice((available)=>{
@@ -92,17 +108,26 @@ export class DashboardPage extends PageController {
 
     public async ionViewDidEnter(){
         super.ionViewDidEnter();
+
         /*Give time for components to load first*/
-        this.setTimeout(500).then(() => {
-            /*Init Dashboard*/
-            if (!this.dashboard)
+        if (!this.dashboard){
+            this.setTimeout(500).then(() => {
+                /*Init Dashboard*/
                 this.loadDashboardView(true);
-        });
+            });
+        }
         
         /*Refresh dashboard periodically*/
         this.setInterval(() => {
             this.loadDashboardView(false);
         }, ENVIRONMENT == ENV.PROD ? 5000 : 10000);
+    }
+
+    public async ionViewWillEnter(){
+        /*Reload dashboard*/
+        if (this.dashboard){
+            this.initDashboard();
+        } 
     }
 
     /**Check if Media Device is available */

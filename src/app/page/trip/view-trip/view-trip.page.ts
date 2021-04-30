@@ -10,6 +10,7 @@ import {AddBusPage} from "../../bus/add-bus/add-bus.page";
 import {ViewBusPage} from "../../bus/view-bus/view-bus.page";
 import {SelectStatusPage} from "./select-status/select-status.page";
 import { AddTripPage } from '../add-trip/add-trip.page';
+import { Events } from '../../../services/Events';
 
 @Component({
     selector: 'app-view-trip',
@@ -26,11 +27,10 @@ export class ViewTripPage extends PageController {
     buses: BusInfo[] = null;
 
     selectedBusType:string = null;
-    updated:boolean = false;
     allowAddTicket:boolean = true;
     allowDeactivateTicket:boolean = false;
 
-    constructor(private modalCtrl: ModalController) {
+    constructor(private modalCtrl: ModalController, public events: Events) {
         super();
     }
 
@@ -50,7 +50,7 @@ export class ViewTripPage extends PageController {
         }
         else {
             this.showToastMsg(this.strings.getString("error_unexpected"), ToastType.ERROR);
-            this.modalCtrl.dismiss();
+            this.dismiss();
         }
     }
 
@@ -97,6 +97,7 @@ export class ViewTripPage extends PageController {
 
     /**Load Trip*/
     public async loadTrip(completed?: () => any) {
+        console.log("Load trip");
         Api.getTrip(this.trip.trip_id, (status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
@@ -153,7 +154,6 @@ export class ViewTripPage extends PageController {
 
     /**Launch Select view*/
     async showSelectStatus() {
-
         let chooseModal = await this.modalCtrl.create({
             component: SelectStatusPage,
             componentProps: {
@@ -171,22 +171,21 @@ export class ViewTripPage extends PageController {
 
     /**Process Select status*/
     private processSelectStatus(status:TripStatus){
-
         // Show Loader
         this.showLoading().then(()=>{
             Api.updateTripStatus(this.trip.trip_id,status.status_id,(status, result) => {
                 this.hideLoading();
                 if (status){
                     if (result.status){
-                        this.updated = true;
-                        this.loadTripView();
+                        this.events.tripsUpdated.emit(true);
+                        this.loadTripView(true);
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
                     }
                     else{
                         this.showToastMsg(result.msg, ToastType.ERROR);
                     }
                 }
-                else{
+                else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             })
@@ -224,15 +223,15 @@ export class ViewTripPage extends PageController {
                 this.hideLoading();
                 if (status){
                     if (result.status){
-                        this.updated = true;
-                        this.loadTripView();
+                        this.events.tripsUpdated.emit(true);
+                        this.loadTripView(true);
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
                     }
-                    else{
+                    else {
                         this.showToastMsg(result.msg, ToastType.ERROR);
                     }
                 }
-                else{
+                else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             })
@@ -245,8 +244,8 @@ export class ViewTripPage extends PageController {
             component: AddBusPage,
             componentProps: {
                 busTypes: this.busTypes,
-                buses: this.buses,
-                selectedBusType:this.trip.bus_type_id
+                buses: this.buses.filter(bus => bus.available != '0'), // Only available buses
+                selectedBusType: this.trip.bus_type_id
             }
         });
         chooseModal.onDidDismiss().then(data => {
@@ -265,15 +264,16 @@ export class ViewTripPage extends PageController {
                 this.hideLoading();
                 if (status){
                     if (result.status){
-                        this.updated = true;
-                        this.loadTripView();
+                        this.events.tripsUpdated.emit(true);
+                        this.loadTripView(true);
+                        this.events.busesUpdated.emit(true);
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
                     }
                     else {
                         this.showToastMsg(result.msg, ToastType.ERROR);
                     }
                 }
-                else{
+                else {
                     this.showToastMsg(result, ToastType.ERROR);
                 }
             });
@@ -303,8 +303,8 @@ export class ViewTripPage extends PageController {
                 this.hideLoading();
                 if (status){
                     if (result.status){
-                        this.updated = true;
-                        this.loadTripView();
+                        this.loadTripView(true);
+                        this.events.tripsUpdated.emit(true);
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
                     } else{
                         this.showToastMsg(result.msg, ToastType.ERROR);
@@ -379,7 +379,7 @@ export class ViewTripPage extends PageController {
                 if (status) {
                     if (this.assertAvailable(result)) {
                         if (result.status){
-                            this.updated = true;
+                            this.events.tripsUpdated.emit(true);
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                             this.dismiss();
                         } else{
@@ -404,7 +404,7 @@ export class ViewTripPage extends PageController {
                     if (status) {
                         if (this.assertAvailable(result)) {
                             if (result.status){
-                                this.updated = true;
+                                this.events.tripsUpdated.emit(true);
                                 this.showToastMsg(result.msg, ToastType.SUCCESS);
                             }
                             else{
@@ -434,7 +434,7 @@ export class ViewTripPage extends PageController {
                     if (status) {
                         if (this.assertAvailable(result)) {
                             if (result.status){
-                                this.updated = true;
+                                this.events.tripsUpdated.emit(true);
                                 this.showToastMsg(result.msg, ToastType.SUCCESS);
                             }
                             else{
@@ -481,8 +481,9 @@ export class ViewTripPage extends PageController {
                 if (status) {
                     if (this.assertAvailable(result)) {
                         if (result.status){
-                            this.updated = true;
-                            this.loadTripView();
+                            this.loadTripView(true);
+                            this.events.tripsUpdated.emit(true);
+                            this.events.busesUpdated.emit(true);
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                         }
                         else{
@@ -569,6 +570,6 @@ export class ViewTripPage extends PageController {
     async dismiss(){
         const modal = await this.modalCtrl.getTop();
         if(modal)
-            modal.dismiss(this.updated);
+            modal.dismiss();
     }
 }

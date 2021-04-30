@@ -163,7 +163,6 @@ export interface TripInfo{
     dropoff_city?:string,
     dropoff_prov_code?:string,
     dropoff_loc_type?:string,
-    trip_status:string,
     ticket_id?:string,
     price?:string,
     currency_code?:string,
@@ -269,7 +268,8 @@ export interface BusInfo{
     shared?: string,
     shared_partners?: BusSharedPartner[],
     type_id?: string
-    images?:BusImage[]
+    images?:BusImage[],
+    available?: string
 }
 
 export interface BusSharedPartner{

@@ -9,6 +9,7 @@ import {Api} from "../../../libs/Api";
 import {Strings} from "../../../resources";
 import {DestinationType} from "@ionic-native/camera";
 import { ShareBusPage } from '../share-bus/share-bus.page';
+import { Events } from '../../../services/Events';
 
 @Component({
     selector: 'app-view-bus',
@@ -19,13 +20,13 @@ export class ViewBusPage extends PageController {
 
     @Input() bus: BusInfo = null;
 
-    updated: boolean = false;
     platform: Platform;
 
     constructor(private camera: Camera,
                 private file: File,
                 private actionSheetController: ActionSheetController,
                 private modalCtrl: ModalController,
+                public events: Events,
                 platform: Platform) {
         super();
         this.platform = platform;
@@ -97,7 +98,7 @@ export class ViewBusPage extends PageController {
                 if (status) {
                     if (this.assertAvailable(result)) {
                         if (result.status) {
-                            this.updated = true;
+                            this.events.busesUpdated.emit(true);
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                             this.dismiss();
                         }
@@ -202,8 +203,8 @@ export class ViewBusPage extends PageController {
                 if (status) {
                     if (this.assertAvailable(result)) {
                         if (result.status) {
-                            this.updated = true;
                             this.loadBusView();
+                            this.events.busesUpdated.emit(true);
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                         }
                         else {
@@ -266,8 +267,8 @@ export class ViewBusPage extends PageController {
                 if (status) {
                     if (this.assertAvailable(result)) {
                         if (result.status){
-                            this.updated = true;
                             this.loadBusView();
+                            this.events.busesUpdated.emit(true);
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                         }
                         else{
@@ -312,8 +313,8 @@ export class ViewBusPage extends PageController {
                 if (status) {
                     if (this.assertAvailable(result)) {
                         if (result.status){
-                            this.updated = true;
                             this.loadBusView();
+                            this.events.busesUpdated.emit(true);
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
                         }
                         else{
@@ -331,9 +332,29 @@ export class ViewBusPage extends PageController {
         });
     }
 
+    /**Get Status class for bus status*/
+    public getBusStatusClass(available: boolean): string {
+        if (available) {
+            return "status-ok";
+        }
+        else {
+            return "status-error";
+        }
+    }
+
+    /**Get Status text for bus status*/
+    public getBusStatus(available: boolean): string {
+        if (available) {
+            return this.strings.getString('available_txt');
+        }
+        else {
+            return this.strings.getString('in_use_txt');
+        }
+    }
+
     async dismiss() {
         const modal = await this.modalCtrl.getTop();
         if(modal)
-            modal.dismiss(this.updated);
+            modal.dismiss();
     }
 }

@@ -75,6 +75,14 @@ export class TripPage extends PageController{
                 this.selectedCountry = this.session.country.country_code;
             }
         });
+        
+        /*Trips updated event*/
+        this.events.tripsUpdated.subscribe(async (updated) => {
+            await super.ngOnInit();
+            if (updated) {
+                this.loadTripsView();
+            }
+        }); 
     } 
 
     public ngOnDestroy(){
@@ -104,7 +112,8 @@ export class TripPage extends PageController{
                             trip.pickup_city.match(reg) ||
                             trip.dropoff_loc_name.match(reg) ||
                             trip.dropoff_city.match(reg) ||
-                            trip.agent_email.match(reg)) {
+                            trip.agent_email.match(reg) || 
+                            (trip.bus && trip.bus.plate_num.match(reg))) {
 
                             this.currentTrips.push(trip)
                         }
@@ -154,8 +163,6 @@ export class TripPage extends PageController{
         });
         return await chooseModal.present();
     }
-
-
 
     /**Launch view trip page*/
     async showTrip(trip: TripInfo) {

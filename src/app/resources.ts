@@ -220,7 +220,8 @@ export enum Keys {
     pay_now_txt,
     view_history_txt,
     you_receive_txt,
-    go_to_live_txt
+    go_to_live_txt,
+    in_use_txt,
 }
 
 export type StringKey = keyof typeof Keys;
@@ -443,6 +444,7 @@ const English: String = {
     view_history_txt: "View History",
     you_receive_txt: "You Receive",
     go_to_live_txt:"Go to Live",
+    in_use_txt: "In Use",
 };
 
 

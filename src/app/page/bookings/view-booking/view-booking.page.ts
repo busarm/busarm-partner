@@ -6,6 +6,7 @@ import {ViewTripPage} from "../../trip/view-trip/view-trip.page";
 import {ToastType} from "../../../libs/Utils";
 import {Strings} from "../../../resources";
 import {Api} from "../../../libs/Api"; 
+import { Events } from '../../../services/Events';
 
 @Component({
   selector: 'app-view-booking',
@@ -18,7 +19,7 @@ export class ViewBookingPage extends PageController {
     @Input() bookingInfo: BookingInfo = null;
     activeBookingSegment: string = "summary";
 
-    constructor(private modalCtrl: ModalController) {
+    constructor(private modalCtrl: ModalController, public events: Events) {
         super();
     }
 
@@ -92,12 +93,12 @@ export class ViewBookingPage extends PageController {
         this.showLoading().then(()=>{
             Api.verifyUserBooking(bookingId, async (status, result) => {
                 if (status) {
-
                     //Save user data to session
                     if (this.assertAvailable(result)) {
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
                         await this.hideLoading();
-                        await this.dismiss(true);
+                        this.events.bookingsUpdated.emit(true);
+                        this.dismiss();
                     }
                     else {
                         this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
@@ -125,9 +126,9 @@ export class ViewBookingPage extends PageController {
         return await chooseModal.present();
     }
 
-    async dismiss(success = false){
+    async dismiss(){
         const modal = await this.modalCtrl.getTop();
         if(modal)
-            modal.dismiss(success);
+            modal.dismiss();
     }
 }

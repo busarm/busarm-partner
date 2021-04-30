@@ -1,11 +1,10 @@
 import {Component} from '@angular/core';
 import {AlertController, ModalController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
-import {NetworkProvider} from "../../services/NetworkProvider";
 import {Api} from "../../libs/Api";
 import {Strings} from "../../resources";
 import {ToastType} from "../../libs/Utils";
-import {BusType, BusInfo} from "../../models/ApiResponse";
+import {BusType, BusInfo, TripInfo} from "../../models/ApiResponse";
 import {PageController} from "../page-controller";
 import {ViewBusPage} from "./view-bus/view-bus.page";
 import {AddBusPage} from "./add-bus/add-bus.page";
@@ -55,6 +54,14 @@ export class BusPage extends PageController{
                 this.selectedCountry = this.session.country.country_code;
             }
         }); 
+
+        /*Buses updated event*/
+        this.events.busesUpdated.subscribe(async (updated) => {
+            await super.ngOnInit();
+            if (updated) {
+                this.loadBusesView();
+            }
+        }); 
     }
 
     public ngOnDestroy(){
@@ -70,7 +77,7 @@ export class BusPage extends PageController{
 
     /**Search input event
      * */
-    public onInput(event,isSearch?) {
+    public onInput(event, isSearch?) {
         if (event.isTrusted) {
             this.searchText = event.target.value;
             if (this.assertAvailable(this.searchText) && this.searchText.length > 1) {
@@ -139,7 +146,7 @@ export class BusPage extends PageController{
             }
         })
     }
-
+    
     /**Load Buses View*/
     public loadBusesView(completed?: () => any) {
 
@@ -173,10 +180,23 @@ export class BusPage extends PageController{
         });
     }
 
-    async loadImage(img){
-        let image =  await NetworkProvider.getInstance().httpClient.get(this.buses[0].images[0].img+"ss", {
-            responseType: "text",
-            observe: 'events'
-        });
+    /**Get Status class for bus status*/
+    public getBusStatusClass(available: boolean): string {
+        if (available) {
+            return "status-ok";
+        }
+        else {
+            return "status-error";
+        }
+    }
+
+    /**Get Status text for bus status*/
+    public getBusStatus(available: boolean): string {
+        if (available) {
+            return this.strings.getString('available_txt');
+        }
+        else {
+            return this.strings.getString('in_use_txt');
+        }
     }
  }

@@ -28,7 +28,9 @@ export class AddBusPage extends PageController {
     public async ngOnInit() {
         await super.ngOnInit();
     }
-    public async ionViewDidEnter(){}
+
+    public async ionViewDidEnter(){
+    }
 
     /**Set bus seats for selected type*/
     public setBusType(){
@@ -93,6 +95,26 @@ export class AddBusPage extends PageController {
             else{
                 this.showToastMsg(this.strings.getString('select_bus_type_txt'), ToastType.ERROR);
             }
+        }
+    }
+
+    /**Get Status class for bus status*/
+    public getBusStatusClass(available: boolean): string {
+        if (available) {
+            return "status-ok";
+        }
+        else {
+            return "status-error";
+        }
+    }
+
+    /**Get Status text for bus status*/
+    public getBusStatus(available: boolean): string {
+        if (available) {
+            return this.strings.getString('available_txt');
+        }
+        else {
+            return this.strings.getString('in_use_txt');
         }
     }
 

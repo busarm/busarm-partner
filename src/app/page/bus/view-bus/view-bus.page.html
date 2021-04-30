@@ -13,6 +13,13 @@
         <ion-card-title class="cell cell-center  cell-center">
             {{strings.getString("info_txt")}}
         </ion-card-title>
+        <ion-card-header>
+            <ion-row>
+                <ion-col size="12" class="cell cell-center cell-flex cell-flex-left">
+                    <div class="cell cell-center cell-flex cell-flex-center {{getBusStatusClass(bus.available=='1')}}">{{getBusStatus(bus.available=='1')}}</div>
+                </ion-col>
+            </ion-row>
+        </ion-card-header>
         <ion-card-content>
             <ion-row>
                 <ion-col size="12">

@@ -107,11 +107,14 @@
                                 </ion-col>
                                 <ion-col size-sm="4" size="12" class="cell cell-center  cell-flex cell-flex-center ">
                                     <div>
+                                        <div *ngIf="trip.bus!=null && trip.status_id != '3' && trip.status_id != '7' && trip.status_id != '8'" class="cell cell-center ">
+                                            <ion-label class="cell-title">{{strings.getString("bus_txt")}}</ion-label>
+                                            <div class="cell-content">{{trip.bus.plate_num}}</div>
+                                        </div>
                                         <div class="cell cell-center ">
                                             <ion-label class="cell-title">{{strings.getString("price_txt")}}</ion-label>
                                             <h4 class="cell-content">{{trip.currency_code}} {{trip.price}}</h4>
                                         </div>
-                                        <br>
                                         <div class="cell cell-center ">
                                             <ion-button color="primary" (click)="showTrip(trip)">
                                                 <ion-icon name="open" slot="start"></ion-icon>

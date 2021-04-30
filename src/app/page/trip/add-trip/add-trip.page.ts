@@ -8,6 +8,7 @@ import {ToastType, Utils} from "../../../libs/Utils";
 import {Api} from "../../../libs/Api";
 import {Strings} from "../../../resources";
 import { LocationsModal } from '../../locations/locations.modal';
+import { Events } from '../../../services/Events';
 
 declare var google: any;
 
@@ -48,6 +49,7 @@ export class AddTripPage extends PageController {
     constructor(private modalCtrl: ModalController,
                 public navParams: NavParams,
                 private datePicker: DatePicker,
+                private events: Events,
                 platform: Platform,
     ) {
         super();
@@ -263,7 +265,8 @@ export class AddTripPage extends PageController {
                         this.hideLoading();
                         if (this.assertAvailable(result)) {
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
-                            this.dismiss(true);
+                            this.events.tripsUpdated.emit(true);
+                            this.dismiss();
                         }
                         else {
                             this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
@@ -283,9 +286,9 @@ export class AddTripPage extends PageController {
     }
 
     /**Close Modal*/
-    async dismiss(success?: boolean) {
+    async dismiss() {
         const modal = await this.modalCtrl.getTop();
         if(modal)
-            modal.dismiss(success);
+            modal.dismiss();
     }
 }

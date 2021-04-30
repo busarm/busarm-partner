@@ -901,6 +901,9 @@ input {
 .background-light{
   background: $textColor !important;
 }
+.background-light-gray{
+  background: #ebebeb !important;
+}
 .background-gray{
   background: $shadowColor !important;
 }
@@ -1124,6 +1127,10 @@ label.fileInputLabel {
   -moz-user-select: text;
   -ms-user-select: text;
   user-select: text;
+}
+
+.round-corner {
+  border-radius: 3px;
 }
 
 .top-banner{
