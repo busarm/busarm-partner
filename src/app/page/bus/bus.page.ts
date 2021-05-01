@@ -86,7 +86,9 @@ export class BusPage extends PageController{
                     for (let index in this.buses) {
                         let bus:BusInfo = this.buses[index];
                         let reg = new RegExp(this.searchText, 'gi');
-                        if (bus.plate_num.match(reg)) {
+                        if (bus.plate_num.match(reg) || 
+                            bus.type.match(reg) || 
+                            bus.description.match(reg)) {
                             this.currentBuses.push(bus)
                         }
                     }

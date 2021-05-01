@@ -4,11 +4,11 @@ import {EventEmitter, Injectable} from '@angular/core';
     providedIn: 'root'
 })
 export class Events {
-    public networkChange = new EventEmitter<boolean>();
-    public countryChange = new EventEmitter<boolean>();
-    public webScannerResult = new EventEmitter<string>();
+    public networkChange = new EventEmitter<boolean>(true);
+    public countryChange = new EventEmitter<boolean>(true);
+    public webScannerResult = new EventEmitter<string>(true);
 
-    public tripsUpdated = new EventEmitter<boolean>();
-    public busesUpdated = new EventEmitter<boolean>();
-    public bookingsUpdated = new EventEmitter<boolean>();
+    public tripsUpdated = new EventEmitter<boolean>(true);
+    public busesUpdated = new EventEmitter<boolean>(true);
+    public bookingsUpdated = new EventEmitter<boolean>(true);
 }

@@ -97,7 +97,6 @@ export class ViewTripPage extends PageController {
 
     /**Load Trip*/
     public async loadTrip(completed?: () => any) {
-        console.log("Load trip");
         Api.getTrip(this.trip.trip_id, (status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
@@ -264,8 +263,8 @@ export class ViewTripPage extends PageController {
                 this.hideLoading();
                 if (status){
                     if (result.status){
-                        this.events.tripsUpdated.emit(true);
                         this.loadTripView(true);
+                        this.events.tripsUpdated.emit(true);
                         this.events.busesUpdated.emit(true);
                         this.showToastMsg(result.msg, ToastType.SUCCESS);
                     }
