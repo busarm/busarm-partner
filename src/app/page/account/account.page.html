@@ -45,7 +45,7 @@
                                         </ion-button>
                                     </ion-col>
                                     <ion-col size="12" *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='') && userInfo.is_admin" class="cell cell-flex cell-flex-center">
-                                        <ion-button *ngIf="!platform.is('cordova')" 
+                                        <ion-button color="clear" *ngIf="!platform.is('cordova')" 
                                                     style="height: 30px!important;width: 30px!important;" 
                                                     class="iconBt">
                                             <input class="fileInput" id="fileInputLogo" type="file" accept="image/*" (change)="changeListener($event)"/>
@@ -109,22 +109,22 @@
                     <ion-col size="12">
                         <ion-card>
                             <ion-card-content>
-                                <ion-item (click)="showSupport()" detail>
+                                <ion-item lines="none" (click)="showSupport()" detail>
                                     {{strings.getString('support_txt')}}
                                 </ion-item>
-                                <ion-item (click)="showTerms()" detail>
+                                <ion-item lines="none" (click)="showTerms()" detail>
                                     {{strings.getString('terms_and_condition_txt')}}
                                 </ion-item>
-                                <ion-item (click)="showPrivacy()" detail>
+                                <ion-item lines="none" (click)="showPrivacy()" detail>
                                     {{strings.getString('privacy_policy_txt')}}
                                 </ion-item>
-                                <ion-item (click)="showApp()" detail>
+                                <ion-item lines="none" (click)="showApp()" detail>
                                     {{strings.getString('go_to_app_txt')}}
                                 </ion-item>
                             </ion-card-content>
                         </ion-card>
                     </ion-col>
-                    <ion-col size="12" class="ion-padding">
+                    <ion-col *ngIf="platform.is('mobile')" size="12" class="ion-padding">
                         <ion-button expand="full" color="danger" (click)="confirmLogout()">
                             <ion-icon name="exit" color="secondary" slot="start">
                             </ion-icon>

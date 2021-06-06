@@ -13,7 +13,7 @@
 
 
 /*Loader specific contents*/
-.eProgress {
+.app-loader {
   z-index: 20000 !important;
 
   background: $transGray;
@@ -25,6 +25,10 @@
   right: 0;
   top: 0;
   bottom: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   .loader {
     width: 100%;
@@ -118,6 +122,15 @@
 }
 
 /*Global App Styles*/
+ion-split-pane {
+  --border: 0.8px solid #e4e4e4 !important;
+  .split-pane-side{
+    &:not(.show-menu) {
+      min-width: 200px !important;
+      max-width: 20% !important;
+    }
+  }
+}
 
 ion-content .padding{
   --padding-top: 10px!important;
@@ -486,7 +499,6 @@ input {
 }
 
 .logoContainer {
-  padding: 2px;
   margin: 30px;
 }
 .logoImg{
@@ -805,6 +817,18 @@ input {
 .cell-padding-4x{
   padding: 16px;
 }
+.cell-padding-5x{
+  padding: 20px;
+}
+.cell-padding-6x{
+  padding: 24px;
+}
+.cell-padding-7x{
+  padding: 28px;
+}
+.cell-padding-8x{
+  padding: 32px;
+}
 
 .cell-flex {
   padding: {
@@ -850,65 +874,88 @@ input {
 /*Colors*/
 .color-light{
   color: $textColor !important;
+  --color: var(--ion-color-light) !important;
 }
 .color-gray {
   color: $shadowColor!important;
+  --color: var(--ion-color-medium) !important;
 }
 .color-dark{
   color: $textColorDarker !important;
+  --color: var(--ion-color-dark) !important;
 }
 .color-primary{
   color: $themeColorDark !important;
+  --color: var(--ion-color-primary) !important;
 }
 .color-primary-light{
   color: $themeColorLight!important;
+  --color: var(--ion-color-light) !important;
 }
 .color-secondary{
   color: $themeColor!important;
+  --color: var(--ion-color-secondary) !important;
 }
 .color-warning{
-  color: $themeColor4!important;
+  color: $themeColor4 !important;
+  --color: var(--ion-color-warning) !important;
 }
 .color-danger{
   color: $themeColor2!important;
+  --color: var(--ion-color-danger) !important;
 }
 .color-normal{
   color: $themeColor5!important;
+  --color: var(--ion-color-normal) !important;
 }
 .color-ok {
   color: seagreen!important;
+  --color: var(--ion-color-success) !important;
 }
-
+.color-light-gray{
+  color: #ebebeb !important;
+  --color: #ebebeb !important;
+}
 
 .background-primary{
   background: $themeColorDark !important;
+  --background: var(--ion-color-primary) !important;
 }
 .background-secondary{
-  background: $themeColor!important;
+  background: $themeColor !important;
+  --background: var(--ion-color-secondary) !important;
 }
 .background-warning{
-  background: $themeColor4!important;
+  background: $themeColor4 !important;
+  --background: var(--ion-color-warning) !important;
 }
 .background-danger{
-  background: $themeColor2!important;
+  background: $themeColor2 !important;
+  --background: var(--ion-color-danger) !important;
 }
 .background-normal{
-  background: $themeColor5!important;
+  background: $themeColor5 !important;
+  --background: var(--ion-color-normal) !important;
 }
 .background-ok {
-  background: seagreen!important;
+  background: seagreen !important;
+  --background: var(--ion-color-success) !important;
 }
 .background-light{
   background: $textColor !important;
+  --background: var(--ion-color-light) !important;
 }
 .background-light-gray{
   background: #ebebeb !important;
+  --background: #ebebeb !important;
 }
 .background-gray{
   background: $shadowColor !important;
+  --background: var(--ion-color-medium) !important;
 }
 .background-dark{
   background: $textColorDarker !important;
+  --background: var(--ion-color-dark) !important;
 }
 
 .infoBt {

@@ -22,6 +22,9 @@ export class ViewBusPage extends PageController {
 
     platform: Platform;
 
+    toggleUpdate: boolean = false;
+    busDescription: string;
+
     constructor(private camera: Camera,
                 private file: File,
                 private actionSheetController: ActionSheetController,
@@ -88,6 +91,48 @@ export class ViewBusPage extends PageController {
                 }
             },
         );
+    }
+    
+    public showUpdateBus(){
+        this.busDescription = this.bus.description;
+        this.toggleUpdate = true;
+    }
+    public hideUpdateBus(){
+        this.toggleUpdate = false;
+        this.busDescription = null;
+    }
+
+    /**Update Bus*/
+    public updateBus() {
+        if(this.busDescription && this.busDescription != this.bus.description){
+            this.showLoading().then(() => {
+                Api.updateBus(this.bus.id, this.busDescription, (status, result) => {
+                    this.hideLoading();
+                    if (status) {
+                        if (this.assertAvailable(result)) {
+                            if (result.status) {
+                                this.hideUpdateBus();
+                                this.loadBusView();
+                                this.events.busesUpdated.emit(true);
+                                this.showToastMsg(result.msg, ToastType.SUCCESS);
+                            }
+                            else {
+                                this.showToastMsg(result.msg, ToastType.ERROR);
+                            }
+                        }
+                        else {
+                            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+                        }
+                    }
+                    else {
+                        this.showToastMsg(result, ToastType.ERROR);
+                    }
+                });
+            });
+        }
+        else {
+            this.hideUpdateBus();
+        }
     }
 
     /**Delete Bus*/

@@ -1,12 +1,27 @@
 @import "../../theme/variables";
 
-
-.submit-btn{
+.vertical-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+form {
+  width: 100% !important;
+  max-width: 500px;
+}
+.login-field {
+  width: 100% !important;
+}
+.border-top {
+  border-top: 1px solid gray;
+}
+.border-left {
+  border-left: 1px solid gray;
+}
+.submit-btn {
   min-height: 40px !important;
   width: 100%;
-  margin:{
-    top: 20px;
-    left: auto;
-    right: auto;
-  };
+  margin: auto;
 }

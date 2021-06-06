@@ -2,6 +2,8 @@ import {Component} from '@angular/core';
 import {PageController} from "../page-controller";
 import {MenuController, ModalController, Platform} from "@ionic/angular";
 import {Router, RouterEvent} from "@angular/router";
+import { Api } from '../../libs/Api';
+import { SessionManager } from '../../libs/SessionManager';
 
 @Component({
     selector: 'app-home',
@@ -41,5 +43,33 @@ export class HomePage extends PageController {
 
     public willChange(event){
         this.selectedPage = event.tab;
+    }
+    
+    /**Show Logout confirmation
+     * */
+     public confirmLogout() {
+        this.showAlert(
+            this.strings.getString("logout_txt"),
+            this.strings.getString("logout_msg_txt"),
+            {
+                title: this.strings.getString("no_txt")
+            },
+            {
+                title: this.strings.getString("yes_txt"),
+                callback: () => {
+                    this.logout();
+                }
+            },
+        );
+    }
+
+    /**Logout user*/
+    public logout() {
+        this.showLoading().then(() => {
+            Api.logout(() => {
+                SessionManager.logout();
+                this.hideLoading();
+            });
+        });
     }
 }

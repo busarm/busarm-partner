@@ -362,9 +362,9 @@ export class DashboardPage extends PageController {
      * @param event
      * @param {boolean} isSearch
      */
-    public onInput(event,isSearch?) {
+    public onInput(event, isSearch = false) {
         if (event.isTrusted) {
-            if (event.target.value && event.target.value.length > 7) {
+            if (event.target.value && isSearch && event.target.value.length > 6) {
                 this.referenceCode = event.target.value.toUpperCase();
                 this.findBooking();
             }

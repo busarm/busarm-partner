@@ -36,8 +36,22 @@
                         <div class="cell-content">{{bus.type}}</div>
                     </ion-label>
                     <ion-label class="cell cell-center ">
-                        <div class="cell-title">{{strings.getString('desc_txt')}}</div>
-                        <div class="cell-content">{{bus.description}}</div>
+                        <div class="cell-title">
+                            {{strings.getString('desc_txt')}}
+                        </div>
+                        <div *ngIf="!toggleUpdate" class="cell-content" [innerHTML]="bus.description"></div>
+                        <div *ngIf="toggleUpdate">
+                            <ion-textarea rows="6" class="background-light-gray round-corner" [(ngModel)]="busDescription"></ion-textarea>
+                            <ion-button class="cell-margin-2x" color="primary" type="button" (click)="updateBus()">
+                                {{strings.getString("done_txt")}}
+                            </ion-button>
+                        </div>
+                        <div *ngIf="!toggleUpdate" class="cell cell-flex cell-flex-center">
+                            <ion-button class="iconBt" color="clear" (click)="showUpdateBus()">
+                                <ion-icon name="create" color="primary" slot="icon-only">
+                                </ion-icon>
+                            </ion-button>
+                        </div>
                     </ion-label>
                 </ion-col>
             </ion-row>

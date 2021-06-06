@@ -968,6 +968,23 @@ export class Api {
         });
     }
 
+    /**Update bus
+     * @param busId
+     * @param callback
+     * */
+     public static updateBus(busId: string, description: string, callback: (status: boolean, result: SimpleResponseObject | string | any, responseType: ApiResponseType) => any) {
+        this.performRequest({
+            url: Urls.apiBus,
+            method: OauthRequestMethod.PUT,
+            params: {
+                busId: busId,
+                description: description
+            },
+            cache: false,
+            callback: callback
+        });
+    }
+
     /**Delete bus
      * @param busId
      * @param callback

@@ -8,6 +8,7 @@ import {ToastType, Utils} from '../../libs/Utils';
 import {SessionManager} from '../../libs/SessionManager';
 import { Urls } from '../../libs/Urls';
 import { CONFIGS} from '../../../environments/environment';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -22,10 +23,11 @@ export class LoginPage extends PageController {
     public password: string;
 
     forgottenPassword: boolean;
+    platform: Platform;
 
-
-    constructor() {
+    constructor(platform: Platform) {
         super();
+        this.platform = platform;
     }
 
     public async ngOnInit() {

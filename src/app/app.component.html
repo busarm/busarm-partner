@@ -1,19 +1,19 @@
 <ion-app>        
     <div *ngIf="showEnvironmentBanner" style="height:30px; background:black; padding: 4px; text-align:center;" align="center">
         <span style="color: yellow; font-size:12px;">{{environment}} - <a target="_blank" style="color: yellowgreen;" href="{{liveUrl}}">{{strings.getString('go_to_live_txt')}}</a></span>
-    </div>
-    <ion-router-outlet class="{{showEnvironmentBanner?'top-banner':''}}">
-        <!--App content will display in here-->
-        <div #loaderDiv [hidden]="loaded==true" class="eProgress" align="center">
-            <div align="center" class="loader">
-                <div class="spinner">
-                    <div class="bounce1"></div>
-                    <div class="bounce2"></div>
-                    <div class="bounce3"></div>
-                    <div class="bounce4"></div>
-                    <div class="bounce5"></div>
-                </div>
+    </div> 
+    <div #loaderDiv [class.top-banner]="showEnvironmentBanner" [hidden]="loaded==true" class="app-loader">
+        <div class="loader">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+                <div class="bounce4"></div>
+                <div class="bounce5"></div>
             </div>
         </div>
+    </div> 
+    <ion-router-outlet [class.top-banner]="showEnvironmentBanner"  id="main-router">
+        <!--App content will display in here-->
     </ion-router-outlet>
 </ion-app>

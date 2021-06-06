@@ -1,47 +1,49 @@
 <ion-content>
-    <ion-row class="ion-align-items-center ion-justify-content-center">
-        <ion-col size="12" size-md="6">
+    <ion-row class="vertical-center">
+        <ion-col size="12" size-lg="5">
             <div align="center" class="logoContainer">
                 <img draggable="false" align="center" class="logo logoImg"
-                     src="{{assets.getPath('logo_dark')}}">
+                    src="{{assets.getPath('logo_dark')}}">
                 <img draggable="false" align="center" class="logo logoTxt"
-                     src="{{assets.getPath('logo_txt_dark')}}">
+                    src="{{assets.getPath('logo_txt_dark')}}">
                 <h3 class="logoNameTxt">{{strings.getString("partner_txt")}}</h3>
             </div>
         </ion-col>
-        <ion-col size="12" size-md="6" class="cell cell-padding-4x">
-            <div class="cell cell-center">
-                <h1>{{strings.getString("login_txt")}}</h1>
-            </div>
+        <ion-col size="12" size-lg="7" class="cell cell-flex cell-flex-center cell-padding-6x border-left">
             <form #loginForm="ngForm" (ngSubmit)="login()" autocomplete="off">
+                <div class="cell cell-center">
+                    <h1>{{strings.getString("login_txt")}}</h1>
+                </div>
                 <ion-row>
                     <ion-col>
-                        <ion-item class="cell">
+                        <ion-item class="cell login-field">
                             <ion-label class="cell" color="primary" position="stacked">{{strings.getString("email_txt")}}</ion-label>
                             <ion-input class="cell cell-margin-top-md cell-margin-bottom-sm" name="username" id="usernameField"
-                                       type="text" required [(ngModel)]="username" #email> </ion-input>
+                                    type="text" required [(ngModel)]="username" #email> </ion-input>
                         </ion-item>
-                        <ion-item class="cell" *ngIf="!forgottenPassword">
+                        <ion-item class="cell login-field" *ngIf="!forgottenPassword">
                             <ion-label class="cell" color="primary" position="stacked">{{strings.getString("password_txt")}}</ion-label>
                             <ion-input class="cell cell-margin-top-md cell-margin-bottom-sm" name="password" id="passwordField"
-                                       type="password" required [(ngModel)]="password" #pass> </ion-input>
+                                    type="password" required [(ngModel)]="password" #pass> </ion-input>
                         </ion-item>
                     </ion-col>
                 </ion-row>
-                <ion-row>
-                    <ion-col>
+                <ion-row class="cell-margin-3x">
+                    <ion-col size="12">
                         <ion-button color="primary" class="submit-btn" type="submit"
                                     [disabled]="!loginForm.form.valid">
                             {{forgottenPassword?strings.getString("verify_email_txt"):strings.getString("login_txt")}}
                         </ion-button>
                     </ion-col>
+                    <ion-col size="12">
+                        <ion-item class="login-field" [disabled]="username==null || username.length < 1" [lines]="'none'">
+                            <ion-label>{{strings.getString('forgot_password_title_txt')}}</ion-label>
+                            <ion-checkbox name="forgot_password" slot="start" color="primary" [(ngModel)]="forgottenPassword">
+                            </ion-checkbox>
+                        </ion-item>
+                    </ion-col>
                 </ion-row>
             </form>
-            <ion-item [disabled]="username==null || username.length < 1" [lines]="'none'">
-                <ion-label>{{strings.getString('forgot_password_title_txt')}}</ion-label>
-                <ion-checkbox name="forgot_password" slot="start" color="primary" [(ngModel)]="forgottenPassword">
-                </ion-checkbox>
-            </ion-item>
         </ion-col>
     </ion-row>
 </ion-content>
