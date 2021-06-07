@@ -154,16 +154,6 @@
             </div>
 
         </ion-list>
-        <!-- <div color="light" class="cell cell-center cell-flex cell-flex-center cell-margin-auto color-dark background-light" sticky>
-            <ion-select *ngIf="bookingMonths!=null && bookingMonths.length>0"
-                        placeholder="{{strings.getString('select_month_txt')}}"
-                        [(ngModel)]="selectedBookingMonth"
-                        (ionChange)="selectMonth()">
-                <ion-select-option *ngFor="let month of bookingMonths; let i = index" [attr.index]="i" [value]="i">
-                    {{month.display_date}}
-                </ion-select-option>
-            </ion-select>
-        </div> -->
         <ion-list id="bookingList">
             <!--Bookings header-->
             <ion-list-header class="cell cell-center cell-flex cell-flex-center">
@@ -313,7 +303,7 @@
                     </ion-col>
                 </ion-row>
                 <!-- Pay-in / Payout Transaction -->
-                <ion-row class="ion-justify-content-center ion-align-items-center">
+                <ion-row class="ion-justify-content-center">
                     <!-- Payout (Revenue) -->
                     <ion-col size="12" size-lg="6">
                         <ion-card>
