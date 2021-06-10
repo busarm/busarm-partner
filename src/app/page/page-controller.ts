@@ -5,7 +5,7 @@ import {AppComponent} from "../app.component";
 import {ToastType, Utils} from "../libs/Utils";
 import {Assets, Strings} from "../resources";
 import {SessionManager} from "../libs/SessionManager";
-import {UserInfo, ValidateSessionObject} from "../models/ApiResponse";
+import {UserInfo, Session} from "../models/ApiResponse";
 import { CONFIGS } from "../../environments/environment";
 
 export class PageController implements OnInit, OnDestroy {
@@ -15,7 +15,7 @@ export class PageController implements OnInit, OnDestroy {
     public assets = Assets;
 
     public selectedCountry: string = null;
-    public session: ValidateSessionObject = null;
+    public session: Session = null;
     public userInfo: UserInfo = null;
     public routeKey: string = null;
 
@@ -24,14 +24,14 @@ export class PageController implements OnInit, OnDestroy {
 
     /**Global Constructor*/
     protected constructor() {
-        this.getSession();
-        this.getUserInfo();
+        this.loadSession();
+        this.loadUser();
     }
 
     /* lifecycle events */
     public async ngOnInit() {
-        await this.getSession();
-        await this.getUserInfo();
+        await this.loadSession();
+        await this.loadUser();
         this.routeKey = await this.getRouteKey();
     }
     public ngOnDestroy(){
@@ -81,33 +81,17 @@ export class PageController implements OnInit, OnDestroy {
     }
 
     /**Get Session Info
-     * @return {ValidateSessionObject}
+     * @return {Session}
      */
-    public async getSession()  {
-        return this.session = await new Promise<ValidateSessionObject>((resolve: (data: ValidateSessionObject) => any) => {
-            SessionManager.getSession(data => {
-                if (data) {
-                    resolve(data);
-                } else {
-                    resolve(null);
-                }
-            });
-        });
+    public async loadSession()  {
+        return this.session = await SessionManager.getSession();
     }
 
     /**Get User Info
      * @return {UserInfo}
      */
-    public async getUserInfo(){
-        return this.userInfo = await new Promise<UserInfo>((resolve: (data: UserInfo) => any) => {
-            SessionManager.getUserInfo(data => {
-                if (data) {
-                    resolve(data);
-                } else {
-                    resolve(null);
-                }
-            });
-        });
+    public async loadUser() {
+        return this.userInfo = await SessionManager.getUserInfo();
     }
 
     /**Set Country*/

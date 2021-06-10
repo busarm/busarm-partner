@@ -2,7 +2,7 @@
  * the all data stored in the session
  * */
 import {SecureStorageObject} from "@ionic-native/secure-storage/ngx";
-import {PingObject, UserInfo, ValidateSessionObject} from "../models/ApiResponse";
+import {PingObject, UserInfo, Session} from "../models/ApiResponse";
 import {Utils} from "./Utils";
 import {AppComponent} from "../app.component";
 import {Storage} from "@ionic/storage";
@@ -11,7 +11,6 @@ import { OauthStorage } from "./Oauth";
 export class SessionManager {
 
     private static session_info = "session_info";
-    private static user_info = "user_info";
     private static ping = "ping";
 
     private static context: AppComponent;
@@ -139,7 +138,18 @@ export class SessionManager {
      * @param callback
      * */
     static getUserInfo(callback?: (data: UserInfo) => any): Promise<UserInfo> {
-        return this.get(this.user_info,callback)
+        if (Utils.assertAvailable(callback)) {
+            return this.getSession((session) => {
+                callback(session ? session.user : null);
+            });
+        }
+        else {
+            return new Promise<UserInfo>(async (resolve) => {
+                await this.getSession((session) => {
+                    resolve(session ? session.user : null);
+                });
+            });
+        }
     }
 
     /**Save User info to session
@@ -147,7 +157,20 @@ export class SessionManager {
      * @param callback
      * */
     static setUserInfo(user: UserInfo, callback?: (status: boolean) => any) {
-        return this.set(this.user_info, user,callback)
+        if (Utils.assertAvailable(callback)) {
+            return this.getSession((session) => {
+                if(session) session.user = user;
+                return this.setSession(session, callback);
+            });
+        }
+        else {
+            return new Promise<Boolean>(() => {
+                return this.getSession((session) => {
+                    if(session) session.user = user;
+                    return this.setSession(session);
+                });
+            });
+        }
     }
 
     /** Get Ping Data from session
@@ -168,7 +191,7 @@ export class SessionManager {
     /**Get Session Token
      * @param callback
      * */
-    static getSession(callback?: (data: ValidateSessionObject) => any): Promise<ValidateSessionObject> {
+    static getSession(callback?: (data: Session) => any): Promise<Session> {
         return this.get(this.session_info,callback);
     }
 
@@ -176,7 +199,7 @@ export class SessionManager {
      * @param session
      * @param callback
      * */
-    static setSession(session: ValidateSessionObject, callback?: (status: boolean) => any) {
+    static setSession(session: Session, callback?: (status: boolean) => any) {
         return this.set(this.session_info, session, callback);
     }
     

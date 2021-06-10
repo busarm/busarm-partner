@@ -704,7 +704,7 @@ export class Oauth {
      * Check if authorization has expired
      */
     hasExpired(){
-        return OauthUtils.hasTokenExpired();
+        return OauthUtils.hasTokenExpired(OauthStorage.accessToken);
     }
 
     /**Oauth Authorization

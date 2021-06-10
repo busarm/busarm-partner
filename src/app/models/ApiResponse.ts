@@ -9,16 +9,22 @@ export interface PingObject extends SimpleResponseObject  {
     ip?: string; 
 }
 
-export interface ValidateSessionObject extends SimpleResponseObject  {
+export interface SessionObject extends SimpleResponseObject  {
     updated?: boolean;
-    session_token?: string;
-    encryption_key?: string;
-    configs:ConfigObject,
-    country?: Country;
-    countries?: Country[];
+    data?: Session;
 }
 
-export interface ConfigObject {
+export interface Session {
+    session_token?: string;
+    encryption_key?: string;
+    configs:Config,
+    country?: Country,
+    countries?: Country[],
+    bank: BankAccount,
+    user: UserInfo,
+}
+
+export interface Config {
     allow_cancel_booking: string,
     allow_international: string,
     allow_multiple_countries: string,
@@ -26,15 +32,7 @@ export interface ConfigObject {
     allow_payment: string,
     allow_reservation: string,
     booking_cancellation:string,
-    payment:string,
-    google_api_key:string,
-    account_id:number,
-    account_name:string,
-    account_number:string,
-    bank_name:string,
-    swift_code:string,
-    branch_name:string,
-    branch_code:string
+    google_api_key:string
 }
 
 /*----USER INFO RESPONSE ------*/
@@ -43,9 +41,7 @@ export interface UserInfoObject extends SimpleResponseObject {
     data?: UserInfo;
 }
 
-export interface UsersObject {
-    status: boolean;
-    msg?: string;
+export interface UsersObject extends SimpleResponseObject {
     data?: UserInfo[];
 }
 
@@ -73,15 +69,18 @@ export interface UserInfo {
     permissions?:string[],
     allow_international?: boolean|number;
     allow_multi_countries?: boolean|number;
-    bank_account?: BankAccountObject;
+    bank_account?: BankAccount;
 }
 
-export interface BankAccountObject {
+export interface BankAccount {
     account_id:number,
     account_name:string,
     account_number:string,
     bank_name:string,
-    bank_code:string
+    bank_code:string,
+    swift_code:string,
+    branch_name:string,
+    branch_code:string
 }
 
 export interface Country {

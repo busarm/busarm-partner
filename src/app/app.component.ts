@@ -34,7 +34,7 @@ import {CIPHER} from './libs/CIPHER';
 import { ENVIRONMENT, CONFIGS } from '../environments/environment';
 import { Events } from './services/Events';
 import { NavigationOptions } from '@ionic/angular/dist/providers/nav-controller';
-import { PingObject } from './models/ApiResponse';
+import { PingObject, Session } from './models/ApiResponse';
 import { ENV } from '../environments/ENV';
 import { SwUpdate } from '@angular/service-worker';
 
@@ -461,30 +461,36 @@ export class AppComponent {
     }
 
 
-    /**Authorize User Check
+    /**
+     * Authorize User Check
      * and verify token if existing
-     * */
-    public authorize(reattempt: boolean = false): Promise<boolean> {
+     * @param {Boolean} force 
+     * @returns {Promise<boolean>}
+     */
+    public authorize(force: boolean = false): Promise<boolean> {
         return new Promise(async (resolve: (status: boolean) => any) => {
-            if (!this.authAttempted || reattempt) {
-                this.authAttempted = true;
-                //Check internet connection
+            if ((!this.authorized && !this.authAttempted) || force) {
+                // Check internet connection
                 NetworkProvider.checkConnection(async connected => {
                     if (connected) {
-                        //Authorize
+                        // To prevent duplicate request
+                        this.authAttempted = true;
+                        // Authorize
                         AppComponent.oauth.authorizeAccess({
                             scope: CONFIGS.oauth_scopes,
                             grant_type: OauthGrantType.Auto,
                             state: Utils.getCurrentSignature(await this.getPingStatus()),
                             callback: async (token, msg) => {
                                 if (token) {  
-                                    //Validate Session
+                                    // Validate Session
                                     await this.validateSession(async (status, msg, responseType) => {
                                         if (status) {
-                                            resolve(true);
                                             this.authorized = true;
+                                            this.authAttempted = false;
                                             this.hideLoadingScreen();
+                                            resolve(true);
                                         } else {
+                                            this.authAttempted = false;
                                             switch (responseType) {
                                                 case ApiResponseType.Authorization_error:
                                                     this.authorized = false;
@@ -505,29 +511,14 @@ export class AppComponent {
                                                     // Check if session info available
                                                     SessionManager.getSession(async (session) => {
                                                         if (session) {
-                                                            // Check if user info available
-                                                            SessionManager.getUserInfo(user => {
-                                                                if (user) {
-                                                                    resolve(true);
-                                                                    this.authorized = true;
-                                                                    this.hideLoadingScreen();
-                                                                } else {
-                                                                    this.authAttempted = false;
-                                                                    this.showNotConnectedMsg(async () => {
-                                                                        this.authorize(true).then(status => {
-                                                                            resolve (status);
-                                                                        }).catch(() => {
-                                                                            resolve(false);
-                                                                        });
-                                                                    });
-                                                                }
-                                                            });
+                                                            this.authorized = true;
+                                                            this.hideLoadingScreen();
+                                                            resolve(true);
                                                         } else {
-                                                            this.authAttempted = false;
                                                             this.authorized = false;
                                                             if (Utils.assertAvailable(msg)) { await this.showToastMsg(msg, ToastType.ERROR); }
-                                                            resolve(false);
                                                             this.hideLoadingScreen();
+                                                            resolve(false);
                                                         }
                                                     });
                                             }
@@ -537,8 +528,8 @@ export class AppComponent {
                                     this.authAttempted = false;
                                     this.authorized = false;
                                     if (Utils.assertAvailable(msg)) { await this.showToastMsg(msg, ToastType.ERROR); }
-                                    resolve(false);
                                     this.hideLoadingScreen();
+                                    resolve(false);
                                 }
                             }
                         });
@@ -548,25 +539,10 @@ export class AppComponent {
                             // Check if session info available
                             SessionManager.getSession(session => {
                                 if (session) {
-                                    // Check if user info available
-                                    SessionManager.getUserInfo(user => {
-                                        if (user) {
-                                            resolve(true);
-                                            this.authorized = true;
-                                            this.hideLoadingScreen();
-                                        } else {
-                                            this.authAttempted = false;
-                                            this.showNotConnectedMsg(async () => {
-                                                this.authorize(true).then(status => {
-                                                    resolve (status);
-                                                }).catch(() => {
-                                                    resolve(false);
-                                                });
-                                            });
-                                        }
-                                    });
+                                    this.authorized = true;
+                                    this.hideLoadingScreen();
+                                    resolve(true);
                                 } else {
-                                    this.authAttempted = false;
                                     this.showNotConnectedMsg(async () => {
                                         this.authorize(true).then(status => {
                                             resolve (status);
@@ -579,13 +555,13 @@ export class AppComponent {
                         }
                         else {
                             this.authorized = false;
-                            resolve(false);
                             this.hideLoadingScreen();
+                            resolve(false);
                         }
                     }
                 });
             } else {
-                resolve(this.authorized && !OauthUtils.hasTokenExpired());
+                resolve(this.authorized && !AppComponent.oauth.hasExpired());
                 this.hideLoadingScreen();
             }
         });
@@ -643,83 +619,36 @@ export class AppComponent {
             app_name: appName,
             device_type: deviceType,
             device_name: deviceModel,
+            partner: true,
         }, (status, result, responseType) => {
-
-            if (status) {
-                if (Utils.assertAvailable(result)) {
-                    if (result.status) {
-                        // Save  session info
-                        SessionManager.setSession(result, done => {
-                            if (done) {
-                                // Get user info
-                                this.getUser(callback);
-                            } else {
-                                if (Utils.assertAvailable(callback)) {
-                                    callback(done, Strings.getString('error_unexpected'), responseType);
-                                }
+            if (status && result) {
+                let session: Session = result.data;
+                // Save  session info
+                SessionManager.setSession(session, done => {
+                    if (done && session.user) {
+                        // Set app's Language with user's
+                        if (Utils.assertAvailable(session.user.lang)) {
+                            const key = session.user.lang.toUpperCase();
+                            if (Langs[key]) { // If Language Supported
+                                Strings.setLanguage(key);
                             }
-                        });
-                    }
-                    else {
-                        if (Utils.assertAvailable(callback)) {
-                            callback(false, result.msg ? result.msg : Strings.getString('error_unexpected'), responseType);
                         }
-                    }
-                } else {
-                    if (Utils.assertAvailable(callback)) {
-                        callback(false, Strings.getString('error_unexpected'), responseType);
-                    }
-                }
-            } else {
-                if (Utils.assertAvailable(callback)) {
-                    callback(status, result, responseType);
-                }
-            }
-        });
-
-    }
-
-    /**Get User Data*/
-    public getUser(callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
-        Api.getUserInfo((status, result, responseType) => {
-            if (status) {
-                if (Utils.assertAvailable(result)) {
-                    if (result.status) {
-                        // Save user data to session
-                        SessionManager.setUserInfo(result.data, done => {
-                            if (done) {
-                                // Set app's Language with user's
-                                if (Utils.assertAvailable(result.data.lang)) {
-                                    const key = result.data.lang.toUpperCase();
-                                    if (Langs[key]) { // If Language Supported
-                                        Strings.setLanguage(key);
-                                    }
-                                }
-                                if (Utils.assertAvailable(callback)) {
-                                    callback(done, result, responseType);
-                                }
-                            } else {
-                                if (Utils.assertAvailable(callback)) {
-                                    callback(done, Strings.getString('error_unexpected'), responseType);
-                                }
-                            }
-                        });
+                        if (Utils.assertAvailable(callback)) {
+                            callback(done, result.msg, responseType);
+                        }
                     } else {
                         if (Utils.assertAvailable(callback)) {
-                            callback(false, result.msg ? result.msg : Strings.getString('error_unexpected'), responseType);
+                            callback(done, Strings.getString('error_unexpected'), responseType);
                         }
                     }
-                } else {
-                    if (Utils.assertAvailable(callback)) {
-                        callback(false, Strings.getString('error_unexpected'), responseType);
-                    }
-                }
+                });
             } else {
                 if (Utils.assertAvailable(callback)) {
-                    callback(status, result, responseType);
+                    callback(false, result ? result : Strings.getString('error_unexpected'), responseType);
                 }
             }
         });
+
     }
 
     /**Set Country

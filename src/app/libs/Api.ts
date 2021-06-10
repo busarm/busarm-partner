@@ -13,7 +13,7 @@ import {
     TripStatusObject,
     UserInfoObject,
     UsersObject,
-    ValidateSessionObject,
+    SessionObject,
     BookingsInfoObject,
     PayInTransactionObject,
     PayOutTransactionObject,
@@ -358,8 +358,9 @@ export class Api {
         version: string,
         app_name: string,
         device_type: string,
-        device_name: string
-    }, callback: (status: boolean, result: ValidateSessionObject | string | any, responseType: ApiResponseType) => any) {
+        device_name: string,
+        partner: boolean,
+    }, callback: (status: boolean, result: SessionObject | string | any, responseType: ApiResponseType) => any) {
         this.performRequest({
             url: Urls.apiInitialize,
             method: OauthRequestMethod.POST,

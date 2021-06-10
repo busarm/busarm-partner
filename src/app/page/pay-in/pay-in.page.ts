@@ -23,9 +23,11 @@ export class PayInPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-        this.accountName = this.session.configs.account_name;
-        this.bankName = this.session.configs.bank_name;
-        this.accountNumber = this.session.configs.account_number;
+        if(this.session.bank){
+            this.accountName = this.session.bank.account_name;
+            this.bankName = this.session.bank.bank_name;
+            this.accountNumber = this.session.bank.account_number;
+        }
         this.payIn = await this.getRouteParams();
         
         /*Give time for components to load first*/

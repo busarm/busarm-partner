@@ -9,7 +9,7 @@ import { Strings } from "../resources";
 export class AuthGuard implements CanActivate {
     constructor() {}
     async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        return await AppComponent.instance.authorize(!AppComponent.instance.authAttempted).then(async status => {
+        return await AppComponent.instance.authorize().then(async status => {
             if (route.routeConfig.path === 'login') { // If login page, go to home if already authorized
                 if (status) {
                     await AppComponent.instance.goHome();

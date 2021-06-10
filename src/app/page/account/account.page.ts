@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {ActionSheetController, Platform} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
-import {ToastType} from "../../libs/Utils";
+import {ToastType, Utils} from "../../libs/Utils";
 import {PageController} from "../page-controller";
 import {SessionManager} from "../../libs/SessionManager";
 import {Api} from "../../libs/Api";
@@ -123,9 +123,9 @@ export class AccountPage extends PageController {
                     if (this.assertAvailable(result)) {
                         if (result.status) {
                             this.showToastMsg(result.msg, ToastType.SUCCESS);
-                            this.instance.getUser((status)=>{
+                            this.getUser((status)=>{
                                 if(status){
-                                    this.getUserInfo();
+                                    this.loadUser();
                                 }
                             });
                         }
@@ -215,4 +215,39 @@ export class AccountPage extends PageController {
         });
     }
 
+    /**Get User Data*/
+    public getUser(callback?: (status: boolean, msg: string) => any) {
+        Api.getUserInfo((status, result) => {
+            if (status) {
+                if (Utils.assertAvailable(result)) {
+                    if (result.status) {
+                        // Save user data to session
+                        SessionManager.setUserInfo(result.data, done => {
+                            if (done) {
+                                if (Utils.assertAvailable(callback)) {
+                                    callback(done, result);
+                                }
+                            } else {
+                                if (Utils.assertAvailable(callback)) {
+                                    callback(done, Strings.getString('error_unexpected'));
+                                }
+                            }
+                        });
+                    } else {
+                        if (Utils.assertAvailable(callback)) {
+                            callback(false, result.msg ? result.msg : Strings.getString('error_unexpected'));
+                        }
+                    }
+                } else {
+                    if (Utils.assertAvailable(callback)) {
+                        callback(false, Strings.getString('error_unexpected'));
+                    }
+                }
+            } else {
+                if (Utils.assertAvailable(callback)) {
+                    callback(status, result);
+                }
+            }
+        });
+    }
 }
