@@ -16,7 +16,8 @@
         <ion-card-header>
             <ion-row>
                 <ion-col size="12" class="cell cell-center cell-flex cell-flex-left">
-                    <div class="cell cell-center cell-flex cell-flex-center {{getBusStatusClass(bus.available=='1')}}">{{getBusStatus(bus.available=='1')}}</div>
+                    <div class="cell cell-center cell-flex cell-flex-center {{getBusStatusClass(bus.available=='1')}}">
+                        {{getBusStatus(bus.available=='1')}}</div>
                 </ion-col>
             </ion-row>
         </ion-card-header>
@@ -41,7 +42,8 @@
                         </div>
                         <div *ngIf="!toggleUpdate" class="cell-content" [innerHTML]="bus.description"></div>
                         <div *ngIf="toggleUpdate">
-                            <ion-textarea rows="6" class="background-light-gray round-corner" [(ngModel)]="busDescription"></ion-textarea>
+                            <ion-textarea rows="6" class="background-light-gray round-corner"
+                                [(ngModel)]="busDescription"></ion-textarea>
                             <ion-button class="cell-margin-2x" color="primary" type="button" (click)="updateBus()">
                                 {{strings.getString("done_txt")}}
                             </ion-button>
@@ -56,23 +58,25 @@
                 </ion-col>
             </ion-row>
         </ion-card-content>
-    </ion-card> 
+    </ion-card>
     <ion-card>
         <ion-card-title class="cell cell-center ">
             {{strings.getString("photo_txt")}}
         </ion-card-title>
         <ion-card-header *ngIf="userInfo!=null && userInfo.is_admin">
             <ion-row>
-                <ion-col size="12"
-                         class="cell cell-center cell-flex cell-flex-left">
+                <ion-col size="12" class="cell cell-center cell-flex cell-flex-left">
                     <ion-button *ngIf="platform.is('cordova')" color="primary" (click)="selectImage()">
                         <ion-icon slot="start" name="add">
                         </ion-icon>
                         {{strings.getString("add_txt")}}
                     </ion-button>
                     <ion-button *ngIf="!platform.is('cordova')" class="ion-no-padding" color="primary">
-                        <input class="fileInput" id="fileInputBus" type="file" accept="image/*" (change)="changeListener($event)"/>
-                        <label class="fileInputLabel" id="fileInputBusLabel" for="fileInputBus"><ion-icon name="images"> </ion-icon>{{strings.getString("upload_txt")}}</label>
+                        <input class="fileInput" id="fileInputBus" type="file" accept="image/*"
+                            (change)="changeListener($event)" />
+                        <label class="fileInputLabel" id="fileInputBusLabel" for="fileInputBus">
+                            <ion-icon name="images"> </ion-icon>{{strings.getString("upload_txt")}}
+                        </label>
                     </ion-button>
                 </ion-col>
             </ion-row>
@@ -80,14 +84,18 @@
         <ion-card-content *ngIf="bus!=null && bus.images!=null && bus.images.length >=1">
             <ion-list>
                 <ion-row *ngFor="let image of bus.images; let i = index" [attr.index]="i">
-                    <ion-col *ngIf="userInfo!=null && userInfo.is_admin" size="2" class="cell cell-center  cell-flex cell-flex-center ">
+                    <ion-col *ngIf="userInfo!=null && userInfo.is_admin" size="2"
+                        class="cell cell-center  cell-flex cell-flex-center ">
                         <ion-button class="iconBt" (click)="confirmDeleteImage(image)">
                             <ion-icon slot="icon-only" class="danger" name="remove-circle">
                             </ion-icon>
                         </ion-button>
                     </ion-col>
-                    <ion-col size="{{userInfo!=null && userInfo.is_admin?'10':'12'}}" class="cell cell-center  cell-flex cell-flex-center ">
-                        <ion-img class="img round-corner" [src]="image.img"></ion-img>
+                    <ion-col size="{{userInfo!=null && userInfo.is_admin?'10':'12'}}"
+                        class="cell cell-center  cell-flex cell-flex-center ">
+                        <ion-img class="img round-corner" [src]="image.img"
+                            (ionError)="image.img = assets.getPath('placeholder')">
+                        </ion-img>
                     </ion-col>
                 </ion-row>
             </ion-list>
@@ -108,8 +116,7 @@
         </ion-card-title>
         <ion-card-header *ngIf="userInfo!=null && userInfo.is_admin">
             <ion-row>
-                <ion-col size="12"
-                         class="cell cell-center cell-flex cell-flex-left">
+                <ion-col size="12" class="cell cell-center cell-flex cell-flex-left">
                     <ion-button color="primary" (click)="shareBus()">
                         <ion-icon slot="start" name="share">
                         </ion-icon>
@@ -121,7 +128,8 @@
         <ion-card-content *ngIf="bus!=null && bus.shared_partners!=null && bus.shared_partners.length >=1">
             <ion-list>
                 <ion-row *ngFor="let shared of bus.shared_partners; let i = index" [attr.index]="i">
-                    <ion-col *ngIf="userInfo!=null && userInfo.is_admin" size="2" class="cell cell-center  cell-flex cell-flex-center ">
+                    <ion-col *ngIf="userInfo!=null && userInfo.is_admin" size="2"
+                        class="cell cell-center  cell-flex cell-flex-center ">
                         <ion-button class="iconBt" (click)="confirmDeleteSharedBus(shared)">
                             <ion-icon slot="icon-only" class="danger" name="remove-circle">
                             </ion-icon>

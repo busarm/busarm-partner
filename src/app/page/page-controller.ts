@@ -1,4 +1,4 @@
-import {OnDestroy, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import { Params } from "@angular/router";
 import { MD5 } from "crypto-js";
 import {AppComponent} from "../app.component";
@@ -8,6 +8,9 @@ import {SessionManager} from "../libs/SessionManager";
 import {UserInfo, Session} from "../models/ApiResponse";
 import { CONFIGS } from "../../environments/environment";
 
+@Component({
+    template: ''
+})
 export class PageController implements OnInit, OnDestroy {
 
     //Define resources for views to use
@@ -118,10 +121,7 @@ export class PageController implements OnInit, OnDestroy {
      */
     public async navigate(path:string, params?:any){
         if(params){await this.setRouteParams(path, params)}
-        return this.instance.router.navigateByUrl(path,  {
-                queryParamsHandling:'merge',
-                preserveFragment:false, 
-                preserveQueryParams:false});
+        return this.instance.router.navigateByUrl(path);
     }
     
     /**
@@ -190,8 +190,8 @@ export class PageController implements OnInit, OnDestroy {
     }
 
     /**Show Loader*/
-    public showLoading() {
-        return this.instance.showLoading();
+    public showLoading(backdropDismiss = false) {
+        return this.instance.showLoading({ backdropDismiss });
     }
 
     /**Hide Loader*/

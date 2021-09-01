@@ -23,6 +23,7 @@
                                         <ion-img *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='')"
                                                 class="img x-large"
                                                 [src]="userInfo.partner_logo"
+                                                (ionError)="userInfo.partner_logo = assets.getPath('placeholder')"
                                                 cache="true">
                                         </ion-img>
                                         <ion-img *ngIf="(userInfo.partner_logo==null || userInfo.partner_logo=='') &&  (!userInfo.is_admin)"
@@ -99,7 +100,7 @@
                         <ion-card (click)="showLocations()">
                             <ion-card-content>
                                 <ion-item [lines]="'none'">
-                                    <ion-icon name="pin" slot="start">
+                                    <ion-icon name="location" slot="start">
                                     </ion-icon>
                                     {{strings.getString('my_locations_txt')}}
                                 </ion-item>

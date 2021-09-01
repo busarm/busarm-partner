@@ -1,10 +1,10 @@
-import {Component, ViewChild} from '@angular/core';
-import {ModalController, NavController} from "@ionic/angular";
-import {ZXingScannerComponent} from '@zxing/ngx-scanner';
-import {BarcodeFormat} from '@zxing/library';
-import {PageController} from "../../page-controller";
-import {ToastType} from "../../../libs/Utils";
-import {Events} from '../../../services/Events';
+import { Component, ViewChild } from '@angular/core';
+import { ModalController, NavController } from "@ionic/angular";
+import { ZXingScannerComponent } from '@zxing/ngx-scanner';
+import { BarcodeFormat } from '@zxing/library';
+import { PageController } from "../../page-controller";
+import { ToastType } from "../../../libs/Utils";
+import { Events } from '../../../services/Events';
 
 @Component({
     selector: 'app-web-scanner',
@@ -14,36 +14,44 @@ import {Events} from '../../../services/Events';
 export class WebScannerPage extends PageController {
 
     @ViewChild('scanner') scanner: ZXingScannerComponent;
-    
+
     allowedFormats = [];
 
-    flashAllowed:boolean = true;
-    multiDeviceAllowed:boolean = true;
+    flashAllowed: boolean = false;
+    multiDeviceAllowed: boolean = false;
 
-    flashEnabled:boolean = false;
-    mediaDevices:MediaDeviceInfo[] = [];
-    selectedDeviceindex:number = 0;
-    
-    lastScanned:{timestamp:number,code:string} = null
+    flashEnabled: boolean = false;
+    mediaDevices: MediaDeviceInfo[] = [];
+    selectedDeviceindex: number = 0;
 
-    constructor(public navCtrl: NavController, 
-                private modalCtrl: ModalController, 
-                public event: Events) {
+    lastScanned: { timestamp: number, code: string } = null
+
+    constructor(public navCtrl: NavController,
+        private modalCtrl: ModalController,
+        public event: Events) {
         super();
-        this.allowedFormats = [ BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX /*, ...*/ ];
+        this.allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX /*, ...*/];
+    }
+    
+    public ionViewWillEnter (){}
+    public ionViewDidEnter(){
+        this.showLoading(true);
     }
 
     public async ngOnInit() {
         await super.ngOnInit();
-        this.scanner.autostarted.subscribe(()=>{
-            this.checkMediaDevice((device)=>{
-                if(device){
+        this.scanner.torchCompatible.subscribe((enabled: boolean) => {
+            this.flashAllowed = enabled;
+        });
+        this.scanner.autostarted.subscribe(() => {
+            this.checkMediaDevice((device) => {
+                this.hideLoading();
+                if (device) {
                     this.scanner.torch = false;
                     this.scanner.autofocusEnabled = true;
                     this.scanner.previewFitMode = 'contain';
                     this.scanner.formats = this.allowedFormats;
                     this.scanner.timeBetweenScans = 0;
-                    this.scanner.device = device;
                 }
                 else {
                     this.showToastMsg(this.strings.getString('no_camera_msg'), ToastType.ERROR, 3000);
@@ -51,18 +59,15 @@ export class WebScannerPage extends PageController {
                 }
             });
         });
-        this.scanner.torchCompatible.subscribe((enabled: boolean)=>{
-            this.flashAllowed = enabled;
-        });
         this.scanner.scanSuccess.subscribe((code: any) => {
-            if(this.canScanAgain(code)){
-                this.lastScanned = {timestamp: Date.now(), code:code};
+            if (this.canScanAgain(code)) {
+                this.lastScanned = { timestamp: Date.now(), code: code };
                 this.event.webScannerResult.emit(code);
             }
-        })
+        });
         this.checkPermission();
     }
-    
+
     /** 
      * Check if can scan code again 
      * This is to prevent scanning the same code
@@ -71,45 +76,45 @@ export class WebScannerPage extends PageController {
      * @param interval - default 5s
      * @return boolean 
      */
-    private canScanAgain(code:string, interval = 5000){
-        return !(this.lastScanned 
-                && this.lastScanned.code === code 
-                && this.lastScanned.timestamp+interval >= Date.now());
+    private canScanAgain(code: string, interval = 5000) {
+        return !(this.lastScanned
+            && this.lastScanned.code === code
+            && this.lastScanned.timestamp + interval >= Date.now());
     }
-    
+
     /* Check media camera devices
      * */
-    private checkMediaDevice(callback?:(device?:MediaDeviceInfo)=>any){
+    private checkMediaDevice(callback?: (device?: MediaDeviceInfo) => any) {
         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-            let checking=["videoinput"];
+            let checking = ["videoinput"];
             navigator.mediaDevices.enumerateDevices()
-            .then((devices)=> {
-                this.mediaDevices = devices.filter(device => checking.includes(device.kind));
-                this.multiDeviceAllowed = this.mediaDevices && (this.mediaDevices.length >= 2);
-                if(callback){
-                    this.selectedDeviceindex = this.multiDeviceAllowed ? 1 : 0;
-                    callback(this.mediaDevices[this.selectedDeviceindex]);
-                }
-            })
-            .catch(() => {
-                this.mediaDevices = [];
-                if(callback){
-                    callback();
-                }
-            });
+                .then((devices) => {
+                    this.mediaDevices = devices.filter(device => checking.includes(device.kind));
+                    this.multiDeviceAllowed = this.mediaDevices && (this.mediaDevices.length >= 2);
+                    if (callback) {
+                        this.selectedDeviceindex = this.multiDeviceAllowed ? 1 : 0;
+                        callback(this.mediaDevices[this.selectedDeviceindex]);
+                    }
+                })
+                .catch(() => {
+                    this.mediaDevices = [];
+                    if (callback) {
+                        callback();
+                    }
+                });
         }
         else {
             this.mediaDevices = [];
-            if(callback){
+            if (callback) {
                 callback();
             }
         }
     }
     /* Check camera Permission
      * */
-    public checkPermission(callback?:(granted:boolean)=>any) {
+    public checkPermission(callback?: (granted: boolean) => any) {
         this.scanner.askForPermission().then((granted) => {
-            if(!granted){
+            if (!granted) {
                 this.showAlert(
                     this.strings.getString("permission_required_txt"),
                     this.strings.getString("no_camera_permission_msg"),
@@ -122,16 +127,12 @@ export class WebScannerPage extends PageController {
                 );
             }
             else {
-                if(callback) callback(granted);
+                if (callback) callback(granted);
             }
         })
     }
 
-    public async ionViewDidEnter(){
-        super.ionViewDidEnter();
-    }
-    
-    public ionViewDidLeave(){
+    public ionViewDidLeave() {
         super.ionViewDidLeave();
     }
 
@@ -139,8 +140,8 @@ export class WebScannerPage extends PageController {
      * Toggle Flash on & off
      * @param toggle 
      */
-    public async toggleFlash(){
-        if(this.scanner){
+    public async toggleFlash() {
+        if (this.scanner) {
             this.flashEnabled = !this.flashEnabled;
             this.scanner.torch = this.flashEnabled;
         }
@@ -149,27 +150,27 @@ export class WebScannerPage extends PageController {
     /**
      * Change Media Device
      */
-    public async changeMediaDevice(){
-        if(this.multiDeviceAllowed){
-            if(this.selectedDeviceindex+1 >= this.mediaDevices.length){
-                if(this.scanner && !this.scanner.isCurrentDevice(this.mediaDevices[0])){
+    public async changeMediaDevice() {
+        if (this.multiDeviceAllowed) {
+            if (this.selectedDeviceindex + 1 >= this.mediaDevices.length) {
+                if (this.scanner && !this.scanner.isCurrentDevice(this.mediaDevices[0])) {
                     this.scanner.device = this.mediaDevices[0]
                     this.selectedDeviceindex = 0;
                 }
             }
             else {
-                if(this.scanner && !this.scanner.isCurrentDevice(this.mediaDevices[this.selectedDeviceindex+1])){
-                    this.scanner.device = this.mediaDevices[this.selectedDeviceindex+1]
-                    this.selectedDeviceindex = this.selectedDeviceindex+1;
+                if (this.scanner && !this.scanner.isCurrentDevice(this.mediaDevices[this.selectedDeviceindex + 1])) {
+                    this.scanner.device = this.mediaDevices[this.selectedDeviceindex + 1]
+                    this.selectedDeviceindex = this.selectedDeviceindex + 1;
                 }
             }
         }
     }
 
     /**Close Modal*/
-    async dismiss(){
+    async dismiss() {
         const modal = await this.modalCtrl.getTop();
-        if(modal) modal.dismiss();
+        if (modal) modal.dismiss();
         else this.navCtrl.pop();
     }
 }

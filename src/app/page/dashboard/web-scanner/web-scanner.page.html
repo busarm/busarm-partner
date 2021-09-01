@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar color="transparent">
         <ion-buttons slot="start">
-            <ion-back-button color='danger' defaultHref="/home/dashboard"> </ion-back-button>
+            <ion-back-button color='secondary' defaultHref="/home/dashboard"> </ion-back-button>
         </ion-buttons>
         <ion-title>{{strings.getString("scan_txt")}}</ion-title>
     </ion-toolbar>
@@ -22,7 +22,7 @@
         </ion-fab-list>
         <ion-fab-list *ngIf="multiDeviceAllowed" side="start">
             <ion-fab-button (click)="changeMediaDevice()">
-                <ion-icon color="primary" name="reverse-camera"></ion-icon>
+                <ion-icon color="primary" name="camera-reverse"></ion-icon>
             </ion-fab-button>
         </ion-fab-list>
     </ion-fab> 

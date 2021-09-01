@@ -1,16 +1,15 @@
 // http://ionicframework.com/docs/theming/
-@import '~@ionic/angular/css/core.css';
-@import '~@ionic/angular/css/normalize.css';
-@import '~@ionic/angular/css/structure.css';
-@import '~@ionic/angular/css/typography.css';
+@import "~@ionic/angular/css/core.css";
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
 
-@import '~@ionic/angular/css/padding.css';
-@import '~@ionic/angular/css/float-elements.css';
-@import '~@ionic/angular/css/text-alignment.css';
-@import '~@ionic/angular/css/text-transformation.css';
-@import '~@ionic/angular/css/flex-utils.css';
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
 @import "theme/variables";
-
 
 /*Loader specific contents*/
 .app-loader {
@@ -45,7 +44,6 @@
     justify-content: center;
 
     margin: auto;
-
   }
 
   .spinner {
@@ -83,22 +81,26 @@
   }
 
   @-webkit-keyframes sk-bouncedelay {
-    0%, 80%, 100% {
-      -webkit-transform: scale(0)
+    0%,
+    80%,
+    100% {
+      -webkit-transform: scale(0);
     }
     40% {
-      -webkit-transform: scale(1.0)
+      -webkit-transform: scale(1);
     }
   }
 
   @keyframes sk-bouncedelay {
-    0%, 80%, 100% {
+    0%,
+    80%,
+    100% {
       -webkit-transform: scale(0);
       transform: scale(0);
     }
     40% {
-      -webkit-transform: scale(1.0);
-      transform: scale(1.0);
+      -webkit-transform: scale(1);
+      transform: scale(1);
     }
   }
 
@@ -118,13 +120,12 @@
       transform: rotate(0deg);
     }
   }
-
 }
 
 /*Global App Styles*/
 ion-split-pane {
   --border: 0.8px solid #e4e4e4 !important;
-  .split-pane-side{
+  .split-pane-side {
     &:not(.show-menu) {
       min-width: 200px !important;
       max-width: 20% !important;
@@ -132,31 +133,30 @@ ion-split-pane {
   }
 }
 
-ion-content .padding{
-  --padding-top: 10px!important;
-  --padding-bottom: 10px!important;
-  --padding-start: 10px!important;
-  --padding-end: 10px!important;
+ion-content .padding {
+  --padding-top: 10px !important;
+  --padding-bottom: 10px !important;
+  --padding-start: 10px !important;
+  --padding-end: 10px !important;
 }
-ion-modal{
-  ion-content .padding{
-    --padding-top: 20px!important;
-    --padding-bottom: 20px!important;
-    --padding-start: 20px!important;
-    --padding-end: 20px!important;
+ion-modal {
+  ion-content .padding {
+    --padding-top: 20px !important;
+    --padding-bottom: 20px !important;
+    --padding-start: 20px !important;
+    --padding-end: 20px !important;
   }
 }
 ion-item {
   padding: 0 !important;
   cursor: pointer;
 
-  ion-label{
+  ion-label {
     z-index: 1;
   }
 }
 
 ion-icon {
-
   color: $themeColorDark;
 
   &.ok {
@@ -168,10 +168,10 @@ ion-icon {
   &.warn {
     color: $themeColor4 !important;
   }
-  &.primary{
+  &.primary {
     color: $themeColorDark !important;
   }
-  &.secondary{
+  &.secondary {
     color: $themeColor !important;
   }
 }
@@ -179,7 +179,8 @@ ion-icon {
 ion-title {
   color: $themeColor;
 
-  &.ok,.success {
+  &.ok,
+  .success {
     color: seagreen !important;
     --color: var(--ion-color-success) !important;
   }
@@ -191,11 +192,11 @@ ion-title {
     color: $themeColor4 !important;
     --color: var(--ion-color-warning) !important;
   }
-  &.primary{
+  &.primary {
     color: $themeColorDark !important;
     --color: var(--ion-color-primary) !important;
   }
-  &.secondary{
+  &.secondary {
     color: $themeColor !important;
     --color: var(--ion-color-secondary) !important;
   }
@@ -216,25 +217,27 @@ ion-label {
     color: $themeColor4 !important;
     --color: var(--ion-color-warning) !important;
   }
-  &.primary{
+  &.primary {
     color: $themeColorDark !important;
     --color: var(--ion-color-primary) !important;
   }
-  &.secondary{
+  &.secondary {
     color: $themeColor !important;
     --color: var(--ion-color-secondary) !important;
   }
 }
-ion-fab-button{
+ion-fab-button {
   ion-icon {
     color: $themeColor !important;
   }
 }
-ion-button, ion-fab-button, button {
+ion-button,
+ion-fab-button,
+button {
   text-transform: none !important;
   &[color="primary"] {
     color: $themeColor !important;
-    --color:  var(--ion-color-secondary) !important;
+    --color: var(--ion-color-secondary) !important;
     ion-icon {
       color: $themeColor !important;
     }
@@ -272,22 +275,22 @@ ion-button, ion-fab-button, button {
     --background: var(--ion-color-warning) !important;
     --background-focused: var(--ion-color-warning-tint) !important;
     color: $textColorDarker !important;
-    --color:  var(--ion-color-dark) !important;
+    --color: var(--ion-color-dark) !important;
     ion-icon {
       color: $textColorDarker !important;
     }
   }
-  &.primary{
+  &.primary {
     background: $themeColorDark !important;
     --background: var(--ion-color-primary) !important;
     --background-focused: var(--ion-color-primary-tint) !important;
     color: $themeColor !important;
-    --color:  var(--ion-color-secondary) !important;
+    --color: var(--ion-color-secondary) !important;
     ion-icon {
       color: $themeColor !important;
     }
   }
-  &.secondary{
+  &.secondary {
     background: $themeColor !important;
     --background: var(--ion-color-secondary) !important;
     --background-focused: var(--ion-color-secondary-tint) !important;
@@ -297,25 +300,28 @@ ion-button, ion-fab-button, button {
       color: $themeColorDark !important;
     }
   }
-
 }
 
 ion-searchbar {
-  input, button, select, textarea {
+  input,
+  button,
+  select,
+  textarea {
     color: #0a0a0a !important;
   }
 
-  ion-label,ion-icon,button{
+  ion-label,
+  ion-icon,
+  button {
     color: var(--ion-color-primary) !important;
     --color: var(--ion-color-primary) !important;
   }
-
 
   .searchbar-search-icon {
     display: block;
     z-index: 1;
   }
-  &.searchbar-has-focus{
+  &.searchbar-has-focus {
     .searchbar-search-icon {
       display: none !important;
     }
@@ -323,40 +329,58 @@ ion-searchbar {
 }
 
 ion-header {
-
-  div, h1, h2, h3, h4, h5, h6, p, input, button, select, textarea, ion-label, ion-title {
+  div,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  input,
+  button,
+  select,
+  textarea,
+  ion-label,
+  ion-title {
     color: $themeColor !important;
   }
-  ion-icon{
+  ion-icon {
     color: var(--ion-color-secondary) !important;
   }
 
   background: var(--ion-color-primary) !important;
   color: var(--ion-color-secondary) !important;
 
-  ion-toolbar{
+  ion-toolbar {
     --background: var(--ion-color-primary) !important;
     --color: var(--ion-color-secondary) !important;
   }
 
-  &.header-ios{
-    ion-searchbar{
-      input, button, ion-label, ion-title {
+  &.header-ios {
+    ion-searchbar {
+      input,
+      button,
+      ion-label,
+      ion-title {
         color: $themeColor !important;
       }
       color: var(--ion-color-secondary) !important;
-      ion-icon{
+      ion-icon {
         color: var(--ion-color-secondary) !important;
       }
     }
   }
-  &.header-md{
-    ion-searchbar{
-      input, button, ion-label, ion-title {
+  &.header-md {
+    ion-searchbar {
+      input,
+      button,
+      ion-label,
+      ion-title {
         color: $themeColorDark !important;
       }
       color: var(--ion-color-primary) !important;
-      ion-icon{
+      ion-icon {
         color: var(--ion-color-primary) !important;
       }
     }
@@ -381,12 +405,11 @@ ion-refresher {
 }
 
 ion-tabs {
-
-  ion-tab-bar{
+  ion-tab-bar {
     --background: var(--ion-color-primary) !important;
     --color: var(--ion-color-secondary) !important;
 
-    ion-label{
+    ion-label {
       color: $themeColor !important;
     }
 
@@ -396,12 +419,11 @@ ion-tabs {
   }
 }
 
-ion-toast{
-  --button-color:var(--ion-color-secondary)
+ion-toast {
+  --button-color: var(--ion-color-secondary);
 }
 
 ion-card {
-
   ion-icon {
     color: $themeColorDark !important;
   }
@@ -415,7 +437,6 @@ ion-card {
       width: 1px;
       color: $transGray;
     }
-  ;
     font-size: 14px !important;
   }
 
@@ -429,7 +450,8 @@ ion-select {
   justify-content: center;
 }
 
-input, button {
+input,
+button {
   background: transparent;
   outline: 0;
   border: 0;
@@ -447,11 +469,28 @@ a {
   cursor: pointer;
 }
 
-a:hover, a:visited, a:link, a:active {
+a:hover,
+a:visited,
+a:link,
+a:active {
   text-decoration: none !important;
 }
 
-html, body, div, h1, h2, h3, h4, h5, h6, p, input, button, select, textarea,app-root,
+html,
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+input,
+button,
+select,
+textarea,
+app-root,
 ion-app,
 ion-content,
 ion-button,
@@ -467,7 +506,7 @@ ion-searchbar {
   hyphens: auto;
 }
 
-ion-menu-button{
+ion-menu-button {
   padding-top: 4px;
 }
 
@@ -501,29 +540,29 @@ input {
 .logoContainer {
   margin: 30px;
 }
-.logoImg{
+.logoImg {
   max-height: 100px;
 }
-.logoTxt{
+.logoTxt {
   max-height: 50px;
 }
-.logoNameTxt{
+.logoNameTxt {
   margin: auto;
   color: $textColorDark;
 }
-.logoTextDiv{
+.logoTextDiv {
   display: flex;
   align-items: baseline;
   justify-content: center;
 }
 
 .toast-normal {
-
   --background: var(--ion-color-dark) !important;
   --color: white !important;
   --button-color: var(--ion-color-light-tint) !important;
 
-  .toast-container, .toast-message {
+  .toast-container,
+  .toast-message {
     background: var(--ion-color-dark) !important;
     color: $textColor !important;
   }
@@ -534,16 +573,15 @@ input {
     color: $themeColor;
     font-size: 12px !important;
   }
-
 }
 
 .toast-error {
-
   --background: var(--ion-color-danger) !important;
   --color: white !important;
   --button-color: var(--ion-color-light-tint) !important;
 
-  .toast-container, .toast-message {
+  .toast-container,
+  .toast-message {
     background: $themeColor2 !important;
     color: $textColor !important;
   }
@@ -554,16 +592,15 @@ input {
     color: $translucentWhite;
     font-size: 12px !important;
   }
-
 }
 
 .toast-warning {
-
   --background: var(--ion-color-warning) !important;
   --color: var(--ion-color-dark) !important;
   --button-color: var(--ion-color-medium) !important;
 
-  .toast-container, .toast-message {
+  .toast-container,
+  .toast-message {
     background: $themeColor4;
     color: $textColor;
   }
@@ -577,12 +614,12 @@ input {
 }
 
 .toast-success {
-
   --background: var(--ion-color-success) !important;
   --color: white !important;
   --button-color: var(--ion-color-light-tint) !important;
 
-  .toast-container, .toast-message {
+  .toast-container,
+  .toast-message {
     background: seagreen;
     color: $textColor;
   }
@@ -604,7 +641,6 @@ input {
   align-items: center;
   justify-content: center;
 
-
   --background: var(--ion-color-success) !important;
   --color: white !important;
 }
@@ -620,7 +656,6 @@ input {
 
   --background: var(--ion-color-warning) !important;
   --color: var(--ion-color-dark) !important;
-
 }
 
 .status-error {
@@ -692,7 +727,7 @@ input {
     font-size: 14px;
   }
 
-  .bold{
+  .bold {
     font-weight: bold;
   }
   .xxx-large-text {
@@ -732,10 +767,10 @@ input {
   &.warn {
     color: $themeColor4 !important;
   }
-  &.primary{
+  &.primary {
     color: $themeColorDark !important;
   }
-  &.secondary{
+  &.secondary {
     color: $themeColor !important;
   }
 
@@ -765,68 +800,67 @@ input {
   .cell-round-label {
     margin: auto;
   }
-
 }
 
-.cell-margin-auto{
+.cell-margin-auto {
   margin: auto;
 }
-.cell-margin-sm{
+.cell-margin-sm {
   margin: 2px;
 }
-.cell-margin-top-sm{
+.cell-margin-top-sm {
   margin-top: 2px;
 }
-.cell-margin-bottom-sm{
+.cell-margin-bottom-sm {
   margin-bottom: 2px;
 }
-.cell-margin-md{
+.cell-margin-md {
   margin: 4px;
 }
-.cell-margin-top-md{
+.cell-margin-top-md {
   margin-top: 4px;
 }
-.cell-margin-bottom-md{
+.cell-margin-bottom-md {
   margin-bottom: 4px;
 }
-.cell-margin-2x{
+.cell-margin-2x {
   margin: 8px;
 }
-.cell-margin-3x{
+.cell-margin-3x {
   margin: 12px;
 }
-.cell-margin-4x{
+.cell-margin-4x {
   margin: 16px;
 }
 
-.cell-padding-auto{
+.cell-padding-auto {
   padding: auto;
 }
-.cell-padding-sm{
+.cell-padding-sm {
   padding: 2px;
 }
-.cell-padding-md{
+.cell-padding-md {
   padding: 4px;
 }
-.cell-padding-2x{
+.cell-padding-2x {
   padding: 8px;
 }
-.cell-padding-3x{
+.cell-padding-3x {
   padding: 12px;
 }
-.cell-padding-4x{
+.cell-padding-4x {
   padding: 16px;
 }
-.cell-padding-5x{
+.cell-padding-5x {
   padding: 20px;
 }
-.cell-padding-6x{
+.cell-padding-6x {
   padding: 24px;
 }
-.cell-padding-7x{
+.cell-padding-7x {
   padding: 28px;
 }
-.cell-padding-8x{
+.cell-padding-8x {
   padding: 32px;
 }
 
@@ -834,7 +868,7 @@ input {
   padding: {
     left: 10px;
     right: 10px;
-  };
+  }
 
   white-space: normal;
   word-wrap: break-word;
@@ -870,70 +904,69 @@ input {
   text-align: end !important;
 }
 
-
 /*Colors*/
-.color-light{
+.color-light {
   color: $textColor !important;
   --color: var(--ion-color-light) !important;
 }
 .color-gray {
-  color: $shadowColor!important;
+  color: $shadowColor !important;
   --color: var(--ion-color-medium) !important;
 }
-.color-dark{
+.color-dark {
   color: $textColorDarker !important;
   --color: var(--ion-color-dark) !important;
 }
-.color-primary{
+.color-primary {
   color: $themeColorDark !important;
   --color: var(--ion-color-primary) !important;
 }
-.color-primary-light{
-  color: $themeColorLight!important;
+.color-primary-light {
+  color: $themeColorLight !important;
   --color: var(--ion-color-light) !important;
 }
-.color-secondary{
-  color: $themeColor!important;
+.color-secondary {
+  color: $themeColor !important;
   --color: var(--ion-color-secondary) !important;
 }
-.color-warning{
+.color-warning {
   color: $themeColor4 !important;
   --color: var(--ion-color-warning) !important;
 }
-.color-danger{
-  color: $themeColor2!important;
+.color-danger {
+  color: $themeColor2 !important;
   --color: var(--ion-color-danger) !important;
 }
-.color-normal{
-  color: $themeColor5!important;
+.color-normal {
+  color: $themeColor5 !important;
   --color: var(--ion-color-normal) !important;
 }
 .color-ok {
-  color: seagreen!important;
+  color: seagreen !important;
   --color: var(--ion-color-success) !important;
 }
-.color-light-gray{
+.color-light-gray {
   color: #ebebeb !important;
   --color: #ebebeb !important;
 }
 
-.background-primary{
+.background-primary {
   background: $themeColorDark !important;
   --background: var(--ion-color-primary) !important;
 }
-.background-secondary{
+.background-secondary {
   background: $themeColor !important;
   --background: var(--ion-color-secondary) !important;
 }
-.background-warning{
+.background-warning {
   background: $themeColor4 !important;
   --background: var(--ion-color-warning) !important;
 }
-.background-danger{
+.background-danger {
   background: $themeColor2 !important;
   --background: var(--ion-color-danger) !important;
 }
-.background-normal{
+.background-normal {
   background: $themeColor5 !important;
   --background: var(--ion-color-normal) !important;
 }
@@ -941,19 +974,19 @@ input {
   background: seagreen !important;
   --background: var(--ion-color-success) !important;
 }
-.background-light{
+.background-light {
   background: $textColor !important;
   --background: var(--ion-color-light) !important;
 }
-.background-light-gray{
+.background-light-gray {
   background: #ebebeb !important;
   --background: #ebebeb !important;
 }
-.background-gray{
+.background-gray {
   background: $shadowColor !important;
   --background: var(--ion-color-medium) !important;
 }
-.background-dark{
+.background-dark {
   background: $textColorDarker !important;
   --background: var(--ion-color-dark) !important;
 }
@@ -985,10 +1018,10 @@ input {
   border: none !important;
   box-shadow: none !important;
   --box-shadow: none !important;
-  --background-activated: opacity(.6) !important;
+  --background-activated: opacity(0.6) !important;
 }
 
-.img{
+.img {
   width: auto;
   height: auto;
   background: white;
@@ -999,63 +1032,63 @@ input {
   justify-content: center;
   margin: auto;
 
-  &.small{
+  &.small {
     max-height: 25px !important;
-    img{
+    img {
       max-height: 25px !important;
     }
   }
 
-  &.thumbnail{
+  &.thumbnail {
     max-height: 40px !important;
-    :host{
+    :host {
       max-height: 40px !important;
     }
-    img{
+    img {
       max-height: 40px !important;
     }
   }
 
-  &.large{
+  &.large {
     max-height: 80px !important;
   }
 
-  &.x-large{
+  &.x-large {
     max-height: 100px !important;
   }
 
-  &.xx-large{
+  &.xx-large {
     max-height: 120px !important;
   }
 
-  &.xxx-large{
+  &.xxx-large {
     max-height: 180px !important;
   }
 
-  &.fluid{
+  &.fluid {
     width: auto !important;
     height: auto !important;
     max-height: 200px;
   }
 
-  &.circular{
-    width:50px !important;
-    height:50px !important;
+  &.circular {
+    width: 50px !important;
+    height: 50px !important;
     -webkit-border-radius: 50%;
     border-radius: 50%;
     padding: 5px;
 
-    &.small{
+    &.small {
       width: 40px !important;
       height: 40px !important;
     }
 
-    &.thumbnail{
+    &.thumbnail {
       width: 100px !important;
       height: 100px !important;
     }
 
-    &.large{
+    &.large {
       width: 150px !important;
       height: 150px !important;
     }
@@ -1070,7 +1103,6 @@ input {
   background: white;
 
   ion-img {
-
     width: 100px;
     height: 100px;
     background: white;
@@ -1080,10 +1112,8 @@ input {
     align-items: center;
     justify-content: center;
     margin: auto;
-
   }
   > img {
-
     width: 100px;
     height: 100px;
     background: white;
@@ -1093,11 +1123,9 @@ input {
     align-items: center;
     justify-content: center;
     margin: auto;
-
   }
 
   ion-label {
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1105,7 +1133,7 @@ input {
     color: $themeColorLight;
   }
 }
-.cell_chart{
+.cell_chart {
   height: auto;
   width: auto;
 
@@ -1128,17 +1156,17 @@ input {
   top: 0;
   left: 0;
   pointer-events: none;
-  background: radial-gradient(circle, #000 10%, transparent 10.01%) no-repeat 50%;
+  background: radial-gradient(circle, #000 10%, transparent 10.01%) no-repeat
+    50%;
   transform: scale(10, 10);
   opacity: 0;
-  transition: transform .5s, opacity 1s;
+  transition: transform 0.5s, opacity 1s;
 }
 .ripple:active:after {
   transform: scale(0, 0);
-  opacity: .2;
+  opacity: 0.2;
   transition: 0s;
 }
-
 
 input.fileInput {
   width: 0.1px;
@@ -1161,11 +1189,11 @@ label.fileInputLabel {
     bottom: 5px !important;
     left: 10px !important;
     right: 10px !important;
-  };
-  ion-icon{
+  }
+  ion-icon {
     margin: {
       right: 8px !important;
-    };
+    }
   }
 }
 
@@ -1180,7 +1208,7 @@ label.fileInputLabel {
   border-radius: 3px;
 }
 
-.top-banner{
+.top-banner {
   top: 30px;
 }
 
