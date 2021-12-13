@@ -33,7 +33,15 @@ App for Wecari Partners
 - - Install Ionic. Visit https://ionicframework.com/docs/intro/cli
 - - Install NPM Packages. Run `npm install`
 - Add environment variables. 
-- - Go to `application\environments`
+- - Go to `application\environments` directory
 - - Copy `env.example.json` to `env.prod.json`
 - - Add environment variables in `env.prod.json`
-- Run `ionic serve --port=<PORT_NUMBER>` for a dev server. 
+### Build for Web
+- Run `ionic build --prod --optimizejs --minifyjs --minifycss --aot` to build for production. 
+- Upload build files in `www` directory to production environment
+### Build for Android
+- Run `ionic cordova build android --prod --optimizejs --minifyjs --minifycss --aot --release` to build for production. 
+- See https://ionicframework.com/docs/deployment/play-store
+### Build for IOS
+- Run `ionic cordova build ios --prod --optimizejs --minifyjs --minifycss --aot --release` to build for production. 
+- See https://ionicframework.com/docs/deployment/app-store
