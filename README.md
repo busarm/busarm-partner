@@ -23,7 +23,8 @@ App for Wecari Partners
 - - Install NPM Packages. Run `npm install`
 - Add environment variables. 
 - - Go to `application\environments`
-- - Add environment variables in `environment.ts`
+- - Copy `env.example.json` to `env.json`
+- - Add environment variables in `env.json`
 - Run `ionic serve --port=<PORT_NUMBER>` for a dev server. 
 
 
@@ -31,5 +32,8 @@ App for Wecari Partners
 - Install dependencies
 - - Install Ionic. Visit https://ionicframework.com/docs/intro/cli
 - - Install NPM Packages. Run `npm install`
-- Add environment variables. See `application\environments`
+- Add environment variables. 
+- - Go to `application\environments`
+- - Copy `env.example.json` to `env.prod.json`
+- - Add environment variables in `env.prod.json`
 - Run `ionic serve --port=<PORT_NUMBER>` for a dev server. 
