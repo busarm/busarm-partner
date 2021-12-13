@@ -1,18 +1,19 @@
-import {Component} from '@angular/core';
-import {AlertController, ModalController} from "@ionic/angular";
-import {Network} from "@ionic-native/network/ngx";
-import {Api} from "../../libs/Api";
-import {Strings} from "../../resources";
-import {ToastType, Utils} from "../../libs/Utils";
+import { Component } from '@angular/core';
+import { AlertController, ModalController } from "@ionic/angular";
+import { Network } from "@ionic-native/network/ngx";
+import { Api } from "../../helpers/Api";
+import { Strings } from "../../resources";
+import { ToastType, Utils } from "../../helpers/Utils";
 import {
     BusType,
     TicketType,
     TripInfo,
     TripStatus
 } from "../../models/ApiResponse";
-import {PageController} from "../page-controller";
-import {ViewTripPage} from "./view-trip/view-trip.page";
-import {AddTripPage} from "./add-trip/add-trip.page";
+import { PageController } from "../page-controller";
+import { ViewTripPage } from "./view-trip/view-trip.page";
+import { AddTripPage } from "./add-trip/add-trip.page";
+import { DatePickerType, SelectDatePage } from '../select-date/select-date.page';
 import { Events } from '../../services/Events';
 
 @Component({
@@ -20,7 +21,7 @@ import { Events } from '../../services/Events';
     templateUrl: './trip.page.html',
     styleUrls: ['./trip.page.scss'],
 })
-export class TripPage extends PageController{
+export class TripPage extends PageController {
 
     // Current
     currentDate: Date = new Date();
@@ -44,9 +45,9 @@ export class TripPage extends PageController{
     ticketTypes: TicketType[] = null;
 
     constructor(public alertCtrl: AlertController,
-                public modalCtrl: ModalController,
-                public events: Events,
-                public network: Network) {
+        public modalCtrl: ModalController,
+        public events: Events,
+        public network: Network) {
         super();
     }
 
@@ -75,23 +76,23 @@ export class TripPage extends PageController{
                 this.selectedCountry = this.session.country.country_code;
             }
         });
-        
+
         /*Trips updated event*/
         this.events.tripsUpdated.subscribe(async (updated) => {
             await super.ngOnInit();
             if (updated) {
                 this.loadTripsView();
             }
-        }); 
-    } 
+        });
+    }
 
-    public ngOnDestroy(){
+    public ngOnDestroy() {
         this.trips = null;
         super.ngOnDestroy();
     }
 
-    public async ionViewDidEnter(){
-        if (!this.trips){
+    public async ionViewDidEnter() {
+        if (!this.trips) {
             this.selectedDate = this.selectedDate || this.currentDate.toString();
             this.loadTripsView();
         }
@@ -99,7 +100,7 @@ export class TripPage extends PageController{
 
     /**Search input event
      * */
-    public onInput(event,isSearch?) {
+    public onInput(event, isSearch?) {
         if (event.isTrusted) {
             this.searchText = event.target.value;
             if (this.assertAvailable(this.searchText) && this.searchText.length > 1) {
@@ -112,7 +113,7 @@ export class TripPage extends PageController{
                             trip.pickup_city.match(reg) ||
                             trip.dropoff_loc_name.match(reg) ||
                             trip.dropoff_city.match(reg) ||
-                            trip.agent_email.match(reg) || 
+                            trip.agent_email.match(reg) ||
                             (trip.bus && trip.bus.plate_num.match(reg))) {
 
                             this.currentTrips.push(trip)
@@ -126,7 +127,8 @@ export class TripPage extends PageController{
         }
     }
 
-    /**Return Date string for selected date
+    /**
+     * Return Date string for date
      * */
     public getDateString(selectedDate: Date) {
         if (Utils.assertAvailable(selectedDate)) {
@@ -138,12 +140,42 @@ export class TripPage extends PageController{
         return null;
     }
 
+    /**
+     * Return Date string for selected date
+     * */
+    public getDisplayDateString() {
+        return Utils.beginningOfMonth(this.selectedDate, this.session?.country?.tz_text).toDateString() + " " + this.strings.getString('to_txt').toLocaleLowerCase() + " " + Utils.endOfMonth(this.selectedDate, this.session?.country?.tz_text).toDateString();
+    }
+
     /**Reset Search bar*/
-    public onClear(event) {
+    public onClear(event: any) {
         if (event.isTrusted) {
             this.searchText = null;
             this.currentTrips = this.trips;
         }
+    }
+
+    /**Launch select date model*/
+    async showSelectDate() {
+        let chooseModal = await this.modalCtrl.create({
+            component: SelectDatePage,
+            cssClass: 'date-modal',
+            componentProps: {
+                date: this.selectedDate
+                    ? new Date(this.selectedDate)
+                    : new Date(),
+                minDate: this.minDate,
+                maxDate: this.maxDate,
+                type: DatePickerType.MonthYear
+            }
+        });
+        chooseModal.onDidDismiss().then(data => {
+            if (data.data) {
+                this.selectedDate = data.data;
+                this.loadTripsView();
+            }
+        });
+        return await chooseModal.present();
     }
 
     /**Launch add trip page*/
@@ -184,7 +216,7 @@ export class TripPage extends PageController{
     public clearDate() {
         this.selectedDate = null
     }
-    
+
     /**Refresh View*/
     public refreshTripsView(event?) {
         this.loadTripsView(() => {
@@ -198,7 +230,7 @@ export class TripPage extends PageController{
     public loadTripsView(completed?: () => any) {
 
         /*Get Trip status*/
-        Api.getTripStatusList((status, result) => {
+        Api.getNewTripStatusList((status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
                     this.statusList = result.data;
@@ -225,7 +257,7 @@ export class TripPage extends PageController{
         });
 
         /*Get trips*/
-        Api.getTrips(this.selectedDate?this.getDateString(new Date(this.selectedDate)):'', (status, result) => {
+        Api.getTrips(this.selectedDate ? this.getDateString(Utils.beginningOfMonth(this.selectedDate, this.session?.country?.tz_text)) : '', (status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
                     this.searchText = null;

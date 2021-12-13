@@ -2,8 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {PageController} from "../../page-controller";
 import {BusInfo, BusType, Location, SeatsInfo, TicketInfo, TicketType, TripInfo, TripStatus} from "../../../models/ApiResponse";
 import {ModalController} from "@ionic/angular";
-import {ToastType, Utils} from "../../../libs/Utils";
-import {Api} from "../../../libs/Api";
+import {ToastType, Utils} from "../../../helpers/Utils";
+import {Api} from "../../../helpers/Api";
 import {Strings} from "../../../resources";
 import {AddTicketPage} from "../add-ticket/add-ticket.page";
 import {AddBusPage} from "../../bus/add-bus/add-bus.page";
@@ -58,7 +58,7 @@ export class ViewTripPage extends PageController {
     public async loadTripView(refresh: boolean = true, completed?: () => any) {
 
         /*Get Trip status*/
-        Api.getAllStatusList((status, result) => {
+        Api.getAllTripStatusList((status, result) => {
             if (status) {
                 if (this.assertAvailable(result)) {
                     this.statusList = result.data;

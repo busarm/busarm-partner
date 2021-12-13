@@ -3,8 +3,8 @@ import {ModalController, NavParams, Platform} from "@ionic/angular";
 import {Country, LocationRequest, LocationType} from "../../../models/ApiResponse";
 import {PageController} from "../../page-controller";
 import {SearchPlacePage} from "../../search-place/search-place.page";
-import {ToastType, Utils} from "../../../libs/Utils";
-import {Api} from "../../../libs/Api";
+import {ToastType, Utils} from "../../../helpers/Utils";
+import {Api} from "../../../helpers/Api";
 import {Strings} from "../../../resources";
 
 declare var google: any;

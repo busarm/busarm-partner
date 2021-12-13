@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PageController } from '../../../../page/page-controller';
-import { ToastType, Utils } from '../../../../libs/Utils';
-import { OauthStorage } from '../../../../libs/Oauth';
-import { Urls } from '../../../../libs/Urls';
+import { ToastType, Utils } from '../../../../helpers/Utils';
+import { OauthStorage } from '../../../../helpers/Oauth';
+import { Urls } from '../../../../helpers/Urls';
 import { Strings } from '../../.../../../../resources';
  
 @Component({

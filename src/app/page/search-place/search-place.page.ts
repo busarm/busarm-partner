@@ -1,8 +1,8 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
-import {PageController} from "../page-controller";
-import {ModalController, NavParams} from "@ionic/angular";
-import {Utils} from "../../libs/Utils";
-import {Country} from "../../models/ApiResponse";
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { PageController } from "../page-controller";
+import { ModalController } from "@ionic/angular";
+import { Utils } from "../../helpers/Utils";
+import { Country } from "../../models/ApiResponse";
 
 declare var google: any;
 
@@ -26,26 +26,25 @@ export class SearchPlacePage extends PageController {
 
     geocoder = null;
     map = null;
-    marker:any = false;
+    marker: any = false;
     bounds = null;
     isLoading = false;
 
-    constructor(private modalCtrl: ModalController,
-                public navParams: NavParams) {
+    constructor(private modalCtrl: ModalController) {
         super();
     }
 
     public async ngOnInit() {
         await super.ngOnInit();
-        if (google && typeof google !== 'undefined') {
+        if (typeof google !== 'undefined' && google) {
             this.googleAutoComplete = new google.maps.places.AutocompleteService();
             this.geocoder = new google.maps.Geocoder();
             this.initMap();
         }
         else {
             //Load Google Api
-            if (this.session && this.session.configs && this.session.configs.google_api_key){
-                Utils.loadGoogleApi(this.session.configs.google_api_key, () => {   
+            if (this.session && this.session.configs && this.session.configs.google_api_key) {
+                Utils.loadGoogleApi(this.session.configs.google_api_key, () => {
                     this.googleAutoComplete = new google.maps.places.AutocompleteService();
                     this.geocoder = new google.maps.Geocoder();
                     this.initMap();
@@ -53,17 +52,16 @@ export class SearchPlacePage extends PageController {
             }
         }
     }
-    public ionViewDidEnter(){}
 
     /**Initialize Map*/
     private initMap() {
 
         this.bounds = new google.maps.LatLng(parseFloat(this.country.lat), parseFloat(this.country.lng));
-        this.map = new google.maps.Map(this.mapElement.nativeElement, {center: this.bounds, zoom: 7});
+        this.map = new google.maps.Map(this.mapElement.nativeElement, { center: this.bounds, zoom: 7 });
 
 
         //Listen for any clicks on the map.
-        google.maps.event.addListener(this.map, 'click', (event) => {
+        google.maps.event.addListener(this.map, 'click', (event: { latLng: any; }) => {
 
             //Get the location that the user clicked.
             let clickedLocation = event.latLng;
@@ -72,14 +70,14 @@ export class SearchPlacePage extends PageController {
             if (this.marker === false) {
 
                 //Create the marker.
-               this.marker = new google.maps.Marker({
+                this.marker = new google.maps.Marker({
                     position: clickedLocation,
                     map: this.map,
                     draggable: true //make it draggable
                 });
 
                 //Listen for drag events!
-                google.maps.event.addListener(this.marker, 'dragend', (event) => {
+                google.maps.event.addListener(this.marker, 'dragend', (event: any) => {
                     this.searchPlace(this.marker.getPosition())
                 });
 
@@ -96,16 +94,16 @@ export class SearchPlacePage extends PageController {
 
     /**Search input event
      * */
-    public onInput(event) {
-        if (event.isTrusted) {
+    public onInput(event: { isTrusted: any; target: { value: string; }; }) {
+        if (event.isTrusted && this.googleAutoComplete) {
             this.searchText = event.target.value;
             this.updateSearchResults(event);
         }
     }
 
     /**Reset Search bar*/
-    public onClear(event) {
-        if (event.isTrusted) {
+    public onClear(event: { isTrusted: any; }) {
+        if (event.isTrusted && this.map) {
             this.searchText = null;
             this.autoCompleteItems = null;
             this.map.setCenter(this.bounds);
@@ -114,7 +112,7 @@ export class SearchPlacePage extends PageController {
     }
 
     /**Obtain place*/
-    updateSearchResults(event) {
+    updateSearchResults(event: any) {
         if (!Utils.assertAvailable(this.searchText) || this.searchText.length < 2) {
             this.onClear(event);
             return;
@@ -133,11 +131,11 @@ export class SearchPlacePage extends PageController {
                 "geocode",
                 "establishment"
             ]
-        }, (predictions, status) => {
+        }, (predictions: any[], status: any) => {
             this.autoCompleteItems = [];
             if (status == google.maps.places.PlacesServiceStatus.OK) {
                 if (Utils.assertAvailable(predictions)) {
-                    predictions.forEach((prediction) => {
+                    predictions.forEach((prediction: { place_id: any; structured_formatting: { main_text: any; secondary_text: any; }; }) => {
                         this.autoCompleteItems.push({
                             placeId: prediction.place_id,
                             name: prediction.structured_formatting.main_text,
@@ -152,7 +150,7 @@ export class SearchPlacePage extends PageController {
 
     /**Get Place Details*/
     getPlaceDetails(placeId: string) {
-        if (!this.isLoading){
+        if (!this.isLoading) {
             this.isLoading = true;
             this.selectedPlace = null;
             this.searchText = null;
@@ -166,7 +164,7 @@ export class SearchPlacePage extends PageController {
                     'geometry',
                     'address_components',
                 ]
-            }, (place, status) => {
+            }, (place: { geometry: { location: any; }; }, status: any) => {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
                     this.selectedPlace = place;
                     this.map.setCenter(place.geometry.location);
@@ -177,7 +175,7 @@ export class SearchPlacePage extends PageController {
                             map: this.map,
                             draggable: true //make it draggable
                         });
-                        google.maps.event.addListener(this.marker, 'dragend', (event) => {
+                        google.maps.event.addListener(this.marker, 'dragend', (event: any) => {
                             this.searchPlace(this.marker.getPosition())
                         });
                     } else {
@@ -191,18 +189,18 @@ export class SearchPlacePage extends PageController {
     }
 
     /**Get Place Details*/
-    searchPlace(latLang){
-        if (!this.isLoading){
+    searchPlace(latLang: any) {
+        if (!this.isLoading) {
             this.isLoading = true;
             this.selectedPlace = null;
             this.geocoder.geocode({
                 location: latLang
-            }, (results, status) => {
+            }, (results: { place_id: string; }[], status: any) => {
                 this.isLoading = false;
                 if (status == google.maps.GeocoderStatus.OK) {
                     this.getPlaceDetails(results[0].place_id);
                 }
-                else{
+                else {
                     this.isLoading = false;
                 }
             })
@@ -210,7 +208,7 @@ export class SearchPlacePage extends PageController {
     }
 
     /**Close Modal*/
-    dismiss(){
+    dismiss() {
         this.modalCtrl.dismiss(this.selectedPlace)
     }
 }

@@ -1,5 +1,5 @@
 <ion-app>        
-    <div *ngIf="showEnvironmentBanner" style="height:30px; background:black; padding: 4px; text-align:center;" align="center">
+    <div *ngIf="showEnvironmentBanner" style="height:30px; background:black; padding: 4px; text-align:center;">
         <span style="color: yellow; font-size:12px;">{{environment}} - <a target="_blank" style="color: yellowgreen;" href="{{liveUrl}}">{{strings.getString('go_to_live_txt')}}</a></span>
     </div> 
     <div #loaderDiv [class.top-banner]="showEnvironmentBanner" [hidden]="loaded==true" class="app-loader">

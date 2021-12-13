@@ -1,17 +1,17 @@
 import {Component} from '@angular/core';
 import {ActionSheetController, Platform} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
-import {ToastType, Utils} from "../../libs/Utils";
+import {ToastType, Utils} from "../../helpers/Utils";
 import {PageController} from "../page-controller";
-import {SessionManager} from "../../libs/SessionManager";
-import {Api} from "../../libs/Api";
+import {SessionManager} from "../../helpers/SessionManager";
+import {Api} from "../../helpers/Api";
 import {Camera, CameraOptions, PictureSourceType} from "@ionic-native/camera/ngx";
 import {File, FileEntry} from "@ionic-native/file/ngx";
 import {Strings} from "../../resources";
 import {DestinationType} from "@ionic-native/camera";
 import {InAppBrowser} from "@ionic-native/in-app-browser/ngx";
-import {Urls} from "../../libs/Urls";
-import {OauthStorage} from "../../libs/Oauth";
+import {Urls} from "../../helpers/Urls";
+import {OauthStorage} from "../../helpers/Oauth";
 
 @Component({
     selector: 'app-account',

@@ -37,8 +37,6 @@
     top: 0;
     bottom: 0;
 
-    background: white;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,7 +137,30 @@ ion-content .padding {
   --padding-start: 10px !important;
   --padding-end: 10px !important;
 }
+
 ion-modal {
+  &.date-modal {
+    --max-width: 300px !important;
+    --max-height: 550px !important;
+    --box-shadow: none;
+    --backdrop-opacity: 0.4 !important;
+    --border-radius: 4px;
+
+    &::part(content) {
+      margin: auto;
+      --background: transparent;
+    }
+
+    ion-content {
+      &::part(background) {
+        --background: transparent;
+      }
+      &::part(scroll) {
+        --overflow: hidden;
+      }
+    }
+  }
+
   ion-content .padding {
     --padding-top: 20px !important;
     --padding-bottom: 20px !important;
@@ -1100,12 +1121,10 @@ input {
   height: auto;
   width: 100%;
   padding: 20px;
-  background: white;
 
   ion-img {
     width: 100px;
     height: 100px;
-    background: white;
     object-fit: contain;
 
     display: flex;
@@ -1116,7 +1135,6 @@ input {
   > img {
     width: 100px;
     height: 100px;
-    background: white;
     object-fit: contain;
 
     display: flex;

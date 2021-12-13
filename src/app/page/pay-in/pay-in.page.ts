@@ -1,9 +1,9 @@
 import {Component, Input} from '@angular/core';
 import {PayInTransaction} from "../../models/ApiResponse";
-import {ToastType} from "../../libs/Utils";
-import {Api} from "../../libs/Api";
+import {ToastType} from "../../helpers/Utils";
+import {Api} from "../../helpers/Api";
 import {PageController} from "../page-controller";
-import { Urls } from '../../libs/Urls';
+import { Urls } from '../../helpers/Urls';
 
 @Component({
     selector: 'app-pay-in',

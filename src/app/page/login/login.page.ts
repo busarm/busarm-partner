@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 
 import {Strings} from '../../resources';
-import {ApiResponseType} from '../../libs/Api';
+import {ApiResponseType} from '../../helpers/Api';
 import {PageController} from '../page-controller';
-import {OauthGrantType} from '../../libs/Oauth';
-import {ToastType, Utils} from '../../libs/Utils';
-import {SessionManager} from '../../libs/SessionManager';
-import { Urls } from '../../libs/Urls';
+import {OauthGrantType} from '../../helpers/Oauth';
+import {ToastType, Utils} from '../../helpers/Utils';
+import {SessionManager} from '../../helpers/SessionManager';
+import { Urls } from '../../helpers/Urls';
 import { CONFIGS} from '../../../environments/environment';
 import { Platform } from '@ionic/angular';
 

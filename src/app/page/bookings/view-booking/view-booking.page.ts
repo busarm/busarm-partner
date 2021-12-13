@@ -3,9 +3,9 @@ import {BookingInfo, SeatsInfo, TripInfo} from "../../../models/ApiResponse";
 import {PageController} from "../../page-controller";
 import {ModalController} from "@ionic/angular";
 import {ViewTripPage} from "../../trip/view-trip/view-trip.page";
-import {ToastType} from "../../../libs/Utils";
+import {ToastType} from "../../../helpers/Utils";
 import {Strings} from "../../../resources";
-import {Api} from "../../../libs/Api"; 
+import {Api} from "../../../helpers/Api"; 
 import { Events } from '../../../services/Events';
 
 @Component({

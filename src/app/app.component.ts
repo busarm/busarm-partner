@@ -24,13 +24,13 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 
 
 import { NetworkProvider } from './services/NetworkProvider';
-import { SessionManager } from './libs/SessionManager';
-import { ToastType, Utils } from './libs/Utils';
-import { Api, ApiResponseType } from './libs/Api';
-import { Urls } from './libs/Urls';
+import { SessionManager } from './helpers/SessionManager';
+import { ToastType, Utils } from './helpers/Utils';
+import { Api, ApiResponseType } from './helpers/Api';
+import { Urls } from './helpers/Urls';
 import { Langs, Strings } from './resources';
-import { Oauth, OauthGrantType, OauthUtils } from './libs/Oauth';
-import { CIPHER } from './libs/CIPHER';
+import { Oauth, OauthGrantType, OauthUtils } from './helpers/Oauth';
+import { CIPHER } from './helpers/CIPHER';
 import { ENVIRONMENT, CONFIGS } from '../environments/environment';
 import { Events } from './services/Events';
 import { NavigationOptions } from '@ionic/angular/providers/nav-controller';

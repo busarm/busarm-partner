@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 import {PageController} from "../../page-controller";
 import {ModalController} from "@ionic/angular";
 import {Country, TicketInfo, TicketType} from "../../../models/ApiResponse";
-import {ToastType, Utils} from "../../../libs/Utils";
+import {ToastType, Utils} from "../../../helpers/Utils";
 
 @Component({
     selector: 'app-add-ticket',

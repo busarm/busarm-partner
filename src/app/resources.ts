@@ -6,7 +6,7 @@
  * based on their selection and also
  * to avoid duplicates
  * */
-import {Utils} from "./libs/Utils";
+import {Utils} from "./helpers/Utils";
 
 /*----------DEFINE STRING KEYS---------------*/
 
@@ -288,7 +288,7 @@ const English: String = {
     booking_fee_txt: "Booking Fee",
     verify_txt: "Verify",
     scan_txt: "Scan",
-    trip_search_hint: "Search name, location, city, agent, bus etc.",
+    trip_search_hint: "Search name, city, agent, bus etc.",
     no_trip_txt: "No Trip Available",
     booked_txt: "Booked",
     locked_txt: "Locked",
@@ -408,7 +408,7 @@ const English: String = {
     delete_location_title_txt: "Delete Location",
     delete_location_msg_txt: "Are you sure you want to delete this location?",
     my_locations_txt: "My Locations",
-    my_location_search_hint: "Search address or city or province",
+    my_location_search_hint: "Search address or city",
     select_location_txt: "Select Location",
     city_txt: "City",
     province_txt: "Province/State/Region",

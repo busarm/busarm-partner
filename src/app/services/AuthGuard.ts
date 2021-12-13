@@ -1,8 +1,8 @@
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from "@angular/router";
 import {Injectable} from "@angular/core";
 import {AppComponent} from "../app.component";
-import { ToastType } from "../libs/Utils";
-import { SessionManager } from "../libs/SessionManager";
+import { ToastType } from "../helpers/Utils";
+import { SessionManager } from "../helpers/SessionManager";
 import { Strings } from "../resources";
 
 @Injectable()

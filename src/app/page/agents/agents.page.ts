@@ -3,8 +3,8 @@ import {ModalController} from "@ionic/angular";
 import {InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import {PageController} from "../page-controller";
 import {UserInfo} from "../../models/ApiResponse";
-import {ToastType} from "../../libs/Utils";
-import {Api} from "../../libs/Api";
+import {ToastType} from "../../helpers/Utils";
+import {Api} from "../../helpers/Api";
 import {Strings} from "../../resources";
 import {AddAgentPage} from "./add-agent/add-agent.page";
 

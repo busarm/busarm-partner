@@ -2,9 +2,9 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import { Params } from "@angular/router";
 import { MD5 } from "crypto-js";
 import {AppComponent} from "../app.component";
-import {ToastType, Utils} from "../libs/Utils";
+import {ToastType, Utils} from "../helpers/Utils";
 import {Assets, Strings} from "../resources";
-import {SessionManager} from "../libs/SessionManager";
+import {SessionManager} from "../helpers/SessionManager";
 import {UserInfo, Session} from "../models/ApiResponse";
 import { CONFIGS } from "../../environments/environment";
 

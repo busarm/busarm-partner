@@ -3,7 +3,7 @@ import { ModalController, NavController } from "@ionic/angular";
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { BarcodeFormat } from '@zxing/library';
 import { PageController } from "../../page-controller";
-import { ToastType } from "../../../libs/Utils";
+import { ToastType } from "../../../helpers/Utils";
 import { Events } from '../../../services/Events';
 
 @Component({

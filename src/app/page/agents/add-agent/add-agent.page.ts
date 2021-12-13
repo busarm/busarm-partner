@@ -2,8 +2,8 @@ import {Component, Input} from '@angular/core';
 import {PageController} from "../../page-controller";
 import {ModalController} from "@ionic/angular";
 import {UserInfo} from "../../../models/ApiResponse";
-import {ToastType} from "../../../libs/Utils";
-import {Api} from "../../../libs/Api";
+import {ToastType} from "../../../helpers/Utils";
+import {Api} from "../../../helpers/Api";
 
 @Component({
     selector: 'app-agent-agent',

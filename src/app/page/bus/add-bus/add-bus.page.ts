@@ -2,8 +2,8 @@ import {Component, Input} from '@angular/core';
 import {PageController} from "../../page-controller";
 import {ModalController} from "@ionic/angular";
 import {BusInfo, BusType} from "../../../models/ApiResponse";
-import {ToastType, Utils} from "../../../libs/Utils";
-import {Api} from "../../../libs/Api";
+import {ToastType, Utils} from "../../../helpers/Utils";
+import {Api} from "../../../helpers/Api";
 
 @Component({
     selector: 'app-add-bus',

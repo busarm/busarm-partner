@@ -2,8 +2,8 @@ import {Component, Input} from '@angular/core';
 import {ModalController} from "@ionic/angular";
 import {PageController} from "../page-controller";
 import {Location, LocationType} from "../../models/ApiResponse";
-import {ToastType, Utils} from "../../libs/Utils";
-import {Api} from "../../libs/Api";
+import {ToastType, Utils} from "../../helpers/Utils";
+import {Api} from "../../helpers/Api";
 import {Strings} from "../../resources";
 import { AddLocationPage } from './add-location/add-location.page';
 

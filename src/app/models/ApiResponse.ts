@@ -91,9 +91,15 @@ export interface Country {
     dial_code?: string;
     lat?: string;
     lng?: string;
-    booking_fee?: string
-    is_active?: string
-    is_default?: string
+    booking_fee?: string;
+    is_active?: string;
+    is_default?: string;
+    tz_text?: string;
+    tz_value?: string;
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    linkedin?: string;
 }
 
 

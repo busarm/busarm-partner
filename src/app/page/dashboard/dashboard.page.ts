@@ -10,8 +10,8 @@ import {
     PayOutTransaction,
     TripInfo
 } from "../../models/ApiResponse";
-import {ToastType, Utils} from "../../libs/Utils";
-import {Api} from "../../libs/Api";
+import {ToastType, Utils} from "../../helpers/Utils";
+import {Api} from "../../helpers/Api";
 import {Strings} from "../../resources";
 import {ViewTripPage} from "../trip/view-trip/view-trip.page";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner/ngx";

@@ -1,0 +1,28 @@
+<!-- <ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{strings.getString('select_date_txt')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content>
+
+  <ion-datetime name="date" 
+    [(ngModel)]="selectedDate"
+    [min]="getDateString(minDate)"
+    [max]="getDateString(maxDate)"
+    [presentation]="type">
+  </ion-datetime>
+  <ion-toolbar color="light">
+    <ion-buttons slot="primary">
+      <ion-button color="primary" (click)="dismiss(true)">{{strings.getString('done_txt')}}</ion-button>
+      <ion-button color="danger" (click)="dismiss()">{{strings.getString('cancel_txt')}}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  
+
+</ion-content>

@@ -9,7 +9,7 @@
                 <h3 class="logoNameTxt">{{strings.getString("partner_txt")}}</h3>
             </div>
         </ion-col>
-        <ion-col size="12" size-lg="7" class="cell cell-flex cell-flex-center cell-padding-6x border-left">
+        <ion-col size="12" size-lg="7" class="cell cell-flex cell-flex-center cell-padding-6x {{!platform.is('mobile') ? 'border-left' : ''}}">
             <form #loginForm="ngForm" (ngSubmit)="login()" autocomplete="off">
                 <div class="cell cell-center">
                     <h1>{{strings.getString("login_txt")}}</h1>

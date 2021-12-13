@@ -2,8 +2,8 @@ import {Component} from '@angular/core';
 import {PageController} from "../page-controller";
 import {MenuController, ModalController, Platform} from "@ionic/angular";
 import {Router, RouterEvent} from "@angular/router";
-import { Api } from '../../libs/Api';
-import { SessionManager } from '../../libs/SessionManager';
+import { Api } from '../../helpers/Api';
+import { SessionManager } from '../../helpers/SessionManager';
 
 @Component({
     selector: 'app-home',

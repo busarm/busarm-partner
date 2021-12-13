@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {AlertController, ModalController} from "@ionic/angular";
 import {Network} from "@ionic-native/network/ngx";
-import {Api} from "../../libs/Api";
+import {Api} from "../../helpers/Api";
 import {Strings} from "../../resources";
-import {ToastType} from "../../libs/Utils";
+import {ToastType} from "../../helpers/Utils";
 import {BusType, BusInfo, TripInfo} from "../../models/ApiResponse";
 import {PageController} from "../page-controller";
 import {ViewBusPage} from "./view-bus/view-bus.page";
