@@ -2,6 +2,11 @@ import {ENV} from "./ENV";
 import * as envConfigs from "./env.json";
 
 export const ENVIRONMENT: ENV = ENV.DEV;
-export const CONFIGS = envConfigs;
+export const CONFIGS = {
+    production: false,
+    app_name: "Wecari Partner",
+    app_version: "1.0.53", 
+    ...envConfigs
+};
 
 
