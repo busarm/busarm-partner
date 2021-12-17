@@ -113,7 +113,7 @@ export class Urls{
         /*Oauth Urls*/
         this.oauthAuthorizeUrl = Urls.oauthBaseUrl + "authorize/request";
         this.oauthVerifyTokenUrl = Urls.oauthBaseUrl + "token/verify";
-        this.oauthTokenUrl = Urls.oauthBaseUrl + "token/get";
+        this.oauthTokenUrl = Urls.oauthBaseUrl + "token/create";
 
 
         /*Api Urls*/
