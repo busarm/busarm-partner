@@ -1,14 +1,13 @@
 /**Use this class to manage
  * all Requests Urls
  * */
-import {ENVIRONMENT} from "../../environments/environment";
-import {ENV} from "../../environments/ENV";
+import { ENVIRONMENT } from "../../environments/environment";
+import { ENV } from "../../environments/ENV";
 
-export class Urls{
-
+export class Urls {
     /*Base Urls*/
-    public static get appUrl():string {
-        switch (ENVIRONMENT){
+    public static get appUrl(): string {
+        switch (ENVIRONMENT) {
             case ENV.PROD:
                 return "https://wecari.com/";
             case ENV.TEST:
@@ -18,8 +17,8 @@ export class Urls{
                 return "http://localhost/";
         }
     }
-    public static get apiBaseUrl():string {
-        switch (ENVIRONMENT){
+    public static get apiBaseUrl(): string {
+        switch (ENVIRONMENT) {
             case ENV.PROD:
                 return "https://api.wecari.com/";
             case ENV.TEST:
@@ -28,9 +27,9 @@ export class Urls{
             default:
                 return "http://localhost:8080/";
         }
-    };
-    public static get oauthBaseUrl():string {
-        switch (ENVIRONMENT){
+    }
+    public static get oauthBaseUrl(): string {
+        switch (ENVIRONMENT) {
             case ENV.PROD:
                 return "https://oauth.wecari.com/";
             case ENV.TEST:
@@ -39,9 +38,9 @@ export class Urls{
             default:
                 return "http://localhost:8000/";
         }
-    };
-    public static baseUrl(env = ENVIRONMENT):string {
-        switch (env){
+    }
+    public static baseUrl(env = ENVIRONMENT): string {
+        switch (env) {
             case ENV.PROD:
                 return "https://partner.wecari.com/";
             case ENV.TEST:
@@ -50,71 +49,69 @@ export class Urls{
             default:
                 return "http://localhost:8100/";
         }
-    };
+    }
 
-    public static pingUrl:string;
-    public static partnerOauthRedirectUrl:string;
-    public static oauthVerifyTokenUrl:string;
-    public static oauthAuthorizeUrl:string;
-    public static oauthTokenUrl:string;
-    public static termsUrl:string;
-    public static privacyUrl:string;
-    public static support:string;
-    public static apiInitialize:string;
-    public static apiLanguage:string;
-    public static apiCountry:string;
-    public static apiLogout:string;
-    public static apiUser:string;
-    public static apiUserToggle:string;
-    public static apiTrip:string;
-    public static apiTrips:string;
-    public static apiBus:string;
-    public static apiBuses:string;
-    public static apiTicket:string;
-    public static apiTicketToggle:string;
-    public static apiTripBus:string;
-    public static apiTripReserve:string;
-    public static apiBusImage:string;
-    public static apiBusShare:string;
-    public static apiGetDashboard:string;
-    public static apiGetBookings:string;
-    public static apiGetBookingInfo:string;
-    public static apiVerifyBooking:string;
-    public static apiGetPartnerBusTypes:string;
-    public static apiGetBusTypes:string;
-    public static apiGetTripStatusList:string;
-    public static apiGetLocationTypes:string;
-    public static apiGetTicketTypes:string;
-    public static apiUpdateTripStatus:string;
-    public static apiUpdateTripBusType:string;
-    public static apiUpdatePartnerLogo:string;
-    public static apiGetAgents:string;
-    public static apiAdmin:string;
-    public static apiVerify:string;
-    public static apiGetPayin:string;
-    public static apiGetPayout:string;
-    public static apiGetBanks:string;
-    public static apiPayInRequest:string;
-    public static apiPayoutRequest:string;
-    public static googleApiUrl:string;
-    public static apiLocation:string;
-    public static apiLocations:string;
+    public static pingUrl: string;
+    public static partnerOauthRedirectUrl: string;
+    public static oauthVerifyTokenUrl: string;
+    public static oauthAuthorizeUrl: string;
+    public static oauthTokenUrl: string;
+    public static termsUrl: string;
+    public static privacyUrl: string;
+    public static support: string;
+    public static apiInitialize: string;
+    public static apiLanguage: string;
+    public static apiCountry: string;
+    public static apiLogout: string;
+    public static apiUser: string;
+    public static apiUserToggle: string;
+    public static apiTrip: string;
+    public static apiTrips: string;
+    public static apiBus: string;
+    public static apiBuses: string;
+    public static apiTicket: string;
+    public static apiTicketToggle: string;
+    public static apiTripBus: string;
+    public static apiTripReserve: string;
+    public static apiBusImage: string;
+    public static apiBusShare: string;
+    public static apiGetDashboard: string;
+    public static apiGetBookings: string;
+    public static apiGetBookingInfo: string;
+    public static apiVerifyBooking: string;
+    public static apiGetPartnerBusTypes: string;
+    public static apiGetBusTypes: string;
+    public static apiGetTripStatusList: string;
+    public static apiGetLocationTypes: string;
+    public static apiGetTicketTypes: string;
+    public static apiUpdateTripStatus: string;
+    public static apiUpdateTripBusType: string;
+    public static apiUpdatePartnerLogo: string;
+    public static apiGetAgents: string;
+    public static apiAdmin: string;
+    public static apiVerify: string;
+    public static apiGetPayin: string;
+    public static apiGetPayout: string;
+    public static apiGetBanks: string;
+    public static apiPayInRequest: string;
+    public static apiPayoutRequest: string;
+    public static googleApiUrl: string;
+    public static apiLocation: string;
+    public static apiLocations: string;
 
     /**Initialize Urls
      * */
-    public static init(){
-
+    public static init() {
         /*Generic Urls*/
         this.support = Urls.appUrl + "support";
         this.termsUrl = Urls.appUrl + "terms";
         this.privacyUrl = Urls.appUrl + "privacy";
-        this.partnerOauthRedirectUrl = Urls.baseUrl() + "hooks/oauth/authorize"
+        this.partnerOauthRedirectUrl = Urls.baseUrl() + "hooks/oauth/authorize";
 
         /*Oauth Urls*/
         this.oauthAuthorizeUrl = Urls.oauthBaseUrl + "authorize/request";
         this.oauthVerifyTokenUrl = Urls.oauthBaseUrl + "token/verify";
         this.oauthTokenUrl = Urls.oauthBaseUrl + "token/request";
-
 
         /*Api Urls*/
         this.pingUrl = Urls.apiBaseUrl + "initialize/ping";
@@ -153,11 +150,12 @@ export class Urls{
         this.apiGetPayout = Urls.apiBaseUrl + "agent/transaction/payout";
         this.apiGetBanks = Urls.apiBaseUrl + "agent/transaction/banks";
         this.apiPayInRequest = Urls.apiBaseUrl + "agent/transaction/payinrequest";
-        this.apiPayoutRequest = Urls.apiBaseUrl + "agent/transaction/payoutrequest"
+        this.apiPayoutRequest = Urls.apiBaseUrl + "agent/transaction/payoutrequest";
         this.apiLocation = Urls.apiBaseUrl + "agent/location";
         this.apiLocations = Urls.apiBaseUrl + "agent/location/list";
 
         /*Custom Urls*/
-        this.googleApiUrl = "https://maps.googleapis.com/maps/api/js?key=<key>&libraries=places"
+        this.googleApiUrl =
+            "https://maps.googleapis.com/maps/api/js?key=<key>&libraries=places";
     }
 }

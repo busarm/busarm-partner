@@ -1,49 +1,55 @@
-import { Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { NavigationStart, Router, UrlTree } from '@angular/router';
+import {
+    Component,
+    ElementRef,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+} from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { NavigationStart, Router, UrlTree } from "@angular/router";
 import {
     ActionSheetController,
     AlertController,
     IonRouterOutlet,
-    LoadingController, MenuController,
+    LoadingController,
+    MenuController,
     ModalController,
     NavController,
-    Platform, PopoverController,
-    ToastController
-} from '@ionic/angular';
-import { AlertButton } from '@ionic/core';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Device } from '@ionic-native/device/ngx';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { Network } from '@ionic-native/network/ngx';
-import { SecureStorage } from '@ionic-native/secure-storage/ngx';
-import { Storage } from '@ionic/storage';
-import { AES256 } from '@ionic-native/aes-256/ngx';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+    Platform,
+    PopoverController,
+    ToastController,
+} from "@ionic/angular";
+import { AlertButton } from "@ionic/core";
+import { SplashScreen } from "@ionic-native/splash-screen/ngx";
+import { StatusBar } from "@ionic-native/status-bar/ngx";
+import { Device } from "@ionic-native/device/ngx";
+import { AppVersion } from "@ionic-native/app-version/ngx";
+import { Network } from "@ionic-native/network/ngx";
+import { SecureStorage } from "@ionic-native/secure-storage/ngx";
+import { Storage } from "@ionic/storage";
+import { AES256 } from "@ionic-native/aes-256/ngx";
+import { Deeplinks } from "@ionic-native/deeplinks/ngx";
 
-
-import { NetworkProvider } from './services/NetworkProvider';
-import { SessionManager } from './helpers/SessionManager';
-import { ToastType, Utils } from './helpers/Utils';
-import { Api, ApiResponseType } from './helpers/Api';
-import { Urls } from './helpers/Urls';
-import { Langs, Strings } from './resources';
-import { Oauth, OauthGrantType, OauthUtils } from './helpers/Oauth';
-import { CIPHER } from './helpers/CIPHER';
-import { ENVIRONMENT, CONFIGS } from '../environments/environment';
-import { Events } from './services/Events';
-import { NavigationOptions } from '@ionic/angular/providers/nav-controller';
-import { PingObject, Session } from './models/ApiResponse';
-import { ENV } from '../environments/ENV';
-import { SwUpdate } from '@angular/service-worker';
+import { NetworkProvider } from "./services/NetworkProvider";
+import { SessionManager } from "./helpers/SessionManager";
+import { ToastType, Utils } from "./helpers/Utils";
+import { Api, ApiResponseType } from "./helpers/Api";
+import { Urls } from "./helpers/Urls";
+import { Langs, Strings } from "./resources";
+import { Oauth, OauthGrantType, OauthUtils } from "./helpers/Oauth";
+import { CIPHER } from "./helpers/CIPHER";
+import { ENVIRONMENT, CONFIGS } from "../environments/environment";
+import { Events } from "./services/Events";
+import { NavigationOptions } from "@ionic/angular/providers/nav-controller";
+import { PingObject, Session } from "./models/ApiResponse";
+import { ENV } from "../environments/ENV";
+import { SwUpdate } from "@angular/service-worker";
 
 @Component({
-    selector: 'app-root',
-    templateUrl: 'app.component.html'
+    selector: "app-root",
+    templateUrl: "app.component.html",
 })
 export class AppComponent {
-
     public strings = Strings;
 
     /**Get app instance*/
@@ -59,20 +65,19 @@ export class AppComponent {
     private static _oauth: Oauth;
     private static _instance: AppComponent;
 
-    @ViewChild('loaderDiv') loadingScreen: ElementRef;
+    @ViewChild("loaderDiv") loadingScreen: ElementRef;
     @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
 
     private toast;
     private loader;
     private alert;
 
-
     /*Defines whether or not
-    the app has been completed loading or not*/
+      the app has been completed loading or not*/
     public showEnvironmentBanner = ENVIRONMENT != ENV.PROD;
 
     /*Defines whether or not
-    the app has been completed loading or not*/
+      the app has been completed loading or not*/
     public loaded = false;
 
     /*User Authorization*/
@@ -80,9 +85,10 @@ export class AppComponent {
     public authorized = false;
 
     /*Current Navigated Page*/
-    public currentPage: { id: number, url: string } = null;
+    public currentPage: { id: number; url: string } = null;
 
-    constructor(private swUpdate: SwUpdate,
+    constructor(
+        private swUpdate: SwUpdate,
         public platform: Platform,
         public router: Router,
         public deeplinks: Deeplinks,
@@ -103,9 +109,8 @@ export class AppComponent {
         public aes256: AES256,
         public httpClient: HttpClient,
         public storage: Storage,
-        public secureStorage: SecureStorage,
+        public secureStorage: SecureStorage
     ) {
-
         AppComponent._instance = this;
 
         /*Initialize Urls*/
@@ -117,7 +122,7 @@ export class AppComponent {
             clientSecret: CONFIGS.oauth_client_secret,
             authorizeUrl: Urls.oauthAuthorizeUrl,
             tokenUrl: Urls.oauthTokenUrl,
-            verifyTokenUrl: Urls.oauthVerifyTokenUrl
+            verifyTokenUrl: Urls.oauthVerifyTokenUrl,
         });
 
         /*Subscribe to any updates*/
@@ -125,7 +130,6 @@ export class AppComponent {
 
         /*All set ready to go*/
         platform.ready().then(async () => {
-
             /*Register Back button event*/
             this.registerPopStateChanged();
 
@@ -172,15 +176,15 @@ export class AppComponent {
                     Strings.getString("update_available_title"),
                     Strings.getString("update_available_msg"),
                     {
-                        title: Strings.getString("no_txt")
+                        title: Strings.getString("no_txt"),
                     },
                     {
                         title: Strings.getString("yes_txt"),
                         callback: () => {
                             window.location.reload();
-                        }
-                    },
-                )
+                        },
+                    }
+                );
             });
         }
     }
@@ -189,27 +193,31 @@ export class AppComponent {
      * @return {PingObject}
      */
     public async getPingStatus() {
-        return await new Promise<PingObject>((resolve: (data: PingObject) => any) => {
-            SessionManager.getPing(data => {
-                if (data) {
-                    resolve(data);
-                } else {
-                    resolve(null);
-                }
-            });
-        });
+        return await new Promise<PingObject>(
+            (resolve: (data: PingObject) => any) => {
+                SessionManager.getPing((data) => {
+                    if (data) {
+                        resolve(data);
+                    } else {
+                        resolve(null);
+                    }
+                });
+            }
+        );
     }
 
     /**
      * Register Pop State changes
      */
     public registerPopStateChanged() {
-        if (this.platform.is('cordova') || this.platform.is('capacitor')) {  // Back button press listner - before action
+        if (this.platform.is("cordova") || this.platform.is("capacitor")) {
+            // Back button press listner - before action
             this.platform.backButton.subscribe(async () => {
                 await this.processPopState(true);
             });
-        } else { // Popstate Event - after action
-            this.router.events.subscribe(value => {
+        } else {
+            // Popstate Event - after action
+            this.router.events.subscribe((value) => {
                 if (value instanceof NavigationStart) {
                     this.currentPage = {
                         id: value.id,
@@ -217,8 +225,8 @@ export class AppComponent {
                     };
                 }
             });
-            window.addEventListener('popstate', async (e) => {
-                if (e.state != null && typeof e.state != 'undefined') {
+            window.addEventListener("popstate", async (e) => {
+                if (e.state != null && typeof e.state != "undefined") {
                     await this.processPopState(false, e.state, this.currentPage);
                 }
             });
@@ -231,8 +239,11 @@ export class AppComponent {
      * @param currentPage
      * @return {Promise<void>}
      */
-    private async processPopState(backPressed?, state?, currentPage?: { id: number, url: string }) {
-
+    private async processPopState(
+        backPressed?,
+        state?,
+        currentPage?: { id: number; url: string }
+    ) {
         // close action sheet
         if (this.actionSheetCtrl) {
             try {
@@ -244,8 +255,7 @@ export class AppComponent {
                     }
                     return;
                 }
-            } catch (error) {
-            }
+            } catch (error) { }
         }
 
         // close popover
@@ -301,32 +311,37 @@ export class AppComponent {
     }
 
     /**Set RootPage*/
-    public async setRootPage(url: string | UrlTree | any[], options?: NavigationOptions) {
+    public async setRootPage(
+        url: string | UrlTree | any[],
+        options?: NavigationOptions
+    ) {
         options = options || {};
         options.replaceUrl = true;
-        await this.navCtrl.navigateRoot(url, options).then(value => {
-            return value;
-        }).catch((err) => {
-            return this.navCtrl.navigateRoot('home', options);
-        });
+        await this.navCtrl
+            .navigateRoot(url, options)
+            .then((value) => {
+                return value;
+            })
+            .catch((err) => {
+                return this.navCtrl.navigateRoot("home", options);
+            });
     }
-
 
     /**Set RootPage to home page*/
     public async goHome(options?: NavigationOptions) {
-        await this.setRootPage('home', options);
+        await this.setRootPage("home", options);
     }
 
     /**Set RootPage to login page*/
     public async goToLogin(options?: NavigationOptions) {
-        await this.setRootPage('login', options);
+        await this.setRootPage("login", options);
     }
 
     /**Hide Initial Loading screen*/
     public hideLoadingScreen() {
         setTimeout(() => {
             this.loaded = true;
-            this.loadingScreen.nativeElement.style.display = 'none';
+            this.loadingScreen.nativeElement.style.display = "none";
         }, 1000);
     }
 
@@ -334,14 +349,16 @@ export class AppComponent {
      * @param onDismiss closure
      * */
     public showNotConnectedMsg(onDismiss?: (data: any, role: string) => any) {
-        return this.showToastMsg(Strings.getString('error_connection'),
+        return this.showToastMsg(
+            Strings.getString("error_connection"),
             ToastType.ERROR,
             86400 * 1000,
             true,
-            Utils.assertAvailable(onDismiss) ?
-                Strings.getString('retry_txt') :
-                Strings.getString('close_txt'),
-            onDismiss);
+            Utils.assertAvailable(onDismiss)
+                ? Strings.getString("retry_txt")
+                : Strings.getString("close_txt"),
+            onDismiss
+        );
     }
 
     /**Toast Message
@@ -353,27 +370,31 @@ export class AppComponent {
      * @param onDismiss closure
      * @param position String
      * */
-    public async showToastMsg(msg: string,
+    public async showToastMsg(
+        msg: string,
         type: ToastType,
         duration: number = 6000,
         showCloseButton: boolean = false,
-        closeButton: string = Utils.convertHTMLEntity('&times;'),
+        closeButton: string = Utils.convertHTMLEntity("&times;"),
         onDismiss?: (data: any, role: string) => any,
-        position: 'bottom' | 'top' = 'bottom') {
+        position: "bottom" | "top" = "bottom"
+    ) {
         await this.hideToastMsg();
         this.toast = await this.toastCtrl.create({
             message: Utils.convertHTMLEntity(msg),
             duration: duration,
             cssClass: type,
-            buttons: showCloseButton ? [
-                {
-                    text: closeButton,
-                    side: 'end',
-                    role: 'cancel'
-                }
-            ] : [],
+            buttons: showCloseButton
+                ? [
+                    {
+                        text: closeButton,
+                        side: "end",
+                        role: "cancel",
+                    },
+                ]
+                : [],
             keyboardClose: true,
-            position: position
+            position: position,
         });
         this.toast.onDidDismiss().then((data, role) => {
             if (onDismiss) {
@@ -394,15 +415,18 @@ export class AppComponent {
 
     /**Show Loading Dialog
      * */
-    public async showLoading({ msg = Strings.getString('please_wait'), backdropDismiss = false }) {
+    public async showLoading({
+        msg = Strings.getString("please_wait"),
+        backdropDismiss = false,
+    }) {
         await this.hideLoading();
         this.loader = await this.loadingCtrl.create({
             message: Utils.convertHTMLEntity(msg),
             showBackdrop: true,
-            spinner: 'circles',
+            spinner: "circles",
             animated: true,
             keyboardClose: true,
-            backdropDismiss
+            backdropDismiss,
         });
         return await this.loader.present();
     }
@@ -417,17 +441,18 @@ export class AppComponent {
     }
 
     /**Show Alert dialog*/
-    public async showAlert(title?: string,
+    public async showAlert(
+        title?: string,
         message?: string,
         primaryBt?: {
-            title: string,
-            callback?: (data?: any) => any
+            title: string;
+            callback?: (data?: any) => any;
         },
         secondaryBt?: {
-            title: string,
-            callback?: (data?: any) => any
-        }) {
-
+            title: string;
+            callback?: (data?: any) => any;
+        }
+    ) {
         await this.hideAlert();
         const buttons: AlertButton[] = [];
 
@@ -448,7 +473,7 @@ export class AppComponent {
             header: title,
             message: Utils.convertHTMLEntity(message),
             buttons: buttons,
-            backdropDismiss: !(primaryBt || secondaryBt)
+            backdropDismiss: !(primaryBt || secondaryBt),
         });
         return await this.alert.present();
     }
@@ -461,18 +486,17 @@ export class AppComponent {
         return null;
     }
 
-
     /**
      * Authorize User Check
      * and verify token if existing
-     * @param {Boolean} force 
+     * @param {Boolean} force
      * @returns {Promise<boolean>}
      */
     public authorize(force: boolean = false): Promise<boolean> {
         return new Promise(async (resolve: (status: boolean) => any) => {
             if ((!this.authorized && !this.authAttempted) || force) {
                 // Check internet connection
-                NetworkProvider.checkConnection(async connected => {
+                NetworkProvider.checkConnection(async (connected) => {
                     if (connected) {
                         // To prevent duplicate request
                         this.authAttempted = true;
@@ -484,77 +508,89 @@ export class AppComponent {
                             callback: async (token, msg) => {
                                 if (token) {
                                     // Validate Session
-                                    await this.validateSession(async (status, msg, responseType) => {
-                                        if (status) {
-                                            this.authorized = true;
-                                            this.authAttempted = false;
-                                            this.hideLoadingScreen();
-                                            resolve(true);
-                                        } else {
-                                            this.authAttempted = false;
-                                            switch (responseType) {
-                                                case ApiResponseType.Authorization_error:
-                                                    this.authorized = false;
-                                                    await this.showToastMsg(msg,
-                                                        ToastType.ERROR,
-                                                        86400 * 1000,
-                                                        true,
-                                                        Strings.getString('retry_txt'),
-                                                        () => {
-                                                            this.authorize(true).then(status => {
-                                                                resolve(status);
-                                                            }).catch(() => {
+                                    await this.validateSession(
+                                        async (status, msg, responseType) => {
+                                            if (status) {
+                                                this.authorized = true;
+                                                this.authAttempted = false;
+                                                this.hideLoadingScreen();
+                                                resolve(true);
+                                            } else {
+                                                this.authAttempted = false;
+                                                switch (responseType) {
+                                                    case ApiResponseType.Authorization_error:
+                                                        this.authorized = false;
+                                                        await this.showToastMsg(
+                                                            msg,
+                                                            ToastType.ERROR,
+                                                            86400 * 1000,
+                                                            true,
+                                                            Strings.getString("retry_txt"),
+                                                            () => {
+                                                                this.authorize(true)
+                                                                    .then((status) => {
+                                                                        resolve(status);
+                                                                    })
+                                                                    .catch(() => {
+                                                                        resolve(false);
+                                                                    });
+                                                            }
+                                                        );
+                                                        break;
+                                                    default:
+                                                        // Check if session info available
+                                                        SessionManager.getSession(async (session) => {
+                                                            if (session) {
+                                                                this.authorized = true;
+                                                                this.hideLoadingScreen();
+                                                                resolve(true);
+                                                            } else {
+                                                                this.authorized = false;
+                                                                if (Utils.assertAvailable(msg)) {
+                                                                    await this.showToastMsg(msg, ToastType.ERROR);
+                                                                }
+                                                                this.hideLoadingScreen();
                                                                 resolve(false);
-                                                            });
+                                                            }
                                                         });
-                                                    break;
-                                                default:
-                                                    // Check if session info available
-                                                    SessionManager.getSession(async (session) => {
-                                                        if (session) {
-                                                            this.authorized = true;
-                                                            this.hideLoadingScreen();
-                                                            resolve(true);
-                                                        } else {
-                                                            this.authorized = false;
-                                                            if (Utils.assertAvailable(msg)) { await this.showToastMsg(msg, ToastType.ERROR); }
-                                                            this.hideLoadingScreen();
-                                                            resolve(false);
-                                                        }
-                                                    });
+                                                }
                                             }
                                         }
-                                    });
-                                } else { // Failed to get token
+                                    );
+                                } else {
+                                    // Failed to get token
                                     this.authAttempted = false;
                                     this.authorized = false;
-                                    if (Utils.assertAvailable(msg)) { await this.showToastMsg(msg, ToastType.ERROR); }
+                                    if (Utils.assertAvailable(msg)) {
+                                        await this.showToastMsg(msg, ToastType.ERROR);
+                                    }
                                     this.hideLoadingScreen();
                                     resolve(false);
                                 }
-                            }
+                            },
                         });
                     } else {
                         // Check if Authorization exists and hasn't expired
                         if (!AppComponent.oauth.hasExpired()) {
                             // Check if session info available
-                            SessionManager.getSession(session => {
+                            SessionManager.getSession((session) => {
                                 if (session) {
                                     this.authorized = true;
                                     this.hideLoadingScreen();
                                     resolve(true);
                                 } else {
                                     this.showNotConnectedMsg(async () => {
-                                        this.authorize(true).then(status => {
-                                            resolve(status);
-                                        }).catch(() => {
-                                            resolve(false);
-                                        });
+                                        this.authorize(true)
+                                            .then((status) => {
+                                                resolve(status);
+                                            })
+                                            .catch(() => {
+                                                resolve(false);
+                                            });
                                     });
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             this.authorized = false;
                             this.hideLoadingScreen();
                             resolve(false);
@@ -570,93 +606,121 @@ export class AppComponent {
 
     /**Validate existing session, or create one
      * */
-    public async validateSession(callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
-
-        const appVersion = await this.appVersion.getVersionNumber()
-            .then(value => {
+    public async validateSession(
+        callback?: (
+            status: boolean,
+            msg: string,
+            responseType: ApiResponseType
+        ) => any
+    ) {
+        const appVersion = await this.appVersion
+            .getVersionNumber()
+            .then((value) => {
                 return value;
             })
             .catch(() => {
                 return CONFIGS.app_version;
             });
-        const appName = await this.appVersion.getAppName()
-            .then(value => {
+        const appName = await this.appVersion
+            .getAppName()
+            .then((value) => {
                 return value;
             })
             .catch(() => {
                 return CONFIGS.app_name;
             });
 
-        const platform = this.platform.is('android') ?
-            'Android' :
-            this.platform.is('ios') ?
-                'IOS' :
-                this.platform.is('desktop') ?
-                    'Desktop' :
-                    'Unknown';
+        const platform = this.platform.is("android")
+            ? "Android"
+            : this.platform.is("ios")
+                ? "IOS"
+                : this.platform.is("desktop")
+                    ? "Desktop"
+                    : "Unknown";
 
-        const deviceType = this.platform.is('mobile') ?
-            'Phone' :
-            this.platform.is('tablet') ?
-                'Tablet' :
-                this.platform.is('desktop') ?
-                    'Computer' :
-                    'Unknown';
+        const deviceType = this.platform.is("mobile")
+            ? "Phone"
+            : this.platform.is("tablet")
+                ? "Tablet"
+                : this.platform.is("desktop")
+                    ? "Computer"
+                    : "Unknown";
 
-        const os = Utils.assertAvailable(this.device.platform) &&
-            Utils.assertAvailable(this.device.version) ?
-            this.device.platform + ' ' + this.device.version : platform;
+        const os =
+            Utils.assertAvailable(this.device.platform) &&
+                Utils.assertAvailable(this.device.version)
+                ? this.device.platform + " " + this.device.version
+                : platform;
 
-        const deviceModel = Utils.assertAvailable(this.device.manufacturer) &&
-            Utils.assertAvailable(this.device.model) ?
-            this.device.manufacturer + ' ' + this.device.model :
-            Utils.assertAvailable(this.device.manufacturer) ?
-                this.device.manufacturer :
-                null;
+        const deviceModel =
+            Utils.assertAvailable(this.device.manufacturer) &&
+                Utils.assertAvailable(this.device.model)
+                ? this.device.manufacturer + " " + this.device.model
+                : Utils.assertAvailable(this.device.manufacturer)
+                    ? this.device.manufacturer
+                    : null;
 
-        Api.initialize({
-            os: os,
-            version: appVersion,
-            app_name: appName,
-            device_type: deviceType,
-            device_name: deviceModel,
-            partner: true,
-        }, (status, result, responseType) => {
-            if (status && result) {
-                let session: Session = result.data;
-                // Save  session info
-                SessionManager.setSession(session, done => {
-                    if (done && session.user) {
-                        // Set app's Language with user's
-                        if (Utils.assertAvailable(session.user.lang)) {
-                            const key = session.user.lang.toUpperCase();
-                            if (Langs[key]) { // If Language Supported
-                                Strings.setLanguage(key);
+        Api.initialize(
+            {
+                os: os,
+                version: appVersion,
+                app_name: appName,
+                device_type: deviceType,
+                device_name: deviceModel,
+                partner: true,
+            },
+            (status, result, responseType) => {
+                if (status && result) {
+                    let session: Session = result.data;
+                    // Save  session info
+                    SessionManager.setSession(session, (done) => {
+                        if (done && session.user) {
+                            // Set app's Language with user's
+                            if (Utils.assertAvailable(session.user.lang)) {
+                                const key = session.user.lang.toUpperCase();
+                                if (Langs[key]) {
+                                    // If Language Supported
+                                    Strings.setLanguage(key);
+                                }
+                            }
+                            if (Utils.assertAvailable(callback)) {
+                                callback(done, result.msg, responseType);
+                            }
+                        } else {
+                            if (Utils.assertAvailable(callback)) {
+                                callback(
+                                    done,
+                                    Strings.getString("error_unexpected"),
+                                    responseType
+                                );
                             }
                         }
-                        if (Utils.assertAvailable(callback)) {
-                            callback(done, result.msg, responseType);
-                        }
-                    } else {
-                        if (Utils.assertAvailable(callback)) {
-                            callback(done, Strings.getString('error_unexpected'), responseType);
-                        }
+                    });
+                } else {
+                    if (Utils.assertAvailable(callback)) {
+                        callback(
+                            false,
+                            result ? result : Strings.getString("error_unexpected"),
+                            responseType
+                        );
                     }
-                });
-            } else {
-                if (Utils.assertAvailable(callback)) {
-                    callback(false, result ? result : Strings.getString('error_unexpected'), responseType);
                 }
             }
-        });
-
+        );
     }
 
     /**Set Country
      * @param {string} country_code
      * @param {(status: boolean, msg: string, responseType: ApiResponseType) => any} callback
      */
-    public set_country(country_code: string, callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
+    public set_country(
+        country_code: string,
+        callback?: (
+            status: boolean,
+            msg: string,
+            responseType: ApiResponseType
+        ) => any
+    ) {
         Api.setCountry(country_code, (status, result, responseType) => {
             if (status) {
                 this.validateSession(callback);
@@ -672,7 +736,14 @@ export class AppComponent {
      * @param {string} language_code
      * @param {(status: boolean, msg: string, responseType: ApiResponseType) => any} callback
      */
-    public set_language(language_code: string, callback?: (status: boolean, msg: string, responseType: ApiResponseType) => any) {
+    public set_language(
+        language_code: string,
+        callback?: (
+            status: boolean,
+            msg: string,
+            responseType: ApiResponseType
+        ) => any
+    ) {
         Api.setLanguage(language_code, (status, result, responseType) => {
             if (status) {
                 this.validateSession(callback);

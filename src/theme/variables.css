@@ -63,5 +63,12 @@
   --ion-color-light-contrast-rgb: white;
   --ion-color-light-shade: whitesmoke;
   --ion-color-light-tint: whitesmoke;
+  /** normal **/
+  --ion-color-normal: rgba(84, 142, 171,1);
+  --ion-color-normal-rgb: rgb(84, 142, 171);
+  --ion-color-normal-contrast: #ffffff;
+  --ion-color-normal-contrast-rgb: rgb(255, 255, 255);
+  --ion-color-normal-shade: rgb(51, 120, 155);
+  --ion-color-normal-tint: rgb(49, 103, 131);
 }
 /*# sourceMappingURL=variables.css.map */

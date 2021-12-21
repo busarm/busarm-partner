@@ -8,7 +8,6 @@ import { PingObject } from "../models/ApiResponse";
  * */
 
 export class Utils {
-
     /** Parse Float
      * @param str
      * @return number
@@ -40,47 +39,63 @@ export class Utils {
     static stripUrlParams(url: string) {
         if (Utils.assertAvailable(url)) {
             return url.split("?")[0];
-        }
-        else
-            return url;
+        } else return url;
     }
 
     /**Mask String
      * */
-    static mask(str: any, show_count: number = 5, with_char: string = 'x') {
-        return str.substring(0, show_count) + new Array(str.length - show_count).join(with_char);
+    static mask(str: any, show_count: number = 5, with_char: string = "x") {
+        return (
+            str.substring(0, show_count) +
+            new Array(str.length - show_count).join(with_char)
+        );
     }
 
     /**Return Current Signature
      * */
     static getCurrentSignature(ping: PingObject) {
         let date = new Date();
-        let ip = ping ? ping.ip : '';
-        return String(CryptoJS.MD5(Utils.harold(date.getDay()) + "-" + Utils.harold(date.getMonth()) + "-" + Utils.harold(date.getFullYear()) + "|" + ip + "|" + location.host));
+        let ip = ping ? ping.ip : "";
+        return String(
+            CryptoJS.MD5(
+                Utils.harold(date.getDay()) +
+                "-" +
+                Utils.harold(date.getMonth()) +
+                "-" +
+                Utils.harold(date.getFullYear()) +
+                "|" +
+                ip +
+                "|" +
+                location.host
+            )
+        );
     }
 
     /**Pares Html entities*/
     static convertHTMLEntity(text: string) {
-        const span = document.createElement('span');
-        return text
-            .replace(/&[#A-Za-z0-9]+;/gi, (entity: any, position: any, text: any) => {
+        const span = document.createElement("span");
+        return text.replace(
+            /&[#A-Za-z0-9]+;/gi,
+            (entity: any, position: any, text: any) => {
                 span.innerHTML = entity;
                 return span.innerText;
-            });
+            }
+        );
     }
 
     /**Load Google Api*/
     static loadGoogleApi(key: string, callback?: () => void) {
-        Utils.load_script(Urls.googleApiUrl.replace("<key>", key), callback)
+        Utils.load_script(Urls.googleApiUrl.replace("<key>", key), callback);
     }
-
 
     /**Get hash of string
      * @param str string
      * */
     static hashString(str) {
         str = str.trim();
-        let hash = 0, i = 0, len = str.length;
+        let hash = 0,
+            i = 0,
+            len = str.length;
         while (i < len) {
             hash = ((hash << 5) - hash + str.charCodeAt(i++)) << 0;
         }
@@ -92,33 +107,34 @@ export class Utils {
      * @param callback function Callback
      * */
     static load_script(url: string | string[] | any, callback?: () => void) {
-        if (typeof url === 'string') {
+        if (typeof url === "string") {
             attach(url, callback);
-        }
-        else if (typeof url === 'object' || (url.prop && url.prop.constructor === Array) || url instanceof Array) {
+        } else if (
+            typeof url === "object" ||
+            (url.prop && url.prop.constructor === Array) ||
+            url instanceof Array
+        ) {
             let count = Utils.count(url);
             let loopUrl = (key, url) => {
                 if (url.hasOwnProperty(key)) {
-                    if (url[key] !== null && typeof url[key] !== 'undefined') {
+                    if (url[key] !== null && typeof url[key] !== "undefined") {
                         attach(url[key], () => {
                             if (parseInt(key) === count - 1)
                                 if (Utils.assertAvailable(callback)) {
                                     callback();
-                                }
-                                else
-                                    loopUrl(key + 1, url);
+                                } else loopUrl(key + 1, url);
                         });
                     }
                 }
             };
 
             /*Start loop
-            * This kind of loop
-            * is to make sure that the
-            * items are attached synchronously
-            * especially for scripts where
-            * the later script may depend on the initial
-            * and hence the initial has to be loaded first*/
+             * This kind of loop
+             * is to make sure that the
+             * items are attached synchronously
+             * especially for scripts where
+             * the later script may depend on the initial
+             * and hence the initial has to be loaded first*/
             loopUrl(0, url);
         }
 
@@ -127,14 +143,13 @@ export class Utils {
          * @param callback function
          */
         function attach(url, callback) {
-
             /*Remove if exists previously*/
             let hash = Utils.hashString(url);
             let s = document.getElementById(String(hash));
             if (Utils.assertAvailable(s)) {
                 s.remove();
             }
-            let script: HTMLScriptElement = document.createElement('script');
+            let script: HTMLScriptElement = document.createElement("script");
             script.referrerPolicy = "origin";
             script.type = "text/javascript";
             script.id = String(hash);
@@ -151,7 +166,7 @@ export class Utils {
     /**get Harold number*/
     static harold(standIn) {
         if (standIn < 10) {
-            standIn = '0' + standIn;
+            standIn = "0" + standIn;
         }
         return standIn;
     }
@@ -177,8 +192,7 @@ export class Utils {
         for (let key in object) {
             if (object.hasOwnProperty(key)) {
                 if (Utils.assertAvailable(object[key])) {
-                    if (key === itemKey)
-                        return true;
+                    if (key === itemKey) return true;
                 }
             }
         }
@@ -226,9 +240,8 @@ export class Utils {
      *  @return boolean
      *  */
     static assertAvailable(item: any): boolean {
-        return typeof item !== 'undefined' && item != null && item !== "";
+        return typeof item !== "undefined" && item != null && item !== "";
     }
-
 
     /** Parse Json string to object
      *  @param json string
@@ -238,13 +251,9 @@ export class Utils {
         let result = null;
         try {
             result = JSON.parse(json);
-        }
-        catch (e) {
-        }
+        } catch (e) { }
         return result;
-
     }
-
 
     /** Parse Json obj to string
      *  @param obj  object
@@ -254,8 +263,7 @@ export class Utils {
         let result = "";
         try {
             result = JSON.stringify(obj);
-        }
-        catch (e) {
+        } catch (e) {
             console.log(e);
         }
 
@@ -266,12 +274,11 @@ export class Utils {
     static mergeObj(obj: object, src: object) {
         for (let key in src) {
             if (src.hasOwnProperty(key)) {
-                if (Array.isArray(obj)) //If array
-                {
+                if (Array.isArray(obj)) {
+                    //If array
                     obj.push(src[key]);
-                }
-                else //object
-                {
+                } //object
+                else {
                     obj[Utils.count(obj)] = src[key];
                 }
             }
@@ -283,18 +290,27 @@ export class Utils {
      * @param myData object
      */
     static urlEncodeObjects(myData: object): string {
-
         let encodeObj = function (data, key, parent) {
             let encoded = [];
             for (let subKey in data[key]) {
                 if (data[key].hasOwnProperty(subKey)) {
-                    if (data[key][subKey] !== null && typeof data[key][subKey] !== 'undefined') {
-                        if (typeof data[key][subKey] === 'object' || Array.isArray(data[key][subKey])) { //If object or array
-                            let newParent = parent + '[' + subKey + ']';
+                    if (
+                        data[key][subKey] !== null &&
+                        typeof data[key][subKey] !== "undefined"
+                    ) {
+                        if (
+                            typeof data[key][subKey] === "object" ||
+                            Array.isArray(data[key][subKey])
+                        ) {
+                            //If object or array
+                            let newParent = parent + "[" + subKey + "]";
                             Utils.mergeObj(encoded, encodeObj(data[key], subKey, newParent));
-                        }
-                        else {
-                            encoded.push(encodeURIComponent(parent + '[' + subKey + ']') + '=' + encodeURIComponent(data[key][subKey]));
+                        } else {
+                            encoded.push(
+                                encodeURIComponent(parent + "[" + subKey + "]") +
+                                "=" +
+                                encodeURIComponent(data[key][subKey])
+                            );
                         }
                     }
                 }
@@ -304,15 +320,15 @@ export class Utils {
 
         let encodeData = function (data) {
             let encoded = [];
-            if (data !== null && typeof data === 'object') {
+            if (data !== null && typeof data === "object") {
                 for (let key in data) {
                     if (data.hasOwnProperty(key)) {
-                        if (data[key] !== null && typeof data[key] !== 'undefined') {
-                            if (typeof data[key] === 'object' || Array.isArray(data[key])) { //If object or array
+                        if (data[key] !== null && typeof data[key] !== "undefined") {
+                            if (typeof data[key] === "object" || Array.isArray(data[key])) {
+                                //If object or array
                                 Utils.mergeObj(encoded, encodeObj(data, key, key));
-                            }
-                            else {
-                                encoded.push(key + '=' + encodeURIComponent(data[key]));
+                            } else {
+                                encoded.push(key + "=" + encodeURIComponent(data[key]));
                             }
                         }
                     }
@@ -323,9 +339,8 @@ export class Utils {
 
         let out = encodeData(myData);
         if (out.length > 0) {
-            return out.join('&');
-        }
-        else {
+            return out.join("&");
+        } else {
             return "";
         }
     }
@@ -335,8 +350,7 @@ export class Utils {
     static count(obj: object): number {
         let element_count = 0;
         for (let e in obj) {
-            if (obj.hasOwnProperty(e))
-                element_count++;
+            if (obj.hasOwnProperty(e)) element_count++;
         }
         return element_count;
     }
@@ -347,39 +361,41 @@ export class Utils {
      * @return string
      */
     static safeString(str: string): string {
-        if (str !== null && typeof str !== 'undefined' && str !== "") {
-            return str
-                .trim()
-                .replace(/[<>\/!#$%^&*~`,'"\[\]\\|{}]/gi, "");
-        }
-        else {
+        if (str !== null && typeof str !== "undefined" && str !== "") {
+            return str.trim().replace(/[<>\/!#$%^&*~`,'"\[\]\\|{}]/gi, "");
+        } else {
             return "";
         }
     }
 
     /**
      * Convert date timezone
-     * 
-     * @param date 
-     * @param tz 
-     * @param locale 
-     * @returns 
+     *
+     * @param date
+     * @param tz
+     * @param locale
+     * @returns
      */
     static convertTZ(date: Date | string, tz: string, locale: string = null) {
-        return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString(locale || 'en-US', { timeZone: tz }));
+        return new Date(
+            (typeof date === "string" ? new Date(date) : date).toLocaleString(
+                locale || "en-US",
+                { timeZone: tz }
+            )
+        );
     }
 
     /**
-    * Returns a date set to the begining of the month
-    * 
-    * @param {Date|String} myDate 
-    * @param {string} utc 
-    * @returns {Date}
-    */
+     * Returns a date set to the begining of the month
+     *
+     * @param {Date|String} myDate
+     * @param {string} utc
+     * @returns {Date}
+     */
     static beginningOfMonth(myDate: Date | string, tz: string = null): Date {
-        tz = tz || 'UTC';
+        tz = tz || "UTC";
         let date = Utils.convertTZ(myDate, tz);
-        date.setDate(1)
+        date.setDate(1);
         date.setHours(0);
         date.setMinutes(0);
         date.setSeconds(0);
@@ -388,13 +404,13 @@ export class Utils {
 
     /**
      * Returns a date set to the end of the month
-     * 
-    * @param {Date|String} myDate 
-    * @param {string} utc 
-    * @returns {Date}
-    */
+     *
+     * @param {Date|String} myDate
+     * @param {string} utc
+     * @returns {Date}
+     */
     static endOfMonth(myDate: Date | string, tz: string = null): Date {
-        tz = tz || 'UTC';
+        tz = tz || "UTC";
         let date = Utils.convertTZ(myDate, tz);
         date.setDate(1); // Avoids edge cases on the 31st day of some months
         date.setMonth(date.getMonth() + 1);
@@ -406,11 +422,10 @@ export class Utils {
     }
 }
 
-
 /**Define Type of toast message*/
 export enum ToastType {
     WARNING = "toast-warning",
     ERROR = "toast-error",
     SUCCESS = "toast-success",
-    NORMAL = "toast-normal"
+    NORMAL = "toast-normal",
 }

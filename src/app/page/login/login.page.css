@@ -1,8 +1,37 @@
+.vertical-center {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+form {
+  width: 100% !important;
+  max-width: 500px;
+}
+
+.login-field {
+  width: 100% !important;
+}
+
+.border-top {
+  border-top: 1px solid gray;
+}
+
+.border-left {
+  border-left: 1px solid gray;
+}
+
 .submit-btn {
   min-height: 40px !important;
   width: 100%;
-  margin-top: 20px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
 }
 /*# sourceMappingURL=login.page.css.map */

@@ -1,6 +1,6 @@
 {
     "version": 3,
-    "mappings": "",
+    "mappings": "AAAA,AAAA,WAAW,CAAC;EACR,YAAY,CAAA,KAAC;EACb,MAAM,EAAE,IAAI;EACZ,UAAU,EAAE,OAAO;CAItB;;AAPD,AAII,WAJO,CAIP,kBAAkB,CAAC;EACf,MAAM,EAAE,eAAe;CAC1B",
     "sources": [
         "web-scanner.page.scss"
     ],

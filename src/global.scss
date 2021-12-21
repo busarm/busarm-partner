@@ -49,7 +49,8 @@
     width: auto;
     text-align: center;
   }
-  .spinner > div {
+
+  .spinner>div {
     width: 18px;
     height: 18px;
     border: solid 2px $themeColor;
@@ -65,37 +66,44 @@
     -webkit-animation-delay: -0.64s;
     animation-delay: -0.64s;
   }
+
   .spinner .bounce2 {
     -webkit-animation-delay: -0.48s;
     animation-delay: -0.48s;
   }
+
   .spinner .bounce3 {
     -webkit-animation-delay: -0.32s;
     animation-delay: -0.32s;
   }
+
   .spinner .bounce4 {
     -webkit-animation-delay: -0.16s;
     animation-delay: -0.16s;
   }
 
   @-webkit-keyframes sk-bouncedelay {
+
     0%,
     80%,
     100% {
       -webkit-transform: scale(0);
     }
+
     40% {
       -webkit-transform: scale(1);
     }
   }
 
   @keyframes sk-bouncedelay {
+
     0%,
     80%,
     100% {
       -webkit-transform: scale(0);
       transform: scale(0);
     }
+
     40% {
       -webkit-transform: scale(1);
       transform: scale(1);
@@ -106,14 +114,17 @@
     0% {
       transform: rotate(0deg);
     }
+
     100% {
       transform: rotate(360deg);
     }
   }
+
   @keyframes spin-anti {
     0% {
       transform: rotate(360deg);
     }
+
     100% {
       transform: rotate(0deg);
     }
@@ -123,6 +134,7 @@
 /*Global App Styles*/
 ion-split-pane {
   --border: 0.8px solid #e4e4e4 !important;
+
   .split-pane-side {
     &:not(.show-menu) {
       min-width: 200px !important;
@@ -155,6 +167,7 @@ ion-modal {
       &::part(background) {
         --background: transparent;
       }
+
       &::part(scroll) {
         --overflow: hidden;
       }
@@ -168,6 +181,7 @@ ion-modal {
     --padding-end: 20px !important;
   }
 }
+
 ion-item {
   padding: 0 !important;
   cursor: pointer;
@@ -183,15 +197,19 @@ ion-icon {
   &.ok {
     color: seagreen !important;
   }
+
   &.danger {
     color: $themeColor2 !important;
   }
+
   &.warn {
     color: $themeColor4 !important;
   }
+
   &.primary {
     color: $themeColorDark !important;
   }
+
   &.secondary {
     color: $themeColor !important;
   }
@@ -205,18 +223,22 @@ ion-title {
     color: seagreen !important;
     --color: var(--ion-color-success) !important;
   }
+
   &.danger {
     color: $themeColor2 !important;
     --color: var(--ion-color-danger) !important;
   }
+
   &.warn {
     color: $themeColor4 !important;
     --color: var(--ion-color-warning) !important;
   }
+
   &.primary {
     color: $themeColorDark !important;
     --color: var(--ion-color-primary) !important;
   }
+
   &.secondary {
     color: $themeColor !important;
     --color: var(--ion-color-secondary) !important;
@@ -230,42 +252,52 @@ ion-label {
     color: seagreen !important;
     --color: var(--ion-color-success) !important;
   }
+
   &.danger {
     color: $themeColor2 !important;
     --color: var(--ion-color-danger) !important;
   }
+
   &.warn {
     color: $themeColor4 !important;
     --color: var(--ion-color-warning) !important;
   }
+
   &.primary {
     color: $themeColorDark !important;
     --color: var(--ion-color-primary) !important;
   }
+
   &.secondary {
     color: $themeColor !important;
     --color: var(--ion-color-secondary) !important;
   }
 }
+
 ion-fab-button {
   ion-icon {
     color: $themeColor !important;
   }
 }
+
 ion-button,
 ion-fab-button,
 button {
   text-transform: none !important;
+
   &[color="primary"] {
     color: $themeColor !important;
     --color: var(--ion-color-secondary) !important;
+
     ion-icon {
       color: $themeColor !important;
     }
   }
+
   &[color="secondary"] {
     color: $themeColorDark !important;
     --color: var(--ion-color-primary) !important;
+
     ion-icon {
       color: $themeColorDark !important;
     }
@@ -277,46 +309,55 @@ button {
     --background-focused: var(--ion-color-success-tint) !important;
     color: white !important;
     --color: white !important;
+
     ion-icon {
       color: white !important;
     }
   }
+
   &.danger {
     background: $themeColor2 !important;
     --background: var(--ion-color-danger) !important;
     --background-focused: var(--ion-color-danger-tint) !important;
     color: white !important;
     --color: white !important;
+
     ion-icon {
       color: white !important;
     }
   }
+
   &.warn {
     background: $themeColor4 !important;
     --background: var(--ion-color-warning) !important;
     --background-focused: var(--ion-color-warning-tint) !important;
     color: $textColorDarker !important;
     --color: var(--ion-color-dark) !important;
+
     ion-icon {
       color: $textColorDarker !important;
     }
   }
+
   &.primary {
     background: $themeColorDark !important;
     --background: var(--ion-color-primary) !important;
     --background-focused: var(--ion-color-primary-tint) !important;
     color: $themeColor !important;
     --color: var(--ion-color-secondary) !important;
+
     ion-icon {
       color: $themeColor !important;
     }
   }
+
   &.secondary {
     background: $themeColor !important;
     --background: var(--ion-color-secondary) !important;
     --background-focused: var(--ion-color-secondary-tint) !important;
     color: $themeColorDark !important;
     --color: var(--ion-color-primary) !important;
+
     ion-icon {
       color: $themeColorDark !important;
     }
@@ -324,6 +365,7 @@ button {
 }
 
 ion-searchbar {
+
   input,
   button,
   select,
@@ -342,6 +384,7 @@ ion-searchbar {
     display: block;
     z-index: 1;
   }
+
   &.searchbar-has-focus {
     .searchbar-search-icon {
       display: none !important;
@@ -350,6 +393,7 @@ ion-searchbar {
 }
 
 ion-header {
+
   div,
   h1,
   h2,
@@ -366,6 +410,7 @@ ion-header {
   ion-title {
     color: $themeColor !important;
   }
+
   ion-icon {
     color: var(--ion-color-secondary) !important;
   }
@@ -380,27 +425,34 @@ ion-header {
 
   &.header-ios {
     ion-searchbar {
+
       input,
       button,
       ion-label,
       ion-title {
         color: $themeColor !important;
       }
+
       color: var(--ion-color-secondary) !important;
+
       ion-icon {
         color: var(--ion-color-secondary) !important;
       }
     }
   }
+
   &.header-md {
     ion-searchbar {
+
       input,
       button,
       ion-label,
       ion-title {
         color: $themeColorDark !important;
       }
+
       color: var(--ion-color-primary) !important;
+
       ion-icon {
         color: var(--ion-color-primary) !important;
       }
@@ -416,10 +468,12 @@ ion-content {
 
 ion-refresher {
   margin-top: 10px;
+
   ion-refresher-content {
     padding: 10px;
     margin: auto;
   }
+
   ion-icon {
     color: $themeColorDark;
   }
@@ -453,11 +507,13 @@ ion-card {
     background: $lightGray;
     color: $textColorDark !important;
     margin-bottom: 0;
+
     border-bottom: {
       style: solid;
       width: 1px;
       color: $transGray;
     }
+
     font-size: 14px !important;
   }
 
@@ -465,6 +521,7 @@ ion-card {
     background: white;
   }
 }
+
 ion-select {
   width: 100%;
 
@@ -476,6 +533,7 @@ button {
   background: transparent;
   outline: 0;
   border: 0;
+
   &:focus {
     outline: 0;
   }
@@ -561,16 +619,20 @@ input {
 .logoContainer {
   margin: 30px;
 }
+
 .logoImg {
   max-height: 100px;
 }
+
 .logoTxt {
   max-height: 50px;
 }
+
 .logoNameTxt {
   margin: auto;
   color: $textColorDark;
 }
+
 .logoTextDiv {
   display: flex;
   align-items: baseline;
@@ -727,22 +789,27 @@ input {
     font-weight: bold;
     font-size: 24px;
   }
+
   h2 {
     font-weight: bold;
     font-size: 22px;
   }
+
   h3 {
     font-weight: bold;
     font-size: 20px;
   }
+
   h4 {
     font-weight: bold;
     font-size: 18px;
   }
+
   h5 {
     font-weight: bold;
     font-size: 16px;
   }
+
   h6 {
     font-weight: bold;
     font-size: 14px;
@@ -751,30 +818,39 @@ input {
   .bold {
     font-weight: bold;
   }
+
   .xxx-large-text {
     font-size: 32px !important;
   }
+
   .xx-large-text {
     font-size: 28px !important;
   }
+
   .x-large-text {
     font-size: 22px !important;
   }
+
   .large-text {
     font-size: 20px !important;
   }
+
   .medium-text {
     font-size: 18px !important;
   }
+
   .normal-text {
     font-size: 16px !important;
   }
+
   .small-text {
     font-size: 14px !important;
   }
+
   .x-small-text {
     font-size: 12px !important;
   }
+
   .xx-small-text {
     font-size: 10px !important;
   }
@@ -782,15 +858,19 @@ input {
   &.ok {
     color: seagreen !important;
   }
+
   &.danger {
     color: $themeColor2 !important;
   }
+
   &.warn {
     color: $themeColor4 !important;
   }
+
   &.primary {
     color: $themeColorDark !important;
   }
+
   &.secondary {
     color: $themeColor !important;
   }
@@ -800,18 +880,21 @@ input {
     font-weight: bold;
     margin: auto;
   }
+
   .cell-content {
     color: $textColorDark;
     margin: auto;
     white-space: normal;
     word-wrap: break-word;
   }
+
   .cell-sub {
     color: $themeColorLight;
     margin: auto;
     white-space: normal;
     word-wrap: break-word;
   }
+
   .cell-label {
     color: $themeColorLight;
     font-weight: bold;
@@ -826,30 +909,39 @@ input {
 .cell-margin-auto {
   margin: auto;
 }
+
 .cell-margin-sm {
   margin: 2px;
 }
+
 .cell-margin-top-sm {
   margin-top: 2px;
 }
+
 .cell-margin-bottom-sm {
   margin-bottom: 2px;
 }
+
 .cell-margin-md {
   margin: 4px;
 }
+
 .cell-margin-top-md {
   margin-top: 4px;
 }
+
 .cell-margin-bottom-md {
   margin-bottom: 4px;
 }
+
 .cell-margin-2x {
   margin: 8px;
 }
+
 .cell-margin-3x {
   margin: 12px;
 }
+
 .cell-margin-4x {
   margin: 16px;
 }
@@ -857,30 +949,39 @@ input {
 .cell-padding-auto {
   padding: auto;
 }
+
 .cell-padding-sm {
   padding: 2px;
 }
+
 .cell-padding-md {
   padding: 4px;
 }
+
 .cell-padding-2x {
   padding: 8px;
 }
+
 .cell-padding-3x {
   padding: 12px;
 }
+
 .cell-padding-4x {
   padding: 16px;
 }
+
 .cell-padding-5x {
   padding: 20px;
 }
+
 .cell-padding-6x {
   padding: 24px;
 }
+
 .cell-padding-7x {
   padding: 28px;
 }
+
 .cell-padding-8x {
   padding: 32px;
 }
@@ -900,13 +1001,16 @@ input {
     align-items: center !important;
     justify-content: center !important;
   }
+
   &.cell-flex-center-vertical {
     align-items: center !important;
   }
+
   &.cell-flex-left {
     justify-content: flex-start !important;
     text-align: start !important;
   }
+
   &.cell-flex-right {
     justify-content: flex-end !important;
     text-align: end !important;
@@ -930,42 +1034,52 @@ input {
   color: $textColor !important;
   --color: var(--ion-color-light) !important;
 }
+
 .color-gray {
   color: $shadowColor !important;
   --color: var(--ion-color-medium) !important;
 }
+
 .color-dark {
   color: $textColorDarker !important;
   --color: var(--ion-color-dark) !important;
 }
+
 .color-primary {
   color: $themeColorDark !important;
   --color: var(--ion-color-primary) !important;
 }
+
 .color-primary-light {
   color: $themeColorLight !important;
   --color: var(--ion-color-light) !important;
 }
+
 .color-secondary {
   color: $themeColor !important;
   --color: var(--ion-color-secondary) !important;
 }
+
 .color-warning {
   color: $themeColor4 !important;
   --color: var(--ion-color-warning) !important;
 }
+
 .color-danger {
   color: $themeColor2 !important;
   --color: var(--ion-color-danger) !important;
 }
+
 .color-normal {
   color: $themeColor5 !important;
   --color: var(--ion-color-normal) !important;
 }
+
 .color-ok {
   color: seagreen !important;
   --color: var(--ion-color-success) !important;
 }
+
 .color-light-gray {
   color: #ebebeb !important;
   --color: #ebebeb !important;
@@ -975,38 +1089,47 @@ input {
   background: $themeColorDark !important;
   --background: var(--ion-color-primary) !important;
 }
+
 .background-secondary {
   background: $themeColor !important;
   --background: var(--ion-color-secondary) !important;
 }
+
 .background-warning {
   background: $themeColor4 !important;
   --background: var(--ion-color-warning) !important;
 }
+
 .background-danger {
   background: $themeColor2 !important;
   --background: var(--ion-color-danger) !important;
 }
+
 .background-normal {
   background: $themeColor5 !important;
   --background: var(--ion-color-normal) !important;
 }
+
 .background-ok {
   background: seagreen !important;
   --background: var(--ion-color-success) !important;
 }
+
 .background-light {
   background: $textColor !important;
   --background: var(--ion-color-light) !important;
 }
+
 .background-light-gray {
   background: #ebebeb !important;
   --background: #ebebeb !important;
 }
+
 .background-gray {
   background: $shadowColor !important;
   --background: var(--ion-color-medium) !important;
 }
+
 .background-dark {
   background: $textColorDarker !important;
   --background: var(--ion-color-dark) !important;
@@ -1020,6 +1143,7 @@ input {
 
   &:hover {
     background: $themeColorDark;
+
     ion-icon {
       color: $themeColor !important;
     }
@@ -1028,6 +1152,7 @@ input {
   ion-icon {
     color: $themeColorDark;
   }
+
   border: solid 1px $themeColorDark;
 }
 
@@ -1055,6 +1180,7 @@ input {
 
   &.small {
     max-height: 25px !important;
+
     img {
       max-height: 25px !important;
     }
@@ -1062,9 +1188,11 @@ input {
 
   &.thumbnail {
     max-height: 40px !important;
+
     :host {
       max-height: 40px !important;
     }
+
     img {
       max-height: 40px !important;
     }
@@ -1132,7 +1260,8 @@ input {
     justify-content: center;
     margin: auto;
   }
-  > img {
+
+  >img {
     width: 100px;
     height: 100px;
     object-fit: contain;
@@ -1151,6 +1280,7 @@ input {
     color: $themeColorLight;
   }
 }
+
 .cell_chart {
   height: auto;
   width: auto;
@@ -1165,6 +1295,7 @@ input {
   overflow: hidden;
   transform: translate3d(0, 0, 0);
 }
+
 .ripple:after {
   content: "";
   display: block;
@@ -1174,12 +1305,12 @@ input {
   top: 0;
   left: 0;
   pointer-events: none;
-  background: radial-gradient(circle, #000 10%, transparent 10.01%) no-repeat
-    50%;
+  background: radial-gradient(circle, #000 10%, transparent 10.01%) no-repeat 50%;
   transform: scale(10, 10);
   opacity: 0;
   transition: transform 0.5s, opacity 1s;
 }
+
 .ripple:active:after {
   transform: scale(0, 0);
   opacity: 0.2;
@@ -1202,12 +1333,14 @@ label.fileInputLabel {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
   padding: {
     top: 5px !important;
     bottom: 5px !important;
     left: 10px !important;
     right: 10px !important;
   }
+
   ion-icon {
     margin: {
       right: 8px !important;

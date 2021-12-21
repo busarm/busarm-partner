@@ -1,64 +1,76 @@
-import {Injectable} from '@angular/core';
-import {Network} from '@ionic-native/network/ngx';
-import {HttpClient} from "@angular/common/http";
-import {Urls} from "../helpers/Urls";
-import {AppComponent} from "../app.component";
-import {Events} from './Events';
-import {SessionManager} from '../helpers/SessionManager';
-import {PingObject} from "../models/ApiResponse";
+import { Injectable } from "@angular/core";
+import { Network } from "@ionic-native/network/ngx";
+import { HttpClient } from "@angular/common/http";
+import { Urls } from "../helpers/Urls";
+import { AppComponent } from "../app.component";
+import { Events } from "./Events";
+import { SessionManager } from "../helpers/SessionManager";
+import { PingObject } from "../models/ApiResponse";
 
 export enum ConnectionStatus {
     Unknown,
     Online,
-    Offline
+    Offline,
 }
 
 @Injectable()
 export class NetworkProvider {
-
     private pingUrl: string = Urls.pingUrl;
     public static previousStatus: ConnectionStatus = ConnectionStatus.Unknown;
 
     private static instance: NetworkProvider;
 
-    constructor(public network: Network,
-                public event: Events,
-                public httpClient: HttpClient) {}
+    constructor(
+        public network: Network,
+        public event: Events,
+        public httpClient: HttpClient
+    ) { }
 
     /**Initialize Network provider*/
-    public static async initialize(context:AppComponent){
-        NetworkProvider.instance = new NetworkProvider(context.network,context.events,context.httpClient);
+    public static async initialize(context: AppComponent) {
+        NetworkProvider.instance = new NetworkProvider(
+            context.network,
+            context.events,
+            context.httpClient
+        );
         /*Subscribe to internet changes*/
         return await NetworkProvider.instance.initializeNetworkEvents();
     }
 
     /**Get Connection instance*/
-    public static getInstance():NetworkProvider{
+    public static getInstance(): NetworkProvider {
         return this.instance;
     }
 
     /**Start connection check*/
     public async initializeNetworkEvents() {
-        return this.network ? await this.network.onChange().subscribe(()=>{
-            return new Promise(resolve => {
-                this.pingServer(connected =>{
-                    this.notify(connected,false);
-                    resolve(connected);
+        return this.network
+            ? await this.network.onChange().subscribe(() => {
+                return new Promise((resolve) => {
+                    this.pingServer((connected) => {
+                        this.notify(connected, false);
+                        resolve(connected);
+                    });
                 });
             })
-        }) : null;
+            : null;
     }
 
     /**Notify response*/
-    private notify(connected:boolean,trigger:boolean = false):void{
+    private notify(connected: boolean, trigger: boolean = false): void {
         if (connected) {
-            if (trigger && NetworkProvider.previousStatus != ConnectionStatus.Online) {
+            if (
+                trigger &&
+                NetworkProvider.previousStatus != ConnectionStatus.Online
+            ) {
                 this.event.networkChange.emit(true);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Online;
-        }
-        else {
-            if (trigger && NetworkProvider.previousStatus != ConnectionStatus.Offline) {
+        } else {
+            if (
+                trigger &&
+                NetworkProvider.previousStatus != ConnectionStatus.Offline
+            ) {
                 this.event.networkChange.emit(false);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Offline;
@@ -67,13 +79,15 @@ export class NetworkProvider {
 
     /**Ping online server to check if connected*/
     private pingServer(callback: (connected: boolean) => any) {
-        this.httpClient.get(this.pingUrl)
-            .subscribe((data:PingObject) => {
+        this.httpClient.get(this.pingUrl).subscribe(
+            (data: PingObject) => {
                 SessionManager.setPing(data);
                 callback(true);
-            }, () => {
+            },
+            () => {
                 callback(false);
-            });
+            }
+        );
     }
 
     /**Check if connection available*/
@@ -82,13 +96,15 @@ export class NetworkProvider {
     }
 
     /**Check if connection available*/
-    public static checkConnection(callback?: (connected: boolean) => any): Promise<boolean> {
+    public static checkConnection(
+        callback?: (connected: boolean) => any
+    ): Promise<boolean> {
         /*Get Current network states*/
         return new Promise((resolve) => {
-            NetworkProvider.getInstance().pingServer(connected => {
-                NetworkProvider.getInstance().notify(connected,false);
-                if(callback) callback(connected);
-                resolve(connected)
+            NetworkProvider.getInstance().pingServer((connected) => {
+                NetworkProvider.getInstance().notify(connected, false);
+                if (callback) callback(connected);
+                resolve(connected);
             });
         });
     }
