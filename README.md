@@ -1,4 +1,4 @@
-# Wecari API
+# Wecari Partner
 
 ## Description
 
