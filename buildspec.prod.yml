@@ -4,9 +4,9 @@ env:
   variables:
     ENV_FILE: "src/environments/env.prod.json"
   secrets-manager:
-    CLIENT_ID: "prod/secret:partner_client_id"
-    CLIENT_SECRET: "prod/secret:partner_client_secret"
-    BUGSNAG_KEY: "prod/secret:partner_bugsnag_key"
+    CLIENT_ID: "prod/wecari:partner_client_id"
+    CLIENT_SECRET: "prod/wecari:partner_client_secret"
+    BUGSNAG_KEY: "prod/wecari:partner_bugsnag_key"
 phases:
   install:
     runtime-versions:
