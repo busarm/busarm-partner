@@ -43,8 +43,8 @@ App for Wecari Partners
 	- Install NPM Packages. Run `npm install`
 - Add environment variables.
 	- Go to `application\environments` directory
-	- Copy `env.example.json` to `env.prod.json`
-	- Add environment variables in `env.prod.json`
+	- Copy `env.example.json` to `env.json`
+	- Add environment variables in `env.json`
 
 ### Build for Web
 

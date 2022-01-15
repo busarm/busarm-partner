@@ -21,7 +21,7 @@ phases:
       # Generate env file
       - 'echo {\"oauth_client_id\": \"$CLIENT_ID\",\"oauth_client_secret\": \"$CLIENT_SECRET\",\"bugsnag_key\": \"$BUGSNAG_KEY\"} >> $ENV_FILE'
       # Build project
-      - ionic build --dev --optimizejs --minifyjs --minifycss --aot
+      - ionic build --prod --optimizejs --minifyjs --minifycss --aot
 artifacts:
   files:
     - '**/*'
