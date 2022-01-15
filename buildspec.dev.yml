@@ -2,7 +2,7 @@
 version: 0.2
 env:
   variables:
-    ENV_FILE: "src/environments/env.prod.json"
+    ENV_FILE: "src/environments/env.json"
   secrets-manager:
     CLIENT_ID: "dev/wecari:partner_client_id"
     CLIENT_SECRET: "dev/wecari:partner_client_secret"
