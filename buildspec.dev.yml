@@ -1,0 +1,27 @@
+# AWS Codebuild project build specs
+version: 0.2
+env:
+  secrets-manager:
+    CLIENT_ID: "dev/secret:partner_client_id"
+    CLIENT_SECRET: "dev/secret:partner_client_secret"
+    BUGSNAG_KEY: "dev/secret:partner_bugsnag_key"
+    ENV_FILE: "src/environments/env.json"
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - npm install -g @ionic/cli
+  pre_build:
+    commands:
+      - npm install
+  build:
+    commands:
+      # Generate env file
+      - 'echo {\"oauth_client_id\": \"$CLIENT_ID\",\"oauth_client_secret\": \"$CLIENT_SECRET\",\"bugsnag_key\": \"$BUGSNAG_KEY\"} >> $ENV_FILE'
+      # Build project
+      - ionic build --prod --optimizejs --minifyjs --minifycss --aot
+artifacts:
+  files:
+    - '**/*'
+  base-directory: www

@@ -36,7 +36,7 @@ App for Wecari Partners
 	- Add environment variables in `env.json`
 - Run `ionic serve --port=<PORT_NUMBER>` for a dev server.
 
-## Setting Up (Production)
+## Setting Up (Staging/Production)
 
 - Install dependencies
 	- Install Ionic. Visit https://ionicframework.com/docs/intro/cli
