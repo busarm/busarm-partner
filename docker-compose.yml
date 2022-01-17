@@ -1,0 +1,19 @@
+version: '3.7'
+
+networks:
+  # Local network - 'bridge' to allow others to connect
+  local:
+    driver: bridge
+    name: partner-network
+
+services:
+  # Node js server
+  node:
+    restart: always
+    build: .
+    ports:
+      - 8100:80
+    volumes:
+      - ./:/var/app:rw,cached
+    networks:
+      - local

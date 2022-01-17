@@ -10,9 +10,10 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 12
+      nodejs: 14
     commands:
-      - npm install -g @ionic/cli
+      - npm install -g @angular/cli@12.2.4
+      - npm install -g @ionic/cli@6.18.1
   pre_build:
     commands:
       - npm install
