@@ -1,7 +1,7 @@
 import {ENV} from "./ENV";
 import * as envConfigs from "./env.json";
 
-export const ENVIRONMENT: ENV = location.host.match(/staging\./) ? ENV.TEST : ENV.PROD;
+export const ENVIRONMENT: ENV = (envConfigs.testing || location.host.match(/staging\./)) ? ENV.TEST : ENV.PROD;
 export const CONFIGS = {
     production: true,
     app_name: "Wecari Partner",

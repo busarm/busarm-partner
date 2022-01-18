@@ -206,5 +206,17 @@
     "@ionic/angular-toolkit:page": {
       "styleext": "scss"
     }
+  },
+  "build": {
+    "builder": "@angular-devkit/build-angular:browser",
+    "options": {
+       "allowedCommonJsDependencies": [
+          "chart.js",
+          "crypto-js",
+          "rxjs",
+          "@zxing/library",
+          "@bugsnag/js"
+       ]
+     }
   }
 }

@@ -1,10 +1,13 @@
-FROM node:14-alpine
+FROM node:14
 
 # Creating a new directory for app files and setting path in the container
 WORKDIR /var/app
 
+USER root
+
 # Copy instalation files from your file system to container file system
-COPY ["package.json", "package-lock.json*", "./"]
+COPY package.json ./
+COPY package-lock.json* ./
 
 # Instal dependencies
 RUN npm install -g @angular/cli@12.2.4
@@ -15,3 +18,5 @@ RUN npm install
 # COPY ./ .
 
 CMD ["npm", "run", "start-ionic"]
+
+EXPOSE 80

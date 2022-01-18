@@ -3,17 +3,21 @@ version: '3.7'
 networks:
   # Local network - 'bridge' to allow others to connect
   local:
-    driver: bridge
     name: partner-network
 
 services:
-  # Node js server
   node:
     restart: always
     build: .
+    image: wecari-partner:latest
     ports:
       - 8100:80
     volumes:
-      - ./:/var/app:rw,cached
+      - ./:/var/app:rw
+      - node-modeules:/var/app/node_modules:rw
     networks:
       - local
+
+volumes:
+  node-modeules:
+    name: node-modeules-volume
