@@ -1,5 +1,5 @@
 import {ENV} from "./ENV";
-import * as envConfigs from "./env.json";
+import envConfigs from "./env.json";
 
 export const ENVIRONMENT: ENV = (envConfigs.testing || location.host.match(/staging\./)) ? ENV.TEST : ENV.PROD;
 export const CONFIGS = {
