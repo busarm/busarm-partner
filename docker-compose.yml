@@ -1,10 +1,5 @@
 version: '3.7'
 
-networks:
-  # Local network - 'bridge' to allow others to connect
-  local:
-    name: partner-network
-
 services:
   node:
     restart: always
@@ -14,10 +9,8 @@ services:
       - 8100:80
     volumes:
       - ./:/var/app:rw
-      - node-modeules:/var/app/node_modules:rw
-    networks:
-      - local
+      - node-modules:/var/app/node_modules:rw
 
 volumes:
-  node-modeules:
-    name: node-modeules-volume
+  node-modules:
+    name: node-modules-volume

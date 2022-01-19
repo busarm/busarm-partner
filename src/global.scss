@@ -157,6 +157,7 @@ ion-modal {
     --box-shadow: none;
     --backdrop-opacity: 0.4 !important;
     --border-radius: 4px;
+    z-index: 10000;
 
     &::part(content) {
       margin: auto;
@@ -524,8 +525,14 @@ ion-card {
 
 ion-select {
   width: 100%;
-
   justify-content: center;
+}
+
+.custom-select {
+  .selected {
+    color: $themeColor5Tint;
+    --color: $themeColor5Tint;
+  }
 }
 
 input,

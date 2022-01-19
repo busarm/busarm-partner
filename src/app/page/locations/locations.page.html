@@ -72,7 +72,7 @@
                     </ion-card-header>
                     <ion-card-content>
                         <ion-row>
-                            <ion-col size="{{ selector ? '8' : '12'}}" class="cell cell-center cell-flex cell-flex-left">
+                            <ion-col size="12" class="cell cell-center cell-flex cell-flex-left">
                                 <ion-row>
                                     <ion-col size="12">
                                         <ion-label class="cell-title">{{location.loc_name}}</ion-label>
@@ -94,7 +94,7 @@
                                     </ion-col>
                                 </ion-row>
                             </ion-col>
-                            <ion-col *ngIf="selector" size="4" class="cell cell-center cell-flex cell-flex-center ">
+                            <ion-col *ngIf="selector" size="12" class="cell cell-center cell-flex cell-flex-left">
                                 <div>
                                     <div class="cell cell-center ">
                                         <ion-button color="primary" (click)="dismiss(location)">

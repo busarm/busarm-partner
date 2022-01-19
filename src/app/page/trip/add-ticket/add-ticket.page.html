@@ -16,7 +16,8 @@
                 <ion-item>
                     <ion-label position="stacked">{{strings.getString('ticket_type_txt')}}</ion-label>
                     <ion-select name="ticketType" required placeholder="{{strings.getString('select_ticket_type_txt')}}"
-                                [(ngModel)]="selectedTicketType">
+                                [(ngModel)]="selectedTicketType"
+                                value="{{selectedTicketType}}">
                         <ion-select-option *ngFor="let type of ticketTypes" [value]="type.id">
                             {{type.name}} {{type.description}}
                         </ion-select-option>
