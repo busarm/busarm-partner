@@ -28,23 +28,33 @@ App for Wecari Partners
 ## Setting Up (Development)
 
 - Install dependencies
-	- Install Ionic. Visit https://ionicframework.com/docs/intro/cli
-	- Install NPM Packages. Run `npm install`
+  - Install Ionic. Visit https://ionicframework.com/docs/intro/cli
+  - Install NPM Packages. Run `npm install`
 - Add environment variables.
-	- Go to `application\environments`
-	- Copy `env.example.json` to `env.json`
-	- Add environment variables in `env.json`
+  - Go to `src\app\environments`
+  - Copy `env.example.json` to `env.json`
+  - Add environment variables in `env.json`
 - Run `ionic serve --port=<PORT_NUMBER>` for a dev server.
 
 ## Setting Up (Staging/Production)
 
 - Install dependencies
-	- Install Ionic. Visit https://ionicframework.com/docs/intro/cli
-	- Install NPM Packages. Run `npm install`
+  - Install Ionic. Visit https://ionicframework.com/docs/intro/cli
+  - Install NPM Packages. Run `npm install`
 - Add environment variables.
-	- Go to `application\environments` directory
-	- Copy `env.example.json` to `env.json`
-	- Add environment variables in `env.json`
+  - Go to `src\app\environments` directory
+  - Copy `env.example.json` to `env.json`
+  - Add environment variables in `env.json`
+
+## Update version
+
+- Version is defined in multiple places, all of which would need to be updated:
+  - `src\app\environments\environment.ts` - App version (dev)
+  - `src\app\environments\environment.prod.ts` - App version (prod)
+  - `src\manifest.json` - PWA App version
+  - `config.txt` - Cordova Native App Version
+  - `config.xml` - Cordova Native App Version
+  - `package.json` - NPM Package version
 
 ### Build for Web
 

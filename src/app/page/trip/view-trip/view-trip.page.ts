@@ -322,11 +322,20 @@ export class ViewTripPage extends PageController {
         let pickup:Location = {
             loc_id: Utils.safeInt(this.trip.pickup_loc_id),
             loc_name: this.trip.pickup_loc_name, 
-            
+            loc_address: this.trip.pickup_loc_address, 
+            city_id: Number(this.trip.pickup_city_id), 
+            city_name: this.trip.pickup_city, 
+            prov_code: this.trip.pickup_prov_code,             
+            prov_name: this.trip.pickup_prov_name,             
         }
         let dropoff:Location = {
             loc_id: Utils.safeInt(this.trip.dropoff_loc_id),
             loc_name: this.trip.dropoff_loc_name, 
+            loc_address: this.trip.dropoff_loc_address, 
+            city_id: Number(this.trip.dropoff_city_id), 
+            city_name: this.trip.dropoff_city, 
+            prov_code: this.trip.dropoff_prov_code,             
+            prov_name: this.trip.dropoff_prov_name,  
         }
         // Pass only Active and Upcomming status
         let status = this.statusList ? this.statusList.filter(status => status.status_id == '1' || status.status_id == '2') : [];

@@ -170,7 +170,8 @@ export class TripPage extends PageController {
             }
         });
         chooseModal.onDidDismiss().then(data => {
-            if (data.data) {
+            if (data.data && data.data !== NaN && data.data !== null) {
+                console.log("Date selected", data.data);
                 this.selectedDate = data.data;
                 this.loadTripsView();
             }

@@ -4,7 +4,6 @@ import {
     BusType,
     Country,
     Location,
-    LocationType,
     TicketInfo,
     TicketType,
     TripStatus,

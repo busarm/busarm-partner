@@ -64,6 +64,8 @@ export class PayoutPage extends PageController {
      */
     public setMethod(){
         this.selectedMethod = this.payout.payment_methods ? this.payout.payment_methods.find((method) => method.method_id == this.selectedMethodId) : null;
+        this.receiverBankCode = null;
+        this.receiverBank = null;
         this.loadBanks();
     }
 
