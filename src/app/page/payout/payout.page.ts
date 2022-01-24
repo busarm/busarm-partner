@@ -124,7 +124,7 @@ export class PayoutPage extends PageController {
                         this.loadBanks(true);
                     }
                 }
-                else {
+                else if(!this.payout){
                     await this.showToastMsg(result, ToastType.ERROR);
                     this.instance.goHome();
                 }

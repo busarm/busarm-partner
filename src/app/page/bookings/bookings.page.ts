@@ -40,7 +40,7 @@ export class BookingsPage extends PageController {
             if(status){
                 this.bookings = result.data;
             }
-            else {
+            else if(!this.bookings) {
                 await this.showToastMsg(result, ToastType.ERROR);
                 this.instance.goHome();
             }
