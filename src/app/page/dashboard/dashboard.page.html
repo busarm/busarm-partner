@@ -33,8 +33,8 @@
         </ion-buttons>
     </ion-toolbar>
     <ion-searchbar showCancelButton="focus" placeholder="{{strings.getString('enter_ref_code_txt')}}"
-        (input)="onInput($event)" (search)="onInput($event,true)" (clear)="onClear($event)" [animated]="true"
-        inputmode="text" [(ngModel)]="referenceCode">
+        (input)="onInput($event)" (keydown.enter)="onInput($event, true)"
+        (clear)="onClear($event)" [animated]="true" inputmode="text" [(ngModel)]="referenceCode">
     </ion-searchbar>
     <!-- Date selector -->
     <ion-select class="color-light" *ngIf="bookingMonths!=null && bookingMonths.length>0"

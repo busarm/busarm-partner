@@ -11,7 +11,7 @@
             showCancelButton="focus"
             placeholder="{{strings.getString('location_search_hint')}}"
             (input)="onInput($event)"
-            (search)="onInput($event)"
+            (keydown.enter)="onInput($event)"
             (clear)="onClear($event)"
             [animated]="true"
             inputmode="search"

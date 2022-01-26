@@ -16,7 +16,7 @@
             placeholder="{{strings.getString('agent_search_hint')}}"
             debounce="500"
             (input)="onInput($event)"
-            (search)="onInput($event,true)"
+            (keydown.enter)="onInput($event, true)"
             (clear)="onClear($event)"
             (cancel)="onClear($event)"
             [animated]="true"
