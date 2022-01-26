@@ -11,10 +11,13 @@
             showCancelButton="focus"
             placeholder="{{strings.getString('location_search_hint')}}"
             (input)="onInput($event)"
-            (keydown.enter)="onInput($event)"
+            (search)="onInput($event)"
             (clear)="onClear($event)"
             [animated]="true"
             inputmode="search"
+            enterkeyhint="search"
+            [autocomplete]="false"
+            [autocorrect]="false"
             [(ngModel)]="searchText">
     </ion-searchbar>
 </ion-header>
