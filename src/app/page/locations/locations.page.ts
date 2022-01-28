@@ -6,6 +6,7 @@ import { ToastType, Utils } from "../../helpers/Utils";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { AddLocationPage } from './add-location/add-location.page';
+import { SessionManager } from '../../helpers/SessionManager';
 
 @Component({
     selector: 'app-view-locations',
@@ -182,6 +183,9 @@ export class LocationsPage extends PageController {
                         if (this.assertAvailable(result)) {
                             if (result.status) {
                                 this.showToastMsg(result.msg, ToastType.SUCCESS);
+                                if(location.is_default){
+                                    this.refreshUser();
+                                }
                             }
                             else {
                                 this.showToastMsg(result.msg, ToastType.ERROR);
@@ -229,6 +233,7 @@ export class LocationsPage extends PageController {
                         if (this.assertAvailable(result)) {
                             if (result.status) {
                                 this.showToastMsg(result.msg, ToastType.SUCCESS);
+                                this.refreshUser();
                             }
                             else {
                                 this.showToastMsg(result.msg, ToastType.ERROR);
@@ -252,5 +257,20 @@ export class LocationsPage extends PageController {
         const modal = await this.modalCtrl.getTop();
         if (modal)
             modal.dismiss(Utils.assertAvailable(location) ? location : false);
+    }
+
+    /**Refresh session user info*/
+    public refreshUser() {
+        Api.getUserInfo((status, result) => {
+            if (status) {
+                if (Utils.assertAvailable(result)) {
+                    if (result.status) {
+                        // Save user data to session
+                        SessionManager.setUserInfo(result.data);
+                        this.userInfo = result.data;
+                    }
+                }
+            }
+        });
     }
 }
