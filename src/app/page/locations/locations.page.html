@@ -71,6 +71,9 @@
                                             (ionChange)="toggleLocation(location, !location.is_active)">
                                 </ion-toggle>
                             </ion-col>
+                            <ion-col size="6" class="cell cell-flex cell-flex-right">
+                                <ion-label *ngIf="location.is_default" class="status-ok small-text">Default</ion-label>
+                            </ion-col>
                         </ion-row>
                     </ion-card-header>
                     <ion-card-content>
@@ -89,12 +92,6 @@
                                     <ion-col size="12">
                                         <ion-label class="cell-content">{{location.prov_name}}</ion-label>
                                     </ion-col>
-                                    <ion-col size="12" *ngIf="location.is_active && !selector" class="cell cell-center cell-flex cell-flex-left ion-no-padding">
-                                        <ion-button color="dark" (click)="confirmDeleteLocation(location)">
-                                            <ion-icon color="danger" name="remove-circle" slot="start"> </ion-icon>
-                                            {{strings.getString("delete_txt")}}
-                                        </ion-button>
-                                    </ion-col>
                                 </ion-row>
                             </ion-col>
                             <ion-col *ngIf="selector" size="12" class="cell cell-center cell-flex cell-flex-left">
@@ -106,6 +103,17 @@
                                         </ion-button>
                                     </div>
                                 </div>
+                            </ion-col>
+                            <ion-col size="12" *ngIf="location.is_active && !selector" class="cell cell-center cell-flex cell-flex-left ion-no-padding">
+                                <ion-button color="dark" (click)="confirmDeleteLocation(location)">
+                                    <ion-icon color="danger" name="remove-circle" slot="start"> </ion-icon>
+                                    {{strings.getString("delete_txt")}}
+                                </ion-button>
+                            </ion-col>
+                            <ion-col size="12" *ngIf="location.is_active  && !selector && !location.is_default" class="cell cell-center  cell-flex cell-flex-left ion-no-padding">
+                                <ion-button color="tertiary" (click)="confirmMakeDefault(location)">
+                                    {{strings.getString("make_default_txt")}}
+                                </ion-button>
                             </ion-col>
                         </ion-row>
                     </ion-card-content>

@@ -3,7 +3,6 @@
  * */
 import { ENVIRONMENT } from "../../environments/environment";
 import { ENV } from "../../environments/ENV";
-
 export class Urls {
     /*Base Urls*/
     public static get appUrl(): string {

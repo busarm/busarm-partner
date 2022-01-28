@@ -70,6 +70,7 @@ export interface UserInfo {
     allow_international?: boolean | number;
     allow_multi_countries?: boolean | number;
     bank_account?: BankAccount;
+    default_location?: Location;
 }
 
 export interface BankAccount {
@@ -333,6 +334,7 @@ export interface LocationObject extends SimpleResponseObject {
 
 export interface Location {
     is_active?: boolean | number | string;
+    is_default?: boolean | number | string;
     loc_id?: number;
     loc_name?: string;
     loc_address?: string;

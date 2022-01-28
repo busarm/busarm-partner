@@ -21,6 +21,8 @@ export class AddLocationPage extends PageController {
     selectedLocation: LocationRequest;
     selectedLocationType: number;
     selectedLocationName: string;
+    isDefault: boolean = false;
+
     platform: Platform;
     editLocationName: boolean = false;
 
@@ -90,6 +92,7 @@ export class AddLocationPage extends PageController {
         this.showLoading().then(() => {
             Api.addLocation( 
                 this.selectedLocation, 
+                this.isDefault,
                 (status, result) => {
                     if (status) {
                         this.hideLoading();
