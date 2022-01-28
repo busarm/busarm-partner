@@ -14,16 +14,16 @@
         <ion-item>
             <ion-label position="stacked">{{strings.getString('pickup_txt')}}</ion-label>
             <ion-input required name="pickup" (click)="selectOrigin($event)"
-                [value]="selectedPickup!=null?selectedPickup.loc_name:''" [readonly]="true"
-                placeholder="{{strings.getString('select_pickup_txt')}}" type="text" #triporigin>
+                [value]="selectedPickup!=null?selectedPickup.loc_name+', '+selectedPickup.city_name+', '+selectedPickup.prov_name:''"
+                [readonly]="true" placeholder="{{strings.getString('select_pickup_txt')}}" type="text" #triporigin>
             </ion-input>
         </ion-item>
         <br />
         <ion-item>
             <ion-label position="stacked">{{strings.getString('dropoff_txt')}}</ion-label>
             <ion-input required name="dropoff" (click)="selectDestination($event)"
-                [value]="selectedDropOff!=null?selectedDropOff.loc_name:''" [readonly]="true"
-                placeholder="{{strings.getString('select_dropoff_txt')}}" type="text">
+                [value]="selectedDropOff!=null?selectedDropOff.loc_name+', '+selectedDropOff.city_name+', '+selectedDropOff.prov_name:''"
+                [readonly]="true" placeholder="{{strings.getString('select_dropoff_txt')}}" type="text">
             </ion-input>
         </ion-item>
         <br />

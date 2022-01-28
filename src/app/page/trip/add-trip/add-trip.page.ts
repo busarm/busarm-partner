@@ -4,7 +4,6 @@ import {
     BusType,
     Country,
     Location,
-    LocationType,
     TicketInfo,
     TicketType,
     TripStatus,
@@ -66,7 +65,11 @@ export class AddTripPage extends PageController {
         await super.ngOnInit();
     }
 
-    public ionViewDidEnter() { }
+    public ionViewDidEnter() { 
+        if(this.userInfo?.default_location) {
+            this.selectedPickup = this.userInfo?.default_location;
+        }
+    }
 
     /**Launch native date picker*/
     public async showDatePicker() {

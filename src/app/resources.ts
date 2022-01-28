@@ -222,6 +222,8 @@ export enum Keys {
     you_receive_txt,
     go_to_live_txt,
     in_use_txt,
+    make_default_txt,
+    make_default_msg_txt
 }
 
 export type StringKey = keyof typeof Keys;
@@ -353,7 +355,7 @@ const English: String = {
     delete_agent_title_txt: "Delete Agent",
     delete_agent_msg_txt: "Are you sure you want to delete this agent?",
     make_admin_title_txt: "Make Admin",
-    make_admin_msg_txt: "Are you sure you want to make this user and admin?",
+    make_admin_msg_txt: "Are you sure you want to make this user an admin?",
     remove_admin_title_txt: "Remove Admin",
     remove_admin_msg_txt: "Are you sure you want to remove administrator privileges from this user?",
     new_user:"New User?",
@@ -387,8 +389,8 @@ const English: String = {
     payment_reference_txt:"Payment Reference",
     new_request_txt:"New Request",
     receiver_name_txt:"Receiver's Name",
-    receiver_bank_txt:"Receiver's Bank Name",
-    receiver_account_txt:"Receiver's Bank Account #",
+    receiver_bank_txt:"Receiver's Bank",
+    receiver_account_txt:"Receiver's Account #",
     account_name_txt:"Account Name",
     bank_name_txt:"Bank Name",
     account_number_txt:"Account Number",
@@ -445,6 +447,8 @@ const English: String = {
     you_receive_txt: "You Receive",
     go_to_live_txt:"Go to Live",
     in_use_txt: "In Use",
+    make_default_txt: "Make Default",
+    make_default_msg_txt: "Are you sure you want to make this the default location for this account?",
 };
 
 

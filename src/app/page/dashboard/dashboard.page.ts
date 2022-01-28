@@ -37,9 +37,11 @@ export class DashboardPage extends PageController {
     dashboard: Dashboard = null;
     bookingMonths: BookingMonth[] = null;
 
-    private alertShowing = false;
-
     public webScanAvailable = false;
+    
+    private isAlertShowing = false;
+    private isBookingShowing = false;
+    private isFindBookingProcessing = false;
 
     constructor(public modalCtrl: ModalController,
                 public events: Events,
@@ -175,15 +177,15 @@ export class DashboardPage extends PageController {
                         toastType = ToastType.NORMAL;
                         break;
                 }
-                if (!this.alertShowing) {
-                    this.alertShowing = true;
+                if (!this.isAlertShowing) {
+                    this.isAlertShowing = true;
                     await this.showToastMsg(
                         this.dashboard.alert.desc,
                         toastType,
                         duration, true,
                         Utils.convertHTMLEntity("&times;"),
                         () => {
-                            this.alertShowing = false
+                            this.isAlertShowing = false
                         });
                 }
             }
@@ -364,8 +366,8 @@ export class DashboardPage extends PageController {
      */
     public onInput(event, isSearch = false) {
         if (event.isTrusted) {
-            if (event.target.value && isSearch && event.target.value.length > 6) {
-                this.referenceCode = event.target.value.toUpperCase();
+            if (event.target.value && isSearch && event.target.value.length > 6 && !this.isFindBookingProcessing) {
+                this.referenceCode = String(event.target.value).toUpperCase().trim();
                 this.findBooking();
             }
         } 
@@ -419,7 +421,6 @@ export class DashboardPage extends PageController {
      * @param {BookingInfo} bookingInfo
      * @return {Promise<any>}
      */
-    private isBookingShowing = false;
     async showBooking(bookingInfo:BookingInfo){
         if(this.isBookingShowing) return;
         let chooseModal = await this.modalCtrl.create({
@@ -441,11 +442,10 @@ export class DashboardPage extends PageController {
     /**
      * Search booking for reference number
      */
-    private isFindBookingProcessing = false;
     private findBooking() {
         if(this.referenceCode && !this.isFindBookingProcessing){
+            this.isFindBookingProcessing = true;
             this.showLoading().then(()=>{
-                this.isFindBookingProcessing = true;
                 Api.getBookingInfo(this.referenceCode, (status, result) => {
                     this.hideLoading();
                     this.isFindBookingProcessing = false;

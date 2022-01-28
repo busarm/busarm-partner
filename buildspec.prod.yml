@@ -2,7 +2,7 @@
 version: 0.2
 env:
   variables:
-    ENV_FILE: "src/environments/env.prod.json"
+    ENV_FILE: "src/environments/env.json"
   secrets-manager:
     CLIENT_ID: "prod/wecari:partner_client_id"
     CLIENT_SECRET: "prod/wecari:partner_client_secret"
@@ -10,16 +10,17 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 12
+      nodejs: 14
     commands:
-      - npm install -g @ionic/cli
+      - npm install -g @angular/cli@12.2.4
+      - npm install -g @ionic/cli@6.18.1
   pre_build:
     commands:
       - npm install
   build:
     commands:
       # Generate env file
-      - 'echo {\"oauth_client_id\": \"$CLIENT_ID\",\"oauth_client_secret\": \"$CLIENT_SECRET\",\"bugsnag_key\": \"$BUGSNAG_KEY\"} >> $ENV_FILE'
+      - 'echo {\"testing\": false,\"oauth_client_id\": \"$CLIENT_ID\",\"oauth_client_secret\": \"$CLIENT_SECRET\",\"bugsnag_key\": \"$BUGSNAG_KEY\"} >> $ENV_FILE'
       # Build project
       - ionic build --prod --optimizejs --minifyjs --minifycss --aot
 artifacts:

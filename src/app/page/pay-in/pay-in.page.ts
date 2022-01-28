@@ -48,7 +48,7 @@ export class PayInPage extends PageController {
                 if(status){
                     this.payIn = result.data;
                 }
-                else {
+                else if(!this.payIn) {
                     await this.showToastMsg(result, ToastType.ERROR);
                     this.instance.goHome();
                 }

@@ -15,6 +15,9 @@
             (clear)="onClear($event)"
             [animated]="true"
             inputmode="search"
+            enterkeyhint="search"
+            [autocomplete]="false"
+            [autocorrect]="false"
             [(ngModel)]="searchText">
     </ion-searchbar>
 </ion-header>

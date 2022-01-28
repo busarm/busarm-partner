@@ -16,6 +16,7 @@
       "node_modules/@types"
     ],
     "lib": ["ES2020", "DOM" ],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   }
 }

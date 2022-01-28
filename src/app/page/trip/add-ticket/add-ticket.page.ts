@@ -1,8 +1,8 @@
-import {Component, Input} from '@angular/core';
-import {PageController} from "../../page-controller";
-import {ModalController} from "@ionic/angular";
-import {Country, TicketInfo, TicketType} from "../../../models/ApiResponse";
-import {ToastType, Utils} from "../../../helpers/Utils";
+import { Component, Input } from '@angular/core';
+import { PageController } from "../../page-controller";
+import { ModalController } from "@ionic/angular";
+import { Country, TicketInfo, TicketType } from "../../../models/ApiResponse";
+import { ToastType, Utils } from "../../../helpers/Utils";
 
 @Component({
     selector: 'app-add-ticket',
@@ -11,9 +11,10 @@ import {ToastType, Utils} from "../../../helpers/Utils";
 })
 export class AddTicketPage extends PageController {
 
-    @Input() ticketTypes: TicketType[];
     @Input() country: Country;
+    @Input() ticketTypes: TicketType[];
     @Input() selectedTicketType: number;
+
     ticketPrice: number;
 
     constructor(private modalCtrl: ModalController) {
@@ -23,50 +24,43 @@ export class AddTicketPage extends PageController {
     public async ngOnInit() {
         await super.ngOnInit();
     }
-    public ionViewDidEnter(){
+    public ionViewDidEnter() {
+        let type = this.ticketTypes.find(type => type.is_default == '1');
+        if (type) {
+            this.selectedTicketType = Number(type.id);
+        }
     }
 
     /**Add Ticket*/
-    public add(){
-
+    public add() {
         if (Utils.assertAvailable(this.selectedTicketType)) {
-
             if (Utils.assertAvailable(this.ticketPrice)) {
-
-                
-                let ticket: TicketInfo = null;
-                for (let i = 0; i<this.ticketTypes.length; i++){
-                    let type = this.ticketTypes[i];
-                    if (type.id == String(this.selectedTicketType)){
-                        ticket = {
-                            ticket_id:"",
-                            type_id: type.id,
-                            name:type.name,
-                            description:type.description,
-                            currency_code: this.country.currency_code,
-                            price: String(this.ticketPrice),
-                        };
-                        break;
-                    }
-                }
-
-                if (ticket) {
+                let type = this.ticketTypes.find(type => type.id == String(this.selectedTicketType));
+                if (type) {
+                    let ticket: TicketInfo = {
+                        ticket_id: "",
+                        type_id: type.id,
+                        name: type.name,
+                        description: type.description,
+                        currency_code: this.country.currency_code,
+                        price: String(this.ticketPrice),
+                    };
                     this.dismiss(ticket);
                 }
             }
-            else{
+            else {
                 this.showToastMsg(this.strings.getString('enter_ticket_price_txt'), ToastType.ERROR);
             }
         }
-        else{
+        else {
             this.showToastMsg(this.strings.getString('select_ticket_type_txt'), ToastType.ERROR);
         }
     }
 
     /**Close Modal*/
-    async dismiss(ticket?: TicketInfo){
+    async dismiss(ticket?: TicketInfo) {
         const modal = await this.modalCtrl.getTop();
-        if(modal)
+        if (modal)
             modal.dismiss(ticket);
     }
 }

@@ -16,11 +16,14 @@
             placeholder="{{strings.getString('agent_search_hint')}}"
             debounce="500"
             (input)="onInput($event)"
-            (search)="onInput($event,true)"
+            (search)="onInput($event, true)"
             (clear)="onClear($event)"
             (cancel)="onClear($event)"
             [animated]="true"
             inputmode="search"
+            enterkeyhint="search"
+            [autocomplete]="false"
+            [autocorrect]="false"
             [(ngModel)]="searchText">
     </ion-searchbar>
 </ion-header>

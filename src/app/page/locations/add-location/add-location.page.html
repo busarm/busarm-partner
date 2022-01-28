@@ -56,6 +56,11 @@
                 </ion-select-option>
             </ion-select>
         </ion-item>
+        <ion-item>
+            <ion-label>{{strings.getString('make_default_txt')}}</ion-label>
+            <ion-checkbox name="is_admin" slot="end" color="primary" [(ngModel)]="isDefault">
+            </ion-checkbox>
+        </ion-item>
         <div>
             <ion-button expand="full" color="primary" type="submit"
                         [disabled]="!tripForm.form.valid">

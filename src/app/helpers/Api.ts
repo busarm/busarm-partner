@@ -1156,6 +1156,7 @@ export class Api {
      * */
     public static addLocation(
         location: any,
+        isDefault: boolean,
         callback: (
             status: boolean,
             result: SimpleResponseObject | string | any,
@@ -1166,6 +1167,7 @@ export class Api {
             method: OauthRequestMethod.POST,
             params: {
                 location: location,
+                is_default: isDefault,
             },
             url: Urls.apiLocation,
             callback: callback,
@@ -1452,14 +1454,15 @@ export class Api {
         });
     }
 
-    /**Update Location
+    /**
+     * Update Location active status
      * @param locId
-     * @param active
+     * @param is_active
      * @param callback
      * */
-    public static updateLocation(
+    public static updateLocationActiveStatus(
         locId: number,
-        active: boolean,
+        is_active: boolean,
         callback: (
             status: boolean,
             result: SimpleResponseObject | string | any,
@@ -1471,7 +1474,34 @@ export class Api {
             method: OauthRequestMethod.PUT,
             params: {
                 loc_id: locId,
-                is_active: active ? 1 : 0,
+                is_active: is_active ? 1 : 0,
+            },
+            cache: false,
+            callback: callback,
+        });
+    }
+
+    /**
+     * Update Location Default status
+     * @param locId
+     * @param is_default
+     * @param callback
+     * */
+    public static updateLocationdDefaultStatus(
+        locId: number,
+        is_default : boolean,
+        callback: (
+            status: boolean,
+            result: SimpleResponseObject | string | any,
+            responseType: ApiResponseType
+        ) => any
+    ) {
+        this.performRequest({
+            url: Urls.apiLocation,
+            method: OauthRequestMethod.PUT,
+            params: {
+                loc_id: locId,
+                is_default: is_default? 1 : 0,
             },
             cache: false,
             callback: callback,

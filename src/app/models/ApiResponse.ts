@@ -70,6 +70,7 @@ export interface UserInfo {
     allow_international?: boolean | number;
     allow_multi_countries?: boolean | number;
     bank_account?: BankAccount;
+    default_location?: Location;
 }
 
 export interface BankAccount {
@@ -154,7 +155,9 @@ export interface TripInfo {
     pickup_loc_address?: string;
     pickup_loc_lat?: string;
     pickup_loc_lng?: string;
+    pickup_city_id?: string;
     pickup_city?: string;
+    pickup_prov_name?: string;
     pickup_prov_code?: string;
     pickup_loc_type?: string;
     dropoff_loc_id?: string;
@@ -162,7 +165,9 @@ export interface TripInfo {
     dropoff_loc_address?: string;
     dropoff_loc_lat?: string;
     dropoff_loc_lng?: string;
+    dropoff_city_id?: string;
     dropoff_city?: string;
+    dropoff_prov_name?: string;
     dropoff_prov_code?: string;
     dropoff_loc_type?: string;
     ticket_id?: string;
@@ -245,6 +250,7 @@ export interface TicketType {
     id?: string;
     name?: string;
     description?: string;
+    is_default?: string
 }
 
 /*----BUS INFO RESPONSE ------*/
@@ -328,6 +334,7 @@ export interface LocationObject extends SimpleResponseObject {
 
 export interface Location {
     is_active?: boolean | number | string;
+    is_default?: boolean | number | string;
     loc_id?: number;
     loc_name?: string;
     loc_address?: string;
@@ -482,7 +489,7 @@ export interface PaymentMethod {
     transfer_fee_percent?: number;
     transfer_minimum?: number;
     transfer_type?: string;
-    method_active?: number;
+    use_payment?: number;
     is_default?: number;
     is_active?: number;
     use_transfer?: number;

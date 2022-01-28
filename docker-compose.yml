@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  node:
+    restart: always
+    build: .
+    image: wecari-partner:latest
+    ports:
+      - 8100:80
+    volumes:
+      - ./:/var/app:rw
+      - node-modules:/var/app/node_modules:rw
+
+volumes:
+  node-modules:
+    name: node-modules-volume

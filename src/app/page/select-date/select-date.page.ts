@@ -13,7 +13,7 @@ export class SelectDatePage extends PageController {
 
   DEFAULT_FORMAT = "yyyy-MM-dd'T'hh:mm:ss.SSSx";
 
-  @Input() date: Date = new Date();
+  @Input() date: Date = null;
   @Input() minDate: Date = null;
   @Input() maxDate: Date = null;
   @Input() type: DatePickerType = DatePickerType.Date;
@@ -25,7 +25,7 @@ export class SelectDatePage extends PageController {
   }
 
   public async ngOnInit() {
-    this.selectedDate = format(this.date, this.DEFAULT_FORMAT);
+    this.selectedDate = format(this.date || new Date(), this.DEFAULT_FORMAT);
   }
 
   /**
@@ -50,7 +50,7 @@ export class SelectDatePage extends PageController {
 
   /**Close Modal*/
   dismiss(success = false) {
-    this.modalCtrl.dismiss(success ? this.selectedDate : null);
+    this.modalCtrl.dismiss(success && new Date(this.selectedDate).getTime() > 0 ? this.selectedDate : null);
   }
 }
 
