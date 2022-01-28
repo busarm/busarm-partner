@@ -5,7 +5,7 @@ export const ENVIRONMENT: ENV = (envConfigs.testing || location.host.match(/stag
 export const CONFIGS = {
     production: true,
     app_name: "Wecari Partner",
-    app_version: "1.0.56", 
+    app_version: "1.0.57", 
     oauth_scopes: ENVIRONMENT == ENV.TEST ? ['openid', 'user', 'agent', 'tester'] :  ['openid', 'user', 'agent'],
     ...envConfigs
 };
