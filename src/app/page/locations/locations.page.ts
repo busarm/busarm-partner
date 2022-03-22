@@ -17,6 +17,7 @@ export class LocationsPage extends PageController {
 
     @Input() title: string;
     @Input() selector: boolean;
+    @Input() country: string;
 
     searchText: string = null;
     locations: Location[] = null;
@@ -38,7 +39,7 @@ export class LocationsPage extends PageController {
     /*Get Filterred Current Location */
     public filterCurrentLocations() {
         if (this.selector) {
-            return this.currentLocations.filter(x => x.is_active == true);
+            return this.currentLocations.filter(x => x.is_active == true && (!this.country || this.country === x.country_code));
         }
         return this.currentLocations;
     }
