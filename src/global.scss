@@ -137,8 +137,8 @@ ion-split-pane {
 
   .split-pane-side {
     &:not(.show-menu) {
-      min-width: 200px !important;
-      max-width: 20% !important;
+      min-width: 180px !important;
+      max-width: 18% !important;
     }
   }
 }
@@ -939,6 +939,13 @@ input {
 
 .cell-margin-bottom-md {
   margin-bottom: 4px;
+}
+.cell-margin-top-2x {
+  margin-top: 8px;
+}
+
+.cell-margin-bottom-2x {
+  margin-bottom: 8px;
 }
 
 .cell-margin-2x {

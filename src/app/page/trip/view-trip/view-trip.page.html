@@ -52,9 +52,11 @@
                         <div class="cell-content">{{trip.time}}</div>
                     </ion-label>
                     <ion-label class="cell cell-center ">
-                        <div class="cell-title">{{strings.getString('agent_txt')}}</div>
-                        <div class="cell-content">{{trip.agent_name}}</div>
-                        <div class="cell-sub">{{trip.agent_email}}</div>
+                        <div class="cell-title">{{strings.getString('created_by_txt')}}</div>
+                        <a (click)="showAgent()">
+                          <div class="cell-content color-normal">{{trip.agent_name}}</div>
+                          <div class="cell-sub color-normal">{{trip.agent_email}}</div>
+                        </a>
                     </ion-label>
                     <div class="cell background-light-gray round-corner">
                         <ion-label class="cell cell-center ">
@@ -110,7 +112,7 @@
             <ion-list>
                 <ion-row *ngFor="let ticket of trip.tickets; let i = index" [attr.index]="i">
                     <ion-col size="12" size-md="3" class="cell cell-left  cell-flex cell-flex-left ion-no-padding">
-                        <ion-toggle color="success" 
+                        <ion-toggle color="success"
                                     [disabled] = "!allowDeactivateTicket || !ticket.allow_deactivate"
                                     [checked] = "ticket.is_active"
                                     (ionChange)="toggleTripTicket(ticket, !ticket.is_active)">
@@ -143,7 +145,7 @@
             <ion-list>
                 <ion-row *ngFor="let seat of trip.trip_seats; let i = index" [attr.index]="i">
                     <ion-col size="4" class="cell cell-left  cell-flex cell-flex-left ion-no-padding">
-                        <ion-toggle color="success" 
+                        <ion-toggle color="success"
                                     [disabled] = "seat.status=='booked' || seat.status=='locked'"
                                     [checked] = "seat.status!='reserved'"
                                     (ionChange)="reserveTripSeat(seat, seat.status=='reserved')">
@@ -157,8 +159,8 @@
                     <ion-col size="4" class="cell cell-center  cell-flex cell-flex-center ">
                         <div class="cell cell-center  cell-flex cell-flex-center {{getTripSeatStatusClass(seat.status)}}">
                             {{getTripSeatStatusText(seat.status)}}
-                        </div> 
-                    </ion-col> 
+                        </div>
+                    </ion-col>
                 </ion-row>
             </ion-list>
         </ion-card-content>

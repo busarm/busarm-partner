@@ -223,7 +223,8 @@ export enum Keys {
     go_to_live_txt,
     in_use_txt,
     make_default_txt,
-    make_default_msg_txt
+    make_default_msg_txt,
+    created_by_txt
 }
 
 export type StringKey = keyof typeof Keys;
@@ -449,6 +450,7 @@ const English: String = {
     in_use_txt: "In Use",
     make_default_txt: "Make Default",
     make_default_msg_txt: "Are you sure you want to make this the default location for this account?",
+    created_by_txt: "Created By"
 };
 
 
