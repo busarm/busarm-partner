@@ -33,7 +33,7 @@ export class AgentsPage extends PageController {
       this.loadAgentsView(async () => {
         let params = await this.getRouteParams();
         if (params && params.agent_id) {
-          this.filterAgent(params.agent_id);
+          this.filterAgents(params.agent_id);
         }
       });
     }
@@ -46,7 +46,7 @@ export class AgentsPage extends PageController {
     if (event.isTrusted) {
       this.searchText = event.target.value;
       if (this.assertAvailable(this.searchText) && this.searchText.length > 1) {
-        this.filterAgent(this.searchText);
+        this.filterAgents(this.searchText);
       }
       else {
         this.onClear(event);
@@ -57,16 +57,12 @@ export class AgentsPage extends PageController {
 
   /**Filter
    * */
-  public filterAgent(search) {
+  public filterAgents(search: string) {
     if (search && this.assertAvailable(this.agents)) {
-      this.currentAgents = [];
-      for (let index in this.agents) {
-        let agent: UserInfo = this.agents[index];
+      this.currentAgents = this.agents.filter(agent => {
         let reg = new RegExp(search, 'gi');
-        if (search === agent.agent_id || agent.name.match(reg) || agent.email.match(reg)) {
-          this.currentAgents.push(agent)
-        }
-      }
+        return search === agent.agent_id || agent.name.match(reg) || agent.email.match(reg);
+      })
     }
   }
 

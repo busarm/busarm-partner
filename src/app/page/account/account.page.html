@@ -46,8 +46,8 @@
                                         </ion-button>
                                     </ion-col>
                                     <ion-col size="12" *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='') && userInfo.is_admin" class="cell cell-flex cell-flex-center">
-                                        <ion-button color="clear" *ngIf="!platform.is('cordova')" 
-                                                    style="height: 30px!important;width: 30px!important;" 
+                                        <ion-button color="clear" *ngIf="!platform.is('cordova')"
+                                                    style="height: 30px!important;width: 30px!important;"
                                                     class="iconBt">
                                             <input class="fileInput" id="fileInputLogo" type="file" accept="image/*" (change)="changeListener($event)"/>
                                             <label class="fileInputLabel" id="fileInputLogoLabel" for="fileInputLogo">
@@ -64,7 +64,7 @@
                                         <ion-label class="cell-title cell-sub">{{userInfo.partner_name}}</ion-label>
                                     </div>
                                     <div>
-                                        <ion-label class="cell-title">{{userInfo.name}} 
+                                        <ion-label class="cell-title">{{userInfo.name}}
                                             ({{userInfo.is_partner ? strings.getString('owner_txt') : (userInfo.is_admin ? strings.getString('admin_txt') : (userInfo.is_agent ? strings.getString('agent_txt') : strings.getString('user_txt')))}})
                                         </ion-label>
                                     </div>
@@ -119,8 +119,15 @@
                                 <ion-item lines="none" (click)="showPrivacy()" detail>
                                     {{strings.getString('privacy_policy_txt')}}
                                 </ion-item>
-                                <ion-item lines="none" (click)="showApp()" detail>
+                                <ion-item hidden lines="none" (click)="showApp()" detail>
                                     {{strings.getString('go_to_app_txt')}}
+                                </ion-item>
+                                <ion-item lines="none">
+                                  {{strings.getString('dark_mode_txt')}}
+                                  <ion-toggle
+                                  [(ngModel)] = "darkMode"
+                                   (ionChange)="toggleTheme()" slot="end">
+                                  </ion-toggle>
                                 </ion-item>
                             </ion-card-content>
                         </ion-card>

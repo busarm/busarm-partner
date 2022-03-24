@@ -6,7 +6,7 @@
 ion-img {
   width: auto;
   height: 100%;
-  background: white;
+  background: var(--ion-color-light);
   object-fit: contain;
 
   display: flex;

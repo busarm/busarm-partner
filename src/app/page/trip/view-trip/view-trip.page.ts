@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { PageController } from "../../page-controller";
 import { BusInfo, BusType, Location, SeatsInfo, TicketInfo, TicketType, TripInfo, TripStatus } from "../../../models/ApiResponse";
 import { ModalController } from "@ionic/angular";
@@ -11,6 +11,7 @@ import { ViewBusPage } from "../../bus/view-bus/view-bus.page";
 import { SelectStatusPage } from "./select-status/select-status.page";
 import { AddTripPage } from '../add-trip/add-trip.page';
 import { Events } from '../../../services/Events';
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'app-view-trip',
@@ -19,6 +20,7 @@ import { Events } from '../../../services/Events';
 })
 export class ViewTripPage extends PageController {
 
+  @ViewChild('seatCanvas') seatCanvas: ElementRef<HTMLCanvasElement>;
   @Input() trip: TripInfo = null;
 
   statusList: TripStatus[] = null;
@@ -120,6 +122,7 @@ export class ViewTripPage extends PageController {
   /**Process Trip*/
   public async processTrip(trip: TripInfo, completed?: () => any) {
 
+    // Process trip info
     this.selectedBusType = trip.bus_type_id;
     this.allowAddTicket = this.ticketTypes && trip.tickets &&
       trip.tickets.length < this.ticketTypes.length;
@@ -127,13 +130,12 @@ export class ViewTripPage extends PageController {
     if (this.allowDeactivateTicket) {
       trip.tickets.forEach((value: TicketInfo) => {
         value.is_active = value.is_active == "1" || value.is_active == 1 || value.is_active == true;
-        value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 ||
-          value.allow_deactivate == true;
+        value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 || value.allow_deactivate == true;
       });
     }
     this.trip = trip;
 
-    /*Get buses matching trip's bus type*/
+    // Get buses matching trip's bus type
     Api.getBusesForType(this.trip.bus_type_id, (status, result) => {
       if (status) {
         if (this.assertAvailable(result)) {
@@ -146,8 +148,41 @@ export class ViewTripPage extends PageController {
       }
     });
 
+    // Set up chart
+    this.setUpSeatChart();
+
     if (this.assertAvailable(completed)) {
       completed();
+    }
+  }
+
+  /**
+   * Set up bus seats chart
+   */
+  private setUpSeatChart() {
+    if (this.seatCanvas) {
+      new Chart(this.seatCanvas.nativeElement.getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: [this.strings.getString("booked_txt"), this.strings.getString("locked_txt"), this.strings.getString("reserved_txt"), this.strings.getString("available_txt")],
+          datasets: [{
+            data: [parseInt(this.trip.booked_seats), parseInt(this.trip.locked_seats), parseInt(this.trip.reserved_seats), parseInt(this.trip.available_seats)],
+            backgroundColor: [
+              'rgb(46, 139, 87)',
+              'rgb(95, 95, 95)',
+              'rgba(223, 168, 48,1)',
+              'rgba(84, 142, 171,1)',
+            ],
+            hoverBackgroundColor: [
+              'rgb(35, 107, 67)',
+              'rgb(55, 55, 55)',
+              'rgb(155, 115, 40)',
+              "rgb(56, 89, 115)",
+            ]
+          }]
+        }
+
+      }).update()
     }
   }
 

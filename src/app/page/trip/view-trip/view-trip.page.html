@@ -58,37 +58,15 @@
                           <div class="cell-sub color-normal">{{trip.agent_email}}</div>
                         </a>
                     </ion-label>
-                    <div class="cell background-light-gray round-corner">
+                    <div class="cell background-disabled round-corner">
                         <ion-label class="cell cell-center ">
                             <div class="cell-title">{{strings.getString('seats_txt')}}</div>
                             <div class="cell-content">{{trip.bus_seats}}</div>
                         </ion-label>
-                        <ion-row>
-                            <ion-col size="6" size-lg="3">
-                                <ion-label class="cell cell-center ">
-                                    <div class="cell-title">{{strings.getString('booked_txt')}}</div>
-                                    <div class="cell-content">{{trip.booked_seats}}</div>
-                                </ion-label>
-                            </ion-col>
-                            <ion-col size="6" size-lg="3">
-                                <ion-label class="cell cell-center ">
-                                    <div class="cell-title">{{strings.getString('locked_txt')}}</div>
-                                    <div class="cell-content">{{trip.locked_seats}}</div>
-                                </ion-label>
-                            </ion-col>
-                            <ion-col size="6" size-lg="3">
-                                <ion-label class="cell cell-center ">
-                                    <div class="cell-title">{{strings.getString('reserved_txt')}}</div>
-                                    <div class="cell-content">{{trip.reserved_seats}}</div>
-                                </ion-label>
-                            </ion-col>
-                            <ion-col size="6" size-lg="3">
-                                <ion-label class="cell cell-center ">
-                                    <div class="cell-title">{{strings.getString('available_txt')}}</div>
-                                    <div class="cell-content">{{trip.available_seats}}</div>
-                                </ion-label>
-                            </ion-col>
-                        </ion-row>
+                        <div class="cell cell-flex cell-flex-center">
+                          <canvas #seatCanvas class="cell-chart chart-max">
+                          </canvas>
+                        </div>
                     </div>
                 </ion-col>
             </ion-row>

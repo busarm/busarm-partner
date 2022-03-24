@@ -42,7 +42,7 @@
                         </div>
                         <div *ngIf="!toggleUpdate" class="cell-content" [innerHTML]="bus.description"></div>
                         <div *ngIf="toggleUpdate">
-                            <ion-textarea rows="6" class="background-light-gray round-corner"
+                            <ion-textarea rows="6" class="background-disabled round-corner"
                                 [(ngModel)]="busDescription"></ion-textarea>
                             <ion-button class="cell-margin-2x" color="primary" type="button" (click)="updateBus()">
                                 {{strings.getString("done_txt")}}

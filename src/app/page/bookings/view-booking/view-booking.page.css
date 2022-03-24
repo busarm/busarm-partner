@@ -4,7 +4,7 @@
 }
 
 #bookingCard ion-card-content {
-  background: white;
+  background: var(--ion-color-light);
 }
 
 #bookingCard ion-list ion-list-header ion-label {

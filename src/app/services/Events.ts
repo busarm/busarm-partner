@@ -1,14 +1,16 @@
 import { EventEmitter, Injectable } from "@angular/core";
 
 @Injectable({
-    providedIn: "root",
+  providedIn: "root",
 })
 export class Events {
-    public networkChange = new EventEmitter<boolean>(true);
-    public countryChange = new EventEmitter<boolean>(true);
-    public webScannerResult = new EventEmitter<string>(true);
+  public darkModeChange = new EventEmitter<boolean>(true);
 
-    public tripsUpdated = new EventEmitter<boolean>(true);
-    public busesUpdated = new EventEmitter<boolean>(true);
-    public bookingsUpdated = new EventEmitter<boolean>(true);
+  public networkChange = new EventEmitter<boolean>(true);
+  public countryChange = new EventEmitter<boolean>(true);
+  public webScannerResult = new EventEmitter<string>(true);
+
+  public tripsUpdated = new EventEmitter<boolean>(true);
+  public busesUpdated = new EventEmitter<boolean>(true);
+  public bookingsUpdated = new EventEmitter<boolean>(true);
 }

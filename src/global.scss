@@ -15,7 +15,7 @@
 .app-loader {
   z-index: 20000 !important;
 
-  background: $transGray;
+  background: var(--translucent-color-light);
   position: fixed;
   width: 100%;
   height: 100%;
@@ -53,8 +53,8 @@
   .spinner>div {
     width: 18px;
     height: 18px;
-    border: solid 2px $themeColor;
-    background-color: $themeColorDark;
+    border: solid 2px var(--ion-color-secondary);
+    background-color: var(--ion-color-primary);
 
     border-radius: 100%;
     display: inline-block;
@@ -150,7 +150,30 @@ ion-content .padding {
   --padding-end: 10px !important;
 }
 
+ion-loading {
+  --background: var(--ion-color-light) !important;
+  --color: var(--ion-text-color) !important;
+  color: var(--ion-text-color) !important;
+  --spinner-color: var(--ion-text-color) !important;
+}
+
+ion-alert {
+  --background: var(--ion-color-light) !important;
+  --color: var(--ion-text-color) !important;
+}
+
+ion-datetime {
+  --background: var(--ion-color-light) !important;
+  --background-rgb: var(--ion-color-light-rgb) !important;
+  --color: var(--ion-text-color) !important;
+  color: var(--ion-text-color) !important;
+  --title-color: var(--ion-text-color) !important;
+}
+
 ion-modal {
+  --background: var(--ion-color-light);
+  --color: var(--ion-text-color) !important;
+
   &.date-modal {
     --max-width: 300px !important;
     --max-height: 550px !important;
@@ -183,6 +206,23 @@ ion-modal {
   }
 }
 
+ion-select {
+  width: 100%;
+  justify-content: center;
+}
+
+ion-select-option {
+  color: var(--ion-text-color) !important;
+  --color: var(--ion-text-color) !important;
+}
+
+.custom-select {
+  .selected {
+    color: var(--ion-text-color) !important;
+    --color: var(--ion-text-color) !important;
+  }
+}
+
 ion-item {
   padding: 0 !important;
   cursor: pointer;
@@ -193,31 +233,31 @@ ion-item {
 }
 
 ion-icon {
-  color: $themeColorDark;
+  color: var(--ion-color-primary);
 
   &.ok {
     color: seagreen !important;
   }
 
   &.danger {
-    color: $themeColor2 !important;
+    color: var(--ion-color-danger) !important;
   }
 
   &.warn {
-    color: $themeColor4 !important;
+    color: var(--ion-color-warning) !important;
   }
 
   &.primary {
-    color: $themeColorDark !important;
+    color: var(--ion-color-primary) !important;
   }
 
   &.secondary {
-    color: $themeColor !important;
+    color: var(--ion-color-secondary) !important;
   }
 }
 
 ion-title {
-  color: $themeColor;
+  color: var(--ion-color-secondary);
 
   &.ok,
   .success {
@@ -226,28 +266,28 @@ ion-title {
   }
 
   &.danger {
-    color: $themeColor2 !important;
+    color: var(--ion-color-danger) !important;
     --color: var(--ion-color-danger) !important;
   }
 
   &.warn {
-    color: $themeColor4 !important;
+    color: var(--ion-color-warning) !important;
     --color: var(--ion-color-warning) !important;
   }
 
   &.primary {
-    color: $themeColorDark !important;
+    color: var(--ion-color-primary) !important;
     --color: var(--ion-color-primary) !important;
   }
 
   &.secondary {
-    color: $themeColor !important;
+    color: var(--ion-color-secondary) !important;
     --color: var(--ion-color-secondary) !important;
   }
 }
 
 ion-label {
-  color: $themeColorDark;
+  color: var(--ion-color-primary);
 
   &.ok {
     color: seagreen !important;
@@ -255,29 +295,29 @@ ion-label {
   }
 
   &.danger {
-    color: $themeColor2 !important;
+    color: var(--ion-color-danger) !important;
     --color: var(--ion-color-danger) !important;
   }
 
   &.warn {
-    color: $themeColor4 !important;
+    color: var(--ion-color-warning) !important;
     --color: var(--ion-color-warning) !important;
   }
 
   &.primary {
-    color: $themeColorDark !important;
+    color: var(--ion-color-primary) !important;
     --color: var(--ion-color-primary) !important;
   }
 
   &.secondary {
-    color: $themeColor !important;
+    color: var(--ion-color-secondary) !important;
     --color: var(--ion-color-secondary) !important;
   }
 }
 
 ion-fab-button {
   ion-icon {
-    color: $themeColor !important;
+    color: var(--ion-color-secondary) !important;
   }
 }
 
@@ -287,20 +327,20 @@ button {
   text-transform: none !important;
 
   &[color="primary"] {
-    color: $themeColor !important;
+    color: var(--ion-color-secondary) !important;
     --color: var(--ion-color-secondary) !important;
 
     ion-icon {
-      color: $themeColor !important;
+      color: var(--ion-color-secondary) !important;
     }
   }
 
   &[color="secondary"] {
-    color: $themeColorDark !important;
+    color: var(--ion-color-primary) !important;
     --color: var(--ion-color-primary) !important;
 
     ion-icon {
-      color: $themeColorDark !important;
+      color: var(--ion-color-primary) !important;
     }
   }
 
@@ -308,71 +348,64 @@ button {
     background: seagreen !important;
     --background: var(--ion-color-success) !important;
     --background-focused: var(--ion-color-success-tint) !important;
-    color: white !important;
-    --color: white !important;
+    color: var(--ion-color-light) !important;
+    --color: var(--ion-color-light) !important;
 
     ion-icon {
-      color: white !important;
+      color: var(--ion-color-light) !important;
     }
   }
 
   &.danger {
-    background: $themeColor2 !important;
+    background: var(--ion-color-danger) !important;
     --background: var(--ion-color-danger) !important;
     --background-focused: var(--ion-color-danger-tint) !important;
-    color: white !important;
-    --color: white !important;
+    color: var(--ion-color-light) !important;
+    --color: var(--ion-color-light) !important;
 
     ion-icon {
-      color: white !important;
+      color: var(--ion-color-light) !important;
     }
   }
 
   &.warn {
-    background: $themeColor4 !important;
+    background: var(--ion-color-warning) !important;
     --background: var(--ion-color-warning) !important;
     --background-focused: var(--ion-color-warning-tint) !important;
-    color: $textColorDarker !important;
+    color: var(--ion-text-color-darker) !important;
     --color: var(--ion-color-dark) !important;
 
     ion-icon {
-      color: $textColorDarker !important;
+      color: var(--ion-text-color-darker) !important;
     }
   }
 
   &.primary {
-    background: $themeColorDark !important;
+    background: var(--ion-color-primary) !important;
     --background: var(--ion-color-primary) !important;
     --background-focused: var(--ion-color-primary-tint) !important;
-    color: $themeColor !important;
+    color: var(--ion-color-secondary) !important;
     --color: var(--ion-color-secondary) !important;
 
     ion-icon {
-      color: $themeColor !important;
+      color: var(--ion-color-secondary) !important;
     }
   }
 
   &.secondary {
-    background: $themeColor !important;
+    background: var(--ion-color-secondary) !important;
     --background: var(--ion-color-secondary) !important;
     --background-focused: var(--ion-color-secondary-tint) !important;
-    color: $themeColorDark !important;
+    color: var(--ion-color-primary) !important;
     --color: var(--ion-color-primary) !important;
 
     ion-icon {
-      color: $themeColorDark !important;
+      color: var(--ion-color-primary) !important;
     }
   }
 }
 
 ion-searchbar {
-
-  input,
-  button,
-  select,
-  textarea {
-    color: #0a0a0a !important;
-  }
 
   ion-label,
   ion-icon,
@@ -395,75 +428,43 @@ ion-searchbar {
 
 ion-header {
 
-  div,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  input,
-  button,
-  select,
-  textarea,
+  background: var(--ion-color-primary) !important;
+  --background: var(--ion-color-primary) !important;
+  color: var(--ion-color-secondary) !important;
+  --color: var(--ion-color-secondary) !important;
+
   ion-label,
   ion-title {
-    color: $themeColor !important;
+    color: var(--ion-color-secondary) !important;
+    --color: var(--ion-color-secondary) !important;
   }
 
   ion-icon {
     color: var(--ion-color-secondary) !important;
-  }
-
-  background: var(--ion-color-primary) !important;
-  color: var(--ion-color-secondary) !important;
-
-  ion-toolbar {
-    --background: var(--ion-color-primary) !important;
     --color: var(--ion-color-secondary) !important;
   }
 
-  &.header-ios {
-    ion-searchbar {
-
-      input,
-      button,
-      ion-label,
-      ion-title {
-        color: $themeColor !important;
-      }
-
-      color: var(--ion-color-secondary) !important;
-
-      ion-icon {
-        color: var(--ion-color-secondary) !important;
-      }
-    }
+  ion-toolbar {
+    --background: var(--ion-color-primary) !important;
+    background: var(--ion-color-primary) !important;
+    --color: var(--ion-color-secondary) !important;
+    color: var(--ion-color-secondary) !important;
   }
 
-  &.header-md {
-    ion-searchbar {
+  ion-searchbar {
+    --background: var(--ion-color-light) !important;
+    --color: var(--ion-color-dark) !important;
+    color: var(--ion-color-dark) !important;
 
-      input,
-      button,
-      ion-label,
-      ion-title {
-        color: $themeColorDark !important;
-      }
-
-      color: var(--ion-color-primary) !important;
-
-      ion-icon {
-        color: var(--ion-color-primary) !important;
-      }
+    ion-icon {
+      color: var(--ion-color-dark) !important;
     }
   }
 }
 
 ion-content {
   .scroll-content {
-    background: white !important;
+    background: var(--ion-color-light) !important;
   }
 }
 
@@ -476,7 +477,7 @@ ion-refresher {
   }
 
   ion-icon {
-    color: $themeColorDark;
+    color: var(--ion-color-primary);
   }
 }
 
@@ -486,14 +487,27 @@ ion-tabs {
     --color: var(--ion-color-secondary) !important;
 
     ion-label {
-      color: $themeColor !important;
+      color: var(--ion-color-secondary) !important;
+      --color: var(--ion-color-secondary) !important;
     }
 
     ion-icon {
-      color: $themeColor !important;
+      color: var(--ion-color-secondary) !important;
+      --color: var(--ion-color-secondary) !important;
     }
   }
 }
+
+// ion-tab-button {
+//   --color-focused: var(--text-color-light) !important;
+//   --color-selected: var(--text-color-light) !important;
+//   ion-label {
+//     // color: var(--ion-color-secondary) !important;
+//     // --color: var(--ion-color-secondary) !important;
+//     color: var(--text-color-light) !important;
+//     --color: var(--text-color-light) !important;
+//   }
+// }
 
 ion-toast {
   --button-color: var(--ion-color-secondary);
@@ -501,37 +515,21 @@ ion-toast {
 
 ion-card {
   ion-icon {
-    color: $themeColorDark !important;
+    color: var(--ion-color-primary) !important;
   }
 
   ion-card-header {
-    background: $lightGray;
-    color: $textColorDark !important;
+    background: var(--translucent-color-light);
+    color: var(--ion-text-color) !important;
     margin-bottom: 0;
 
     border-bottom: {
       style: solid;
       width: 1px;
-      color: $transGray;
+      color: var(--translucent-color-light);
     }
 
     font-size: 14px !important;
-  }
-
-  ion-card-content {
-    background: white;
-  }
-}
-
-ion-select {
-  width: 100%;
-  justify-content: center;
-}
-
-.custom-select {
-  .selected {
-    color: $themeColor5Tint;
-    --color: $themeColor5Tint;
   }
 }
 
@@ -586,7 +584,7 @@ ion-input,
 ion-card,
 ion-item,
 ion-searchbar {
-  font-family: $globalFontFamily !important;
+  font-family: var(--font-global) !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
   hyphens: auto;
@@ -606,7 +604,7 @@ input {
   border-radius: 2px;
   outline: none;
   background: transparent;
-  color: $textColorDarker;
+  color: var(--ion-text-color-darker);
 }
 
 .logo {
@@ -637,7 +635,7 @@ input {
 
 .logoNameTxt {
   margin: auto;
-  color: $textColorDark;
+  color: var(--ion-text-color);
 }
 
 .logoTextDiv {
@@ -648,38 +646,38 @@ input {
 
 .toast-normal {
   --background: var(--ion-color-dark) !important;
-  --color: white !important;
+  --color: var(--ion-color-light) !important;
   --button-color: var(--ion-color-light-tint) !important;
 
   .toast-container,
   .toast-message {
     background: var(--ion-color-dark) !important;
-    color: $textColor !important;
+    color: var(--ion-text-color) !important;
   }
 
   .toast-button {
     --ion-default-font: 12px !important;
     background: var(--ion-color-dark);
-    color: $themeColor;
+    color: var(--ion-color-secondary);
     font-size: 12px !important;
   }
 }
 
 .toast-error {
   --background: var(--ion-color-danger) !important;
-  --color: white !important;
+  --color: var(--ion-color-light) !important;
   --button-color: var(--ion-color-light-tint) !important;
 
   .toast-container,
   .toast-message {
-    background: $themeColor2 !important;
-    color: $textColor !important;
+    background: var(--ion-color-danger) !important;
+    color: var(--ion-text-color) !important;
   }
 
   .toast-button {
     --ion-default-font: 12px !important;
-    background: $themeColor2;
-    color: $translucentWhite;
+    background: var(--ion-color-danger);
+    color: var(--translucent-color-lightest);
     font-size: 12px !important;
   }
 }
@@ -691,39 +689,39 @@ input {
 
   .toast-container,
   .toast-message {
-    background: $themeColor4;
-    color: $textColor;
+    background: var(--ion-color-warning);
+    color: var(--ion-text-color);
   }
 
   .toast-button {
     --ion-default-font: 12px !important;
-    background: $themeColor4;
-    color: $translucentWhite;
+    background: var(--ion-color-warning);
+    color: var(--translucent-color-lightest);
     font-size: 12px !important;
   }
 }
 
 .toast-success {
   --background: var(--ion-color-success) !important;
-  --color: white !important;
+  --color: var(--ion-color-light) !important;
   --button-color: var(--ion-color-light-tint) !important;
 
   .toast-container,
   .toast-message {
     background: seagreen;
-    color: $textColor;
+    color: var(--ion-text-color);
   }
 
   .toast-button {
     --ion-default-font: 12px !important;
     background: seagreen;
-    color: $translucentWhite;
+    color: var(--translucent-color-lightest);
     font-size: 12px !important;
   }
 }
 
 .status-ok {
-  color: white;
+  color: var(--ion-color-light);
   padding: 5px 8px;
   background: seagreen;
   border-radius: 3px;
@@ -732,13 +730,13 @@ input {
   justify-content: center;
 
   --background: var(--ion-color-success) !important;
-  --color: white !important;
+  --color: var(--ion-color-light) !important;
 }
 
 .status-warn {
-  color: white;
+  color: var(--ion-color-light);
   padding: 5px 8px;
-  background: $themeColor4;
+  background: var(--ion-color-warning);
   border-radius: 3px;
   display: flex;
   align-items: center;
@@ -749,22 +747,22 @@ input {
 }
 
 .status-error {
-  color: white;
+  color: var(--ion-color-light);
   padding: 5px 8px;
-  background: $themeColor2;
+  background: var(--ion-color-danger);
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
 
   --background: var(--ion-color-danger) !important;
-  --color: white !important;
+  --color: var(--ion-color-light) !important;
 }
 
 .status-default {
-  color: white;
+  color: var(--ion-color-light);
   padding: 5px 8px;
-  background: $themeColor5;
+  background: var(--ion-color-normal);
   border-radius: 3px;
   display: flex;
   align-items: center;
@@ -772,9 +770,9 @@ input {
 }
 
 .status-cancel {
-  color: white;
+  color: var(--ion-color-light);
   padding: 5px 8px;
-  background: $shadowColor;
+  background: var(--shadow-color);
   border-radius: 3px;
   display: flex;
   align-items: center;
@@ -782,10 +780,13 @@ input {
 }
 
 .section-title {
-  color: $themeColorDark;
+  color: var(--ion-text-color-darker);
   font-size: 20px;
   font-weight: 400;
-  background: white;
+  background: transparent;
+  ion-icon {
+    color: var(--ion-text-color-darker) !important;
+  }
 }
 
 .cell {
@@ -867,43 +868,43 @@ input {
   }
 
   &.danger {
-    color: $themeColor2 !important;
+    color: var(--ion-color-danger) !important;
   }
 
   &.warn {
-    color: $themeColor4 !important;
+    color: var(--ion-color-warning) !important;
   }
 
   &.primary {
-    color: $themeColorDark !important;
+    color: var(--ion-color-primary) !important;
   }
 
   &.secondary {
-    color: $themeColor !important;
+    color: var(--ion-color-secondary) !important;
   }
 
   .cell-title {
-    color: $textColorDark;
+    color: var(--ion-text-color);
     font-weight: bold;
     margin: auto;
   }
 
   .cell-content {
-    color: $textColorDark;
+    color: var(--ion-text-color);
     margin: auto;
     white-space: normal;
     word-wrap: break-word;
   }
 
   .cell-sub {
-    color: $themeColorLight;
+    color: var(--ion-color-primary-light);
     margin: auto;
     white-space: normal;
     word-wrap: break-word;
   }
 
   .cell-label {
-    color: $themeColorLight;
+    color: var(--ion-color-primary-light);
     font-weight: bold;
     margin: auto;
   }
@@ -940,6 +941,7 @@ input {
 .cell-margin-bottom-md {
   margin-bottom: 4px;
 }
+
 .cell-margin-top-2x {
   margin-top: 8px;
 }
@@ -1045,47 +1047,47 @@ input {
 
 /*Colors*/
 .color-light {
-  color: $textColor !important;
+  color: var(--ion-text-color) !important;
   --color: var(--ion-color-light) !important;
 }
 
 .color-gray {
-  color: $shadowColor !important;
+  color: var(--shadow-color) !important;
   --color: var(--ion-color-medium) !important;
 }
 
 .color-dark {
-  color: $textColorDarker !important;
+  color: var(--ion-text-color-darker) !important;
   --color: var(--ion-color-dark) !important;
 }
 
 .color-primary {
-  color: $themeColorDark !important;
+  color: var(--ion-color-primary) !important;
   --color: var(--ion-color-primary) !important;
 }
 
 .color-primary-light {
-  color: $themeColorLight !important;
+  color: var(--ion-color-primary-light) !important;
   --color: var(--ion-color-light) !important;
 }
 
 .color-secondary {
-  color: $themeColor !important;
+  color: var(--ion-color-secondary) !important;
   --color: var(--ion-color-secondary) !important;
 }
 
 .color-warning {
-  color: $themeColor4 !important;
+  color: var(--ion-color-warning) !important;
   --color: var(--ion-color-warning) !important;
 }
 
 .color-danger {
-  color: $themeColor2 !important;
+  color: var(--ion-color-danger) !important;
   --color: var(--ion-color-danger) !important;
 }
 
 .color-normal {
-  color: $themeColor5 !important;
+  color: var(--ion-color-normal) !important;
   --color: var(--ion-color-normal) !important;
 }
 
@@ -1094,33 +1096,33 @@ input {
   --color: var(--ion-color-success) !important;
 }
 
-.color-light-gray {
-  color: #ebebeb !important;
-  --color: #ebebeb !important;
+.color-disabled {
+  color: var(--disabled-color) !important;
+  --color: var(--disabled-color) !important;
 }
 
 .background-primary {
-  background: $themeColorDark !important;
+  background: var(--ion-color-primary) !important;
   --background: var(--ion-color-primary) !important;
 }
 
 .background-secondary {
-  background: $themeColor !important;
+  background: var(--ion-color-secondary) !important;
   --background: var(--ion-color-secondary) !important;
 }
 
 .background-warning {
-  background: $themeColor4 !important;
+  background: var(--ion-color-warning) !important;
   --background: var(--ion-color-warning) !important;
 }
 
 .background-danger {
-  background: $themeColor2 !important;
+  background: var(--ion-color-danger) !important;
   --background: var(--ion-color-danger) !important;
 }
 
 .background-normal {
-  background: $themeColor5 !important;
+  background: var(--ion-color-normal) !important;
   --background: var(--ion-color-normal) !important;
 }
 
@@ -1130,44 +1132,44 @@ input {
 }
 
 .background-light {
-  background: $textColor !important;
+  background: var(--ion-text-color) !important;
   --background: var(--ion-color-light) !important;
 }
 
-.background-light-gray {
-  background: #ebebeb !important;
-  --background: #ebebeb !important;
+.background-disabled {
+  background: var(--disabled-color) !important;
+  --background: var(--disabled-color) !important;
 }
 
 .background-gray {
-  background: $shadowColor !important;
+  background: var(--shadow-color) !important;
   --background: var(--ion-color-medium) !important;
 }
 
 .background-dark {
-  background: $textColorDarker !important;
+  background: var(--ion-text-color-darker) !important;
   --background: var(--ion-color-dark) !important;
 }
 
 .infoBt {
   height: 30px;
   width: 30px;
-  background: white;
+  background: var(--ion-color-light);
   border-radius: 50%;
 
   &:hover {
-    background: $themeColorDark;
+    background: var(--ion-color-primary);
 
     ion-icon {
-      color: $themeColor !important;
+      color: var(--ion-color-secondary) !important;
     }
   }
 
   ion-icon {
-    color: $themeColorDark;
+    color: var(--ion-color-primary);
   }
 
-  border: solid 1px $themeColorDark;
+  border: solid 1px var(--ion-color-primary);
 }
 
 .iconBt {
@@ -1184,7 +1186,7 @@ input {
 .img {
   width: auto;
   height: auto;
-  background: white;
+  background: var(--ion-color-light);
   object-fit: contain;
 
   display: flex;
@@ -1291,15 +1293,15 @@ input {
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: $themeColorLight;
+    color: var(--ion-color-primary-light);
   }
 }
 
-.cell_chart {
+.cell-chart {
   height: auto;
   width: auto;
 
-  &.chart_max {
+  &.chart-max {
     min-width: 250px !important;
   }
 }
