@@ -9,9 +9,9 @@
   --shadow-color: rgba(77, 80, 79, 0.6);
   --shadow-color-darker: rgba(55, 55, 55, 0.9);
   --translucent-color: rgba(85, 85, 85, 0.2);
-  --translucent-color-light: rgba(85, 85, 85, 0.11);
+  --translucent-color-light: rgba(85, 85, 85, 0.1);
   --translucent-color-lighter: rgba(85, 85, 85, 0.5);
-  --translucent-color-lightest: rgba(255, 255, 255, 0.71);
+  --translucent-color-lightest: rgba(255, 255, 255, 0.7);
   --disabled-color: rgb(231, 231, 231);
   --text-color-light: whitesmoke;
   --text-color-lighter: white;
@@ -25,20 +25,20 @@
   --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: rgb(28, 85, 85);
   --ion-color-primary-tint: rgb(24, 71, 71);
-  --ion-color-primary-light: rgba(38, 175, 175, 0.6);
-  --ion-color-primary-lighter: rgba(38, 175, 175, 0.3);
-  --ion-color-primary-lightest: rgba(38, 175, 175, 0.1);
+  --ion-color-primary-light: rgba(38, 114, 114, 0.5);
+  --ion-color-primary-lighter: rgba(38, 114, 114, 0.3);
+  --ion-color-primary-lightest: rgba(38, 114, 114, 0.05);
 
   /** secondary **/
-  --ion-color-secondary: rgb(169, 248, 194);
-  --ion-color-secondary-rgb: rgb(169, 248, 194);
+  --ion-color-secondary: rgb(233, 255, 183);
+  --ion-color-secondary-rgb: rgb(233, 255, 183);
   --ion-color-secondary-contrast: #0000;
   --ion-color-secondary-contrast-rgb: 0, 0, 0;
-  --ion-color-secondary-shade: rgb(141, 207, 162);
-  --ion-color-secondary-tint: rgb(129, 194, 150);
-  --ion-color-secondary-light: rgba(205, 255, 221, 0.7);
-  --ion-color-secondary-lighter: rgba(205, 255, 221, 0.5);
-  --ion-color-secondary-lightest: rgba(205, 255, 221, 0.3);
+  --ion-color-secondary-shade: rgb(209, 228, 165);
+  --ion-color-secondary-tint: rgb(194, 212, 153);
+  --ion-color-secondary-light: rgba(233, 255, 183, 0.7);
+  --ion-color-secondary-lighter: rgba(233, 255, 183, 0.5);
+  --ion-color-secondary-lightest: rgba(233, 255, 183, 0.3);
 
   /** tertiary **/
   --ion-color-tertiary: rgba(223, 168, 48, 1);
@@ -73,7 +73,7 @@
   --ion-color-danger-tint: rgb(155, 70, 32);
 
   /** light **/
-  --ion-color-light: rgb(243, 243, 243);
+  --ion-color-light: rgb(241, 241, 241);
   --ion-color-light-rgb: rgb(241, 241, 241);
   --ion-color-light-contrast: #000000;
   --ion-color-light-contrast-rgb: 0, 0, 0;
@@ -188,7 +188,6 @@ body.dark {
   --ion-text-color-rgb: var(--text-color-light);
   --ion-text-color-dark: var(--text-color-dark);
   --ion-text-color-dark-rgb: var(--text-color-dark);
-
 
   // Step colors
   --ion-color-step-50: var(--ion-color-light-tint);

@@ -138,6 +138,12 @@ export class AppComponent {
       SessionManager.setDarkMode(systemDark.matches);
       document.body.classList.toggle('dark', systemDark.matches)
     }
+    else {
+      SessionManager.getDarkMode().then(enabled => {
+        document.body.classList.toggle('dark', enabled)
+      })
+    }
+
     // Listen to system changes
     systemDark.onchange = (sys) => {
       if (!this.authorized && AppComponent._oauth.hasExpired()) {

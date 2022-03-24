@@ -58,16 +58,6 @@
                           <div class="cell-sub color-normal">{{trip.agent_email}}</div>
                         </a>
                     </ion-label>
-                    <div class="cell background-disabled round-corner">
-                        <ion-label class="cell cell-center ">
-                            <div class="cell-title">{{strings.getString('seats_txt')}}</div>
-                            <div class="cell-content">{{trip.bus_seats}}</div>
-                        </ion-label>
-                        <div class="cell cell-flex cell-flex-center">
-                          <canvas #seatCanvas class="cell-chart chart-max">
-                          </canvas>
-                        </div>
-                    </div>
                 </ion-col>
             </ion-row>
         </ion-card-content>
@@ -120,6 +110,16 @@
             {{strings.getString("seats_txt")}}
         </ion-card-title>
         <ion-card-content>
+          <div class="cell round-corner">
+              <ion-label class="cell cell-center ">
+                  <div class="cell-title">{{strings.getString('total_txt')}}</div>
+                  <div class="cell-content">{{trip.bus_seats}}</div>
+              </ion-label>
+              <div class="cell cell-flex cell-flex-center">
+                <canvas #seatCanvas class="cell-chart chart-max">
+                </canvas>
+              </div>
+          </div>
             <ion-list>
                 <ion-row *ngFor="let seat of trip.trip_seats; let i = index" [attr.index]="i">
                     <ion-col size="4" class="cell cell-left  cell-flex cell-flex-left ion-no-padding">
