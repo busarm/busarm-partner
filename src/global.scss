@@ -519,7 +519,7 @@ ion-card {
   }
 
   ion-card-header {
-    background: var(--translucent-color-light);
+    background: var(--ion-color-step-100);
     color: var(--ion-text-color) !important;
     margin-bottom: 0;
 
@@ -531,6 +531,10 @@ ion-card {
 
     font-size: 14px !important;
   }
+}
+
+ion-picker-internal {
+  background: var(--ion-color-light-tint);
 }
 
 input,
@@ -897,14 +901,14 @@ input {
   }
 
   .cell-sub {
-    color: var(--ion-color-primary-light);
+    color: var(--ion-color-medium-shade);
     margin: auto;
     white-space: normal;
     word-wrap: break-word;
   }
 
   .cell-label {
-    color: var(--ion-color-primary-light);
+    color: var(--ion-color-medium-tint);
     font-weight: bold;
     margin: auto;
   }
