@@ -139,7 +139,7 @@ export class TripPage extends PageController {
   public groupTrips(trips: TripInfo[]): GroupedTrips[] {
     let list: GroupedTrips[] = [];
     for (let trip of trips) {
-      let date = this.getDateString(new Date(trip.trip_date));
+      let date = new Date(trip.trip_date).toDateString();
       let match = list.find(t => t.date === date)
       if(match) {
         let matchIndex = list.findIndex(t => t.date === match.date)
