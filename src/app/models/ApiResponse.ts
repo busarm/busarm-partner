@@ -138,7 +138,7 @@ export interface BookingInfo {
 
 /*----TRIP INFO RESPONSE ------*/
 
-export interface TripsInfoObject extends SimpleResponseObject {
+export interface TripsObject extends SimpleResponseObject {
     data?: TripInfo[];
 }
 
@@ -255,7 +255,7 @@ export interface TicketType {
 
 /*----BUS INFO RESPONSE ------*/
 
-export interface BusesInfoObject extends SimpleResponseObject {
+export interface BusesObject extends SimpleResponseObject {
     data?: BusInfo[];
 }
 

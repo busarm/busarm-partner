@@ -5,7 +5,7 @@ import {ModalController} from "@ionic/angular";
 import {ViewTripPage} from "../../trip/view-trip/view-trip.page";
 import {ToastType} from "../../../helpers/Utils";
 import {Strings} from "../../../resources";
-import {Api} from "../../../helpers/Api"; 
+import {Api} from "../../../helpers/Api";
 import { Events } from '../../../services/Events';
 
 @Component({
