@@ -109,6 +109,7 @@
   --ion-color-normal-tint: rgb(49, 103, 131);
 
   /** others */
+  --cancel-button-color: var(--ion-color-secondary);
   --ion-background-color: var(--ion-color-light);
   --ion-background-color-rgb: var(--ion-color-light);
   --ion-toolbar-background: var(--ion-color-tint);
@@ -154,6 +155,7 @@
 
   // Fonts
   --font-global: "Arima Madurai", "Palatino Linotype", "Georgia", sans-serif, cursive !important;
+  --ion-font-family: var(--font-global);
 }
 
 /* Dark mode - Fallback for older browsers or manual mode */
