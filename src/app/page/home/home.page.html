@@ -1,5 +1,5 @@
 <!-- Split Pane -->
-<ion-split-pane *ngIf="!platform.is('mobile')" when="md" contentId="home-router">
+<ion-split-pane *ngIf="!platform.is('mobile') && !platform.is('tablet')" when="md" contentId="home-router">
   <!--Menu Controller-->
   <ion-menu size="start" menuId="home" contentId="home-router" type="overlay">
     <ion-content class="background-primary">
@@ -54,7 +54,7 @@
 </ion-split-pane>
 
 <!--Tab Controller-->
-<ion-tabs *ngIf="platform.is('mobile')" (ionTabsWillChange)="willChange($event)">
+<ion-tabs *ngIf="platform.is('mobile') || platform.is('tablet')" (ionTabsWillChange)="willChange($event)">
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="dashboard">
       <ion-icon name="home"> </ion-icon>

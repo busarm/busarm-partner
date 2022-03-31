@@ -191,8 +191,8 @@ export class PageController implements OnInit, OnDestroy {
   }
 
   /**Show Loader*/
-  public showLoading(backdropDismiss = false) {
-    return this.instance.showLoading({ backdropDismiss });
+  public showLoading(backdropDismiss = false, showBackdrop = true) {
+    return this.instance.showLoading({ backdropDismiss, showBackdrop });
   }
 
   /**Hide Loader*/

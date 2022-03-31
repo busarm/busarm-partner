@@ -437,11 +437,12 @@ export class AppComponent {
   public async showLoading({
     msg = Strings.getString("please_wait"),
     backdropDismiss = false,
+    showBackdrop = true,
   }) {
     await this.hideLoading();
     this.loader = await this.loadingCtrl.create({
       message: msg ? Utils.convertHTMLEntity(msg) : null,
-      showBackdrop: true,
+      showBackdrop,
       spinner: msg ? "crescent" : "dots",
       animated: true,
       keyboardClose: true,

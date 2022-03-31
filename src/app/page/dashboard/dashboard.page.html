@@ -47,11 +47,8 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <!--Loading view - Show if active trips hasn't been loaded yet-->
-  <div class="loader cell" *ngIf="dashboard==null">
-    <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
-    <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
-  </div>
+  <!--Loading view - Show if nothing hasn't been loaded yet-->
+  <app-loader *ngIf="dashboard==null" [text]="strings.getString('loading_txt')"></app-loader>
 
   <!--Dashboard Card list -->
   <div #dashCards id="dashCards" *ngIf="dashboard!=null">

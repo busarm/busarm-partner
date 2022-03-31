@@ -32,10 +32,7 @@
          *ngIf="searchText!=null && searchText.length>=1">
         <ion-card>
             <ion-card-content>
-                <div class="cell loader" *ngIf="autoCompleteItems == null">
-                    <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
-                    <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
-                </div>
+                <app-loader  *ngIf="autoCompleteItems == null" [text]="strings.getString('loading_txt')"></app-loader>
                 <div class="cell loader" *ngIf="autoCompleteItems != null && autoCompleteItems.length<1">
                     <ion-img [src]="assets.getPath('not_found')"> </ion-img>
                     <br>

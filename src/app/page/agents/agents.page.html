@@ -43,10 +43,7 @@
     </ion-refresher>
 
     <!--Loading view - Show if nothing hasn't been loaded yet-->
-    <div class="loader cell" *ngIf="currentAgents==null">
-        <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
-        <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
-    </div>
+    <app-loader *ngIf="currentAgents==null" [text]="strings.getString('loading_txt')"></app-loader>
 
     <!--Not found view -->
     <div class="loader cell" *ngIf="currentAgents!=null && currentAgents.length <= 0">
