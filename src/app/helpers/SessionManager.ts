@@ -1,8 +1,11 @@
-/**Use this class to manage
+/**
+ * Use this class to manage
  * the all data stored in the session
  * */
 import { SecureStorageObject } from "@ionic-native/secure-storage/ngx";
-import { PingObject, UserInfo, Session } from "../models/ApiResponse";
+import { User } from "../models/User/User";
+import { PingResponse } from "../models/PingResponse";
+import { Session } from "../models/Session";
 import { Utils } from "./Utils";
 import { AppComponent } from "../app.component";
 import { Storage } from "@ionic/storage";
@@ -14,14 +17,17 @@ export class SessionManager {
   private static dark_mode = "dark_mode";
 
   private static context: AppComponent;
-  private static sessionManager: SessionManager;
-  private storage: Storage;
+  private static instance: SessionManager;
+
+  constructor(
+    private storage: Storage
+  ) { }
+
 
   /**Initialize*/
   public static initialize(context: AppComponent) {
     this.context = context;
-    this.sessionManager = new SessionManager();
-    this.sessionManager.storage = context.storage;
+    this.instance = new SessionManager(context.storage);
   }
 
   /**Initialize Secure storage*/
@@ -61,9 +67,9 @@ export class SessionManager {
     value: any,
     callback?: (status: boolean) => any
   ): Promise<boolean> {
-    if (this.sessionManager.storage != null) {
+    if (this.instance.storage != null) {
       return new Promise(async (resolve) => {
-        this.sessionManager.storage
+        this.instance.storage
           .set(key, value)
           .then(() => {
             if (Utils.assertAvailable(callback)) callback(true);
@@ -92,9 +98,9 @@ export class SessionManager {
    * @return Promise if no callback given
    * */
   static async get(key: string, callback?: (data: any) => any): Promise<any> {
-    if (this.sessionManager.storage != null) {
+    if (this.instance.storage != null) {
       return new Promise(async (resolve) => {
-        this.sessionManager.storage
+        this.instance.storage
           .get(key)
           .then((value) => {
             if (Utils.assertAvailable(callback)) callback(value);
@@ -120,8 +126,8 @@ export class SessionManager {
    * @param key  string
    * */
   static async remove(key: string): Promise<any> {
-    if (this.sessionManager.storage != null) {
-      return this.sessionManager.storage.remove(key);
+    if (this.instance.storage != null) {
+      return this.instance.storage.remove(key);
     } else {
       return new Promise((resolve) => {
         localStorage.removeItem(key);
@@ -133,8 +139,8 @@ export class SessionManager {
   /** Remove all data - localStorage
    * */
   static async clear(): Promise<any> {
-    if (this.sessionManager.storage != null) {
-      return this.sessionManager.storage.clear();
+    if (this.instance.storage != null) {
+      return this.instance.storage.clear();
     } else {
       return new Promise((resolve) => {
         localStorage.clear();
@@ -146,13 +152,13 @@ export class SessionManager {
   /** Get User Info from session
    * @param callback
    * */
-  static getUserInfo(callback?: (data: UserInfo) => any): Promise<UserInfo> {
+  static getUserInfo(callback?: (data: User) => any): Promise<User> {
     if (Utils.assertAvailable(callback)) {
       return this.getSession((session) => {
         callback(session ? session.user : null);
       });
     } else {
-      return new Promise<UserInfo>(async (resolve) => {
+      return new Promise<User>(async (resolve) => {
         await this.getSession((session) => {
           resolve(session ? session.user : null);
         });
@@ -164,7 +170,7 @@ export class SessionManager {
    * @param user
    * @param callback
    * */
-  static setUserInfo(user: UserInfo, callback?: (status: boolean) => any) {
+  static setUserInfo(user: User, callback?: (status: boolean) => any) {
     if (Utils.assertAvailable(callback)) {
       return this.getSession((session) => {
         if (session) session.user = user;
@@ -183,7 +189,7 @@ export class SessionManager {
   /** Get Ping Data from session
    * @param callback
    * */
-  static getPing(callback?: (data: PingObject) => any): Promise<PingObject> {
+  static getPing(callback?: (data: PingResponse) => any): Promise<PingResponse> {
     return this.get(this.ping, callback);
   }
 
@@ -191,7 +197,7 @@ export class SessionManager {
    * @param ping
    * @param callback
    * */
-  static setPing(ping: PingObject, callback?: (status: boolean) => any) {
+  static setPing(ping: PingResponse, callback?: (status: boolean) => any) {
     return this.set(this.ping, ping, callback);
   }
 

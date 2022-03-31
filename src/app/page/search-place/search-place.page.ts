@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { PageController } from "../page-controller";
 import { ModalController } from "@ionic/angular";
 import { Utils } from "../../helpers/Utils";
-import { Country } from "../../models/ApiResponse";
+import { Country } from "../../models/Country";
 
 declare var google: any;
 

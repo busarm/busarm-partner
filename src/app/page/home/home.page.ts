@@ -44,7 +44,7 @@ export class HomePage extends PageController {
     public willChange(event){
         this.selectedPage = event.tab;
     }
-    
+
     /**Show Logout confirmation
      * */
      public confirmLogout() {

@@ -3,13 +3,16 @@ import {ActionSheetController, ModalController, Platform} from "@ionic/angular";
 import {Camera,CameraOptions,PictureSourceType} from "@ionic-native/camera/ngx";
 import {File,FileEntry} from "@ionic-native/file/ngx";
 import {PageController} from "../../page-controller";
-import {BusImage, BusInfo, BusSharedPartner, UserInfo} from "../../../models/ApiResponse";
+import { BusImage } from "../../../models/Bus/BusImage";
+import { BusSharedPartner } from "../../../models/Bus/BusSharedPartner";
+import { Bus } from "../../../models/Bus/Bus";
+import { User } from "../../../models/User/User";
 import {ToastType, Utils} from "../../../helpers/Utils";
 import {Api} from "../../../helpers/Api";
 import {Strings} from "../../../resources";
 import {DestinationType} from "@ionic-native/camera";
 import { ShareBusPage } from '../share-bus/share-bus.page';
-import { Events } from '../../../services/Events';
+import { Events } from '../../../services/app/Events';
 
 @Component({
     selector: 'app-view-bus',
@@ -18,7 +21,7 @@ import { Events } from '../../../services/Events';
 })
 export class ViewBusPage extends PageController {
 
-    @Input() bus: BusInfo = null;
+    @Input() bus: Bus = null;
 
     platform: Platform;
 
@@ -38,7 +41,7 @@ export class ViewBusPage extends PageController {
     public async ngOnInit() {
         await super.ngOnInit();
     }
-    
+
     public ngOnDestroy(){
         this.bus = null;
         super.ngOnDestroy();
@@ -92,7 +95,7 @@ export class ViewBusPage extends PageController {
             },
         );
     }
-    
+
     public showUpdateBus(){
         this.busDescription = this.bus.description;
         this.toggleUpdate = true;

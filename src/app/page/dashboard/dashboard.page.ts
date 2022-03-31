@@ -1,15 +1,13 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { PageController } from "../page-controller";
 import { ModalController, Platform } from "@ionic/angular";
-import {
-  Booking,
-  BookingInfo,
-  BookingMonth,
-  Dashboard,
-  PayInTransaction,
-  PayOutTransaction,
-  TripInfo
-} from "../../models/ApiResponse";
+import { Booking } from "../../models/Booking/Booking";
+import { BookingMonth } from "../../models/Booking/BookingMonth";
+import { PayOutTransaction } from "../../models/Transaction/PayOutTransaction";
+import { PayInTransaction } from "../../models/Transaction/PayInTransaction";
+import { Dashboard } from "../../models/Dashboard";
+import { Trip } from "../../models/Trip/Trip";
+import { BookingTrip } from "../../models/Booking/BookingTrip";
 import { ToastType, Utils } from "../../helpers/Utils";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
@@ -17,7 +15,7 @@ import { ViewTripPage } from "../trip/view-trip/view-trip.page";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { Chart } from 'chart.js';
 import { ViewBookingPage } from "../bookings/view-booking/view-booking.page";
-import { Events } from '../../services/Events';
+import { Events } from '../../services/app/Events';
 import { MD5 } from 'crypto-js';
 import { ENVIRONMENT } from '../../../environments/environment';
 import { ENV } from '../../../environments/ENV';
@@ -213,7 +211,7 @@ export class DashboardPage extends PageController {
 
         // Active Trips charts
         if (this.dashboard.active_trips) {
-          this.dashboard.active_trips.forEach((trip: TripInfo) => {
+          this.dashboard.active_trips.forEach((trip: Trip) => {
             let element = (<any>document.getElementById('seatCanvas' + trip.trip_id));
             if (element) {
               new Chart(element.getContext('2d'), {
@@ -289,10 +287,10 @@ export class DashboardPage extends PageController {
   }
 
   /**Launch add trip page
-   * @param {TripInfo} trip
+   * @param {Trip} trip
    * @return {Promise<any>}
    */
-  async showTrip(trip: TripInfo): Promise<any> {
+  async showTrip(trip: Trip): Promise<any> {
     let chooseModal = await this.modalCtrl.create({
       component: ViewTripPage,
       componentProps: {
@@ -423,15 +421,15 @@ export class DashboardPage extends PageController {
 
 
   /**Launch Booking details
-   * @param {BookingInfo} bookingInfo
+   * @param {BookingTrip} booking
    * @return {Promise<any>}
    */
-  async showBooking(bookingInfo: BookingInfo): Promise<any> {
+  async showBooking(booking: BookingTrip): Promise<any> {
     if (this.isBookingShowing) return;
     let chooseModal = await this.modalCtrl.create({
       component: ViewBookingPage,
       componentProps: {
-        bookingInfo: bookingInfo
+        booking: booking
       }
     });
     chooseModal.onDidDismiss().then(() => {

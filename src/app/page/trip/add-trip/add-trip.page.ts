@@ -1,19 +1,17 @@
 import { Component, Input } from "@angular/core";
 import { ModalController, NavParams, Platform } from "@ionic/angular";
-import {
-  BusType,
-  Country,
-  Location,
-  TicketInfo,
-  TicketType,
-  TripStatus,
-} from "../../../models/ApiResponse";
+import { Location } from "../../../models/Location/Location";
+import { BusType } from "../../../models/Bus/BusType";
+import { Status } from "../../../models/Status";
+import { TicketType } from "../../../models/Ticket/TicketType";
+import { Ticket } from "../../../models/Ticket/Ticket";
+import { Country } from "../../../models/Country";
 import { DatePicker } from "@ionic-native/date-picker/ngx";
 import { PageController } from "../../page-controller";
 import { ToastType, Utils } from "../../../helpers/Utils";
 import { Api } from "../../../helpers/Api";
 import { Strings } from "../../../resources";
-import { Events } from "../../../services/Events";
+import { Events } from "../../../services/app/Events";
 import { LocationsModal } from "../../locations/locations.modal";
 import { AddTicketPage } from "../add-ticket/add-ticket.page";
 import { DatePickerType, SelectDatePage } from "../../select-date/select-date.page";
@@ -26,7 +24,7 @@ declare var google: any;
   styleUrls: ["./add-trip.page.scss"],
 })
 export class AddTripPage extends PageController {
-  @Input() statusList: TripStatus[];
+  @Input() statusList: Status[];
   @Input() busTypes: BusType[];
   @Input() ticketTypes: TicketType[];
 
@@ -35,7 +33,7 @@ export class AddTripPage extends PageController {
   @Input() selectedDropOff: Location;
   @Input() selectedBusType: number;
   @Input() selectedStatus: number;
-  @Input() selectedTickets: TicketInfo[] = [];
+  @Input() selectedTickets: Ticket[] = [];
 
   //Min current day
   minDate: Date = new Date();
@@ -67,7 +65,7 @@ export class AddTripPage extends PageController {
 
   public ionViewDidEnter() {
     // Ensure selected pickup country matches current country
-    let location = this.userInfo?.default_location;
+    let location = this.user?.default_location;
     if (location && (location.country_code == this.session.country.country_code || location.country_name == this.session.country.country_name)) {
       this.selectedPickup = location;
     }
@@ -85,7 +83,7 @@ export class AddTripPage extends PageController {
         mode: "datetime",
         androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
         allowOldDates: false,
-        locale: this.userInfo ? this.userInfo.lang : "en",
+        locale: this.user ? this.user.lang : "en",
       })
       .then(
         (date) => {
@@ -205,7 +203,7 @@ export class AddTripPage extends PageController {
   /**Select Origin place*/
   public async selectOrigin(event) {
     if (event.isTrusted) {
-      if (this.userInfo) {
+      if (this.user) {
         this.selectLocation(
           this.strings.getString("select_pickup_txt"),
           this.session.country.country_code,
@@ -234,14 +232,14 @@ export class AddTripPage extends PageController {
   /**Select Destination place*/
   public async selectDestination(event) {
     if (event.isTrusted) {
-      if (this.userInfo) {
+      if (this.user) {
         this.selectLocation(
           this.strings.getString("select_dropoff_txt"), null,
           (location: Location) => {
             if (
               // Destination location can either be from default country or any of the supported countries
               ((this.session.configs.allow_international &&
-                this.userInfo.allow_international) ||
+                this.user.allow_international) ||
                 location.country_code == this.session.country.country_code ||
                 location.country_name == this.session.country.country_name) &&
               (!this.selectedPickup ||
@@ -263,7 +261,7 @@ export class AddTripPage extends PageController {
 
   /**Add ticket*/
   public async addTicket() {
-    if (this.userInfo) {
+    if (this.user) {
       await this.showAddTicket(this.session.country, (ticket) => {
         let found = this.selectedTickets.some((selectedTicket, index) => {
           if (selectedTicket.type_id == ticket.type_id) {
@@ -305,7 +303,7 @@ export class AddTripPage extends PageController {
   }
 
   /**Launch Add ticket view*/
-  async showAddTicket(country: Country, callback: (place: TicketInfo) => any) {
+  async showAddTicket(country: Country, callback: (place: Ticket) => any) {
     let chooseModal = await this.modalCtrl.create({
       component: AddTicketPage,
       componentProps: {

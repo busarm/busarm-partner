@@ -2,8 +2,8 @@
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button color="secondary"> </ion-menu-button>
-      <div *ngIf="platform.is('ios') && userInfo!=null && session!=null">
-        <ion-select *ngIf="userInfo.allow_multi_countries && session.countries!=null && session.countries.length >= 1"
+      <div *ngIf="platform.is('ios') && user!=null && session!=null">
+        <ion-select *ngIf="user.allow_multi_countries && session.countries!=null && session.countries.length >= 1"
           [(ngModel)]="selectedCountry" (ionChange)="setCountry()">
           <ion-select-option *ngFor="let country of session.countries" [value]="country.country_code">
             {{country.country_name}}
@@ -13,8 +13,8 @@
     </ion-buttons>
     <ion-title> {{strings.getString("dashboard_title_txt")}} </ion-title>
     <ion-buttons slot="end">
-      <div *ngIf="!platform.is('ios') && userInfo!=null && session!=null">
-        <ion-select *ngIf="userInfo.allow_multi_countries && session.countries!=null && session.countries.length >= 1"
+      <div *ngIf="!platform.is('ios') && user!=null && session!=null">
+        <ion-select *ngIf="user.allow_multi_countries && session.countries!=null && session.countries.length >= 1"
           [(ngModel)]="selectedCountry" (ionChange)="setCountry()">
           <ion-select-option *ngFor="let country of session.countries" [value]="country.country_code">
             {{country.country_name}}

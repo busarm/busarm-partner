@@ -1,6 +1,13 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { PageController } from "../../page-controller";
-import { BusInfo, BusType, Location, SeatsInfo, TicketInfo, TicketType, TripInfo, TripStatus } from "../../../models/ApiResponse";
+import { Location } from "../../../models/Location/Location";
+import { BusType } from "../../../models/Bus/BusType";
+import { Status } from "../../../models/Status";
+import { Bus } from "../../../models/Bus/Bus";
+import { TicketType } from "../../../models/Ticket/TicketType";
+import { Ticket } from "../../../models/Ticket/Ticket";
+import { TripSeat } from "../../../models/Trip/TripSeat";
+import { Trip } from "../../../models/Trip/Trip";
 import { ModalController } from "@ionic/angular";
 import { ToastType, Utils } from "../../../helpers/Utils";
 import { Api } from "../../../helpers/Api";
@@ -10,7 +17,7 @@ import { AddBusPage } from "../../bus/add-bus/add-bus.page";
 import { ViewBusPage } from "../../bus/view-bus/view-bus.page";
 import { SelectStatusPage } from "./select-status/select-status.page";
 import { AddTripPage } from '../add-trip/add-trip.page';
-import { Events } from '../../../services/Events';
+import { Events } from '../../../services/app/Events';
 import { Chart } from 'chart.js';
 
 @Component({
@@ -21,12 +28,12 @@ import { Chart } from 'chart.js';
 export class ViewTripPage extends PageController {
 
   @ViewChild('seatCanvas') seatCanvas: ElementRef<HTMLCanvasElement>;
-  @Input() trip: TripInfo = null;
+  @Input() trip: Trip = null;
 
-  statusList: TripStatus[] = null;
+  statusList: Status[] = null;
   busTypes: BusType[] = null;
   ticketTypes: TicketType[] = null;
-  buses: BusInfo[] = null;
+  buses: Bus[] = null;
 
   selectedBusType: string = null;
   allowAddTicket: boolean = true;
@@ -120,7 +127,7 @@ export class ViewTripPage extends PageController {
   }
 
   /**Process Trip*/
-  public async processTrip(trip: TripInfo, completed?: () => any) {
+  public async processTrip(trip: Trip, completed?: () => any) {
 
     // Process trip info
     this.selectedBusType = trip.bus_type_id;
@@ -128,7 +135,7 @@ export class ViewTripPage extends PageController {
       trip.tickets.length < this.ticketTypes.length;
     this.allowDeactivateTicket = trip.tickets && trip.tickets.length > 1;
     if (this.allowDeactivateTicket) {
-      trip.tickets.forEach((value: TicketInfo) => {
+      trip.tickets.forEach((value: Ticket) => {
         value.is_active = value.is_active == "1" || value.is_active == 1 || value.is_active == true;
         value.allow_deactivate = value.allow_deactivate == "1" || value.allow_deactivate == 1 || value.allow_deactivate == true;
       });
@@ -212,7 +219,7 @@ export class ViewTripPage extends PageController {
   }
 
   /**Process Select status*/
-  private processSelectStatus(status: TripStatus) {
+  private processSelectStatus(status: Status) {
     // Show Loader
     this.showLoading().then(() => {
       Api.updateTripStatus(this.trip.trip_id, status.status_id, (status, result) => {
@@ -254,7 +261,7 @@ export class ViewTripPage extends PageController {
   }
 
   /**Process Add bus*/
-  private processAddTicket(ticket: TicketInfo) {
+  private processAddTicket(ticket: Ticket) {
 
     //Add ticket id
     ticket.ticket_id = this.trip.ticket_id;
@@ -299,7 +306,7 @@ export class ViewTripPage extends PageController {
   }
 
   /**Process Add bus*/
-  private processAddBus(bus: BusInfo) {
+  private processAddBus(bus: Bus) {
     //Show Loader
     this.showLoading().then(() => {
       Api.addTripBus(this.trip.trip_id, bus.id, (status, result) => {
@@ -323,7 +330,7 @@ export class ViewTripPage extends PageController {
   }
 
   /**Launch view bus page*/
-  async showBus(bus: BusInfo) {
+  async showBus(bus: Bus) {
     let chooseModal = await this.modalCtrl.create({
       component: ViewBusPage,
       componentProps: {
@@ -447,7 +454,7 @@ export class ViewTripPage extends PageController {
   }
 
   /**Toggle Trip Ticket*/
-  public toggleTripTicket(ticket: TicketInfo, toggle: boolean) {
+  public toggleTripTicket(ticket: Ticket, toggle: boolean) {
     if (ticket.is_active !== toggle) {
       this.showLoading().then(() => {
         Api.toggleTicket(ticket.ticket_id, ticket.type_id, toggle, (status, result) => {
@@ -477,7 +484,7 @@ export class ViewTripPage extends PageController {
   }
 
   /**Reseave trip seat*/
-  public reserveTripSeat(seat: SeatsInfo, toggle: boolean) {
+  public reserveTripSeat(seat: TripSeat, toggle: boolean) {
     if ((seat.status == 'reserved') !== toggle && seat.status != 'booked' || seat.status != 'locked') {
       this.showLoading().then(() => {
         Api.researveSeat(seat.trip_id, seat.seat_id, !toggle, (status, result) => {
@@ -508,7 +515,7 @@ export class ViewTripPage extends PageController {
 
   /**Show Delete confirmation
    * */
-  public confirmDeleteBus(bus: BusInfo) {
+  public confirmDeleteBus(bus: Bus) {
     this.showAlert(
       this.strings.getString("delete_bus_title_txt"),
       this.strings.getString("delete_bus_msg_txt"),

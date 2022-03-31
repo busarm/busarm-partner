@@ -4,7 +4,7 @@ import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { BarcodeFormat } from '@zxing/library';
 import { PageController } from "../../page-controller";
 import { ToastType } from "../../../helpers/Utils";
-import { Events } from '../../../services/Events';
+import { Events } from '../../../services/app/Events';
 
 @Component({
     selector: 'app-web-scanner',
@@ -32,7 +32,7 @@ export class WebScannerPage extends PageController {
         super();
         this.allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX /*, ...*/];
     }
-    
+
     public ionViewWillEnter (){}
     public ionViewDidEnter(){
         this.showLoading(true);
@@ -68,13 +68,13 @@ export class WebScannerPage extends PageController {
         this.checkPermission();
     }
 
-    /** 
-     * Check if can scan code again 
+    /**
+     * Check if can scan code again
      * This is to prevent scanning the same code
      * too many times at an instance
      * @param code
      * @param interval - default 5s
-     * @return boolean 
+     * @return boolean
      */
     private canScanAgain(code: string, interval = 5000) {
         return !(this.lastScanned
@@ -138,7 +138,7 @@ export class WebScannerPage extends PageController {
 
     /**
      * Toggle Flash on & off
-     * @param toggle 
+     * @param toggle
      */
     public async toggleFlash() {
         if (this.scanner) {

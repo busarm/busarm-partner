@@ -30,7 +30,7 @@ import { Storage } from "@ionic/storage";
 import { AES256 } from "@ionic-native/aes-256/ngx";
 import { Deeplinks } from "@ionic-native/deeplinks/ngx";
 
-import { NetworkProvider } from "./services/NetworkProvider";
+import { NetworkProvider } from "./services/app/NetworkProvider";
 import { SessionManager } from "./helpers/SessionManager";
 import { ToastType, Utils } from "./helpers/Utils";
 import { Api, ApiResponseType } from "./helpers/Api";
@@ -39,9 +39,10 @@ import { Langs, Strings } from "./resources";
 import { Oauth, OauthGrantType, OauthUtils } from "./helpers/Oauth";
 import { CIPHER } from "./helpers/CIPHER";
 import { ENVIRONMENT, CONFIGS } from "../environments/environment";
-import { Events } from "./services/Events";
+import { Events } from "./services/app/Events";
 import { NavigationOptions } from "@ionic/angular/providers/nav-controller";
-import { PingObject, Session } from "./models/ApiResponse";
+import { PingResponse } from "./models/PingResponse";
+import { Session } from "./models/Session";
 import { ENV } from "../environments/ENV";
 import { SwUpdate } from "@angular/service-worker";
 
@@ -109,21 +110,16 @@ export class AppComponent {
     public aes256: AES256,
     public httpClient: HttpClient,
     public storage: Storage,
-    public secureStorage: SecureStorage
+    public secureStorage: SecureStorage,
+    public networkProvider: NetworkProvider
   ) {
 
     AppComponent._instance = this;
 
-    /*Initialize Urls*/
-    Urls.init();
-
-    /*Initialize Encryption*/
-    CIPHER.init(this);
-
-    /*Initialize Session Storage*/
+    // Initialize Session Storage
     SessionManager.initialize(this);
 
-    /*Initialize Oauth*/
+    // Initialize Oauth
     AppComponent._oauth = new Oauth({
       clientId: CONFIGS.oauth_client_id,
       clientSecret: CONFIGS.oauth_client_secret,
@@ -132,7 +128,10 @@ export class AppComponent {
       verifyTokenUrl: Urls.oauthVerifyTokenUrl,
     });
 
-    /*Set up dark mode using system setting if not signed in*/
+    // Subscribe to network changes
+    networkProvider.initializeNetworkEvents();
+
+    // Set up dark mode using system setting if not signed in
     let systemDark = window.matchMedia("(prefers-color-scheme: dark)");
     if (!this.authorized && AppComponent._oauth.hasExpired()) {
       SessionManager.setDarkMode(systemDark.matches);
@@ -153,16 +152,13 @@ export class AppComponent {
       }
     };
 
-    /*Subscribe to any updates*/
+    // Subscribe to any updates
     this.subscribeToUpdates();
 
-    /*All set ready to go*/
+    // All set ready to go
     platform.ready().then(async () => {
 
-      /*Initialize Network Provider*/
-      await NetworkProvider.initialize(this);
-
-      /*Register Back button event*/
+      // Register Back button event
       this.registerPopStateChanged();
 
       // Okay, so the platform is ready and our plugins are available.
@@ -170,7 +166,7 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      /*Network event*/
+      // Network event
       this.events.networkChange.subscribe(async (online) => {
         if (online) {
           await this.hideToastMsg();
@@ -213,11 +209,11 @@ export class AppComponent {
   }
 
   /**Get Ping Status
-   * @return {PingObject}
+   * @return {PingResponse}
    */
   public async getPingStatus() {
-    return await new Promise<PingObject>(
-      (resolve: (data: PingObject) => any) => {
+    return await new Promise<PingResponse>(
+      (resolve: (data: PingResponse) => any) => {
         SessionManager.getPing((data) => {
           if (data) {
             resolve(data);
@@ -519,7 +515,7 @@ export class AppComponent {
     return new Promise(async (resolve: (status: boolean) => any) => {
       if ((!this.authorized && !this.authAttempted) || force) {
         // Check internet connection
-        NetworkProvider.checkConnection(async (connected) => {
+        this.networkProvider.checkConnection(async (connected) => {
           if (connected) {
             // To prevent duplicate request
             this.authAttempted = true;

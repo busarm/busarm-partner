@@ -12,7 +12,7 @@ import { DestinationType } from "@ionic-native/camera";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { Urls } from "../../helpers/Urls";
 import { OauthStorage } from "../../helpers/Oauth";
-import { Events } from '../../services/Events';
+import { Events } from '../../services/app/Events';
 
 @Component({
   selector: 'app-account',

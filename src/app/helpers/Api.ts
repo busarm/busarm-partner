@@ -1,28 +1,26 @@
 import { Urls } from "./Urls";
-import {
-  BookingInfoObject,
-  BusesObject,
-  BusInfoObject,
-  BusTypeObject,
-  DashboardObject,
-  LocationTypeObject,
-  SimpleResponseObject,
-  TicketTypesObject,
-  TripInfoObject,
-  TripsObject,
-  TripStatusObject,
-  UserInfoObject,
-  UsersObject,
-  SessionObject,
-  BookingsInfoObject,
-  PayInTransactionObject,
-  PayOutTransactionObject,
-  LocationObject,
-  BanksObject,
-} from "../models/ApiResponse";
+import { DashboardResponse } from "../models/DashboardResponse";
+import { BankListResponse } from "../models/BankListResponse";
+import { PayOutTransactionResponse } from "../models/Transaction/PayOutTransactionResponse";
+import { PayInTransactionResponse } from "../models/Transaction/PayInTransactionResponse";
+import { LocationTypeListResponse } from "../models/Location/LocationTypeListResponse";
+import { LocationListResponse } from "../models/Location/LocationListResponse";
+import { BusTypeListResponse } from "../models/Bus/BusTypeListResponse";
+import { StatusListResponse } from "../models/StatusListResponse";
+import { BusResponse } from "../models/Bus/BusResponse";
+import { BusListResponse } from "../models/Bus/BusListResponse";
+import { TicketTypeListRepsonse } from "../models/Ticket/TicketTypeListRepsonse";
+import { TripResponse } from "../models/Trip/TripResponse";
+import { TripListResponse } from "../models/Trip/TripListResponse";
+import { BookingResponse } from "../models/Booking/BookingResponse";
+import { BookingListResponse } from "../models/Booking/BookingListResponse";
+import { UserListResponse } from "../models/User/UserListResponse";
+import { UserResponse } from "../models/User/UserResponse";
+import { SessionResponse } from "../models/SessionResponse";
+import { BaseResponse } from "../models/BaseResponse";
 import { Utils, ToastType } from "./Utils";
 import { SessionManager } from "./SessionManager";
-import { NetworkProvider } from "../services/NetworkProvider";
+import { NetworkProvider } from "../services/app/NetworkProvider";
 import { Strings } from "../resources";
 import { OauthRequestMethod, OauthStorage } from "./Oauth";
 import { CIPHER } from "./CIPHER";
@@ -54,7 +52,7 @@ interface ApiRequestParams {
   cache?: boolean;
   cacheId?: string;
   loadCache?: boolean;
-  callback?: ApiCallback<SimpleResponseObject>
+  callback?: ApiCallback<BaseResponse>
 }
 
 /**Put All Api requests here so it can be
@@ -398,7 +396,7 @@ export class Api {
                     ApiResponseType.Api_Success,
                     true
                   );
-                  NetworkProvider.checkConnection().then((connected) => {
+                  NetworkProvider.getInstance().checkConnection().then((connected) => {
                     if (!connected) {
                       requestParams.callback(
                         false,
@@ -420,7 +418,7 @@ export class Api {
             } else if (!this.cacheLoaded && requestParams.callback) {
               // Check Internet connection
               if (!NetworkProvider.isOnline()) {
-                NetworkProvider.checkConnection().then((connected) => {
+                NetworkProvider.getInstance().checkConnection().then((connected) => {
                   if (requestParams.callback) {
                     requestParams.callback(
                       false,
@@ -450,7 +448,7 @@ export class Api {
           } else {
             // Check Internet connection
             if (!NetworkProvider.isOnline()) {
-              NetworkProvider.checkConnection().then((connected) => {
+              NetworkProvider.getInstance().checkConnection().then((connected) => {
                 if (requestParams.callback) {
                   requestParams.callback(
                     false,
@@ -515,7 +513,7 @@ export class Api {
       device_name: string;
       partner: boolean;
     },
-    callback: ApiCallback<SessionObject>
+    callback: ApiCallback<SessionResponse>
   ) {
     this.performRequest({
       url: Urls.apiInitialize,
@@ -532,7 +530,7 @@ export class Api {
    * */
   public static setCountry(
     country_code: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -551,7 +549,7 @@ export class Api {
    * */
   public static setLanguage(
     lang_code: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -568,7 +566,7 @@ export class Api {
    * @param callback
    * */
   public static logout(
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiLogout,
@@ -581,7 +579,7 @@ export class Api {
    * @param callback
    * */
   public static getUserInfo(
-    callback: ApiCallback<UserInfoObject>
+    callback: ApiCallback<UserResponse>
   ) {
     this.performRequest({
       url: Urls.apiUser,
@@ -594,7 +592,7 @@ export class Api {
    * @param loadCache
    * */
   public static getAgents(
-    callback: ApiCallback<UsersObject>,
+    callback: ApiCallback<UserListResponse>,
     loadCache = true
   ) {
     this.performRequest({
@@ -611,7 +609,7 @@ export class Api {
    * */
   public static getTrip(
     tripId: string,
-    callback: ApiCallback<TripsObject>
+    callback: ApiCallback<TripResponse>
   ) {
     this.performRequest({
       url: Urls.apiTrip,
@@ -631,7 +629,7 @@ export class Api {
    * */
   public static getTrips(
     date,
-    callback: ApiCallback<TripsObject>
+    callback: ApiCallback<TripListResponse>
   ) {
     this.performRequest({
       url: Urls.apiTrips,
@@ -651,7 +649,7 @@ export class Api {
    * */
   public static getBus(
     busId: string,
-    callback: ApiCallback<BusInfoObject>
+    callback: ApiCallback<BusResponse>
   ) {
     this.performRequest({
       url: Urls.apiBus,
@@ -669,7 +667,7 @@ export class Api {
    * @param callback
    * */
   public static getBuses(
-    callback: ApiCallback<BusesObject>
+    callback: ApiCallback<BusListResponse>
   ) {
     this.performRequest({
       url: Urls.apiBuses,
@@ -685,7 +683,7 @@ export class Api {
    * */
   public static getBusesForType(
     typeId: any,
-    callback: ApiCallback<BusesObject>
+    callback: ApiCallback<BusListResponse>
   ) {
     this.performRequest({
       url: Urls.apiBuses,
@@ -703,7 +701,7 @@ export class Api {
    * @param callback
    * */
   public static getLocations(
-    callback: ApiCallback<LocationObject>
+    callback: ApiCallback<LocationListResponse>
   ) {
     this.performRequest({
       url: Urls.apiLocations,
@@ -722,7 +720,7 @@ export class Api {
   public static getDashboard(
     minDate,
     maxDate,
-    callback: ApiCallback<DashboardObject>
+    callback: ApiCallback<DashboardResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetDashboard,
@@ -745,7 +743,7 @@ export class Api {
   public static getBanks(
     countryCode: string,
     methodId: any,
-    callback: ApiCallback<BanksObject>
+    callback: ApiCallback<BankListResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetBanks,
@@ -766,7 +764,7 @@ export class Api {
    * @param callback
    * */
   public static getPayInTransactions(
-    callback: ApiCallback<PayInTransactionObject>
+    callback: ApiCallback<PayInTransactionResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetPayin,
@@ -779,7 +777,7 @@ export class Api {
    * @param callback
    * */
   public static getPayOutTransactions(
-    callback: ApiCallback<PayOutTransactionObject>
+    callback: ApiCallback<PayOutTransactionResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetPayout,
@@ -795,7 +793,7 @@ export class Api {
     status: number,
     min_date: string,
     max_date: string,
-    callback: ApiCallback<BookingsInfoObject>
+    callback: ApiCallback<BookingListResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetBookings,
@@ -819,7 +817,7 @@ export class Api {
    * */
   public static getBookingInfo(
     referenceCode: string,
-    callback: ApiCallback<BookingInfoObject>
+    callback: ApiCallback<BookingResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetBookingInfo,
@@ -836,7 +834,7 @@ export class Api {
    * @param callback
    * */
   public static getNewTripStatusList(
-    callback: ApiCallback<TripStatusObject>
+    callback: ApiCallback<StatusListResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetTripStatusList,
@@ -854,7 +852,7 @@ export class Api {
    * @param callback
    * */
   public static getAllTripStatusList(
-    callback: ApiCallback<TripStatusObject>
+    callback: ApiCallback<StatusListResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetTripStatusList,
@@ -868,7 +866,7 @@ export class Api {
    * @param callback
    * */
   public static getBusTypes(
-    callback: ApiCallback<BusTypeObject>
+    callback: ApiCallback<BusTypeListResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetBusTypes,
@@ -882,7 +880,7 @@ export class Api {
    * @param callback
    * */
   public static getPartnerBusTypes(
-    callback: ApiCallback<BusTypeObject>
+    callback: ApiCallback<BusTypeListResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetPartnerBusTypes,
@@ -896,7 +894,7 @@ export class Api {
    * @param callback
    * */
   public static getTicketTypes(
-    callback: ApiCallback<TicketTypesObject>
+    callback: ApiCallback<TicketTypeListRepsonse>
   ) {
     this.performRequest({
       url: Urls.apiGetTicketTypes,
@@ -910,7 +908,7 @@ export class Api {
    * @param callback
    * */
   public static getLocationTypes(
-    callback: ApiCallback<LocationTypeObject>
+    callback: ApiCallback<LocationTypeListResponse>
   ) {
     this.performRequest({
       url: Urls.apiGetLocationTypes,
@@ -926,7 +924,7 @@ export class Api {
    * */
   public static verifyUserBooking(
     bookingId: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiVerifyBooking,
@@ -945,7 +943,7 @@ export class Api {
    * */
   public static processEmailAuthorization(
     email: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiVerify,
@@ -965,7 +963,7 @@ export class Api {
    * */
   public static addNewAgent(
     data: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -992,7 +990,7 @@ export class Api {
     busTypeId: number,
     statusId: number,
     tickets: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1016,7 +1014,7 @@ export class Api {
    * */
   public static addTripTicket(
     ticket: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1035,7 +1033,7 @@ export class Api {
   public static addTripBus(
     tripId: any,
     busId: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1056,7 +1054,7 @@ export class Api {
   public static addLocation(
     location: any,
     isDefault: boolean,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1075,7 +1073,7 @@ export class Api {
    * */
   public static addBus(
     bus: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1091,7 +1089,7 @@ export class Api {
    * */
   public static addBusImage(
     formData: FormData,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1111,7 +1109,7 @@ export class Api {
     busId: any,
     accountId: any,
     title: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1131,7 +1129,7 @@ export class Api {
    * */
   public static addPartnerLogo(
     formData: FormData,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1147,7 +1145,7 @@ export class Api {
    * */
   public static addPayInRequest(
     payInRequest: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1164,7 +1162,7 @@ export class Api {
    * */
   public static addPayoutRequest(
     payoutRequest: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1183,7 +1181,7 @@ export class Api {
   public static updateAdminStatus(
     agentId: string,
     remove: number,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiAdmin,
@@ -1206,7 +1204,7 @@ export class Api {
   public static updateTripStatus(
     tripId: any,
     statusId: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiUpdateTripStatus,
@@ -1228,7 +1226,7 @@ export class Api {
   public static updateTripBusType(
     tripId: any,
     typeId: any,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiUpdateTripBusType,
@@ -1249,7 +1247,7 @@ export class Api {
   public static updateBus(
     busId: string,
     description: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiBus,
@@ -1269,7 +1267,7 @@ export class Api {
    * */
   public static deleteBus(
     busId: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiBus,
@@ -1288,7 +1286,7 @@ export class Api {
    * */
   public static deleteTrip(
     tripId: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiTrip,
@@ -1310,7 +1308,7 @@ export class Api {
   public static updateLocationActiveStatus(
     locId: number,
     is_active: boolean,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiLocation,
@@ -1333,7 +1331,7 @@ export class Api {
   public static updateLocationdDefaultStatus(
     locId: number,
     is_default: boolean,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiLocation,
@@ -1357,7 +1355,7 @@ export class Api {
     ticketId: string,
     typeId: string,
     active: boolean,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiTicketToggle,
@@ -1380,7 +1378,7 @@ export class Api {
   public static toggleAgent(
     agentId: string,
     active: boolean,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.POST,
@@ -1395,7 +1393,7 @@ export class Api {
     });
   }
 
-  /**Reserve Seat
+  /**Reserve TripSeat
    * @param tripId
    * @param seatId
    * @param toggle
@@ -1405,7 +1403,7 @@ export class Api {
     tripId: string,
     seatId: string,
     toggle: boolean,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiTripReserve,
@@ -1428,7 +1426,7 @@ export class Api {
   public static deleteTripBus(
     tripId: string,
     busId: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiTripBus,
@@ -1450,7 +1448,7 @@ export class Api {
   public static deleteBusImage(
     busId: string,
     imageId: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.DELETE,
@@ -1472,7 +1470,7 @@ export class Api {
   public static deleteSharedBus(
     busId: string,
     partnerId: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.DELETE,
@@ -1492,7 +1490,7 @@ export class Api {
    * */
   public static deleteAgent(
     agentId: string,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: OauthRequestMethod.DELETE,
@@ -1513,7 +1511,7 @@ export class Api {
    * */
   public static deleteLocation(
     locId: number,
-    callback: ApiCallback<SimpleResponseObject>
+    callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       url: Urls.apiLocation,

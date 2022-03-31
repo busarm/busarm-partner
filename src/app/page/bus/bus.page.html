@@ -36,7 +36,7 @@
     <ion-refresher
             slot="fixed"
             [pullMin]="80"
-            (ionRefresh)="refreshBusesView($event)" 
+            (ionRefresh)="refreshBusesView($event)"
             slot="fixed">
         <ion-refresher-content
                 [pullingText]="strings.getString('pull_refresh_txt')"
@@ -112,7 +112,7 @@
         </ion-grid>
     </div>
     <br><br><br>
-    <ion-fab  *ngIf="busTypes!=null && userInfo!=null && userInfo.is_admin" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab  *ngIf="busTypes!=null && user!=null && user.is_admin" vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button (click)="showAddBus()">
             <ion-icon name="add">
             </ion-icon>

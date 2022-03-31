@@ -14,30 +14,30 @@
     <ion-grid>
         <ion-row class="ion-justify-content-center" wrap>
             <ion-col size-lg="6" size="12">
-                <ion-card *ngIf="userInfo!=null">
+                <ion-card *ngIf="user!=null">
                     <ion-card-content>
                         <ion-row>
                             <ion-col size-sm="6" size="12" class="cell cell-flex cell-flex-center">
                                 <ion-row>
                                     <ion-col size="12" class="cell cell-flex cell-flex-center">
-                                        <ion-img *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='')"
+                                        <ion-img *ngIf="(user.partner_logo!=null && user.partner_logo!='')"
                                                 class="img x-large"
-                                                [src]="userInfo.partner_logo"
-                                                (ionError)="userInfo.partner_logo = assets.getPath('placeholder')"
+                                                [src]="user.partner_logo"
+                                                (ionError)="user.partner_logo = assets.getPath('placeholder')"
                                                 cache="true">
                                         </ion-img>
-                                        <ion-img *ngIf="(userInfo.partner_logo==null || userInfo.partner_logo=='') &&  (!userInfo.is_admin)"
+                                        <ion-img *ngIf="(user.partner_logo==null || user.partner_logo=='') &&  (!user.is_admin)"
                                                 class="img x-large"
                                                 [src]="assets.getPath('logo_txt_dark')">
                                         </ion-img>
-                                        <ion-button *ngIf="platform.is('cordova') && (userInfo.partner_logo==null || userInfo.partner_logo=='') &&  userInfo.is_admin"
+                                        <ion-button *ngIf="platform.is('cordova') && (user.partner_logo==null || user.partner_logo=='') &&  user.is_admin"
                                                     (click)="selectImage()"
                                                     class="cell cell-flex cell-flex-center"
                                                     style="height: 100%!important;"
                                                     [fill]="'outline'" [shape]="'round'" color="primary">
                                             <span style="word-wrap: break-word !important;">{{strings.getString("add_logo_txt")}}</span>
                                         </ion-button>
-                                        <ion-button *ngIf="!platform.is('cordova') && (userInfo.partner_logo==null || userInfo.partner_logo=='') &&  userInfo.is_admin"
+                                        <ion-button *ngIf="!platform.is('cordova') && (user.partner_logo==null || user.partner_logo=='') &&  user.is_admin"
                                                     class="cell cell-flex cell-flex-center"
                                                     style="height: 100%!important;"
                                                     [fill]="'outline'" [shape]="'round'" color="primary">
@@ -45,7 +45,7 @@
                                             <label class="fileInputLabel" id="fileInputLogoLabel" for="fileInputLogo"><ion-icon color="primary" name="images"> </ion-icon>{{strings.getString("upload_txt")}}</label>
                                         </ion-button>
                                     </ion-col>
-                                    <ion-col size="12" *ngIf="(userInfo.partner_logo!=null && userInfo.partner_logo!='') && userInfo.is_admin" class="cell cell-flex cell-flex-center">
+                                    <ion-col size="12" *ngIf="(user.partner_logo!=null && user.partner_logo!='') && user.is_admin" class="cell cell-flex cell-flex-center">
                                         <ion-button color="clear" *ngIf="!platform.is('cordova')"
                                                     style="height: 30px!important;width: 30px!important;"
                                                     class="iconBt">
@@ -61,21 +61,21 @@
                             <ion-col size-sm="6" size="12" class="cell cell-flex cell-flex-center">
                                 <div class="cell cell-center cell-left">
                                     <div>
-                                        <ion-label class="cell-title cell-sub">{{userInfo.partner_name}}</ion-label>
+                                        <ion-label class="cell-title cell-sub">{{user.partner_name}}</ion-label>
                                     </div>
                                     <div>
-                                        <ion-label class="cell-title">{{userInfo.name}}
-                                            ({{userInfo.is_partner ? strings.getString('owner_txt') : (userInfo.is_admin ? strings.getString('admin_txt') : (userInfo.is_agent ? strings.getString('agent_txt') : strings.getString('user_txt')))}})
+                                        <ion-label class="cell-title">{{user.name}}
+                                            ({{user.is_partner ? strings.getString('owner_txt') : (user.is_admin ? strings.getString('admin_txt') : (user.is_agent ? strings.getString('agent_txt') : strings.getString('user_txt')))}})
                                         </ion-label>
                                     </div>
                                     <div>
-                                        <ion-label class="cell-content">{{userInfo.email}}</ion-label>
+                                        <ion-label class="cell-content">{{user.email}}</ion-label>
                                     </div>
                                     <div>
-                                        <ion-label class="cell-content">{{userInfo.dial_code}}{{userInfo.phone}}</ion-label>
+                                        <ion-label class="cell-content">{{user.dial_code}}{{user.phone}}</ion-label>
                                     </div>
                                     <div>
-                                        <ion-label id="accountIdLb" class="cell-content copy"><strong>Account ID - </strong>{{userInfo.account_id}}</ion-label>
+                                        <ion-label id="accountIdLb" class="cell-content copy"><strong>Account ID - </strong>{{user.account_id}}</ion-label>
                                     </div>
                                 </div>
                             </ion-col>
@@ -85,7 +85,7 @@
             </ion-col>
             <ion-col size-lg="6" size="12" class="ion-no-padding">
                 <ion-row wrap>
-                    <ion-col *ngIf="userInfo!=null && userInfo.is_admin" size="12">
+                    <ion-col *ngIf="user!=null && user.is_admin" size="12">
                         <ion-card (click)="showAgents()">
                             <ion-card-content>
                                 <ion-item [lines]="'none'">
@@ -96,7 +96,7 @@
                             </ion-card-content>
                         </ion-card>
                     </ion-col>
-                    <ion-col *ngIf="userInfo!=null && userInfo.is_admin" size="12">
+                    <ion-col *ngIf="user!=null && user.is_admin" size="12">
                         <ion-card (click)="showLocations()">
                             <ion-card-content>
                                 <ion-item [lines]="'none'">

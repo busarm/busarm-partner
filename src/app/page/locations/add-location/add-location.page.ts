@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { ModalController, NavParams, Platform } from "@ionic/angular";
-import { Country, LocationRequest, LocationType } from "../../../models/ApiResponse";
+import { LocationType } from "../../../models/Location/LocationType";
+import { LocationRequest } from "../../../models/Location/LocationRequest";
+import { Country } from "../../../models/Country";
 import { PageController } from "../../page-controller";
 import { SearchPlacePage } from "../../search-place/search-place.page";
 import { ToastType, Utils } from "../../../helpers/Utils";
@@ -52,11 +54,11 @@ export class AddLocationPage extends PageController {
       return false;
     }
     if (event.isTrusted) {
-      if (this.userInfo) {
+      if (this.user) {
         this.searchLocation(this.session.country, this.strings.getString('select_location_txt'), place => {
           let location = this.processLocation(place);
           // Check if location country is allowed
-          if ((this.session.configs.allow_international && this.userInfo.allow_international && this.session.countries.find(c => c.country_code.toLowerCase() === location.country_code.toLowerCase()))
+          if ((this.session.configs.allow_international && this.user.allow_international && this.session.countries.find(c => c.country_code.toLowerCase() === location.country_code.toLowerCase()))
             || (location.country_code == this.session.country.country_code || location.country == this.session.country.country_name)) {
             this.selectedLocation = location
             this.editLocationName = true;

@@ -1,6 +1,6 @@
 import * as CryptoJS from "crypto-js";
 import { Urls } from "./Urls";
-import { PingObject } from "../models/ApiResponse";
+import { PingResponse } from "../models/PingResponse";
 
 /**This hold Global Javascript functions
  * which you want to be accessible
@@ -53,7 +53,7 @@ export class Utils {
 
   /**Return Current Signature
    * */
-  static getCurrentSignature(ping: PingObject) {
+  static getCurrentSignature(ping: PingResponse) {
     let date = new Date();
     let ip = ping ? ping.ip : "";
     return String(

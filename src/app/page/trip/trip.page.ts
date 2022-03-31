@@ -4,19 +4,17 @@ import { Network } from "@ionic-native/network/ngx";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { ToastType, Utils } from "../../helpers/Utils";
-import {
-  BusType,
-  TicketType,
-  TripInfo,
-  TripStatus
-} from "../../models/ApiResponse";
+import { BusType } from "../../models/Bus/BusType";
+import { Status } from "../../models/Status";
+import { TicketType } from "../../models/Ticket/TicketType";
+import { Trip } from "../../models/Trip/Trip";
 import { PageController } from "../page-controller";
 import { ViewTripPage } from "./view-trip/view-trip.page";
 import { AddTripPage } from "./add-trip/add-trip.page";
 import { DatePickerType, SelectDatePage } from '../select-date/select-date.page';
-import { Events } from '../../services/Events';
+import { Events } from '../../services/app/Events';
 
-type GroupedTrips = { date: string, list: TripInfo[] };
+type GroupedTrips = { date: string, list: Trip[] };
 @Component({
   selector: 'app-trip',
   templateUrl: './trip.page.html',
@@ -39,9 +37,9 @@ export class TripPage extends PageController {
 
   selectedDate: string = null;
   searchText: string = null;
-  trips: TripInfo[] = null;
+  trips: Trip[] = null;
   currentTrips: GroupedTrips[] = null;
-  statusList: TripStatus[] = null;
+  statusList: Status[] = null;
   busTypes: BusType[] = null;
   ticketTypes: TicketType[] = null;
 
@@ -120,7 +118,7 @@ export class TripPage extends PageController {
    * */
   public filterTrips(search: string) {
     if (search && this.assertAvailable(this.trips)) {
-      let list: TripInfo[] = this.trips.filter(trip => {
+      let list: Trip[] = this.trips.filter(trip => {
         let reg = new RegExp(search, 'gi');
         return trip.pickup_loc_name.match(reg) ||
           trip.pickup_city.match(reg) ||
@@ -136,17 +134,17 @@ export class TripPage extends PageController {
 
   /**Filter
    * */
-  public groupTrips(trips: TripInfo[]): GroupedTrips[] {
+  public groupTrips(trips: Trip[]): GroupedTrips[] {
     let list: GroupedTrips[] = [];
     for (let trip of trips) {
       let date = new Date(trip.trip_date).toDateString();
       let match = list.find(t => t.date === date)
-      if(match) {
+      if (match) {
         let matchIndex = list.findIndex(t => t.date === match.date)
         list[matchIndex].list.push(trip);
       }
       else {
-        list.push({date, list: [trip]});
+        list.push({ date, list: [trip] });
       }
     }
     return list;
@@ -222,7 +220,7 @@ export class TripPage extends PageController {
   }
 
   /**Launch view trip page*/
-  async showTrip(trip: TripInfo) {
+  async showTrip(trip: Trip) {
     let chooseModal = await this.modalCtrl.create({
       component: ViewTripPage,
       componentProps: {

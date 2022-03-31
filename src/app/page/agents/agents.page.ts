@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ModalController } from "@ionic/angular";
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { PageController } from "../page-controller";
-import { UserInfo } from "../../models/ApiResponse";
+import { User } from "../../models/User/User";
 import { ToastType } from "../../helpers/Utils";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
@@ -16,8 +16,8 @@ import { AddAgentPage } from "./add-agent/add-agent.page";
 export class AgentsPage extends PageController {
 
   searchText: string = null;
-  agents: UserInfo[] = null;
-  currentAgents: UserInfo[] = null;
+  agents: User[] = null;
+  currentAgents: User[] = null;
 
   constructor(public modalCtrl: ModalController,
     private iab: InAppBrowser) {
@@ -29,7 +29,7 @@ export class AgentsPage extends PageController {
   }
 
   public async ionViewDidEnter() {
-    if (this.userInfo && (this.userInfo.is_admin || this.userInfo.is_partner)) {
+    if (this.user && (this.user.is_admin || this.user.is_partner)) {
       this.loadAgentsView(async () => {
         let params = await this.getRouteParams();
         if (params && params.agent_id) {
@@ -118,7 +118,7 @@ export class AgentsPage extends PageController {
 
   /**Show Delete confirmation
    * */
-  public confirmDeleteAgent(user: UserInfo) {
+  public confirmDeleteAgent(user: User) {
     this.showAlert(
       this.strings.getString("delete_agent_title_txt"),
       this.strings.getString("delete_agent_msg_txt"),
@@ -135,7 +135,7 @@ export class AgentsPage extends PageController {
   }
 
   /**Delete Agent*/
-  public deleteAgent(user: UserInfo) {
+  public deleteAgent(user: User) {
     this.showLoading().then(() => {
       Api.deleteAgent(user.agent_id, (status, result) => {
         this.hideLoading();
@@ -158,7 +158,7 @@ export class AgentsPage extends PageController {
   }
 
   /**Toggle Agent active status*/
-  public toggleAgent(user: UserInfo, toggle: boolean) {
+  public toggleAgent(user: User, toggle: boolean) {
     if (user.is_active !== toggle) {
       this.showLoading().then(() => {
         Api.toggleAgent(user.agent_id, toggle, (status, result) => {
@@ -187,7 +187,7 @@ export class AgentsPage extends PageController {
 
   /**Show confirmation
    * */
-  public confirmMakeAdmin(user: UserInfo) {
+  public confirmMakeAdmin(user: User) {
     this.showAlert(
       this.strings.getString("make_admin_title_txt"),
       this.strings.getString("make_admin_msg_txt"),
@@ -205,7 +205,7 @@ export class AgentsPage extends PageController {
 
   /**Show confirmation
    * */
-  public confirmRemoveAdmin(user: UserInfo) {
+  public confirmRemoveAdmin(user: User) {
     this.showAlert(
       this.strings.getString("remove_admin_title_txt"),
       this.strings.getString("remove_admin_msg_txt"),
@@ -249,7 +249,7 @@ export class AgentsPage extends PageController {
 
   /**Show confirmation
    * */
-  public confirmForgotPassword(user: UserInfo) {
+  public confirmForgotPassword(user: User) {
     this.showAlert(
       this.strings.getString("forgot_password_title_txt"),
       this.strings.getString("forgot_password_msg_txt"),
