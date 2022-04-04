@@ -274,8 +274,10 @@ export class Api {
   ) {
     if (result) {
       if (status) {
+        // Json Data available
         const data = Utils.parseJson(result.body);
         if (data) {
+          // Check API status
           if (data.status) {
             if (requestParams.cache) {
               // Get cached response
@@ -356,7 +358,7 @@ export class Api {
           ? Utils.parseJson(result.body)
           : result.error
             ? Utils.parseJson(result.error)
-            : "";
+            : {};
         if (result.status === 401) {
           // Failed to authenticate api access
           if (requestParams.callback) {
@@ -384,7 +386,7 @@ export class Api {
           }
         } else {
           if (requestParams.cache) {
-            // get cached response
+            // Get cached response
             let cache = await SessionManager.get(requestParams.cacheId);
             if (cache) {
               // Check Internet connection
@@ -465,7 +467,9 @@ export class Api {
             } else if (!this.cacheLoaded && requestParams.callback) {
               requestParams.callback(
                 false,
-                Strings.getString("error_unexpected"),
+                data && data.msg
+                  ? data.msg
+                  : Strings.getString("error_unexpected"),
                 ApiResponseType.Unknown,
                 false
               );
