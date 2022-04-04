@@ -489,9 +489,6 @@ enum AssetId {
   logo_txt_white = "imgs/logo_txt_white.png",
   logo_txt_dark = "imgs/logo_txt_dark.png",
   logo_txt_light = "imgs/logo_txt_light.png",
-  loading_page = "imgs/loading_page.gif",
-  no_trip = "imgs/no_trip.png",
-  not_found = "imgs/not_found.png",
   placeholder = "imgs/placeholder.png",
   powered_by_google = "imgs/powered_by_google.png"
 }

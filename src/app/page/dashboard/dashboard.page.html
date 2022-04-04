@@ -130,7 +130,9 @@
 
       <!--No active trip view - Show if active trips has been loaded but is empty-->
       <div class="loader cell" *ngIf="dashboard.active_trips==null || dashboard.active_trips.length <= 0">
-        <img src="{{assets.getPath('no_trip')}}" />
+        <div class="cell cell-flex cell-flex-center cell-padding-2x">
+          <fa-icon class="color-gray cell-margin-auto" size="6x" [icon]="['fas', 'calendar-xmark']"></fa-icon>
+        </div>
         <ion-label class="cell-content">{{strings.getString('no_active_trip_txt')}}</ion-label>
       </div>
     </div>

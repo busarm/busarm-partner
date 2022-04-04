@@ -3,9 +3,12 @@ import {IonicModule} from '@ionic/angular';
 
 import { LoaderComponent } from './loader.component';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 @NgModule({
     imports: [
-        IonicModule
+        IonicModule,
+        FontAwesomeModule
     ],
     declarations: [LoaderComponent],
     exports: [LoaderComponent],

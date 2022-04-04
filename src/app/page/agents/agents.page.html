@@ -44,13 +44,8 @@
 
     <!--Loading view - Show if nothing hasn't been loaded yet-->
     <app-loader *ngIf="currentAgents==null" [text]="strings.getString('loading_txt')"></app-loader>
-
     <!--Not found view -->
-    <div class="loader cell" *ngIf="currentAgents!=null && currentAgents.length <= 0">
-        <ion-img [src]="assets.getPath('not_found')"> </ion-img>
-        <br>
-        <ion-label class="cell-content">{{strings.getString('not_found_txt')}}</ion-label>
-    </div>
+    <app-loader *ngIf="currentAgents!=null && currentAgents.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
 
     <ion-grid *ngIf="currentAgents!=null && currentAgents.length > 0">
         <ion-row wrap>

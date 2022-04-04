@@ -115,7 +115,7 @@
   --ion-toolbar-background: var(--ion-color-tint);
   --ion-tab-bar-background: var(--ion-color-tint);
   --ion-card-background: var(--ion-color-light-tint);
-  --ion-item-background: var(--ion-color-light-tint);
+  // --ion-item-background: var(--ion-color-light-tint);
   --ion-item-background: rgba(0, 0, 0, 0);
   --ion-item-background-activated: rgba(0, 0, 0, 0.02);
   --ion-border-color: var(--shadow-color);
@@ -205,7 +205,7 @@ body.dark {
   --ion-toolbar-background: var(--ion-color-tint);
   --ion-tab-bar-background: var(--ion-color-tint);
   --ion-card-background: var(--ion-color-light-tint);
-  --ion-item-background: var(--ion-color-light-tint);
+  // --ion-item-background: var(--ion-color-light-tint);
   --ion-item-background: rgba(255, 255, 255, 0);
   --ion-item-background-activated: rgba(255, 255, 255, 0.02);
   --ion-border-color: var(--shadow-color);

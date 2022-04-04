@@ -446,7 +446,7 @@ export class AppComponent {
       spinner: msg ? "crescent" : "dots",
       animated: true,
       keyboardClose: true,
-      backdropDismiss,
+      backdropDismiss
     });
     return await this.loader.present();
   }

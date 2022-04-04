@@ -1,5 +1,5 @@
 <!-- Split Pane -->
-<ion-split-pane *ngIf="!platform.is('mobile') && !platform.is('tablet')" when="md" contentId="home-router">
+<ion-split-pane *ngIf="!platform.is('mobile') || platform.is('tablet')" when="lg" contentId="home-router">
   <!--Menu Controller-->
   <ion-menu size="start" menuId="home" contentId="home-router" type="overlay">
     <ion-content class="background-primary">
@@ -12,29 +12,29 @@
       <ion-menu-toggle auto-hide="false">
         <ion-item lines="none" color="primary" routerLink="/home/dashboard" routerDirection="root"
           [class.active-item]="selectedPage.startsWith('/home/dashboard')">
-          <ion-icon slot="start" name="home" color="secondary"> </ion-icon>
-          {{strings.getString("dashboard_title_txt")}}
+          <ion-icon slot="start" name="stats-chart" class="secondary"> </ion-icon>
+          <ion-label color="secondary">{{strings.getString("dashboard_title_txt")}}</ion-label>
         </ion-item>
       </ion-menu-toggle>
       <ion-menu-toggle auto-hide="false">
         <ion-item lines="none" color="primary" routerLink="/home/trip" routerDirection="root"
           [class.active-item]="selectedPage.startsWith('/home/trip')">
-          <ion-icon slot="start" name="map" color="secondary"> </ion-icon>
-          {{strings.getString("trips_title_txt")}}
+          <ion-icon slot="start" name="calendar" class="secondary"> </ion-icon>
+          <ion-label color="secondary">{{strings.getString("trips_title_txt")}}</ion-label>
         </ion-item>
       </ion-menu-toggle>
       <ion-menu-toggle auto-hide="false">
         <ion-item lines="none" color="primary" routerLink="/home/bus" routerDirection="root"
           [class.active-item]="selectedPage.startsWith('/home/bus')">
-          <ion-icon slot="start" name="bus" color="secondary"> </ion-icon>
-          {{strings.getString("buses_title_txt")}}
+          <ion-icon slot="start" name="bus" class="secondary"> </ion-icon>
+          <ion-label color="secondary">{{strings.getString("buses_title_txt")}}</ion-label>
         </ion-item>
       </ion-menu-toggle>
       <ion-menu-toggle auto-hide="false">
         <ion-item lines="none" color="primary" routerLink="/home/account" routerDirection="root"
           [class.active-item]="selectedPage.startsWith('/home/account')">
-          <ion-icon slot="start" name="person" color="secondary"> </ion-icon>
-          {{strings.getString("account_title_txt")}}
+          <ion-icon slot="start" name="person" class="secondary"> </ion-icon>
+          <ion-label color="secondary">{{strings.getString("account_title_txt")}}</ion-label>
         </ion-item>
       </ion-menu-toggle>
     </ion-content>
@@ -54,15 +54,15 @@
 </ion-split-pane>
 
 <!--Tab Controller-->
-<ion-tabs *ngIf="platform.is('mobile') || platform.is('tablet')" (ionTabsWillChange)="willChange($event)">
-  <ion-tab-bar slot="bottom">
+<ion-tabs *ngIf="platform.is('mobile') && !platform.is('tablet')" (ionTabsWillChange)="willChange($event)">
+  <ion-tab-bar class="cell" slot="bottom">
     <ion-tab-button tab="dashboard">
-      <ion-icon name="home"> </ion-icon>
+      <ion-icon name="stats-chart"> </ion-icon>
       <ion-label>{{strings.getString('dashboard_title_txt')}}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="trip">
-      <ion-icon name="map"> </ion-icon>
+      <ion-icon name="calendar"> </ion-icon>
       <ion-label>{{strings.getString('trips_title_txt')}}</ion-label>
     </ion-tab-button>
 

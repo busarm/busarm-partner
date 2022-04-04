@@ -33,13 +33,8 @@
 
   <!--Loading view - Show if Trips hasn't been loaded yet-->
   <app-loader  *ngIf="currentTrips == null" [text]="strings.getString('loading_txt')"></app-loader>
-
-  <!--No trip view - Show if currentTrips has been loaded but is empty-->
-  <div class="loader cell" *ngIf="currentTrips!=null && currentTrips.length <= 0">
-    <ion-img [src]="assets.getPath('not_found')"> </ion-img>
-    <br />
-    <ion-label class="cell-content">{{strings.getString('no_trip_txt')}}</ion-label>
-  </div>
+  <!--Not found view -->
+  <app-loader *ngIf="currentTrips!=null && currentTrips.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
 
   <!--Trip list-->
   <div id="dashCards" *ngIf="currentTrips!=null && currentTrips.length > 0">

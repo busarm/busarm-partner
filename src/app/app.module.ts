@@ -31,6 +31,11 @@ import { DEFAULT_TIMEOUT, TimeoutInterceptor } from "./services/app/TimeoutInter
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+
 //Turn on production mode
 if (CONFIGS.production) {
   enableProdMode();
@@ -68,7 +73,8 @@ export function errorHandlerFactory() {
       driverOrder: ['indexeddb', 'localstorage', 'websql', 'sqlite']
     }),
     AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: CONFIGS.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: CONFIGS.production }),
+    FontAwesomeModule
   ],
   providers: [
     [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }],
@@ -94,4 +100,7 @@ export function errorHandlerFactory() {
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIconPacks(fas, far);
+  }
 }

@@ -28,16 +28,15 @@
          style="position: absolute !important; top: -20px; bottom: 0; left: 0; right: 0; width: 100%;height: 100%; z-index: 500 !important;">
         <ion-spinner name="bubbles"></ion-spinner>
     </div>
-    <div style="position: absolute !important; top: 0; width: 100%;height: auto; z-index: 300 !important;"
+    <div style="position: absolute !important; top: 0; width: 100%; height: auto; z-index: 300 !important;"
          *ngIf="searchText!=null && searchText.length>=1">
         <ion-card>
-            <ion-card-content>
+            <ion-card-content style="min-height: 250px;">
+                <!--Loading view - Show if nothing hasn't been loaded yet-->
                 <app-loader  *ngIf="autoCompleteItems == null" [text]="strings.getString('loading_txt')"></app-loader>
-                <div class="cell loader" *ngIf="autoCompleteItems != null && autoCompleteItems.length<1">
-                    <ion-img [src]="assets.getPath('not_found')"> </ion-img>
-                    <br>
-                    <ion-label class="cell-content">{{strings.getString('not_found_txt')}}</ion-label>
-                </div>
+                <!--Not found view -->
+                <app-loader *ngIf="autoCompleteItems!=null && autoCompleteItems.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
+
                 <ion-list *ngIf="autoCompleteItems!=null && autoCompleteItems.length>=1">
                     <ion-item *ngFor="let item of autoCompleteItems; let i = index" [attr.index]="i" (click)="getPlaceDetails(item.placeId)">
                         <ion-col size="2" class="cell cell-center cell-flex cell-flex-center ">
@@ -58,7 +57,7 @@
             </ion-card-content>
         </ion-card>
     </div>
-    <div style="position: absolute !important; bottom: 0; width: 100%;height: auto; z-index: 200 !important;"
+    <div style="position: absolute !important; bottom: 0; width: 100%; height: auto; z-index: 200 !important;"
          *ngIf="selectedPlace!=null">
         <ion-card>
             <ion-card-content>

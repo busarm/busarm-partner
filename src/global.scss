@@ -12,7 +12,7 @@
 @import "theme/variables";
 
 /*Loader specific contents*/
-.app-loader {
+.app-page-loader {
   z-index: 20000 !important;
 
   background: var(--translucent-color-light);
@@ -137,8 +137,8 @@ ion-split-pane {
 
   .split-pane-side {
     &:not(.show-menu) {
-      min-width: 180px !important;
-      max-width: 18% !important;
+      min-width: 200px !important;
+      max-width: 20% !important;
     }
   }
 }
@@ -649,138 +649,144 @@ input {
 }
 
 .toast-normal {
-  --background: var(--ion-color-dark) !important;
-  --color: var(--ion-color-light) !important;
-  --button-color: var(--ion-color-light-tint) !important;
+  --background: var(--ion-color-medium) !important;
+  --color: var(--ion-text-color) !important;
+  --button-color: var(--ion-text-color) !important;
 
   .toast-container,
   .toast-message {
-    background: var(--ion-color-dark) !important;
+    background: var(--ion-color-medium) !important;
     color: var(--ion-text-color) !important;
   }
 
   .toast-button {
     --ion-default-font: 12px !important;
-    background: var(--ion-color-dark);
-    color: var(--ion-color-secondary);
     font-size: 12px !important;
+    background: var(--ion-color-medium) !important;
+    color: var(--ion-text-color) !important;
   }
 }
 
 .toast-error {
   --background: var(--ion-color-danger) !important;
-  --color: var(--ion-color-light) !important;
-  --button-color: var(--ion-color-light-tint) !important;
+  --color: var(--text-color-light) !important;
+  --button-color: var(--text-color-light) !important;
 
   .toast-container,
   .toast-message {
     background: var(--ion-color-danger) !important;
-    color: var(--ion-text-color) !important;
+    color: var(--text-color-light) !important;
   }
 
   .toast-button {
     --ion-default-font: 12px !important;
-    background: var(--ion-color-danger);
-    color: var(--translucent-color-lightest);
     font-size: 12px !important;
+    background: var(--ion-color-danger) !important;
+    color: var(--text-color-light) !important;
   }
 }
 
 .toast-warning {
   --background: var(--ion-color-warning) !important;
-  --color: var(--ion-color-dark) !important;
-  --button-color: var(--ion-color-medium) !important;
+  --color: var(--text-color-light) !important;
+  --button-color: var(--text-color-light) !important;
 
   .toast-container,
   .toast-message {
-    background: var(--ion-color-warning);
-    color: var(--ion-text-color);
+    background: var(--ion-color-warning) !important;
+    color: var(--text-color-light) !important;
   }
 
   .toast-button {
     --ion-default-font: 12px !important;
-    background: var(--ion-color-warning);
-    color: var(--translucent-color-lightest);
     font-size: 12px !important;
+    background: var(--ion-color-warning) !important;
+    color: var(--text-color-light) !important;
   }
 }
 
 .toast-success {
   --background: var(--ion-color-success) !important;
-  --color: var(--ion-color-light) !important;
-  --button-color: var(--ion-color-light-tint) !important;
+  --color: var(--text-color-light) !important;
+  --button-color: var(--text-color-light) !important;
 
   .toast-container,
   .toast-message {
-    background: seagreen;
-    color: var(--ion-text-color);
+    background: var(--ion-color-success) !important;
+    color: var(--text-color-light) !important;
   }
 
   .toast-button {
     --ion-default-font: 12px !important;
-    background: seagreen;
-    color: var(--translucent-color-lightest);
     font-size: 12px !important;
+    background: var(--ion-color-success) !important;
+    color: var(--text-color-light) !important;
   }
 }
 
 .status-ok {
-  color: var(--ion-color-light);
   padding: 5px 8px;
-  background: seagreen;
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
 
+  background: var(--ion-color-success);
   --background: var(--ion-color-success) !important;
-  --color: var(--ion-color-light) !important;
+  color: var(--text-color-light);
+  --color: var(--text-color-light) !important;
 }
 
 .status-warn {
-  color: var(--ion-color-light);
   padding: 5px 8px;
-  background: var(--ion-color-warning);
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
 
+  background: var(--ion-color-warning);
   --background: var(--ion-color-warning) !important;
-  --color: var(--ion-color-dark) !important;
+  color: var(--text-color-light);
+  --color: var(--text-color-light) !important;
 }
 
 .status-error {
-  color: var(--ion-color-light);
   padding: 5px 8px;
-  background: var(--ion-color-danger);
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
 
+  background: var(--ion-color-danger);
   --background: var(--ion-color-danger) !important;
-  --color: var(--ion-color-light) !important;
+  color: var(--text-color-light);
+  --color: var(--text-color-light) !important;
 }
 
 .status-default {
-  color: var(--ion-color-light);
   padding: 5px 8px;
-  background: var(--ion-color-normal);
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  background: var(--ion-color-danger);
+  --background: var(--ion-color-danger) !important;
+  color: var(--text-color-light);
+  --color: var(--text-color-light) !important;
 }
 
 .status-cancel {
-  color: var(--ion-color-light);
   padding: 5px 8px;
-  background: var(--shadow-color);
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  background: var(--ion-color-medium);
+  --background: var(--ion-color-medium) !important;
+  color: var(--ion-color-light);
+  --color: var(--ion-color-light) !important;
 }
 
 .section-title {
@@ -1056,7 +1062,7 @@ input {
 }
 
 .color-gray {
-  color: var(--shadow-color) !important;
+  color: var(--ion-color-medium) !important;
   --color: var(--ion-color-medium) !important;
 }
 
@@ -1190,7 +1196,6 @@ input {
 .img {
   width: auto;
   height: auto;
-  background: var(--ion-color-light);
   object-fit: contain;
 
   display: flex;

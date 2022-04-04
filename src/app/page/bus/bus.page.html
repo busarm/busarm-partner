@@ -47,13 +47,8 @@
 
     <!--Loading view - Show if nothing hasn't been loaded yet-->
     <app-loader *ngIf="currentBuses==null" [text]="strings.getString('loading_txt')"></app-loader>
-
-    <!--No bus view - Show if currentBuses has been loaded but is empty-->
-    <div class="loader cell" *ngIf="currentBuses!=null && currentBuses.length <= 0">
-        <ion-img [src]="assets.getPath('not_found')"> </ion-img>
-        <br>
-        <ion-label class="cell-content">{{strings.getString('no_bus_txt')}}</ion-label>
-    </div>
+    <!--Not found view -->
+    <app-loader *ngIf="currentBuses!=null && currentBuses.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
 
     <!--Bus Images-->
     <div id="dashCards" *ngIf="currentBuses!=null && currentBuses.length > 0">

@@ -10,12 +10,14 @@ import { ViewBookingPageModule } from '../bookings/view-booking/view-booking.mod
 import { ViewTripPageModule } from '../trip/view-trip/view-trip.module';
 import { ViewTripPage } from '../trip/view-trip/view-trip.page';
 import { LoaderModule } from '../../components/loader/loader.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 // import { WebScannerPage } from './web-scanner/web-scanner.page';
 // import { WebScannerPageModule } from './web-scanner/web-scanner.module';
 
 
 @NgModule({
   imports: [
+    FontAwesomeModule,
     LoaderModule,
     CommonModule,
     FormsModule,

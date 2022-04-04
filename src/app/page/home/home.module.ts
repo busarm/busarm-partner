@@ -16,6 +16,8 @@ import { BusPageModule } from '../bus/bus.module';
 import { AccountPageModule } from '../account/account.module';
 import { LoaderModule } from '../../components/loader/loader.module';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 const routes: Routes = [
   {
     path: '',
@@ -49,7 +51,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    // LoaderModule,
+    FontAwesomeModule,
+    LoaderModule,
     CommonModule,
     FormsModule,
     IonicModule,
