@@ -28,7 +28,6 @@ export class AccountPage extends PageController {
     private file: File,
     private iab: InAppBrowser,
     public network: Network,
-    public events: Events,
     public platform: Platform) {
     super();
   }

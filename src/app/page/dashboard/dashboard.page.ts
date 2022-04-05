@@ -42,7 +42,6 @@ export class DashboardPage extends PageController {
   private isFindBookingProcessing = false;
 
   constructor(public modalCtrl: ModalController,
-    public events: Events,
     private barcodeScanner: BarcodeScanner,
     public platform: Platform) {
     super();

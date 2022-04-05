@@ -8,6 +8,7 @@ import { SessionManager } from "../helpers/SessionManager";
 import { User } from "../models/User/User";
 import { Session } from "../models/Session";
 import { CONFIGS } from "../../environments/environment";
+import { Events } from "../services/app/Events";
 
 @Component({
   template: ''
@@ -17,6 +18,8 @@ export class PageController implements OnInit, OnDestroy {
   //Define resources for views to use
   public strings = Strings;
   public assets = Assets;
+
+  public events: Events;
 
   public selectedCountry: string = null;
   public session: Session = null;
@@ -30,6 +33,9 @@ export class PageController implements OnInit, OnDestroy {
   protected constructor() {
     this.loadSession();
     this.loadUser();
+
+    // Load common event handler
+    this.events = this.instance.events
   }
 
   /* lifecycle events */

@@ -52,7 +52,6 @@ export class AddTripPage extends PageController {
     private modalCtrl: ModalController,
     public navParams: NavParams,
     private datePicker: DatePicker,
-    private events: Events,
     platform: Platform
   ) {
     super();

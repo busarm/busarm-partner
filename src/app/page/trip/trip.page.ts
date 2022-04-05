@@ -45,7 +45,6 @@ export class TripPage extends PageController {
 
   constructor(public alertCtrl: AlertController,
     public modalCtrl: ModalController,
-    public events: Events,
     public network: Network) {
     super();
   }

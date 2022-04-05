@@ -32,7 +32,6 @@ export class ViewBusPage extends PageController {
                 private file: File,
                 private actionSheetController: ActionSheetController,
                 private modalCtrl: ModalController,
-                public events: Events,
                 platform: Platform) {
         super();
         this.platform = platform;

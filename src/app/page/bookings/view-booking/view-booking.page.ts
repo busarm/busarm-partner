@@ -21,7 +21,7 @@ export class ViewBookingPage extends PageController {
   @Input() booking: BookingTrip = null;
   activeBookingSegment: string = "summary";
 
-  constructor(private modalCtrl: ModalController, public events: Events) {
+  constructor(private modalCtrl: ModalController) {
     super();
   }
 

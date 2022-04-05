@@ -39,7 +39,7 @@ export class ViewTripPage extends PageController {
   allowAddTicket: boolean = true;
   allowDeactivateTicket: boolean = false;
 
-  constructor(private modalCtrl: ModalController, public events: Events) {
+  constructor(private modalCtrl: ModalController) {
     super();
   }
 
