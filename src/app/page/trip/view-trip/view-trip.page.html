@@ -53,7 +53,7 @@
                     </ion-label>
                     <ion-label class="cell cell-center ">
                         <div class="cell-title">{{strings.getString('created_by_txt')}}</div>
-                        <a (click)="showAgent()">
+                        <a (click)="showAgent(trip.agent_id)">
                           <div class="cell-content color-normal">{{trip.agent_name}}</div>
                           <div class="cell-sub color-normal">{{trip.agent_email}}</div>
                         </a>

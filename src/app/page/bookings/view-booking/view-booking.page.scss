@@ -1,12 +1,6 @@
 /*Booking info Card*/
 #bookingCard {
-  ion-card-header {
-    background: var(--translucent-color-light);
-  }
 
-  ion-card-content {
-    background: var(--ion-color-light);
-  }
 
   ion-list {
     ion-list-header {
@@ -23,5 +17,4 @@
       font-size: 14px !important;
     }
   }
-
 }

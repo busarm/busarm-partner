@@ -20,6 +20,7 @@ export interface User {
   partner_name?: string;
   partner_active?: boolean | number;
   partner_verified?: boolean | number;
+  partner_user_id?: string;
   account_id?: string;
   suspended?: string;
   verified?: string;

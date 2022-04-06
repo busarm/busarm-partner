@@ -537,6 +537,11 @@ ion-picker-internal {
   background: var(--ion-color-light-tint);
 }
 
+ion-segment-button {
+  color: var(--ion-color-dark) !important;
+  --color: var(--ion-color-dark) !important;
+}
+
 input,
 button {
   background: transparent;
