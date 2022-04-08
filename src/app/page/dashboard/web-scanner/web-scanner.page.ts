@@ -4,7 +4,6 @@ import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { BarcodeFormat } from '@zxing/library';
 import { PageController } from "../../page-controller";
 import { ToastType } from "../../../helpers/Utils";
-import { Events } from '../../../services/app/Events';
 
 @Component({
     selector: 'app-web-scanner',
@@ -27,8 +26,7 @@ export class WebScannerPage extends PageController {
     lastScanned: { timestamp: number, code: string } = null
 
     constructor(public navCtrl: NavController,
-        private modalCtrl: ModalController,
-        public event: Events) {
+        private modalCtrl: ModalController) {
         super();
         this.allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX /*, ...*/];
     }
@@ -62,7 +60,7 @@ export class WebScannerPage extends PageController {
         this.scanner.scanSuccess.subscribe((code: any) => {
             if (this.canScanAgain(code)) {
                 this.lastScanned = { timestamp: Date.now(), code: code };
-                this.event.webScannerResult.emit(code);
+                this.events.webScannerCompleted.next(code);
             }
         });
         this.checkPermission();

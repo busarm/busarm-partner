@@ -11,7 +11,6 @@ import { PageController } from "../../page-controller";
 import { ToastType, Utils } from "../../../helpers/Utils";
 import { Api } from "../../../helpers/Api";
 import { Strings } from "../../../resources";
-import { Events } from "../../../services/app/Events";
 import { LocationsModal } from "../../locations/locations.modal";
 import { AddTicketPage } from "../add-ticket/add-ticket.page";
 import { DatePickerType, SelectDatePage } from "../../select-date/select-date.page";
@@ -333,7 +332,7 @@ export class AddTripPage extends PageController {
             this.hideLoading();
             if (this.assertAvailable(result)) {
               this.showToastMsg(result.msg, ToastType.SUCCESS);
-              this.events.tripsUpdated.emit(true);
+              this.events.tripsUpdated.next();
               this.dismiss();
             } else {
               this.showToastMsg(

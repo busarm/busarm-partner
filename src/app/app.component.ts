@@ -36,8 +36,7 @@ import { ToastType, Utils } from "./helpers/Utils";
 import { Api, ApiResponseType } from "./helpers/Api";
 import { Urls } from "./helpers/Urls";
 import { Langs, Strings } from "./resources";
-import { Oauth, OauthGrantType, OauthUtils } from "./helpers/Oauth";
-import { CIPHER } from "./helpers/CIPHER";
+import { Oauth, OauthGrantType } from "./helpers/Oauth";
 import { ENVIRONMENT, CONFIGS } from "../environments/environment";
 import { Events } from "./services/app/Events";
 import { NavigationOptions } from "@ionic/angular/providers/nav-controller";
@@ -148,7 +147,7 @@ export class AppComponent {
       if (!this.authorized && AppComponent._oauth.hasExpired()) {
         SessionManager.setDarkMode(sys.matches);
         document.body.classList.toggle('dark', sys.matches)
-        events.darkModeChange.emit(sys.matches);
+        events.darkModeChanged.next(sys.matches);
       }
     };
 
@@ -167,7 +166,7 @@ export class AppComponent {
       this.splashScreen.hide();
 
       // Network event
-      this.events.networkChange.subscribe(async (online) => {
+      this.events.networkChanged.asObservable().subscribe(async (online) => {
         if (online) {
           await this.hideToastMsg();
         } else {

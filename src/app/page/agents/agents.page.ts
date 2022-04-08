@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ModalController } from "@ionic/angular";
+import { IonToggle, ModalController } from "@ionic/angular";
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { PageController } from "../page-controller";
 import { User } from "../../models/User/User";
@@ -7,6 +7,7 @@ import { ToastType } from "../../helpers/Utils";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { AddAgentPage } from "./add-agent/add-agent.page";
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-view-agents',
@@ -19,6 +20,8 @@ export class AgentsPage extends PageController {
   agents: User[] = null;
   currentAgents: User[] = null;
 
+  public readonly updated = new Subject<string>();
+
   constructor(public modalCtrl: ModalController,
     private iab: InAppBrowser) {
     super();
@@ -26,6 +29,14 @@ export class AgentsPage extends PageController {
 
   public async ngOnInit() {
     await super.ngOnInit();
+
+    /*User updated event*/
+    this.subscriptions.add(this.updated.asObservable().subscribe(async (id) => {
+      await super.ngOnInit();
+      if (!this.agents || (this.agents && (!id || this.agents.some((agent) => agent.agent_id === id)))) {
+        this.loadAgentsView();
+      }
+    }));
   }
 
   public async ionViewDidEnter() {
@@ -110,7 +121,8 @@ export class AgentsPage extends PageController {
     });
     chooseModal.onDidDismiss().then(data => {
       if (data.data) {
-        this.loadAgentsView();
+        this.updated.next();
+        this.events.userUpdated.next();
       }
     });
     return await chooseModal.present();
@@ -142,7 +154,8 @@ export class AgentsPage extends PageController {
         if (status) {
           if (this.assertAvailable(result)) {
             if (result.status) {
-              this.loadAgentsView();
+              this.updated.next(user.agent_id);
+              this.events.userUpdated.next(user.agent_id);
               this.showToastMsg(result.msg, ToastType.SUCCESS);
             } else {
               this.showToastMsg(result.msg, ToastType.ERROR);
@@ -158,28 +171,33 @@ export class AgentsPage extends PageController {
   }
 
   /**Toggle Agent active status*/
-  public toggleAgent(user: User, toggle: boolean) {
-    if (user.is_active !== toggle) {
+  public toggleAgent(event: CustomEvent<IonToggle>, user: User) {
+    if (user.is_active !== event.detail.checked) {
+      user.is_active = event.detail.checked;
       this.showLoading().then(() => {
-        Api.toggleAgent(user.agent_id, toggle, (status, result) => {
+        Api.toggleAgent(user.agent_id, Boolean(user.is_active), (status, result) => {
           this.hideLoading();
           if (status) {
             if (this.assertAvailable(result)) {
               if (result.status) {
+                this.updated.next(user.agent_id);
+                this.events.userUpdated.next(user.agent_id);
                 this.showToastMsg(result.msg, ToastType.SUCCESS);
               }
               else {
+                user.is_active = !event.detail.checked;
                 this.showToastMsg(result.msg, ToastType.ERROR);
               }
             }
             else {
+              user.is_active = !event.detail.checked;
               this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
             }
           }
           else {
+            user.is_active = !event.detail.checked;
             this.showToastMsg(result, ToastType.ERROR);
           }
-          this.loadAgentsView();
         });
       });
     }
@@ -229,7 +247,8 @@ export class AgentsPage extends PageController {
         if (status) {
           if (this.assertAvailable(result)) {
             if (result.status) {
-              this.loadAgentsView();
+              this.updated.next(agentId);
+              this.events.userUpdated.next(agentId);
               this.showToastMsg(result.msg, ToastType.SUCCESS);
             }
             else {

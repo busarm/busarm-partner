@@ -36,6 +36,7 @@ export class HomePage extends PageController {
     });
     this.menu.enable(true, "home")
   }
+
   public async ionViewDidEnter() { }
 
   public willChange(event) {

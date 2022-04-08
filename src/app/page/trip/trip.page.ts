@@ -12,7 +12,6 @@ import { PageController } from "../page-controller";
 import { ViewTripPage } from "./view-trip/view-trip.page";
 import { AddTripPage } from "./add-trip/add-trip.page";
 import { DatePickerType, SelectDatePage } from '../select-date/select-date.page';
-import { Events } from '../../services/app/Events';
 
 type GroupedTrips = { date: string, list: Trip[] };
 @Component({
@@ -53,7 +52,7 @@ export class TripPage extends PageController {
     await super.ngOnInit();
 
     /*Network event*/
-    this.events.networkChange.subscribe(async (online) => {
+    this.subscriptions.add(this.events.networkChanged.asObservable().subscribe(async (online) => {
       await super.ngOnInit();
       if (online) {
         await this.hideToastMsg();
@@ -61,10 +60,10 @@ export class TripPage extends PageController {
           this.loadTripsView();
         }
       }
-    });
+    }));
 
     /*Country Changed event*/
-    this.events.countryChange.subscribe(async (changed) => {
+    this.subscriptions.add(this.events.countryChanged.asObservable().subscribe(async (changed) => {
       await super.ngOnInit();
       if (changed) {
         this.loadTripsView();
@@ -73,15 +72,15 @@ export class TripPage extends PageController {
         /*Set default country*/
         this.selectedCountry = this.session.country.country_code;
       }
-    });
+    }));
 
     /*Trips updated event*/
-    this.events.tripsUpdated.subscribe(async (updated) => {
+    this.subscriptions.add(this.events.tripsUpdated.asObservable().subscribe(async (id) => {
       await super.ngOnInit();
-      if (updated) {
+      if (!this.trips || (this.trips && (!id || this.trips.some((trip) => trip.trip_id === id)))) {
         this.loadTripsView();
       }
-    });
+    }));
   }
 
   public ngOnDestroy() {

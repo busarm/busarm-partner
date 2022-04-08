@@ -12,7 +12,6 @@ import { DestinationType } from "@ionic-native/camera";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { Urls } from "../../helpers/Urls";
 import { OauthStorage } from "../../helpers/Oauth";
-import { Events } from '../../services/app/Events';
 
 @Component({
   selector: 'app-account',
@@ -34,10 +33,14 @@ export class AccountPage extends PageController {
 
   public async ngOnInit() {
     await super.ngOnInit();
-    this.events.darkModeChange.subscribe( enabled => {
+    this.subscriptions.add(this.events.darkModeChanged.subscribe(enabled => {
       this.darkMode = enabled;
-    })
+    }))
     this.darkMode = await SessionManager.getDarkMode();
+  }
+
+  public ngOnDestroy() {
+    super.ngOnDestroy();
   }
 
   public async ionViewDidEnter() {

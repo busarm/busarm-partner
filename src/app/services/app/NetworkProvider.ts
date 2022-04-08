@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { Network } from "@ionic-native/network/ngx";
 import { HttpClient } from "@angular/common/http";
 import { Urls } from "../../helpers/Urls";
-import { AppComponent } from "../../app.component";
 import { Events } from "./Events";
 import { SessionManager } from "../../helpers/SessionManager";
 import { PingResponse } from "../../models/PingResponse";
@@ -56,7 +55,7 @@ export class NetworkProvider {
                 trigger &&
                 NetworkProvider.previousStatus != ConnectionStatus.Online
             ) {
-                this.event.networkChange.emit(true);
+                this.event.networkChanged.next(true);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Online;
         } else {
@@ -64,7 +63,7 @@ export class NetworkProvider {
                 trigger &&
                 NetworkProvider.previousStatus != ConnectionStatus.Offline
             ) {
-                this.event.networkChange.emit(false);
+                this.event.networkChanged.next(false);
             }
             NetworkProvider.previousStatus = ConnectionStatus.Offline;
         }

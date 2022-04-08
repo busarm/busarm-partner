@@ -6,11 +6,9 @@ import { Strings } from "../../resources";
 import { ToastType } from "../../helpers/Utils";
 import { BusType } from "../../models/Bus/BusType";
 import { Bus } from "../../models/Bus/Bus";
-import { Trip } from "../../models/Trip/Trip";
 import { PageController } from "../page-controller";
 import { ViewBusPage } from "./view-bus/view-bus.page";
 import { AddBusPage } from "./add-bus/add-bus.page";
-import { Events } from '../../services/app/Events';
 
 @Component({
   selector: 'app-bus',
@@ -34,7 +32,7 @@ export class BusPage extends PageController {
     await super.ngOnInit();
 
     /*Network event*/
-    this.events.networkChange.subscribe(async (online) => {
+    this.subscriptions.add(this.events.networkChanged.asObservable().subscribe(async (online) => {
       await super.ngOnInit();
       if (online) {
         await this.hideToastMsg();
@@ -42,10 +40,10 @@ export class BusPage extends PageController {
           this.loadBusesView();
         }
       }
-    });
+    }));
 
     /*Country Changed event*/
-    this.events.countryChange.subscribe(async (changed) => {
+    this.subscriptions.add(this.events.countryChanged.asObservable().subscribe(async (changed) => {
       await super.ngOnInit();
       if (changed) {
         this.loadBusesView();
@@ -54,15 +52,15 @@ export class BusPage extends PageController {
         /*Set default country*/
         this.selectedCountry = this.session.country.country_code;
       }
-    });
+    }));
 
     /*Buses updated event*/
-    this.events.busesUpdated.subscribe(async (updated) => {
+    this.subscriptions.add(this.events.busesUpdated.asObservable().subscribe(async (id) => {
       await super.ngOnInit();
-      if (updated) {
+      if (!this.buses || (this.buses && (!id || this.buses.some((bus) => bus.id === id)))) {
         this.loadBusesView();
       }
-    });
+    }));
   }
 
   public ngOnDestroy() {

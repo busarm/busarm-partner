@@ -1,7 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { PageController } from "../page-controller";
 import { ModalController, Platform } from "@ionic/angular";
-import { Booking } from "../../models/Booking/Booking";
 import { BookingMonth } from "../../models/Booking/BookingMonth";
 import { PayOutTransaction } from "../../models/Transaction/PayOutTransaction";
 import { PayInTransaction } from "../../models/Transaction/PayInTransaction";
@@ -15,7 +14,6 @@ import { ViewTripPage } from "../trip/view-trip/view-trip.page";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { Chart } from 'chart.js';
 import { ViewBookingPage } from "../bookings/view-booking/view-booking.page";
-import { Events } from '../../services/app/Events';
 import { MD5 } from 'crypto-js';
 import { ENVIRONMENT } from '../../../environments/environment';
 import { ENV } from '../../../environments/ENV';
@@ -54,7 +52,7 @@ export class DashboardPage extends PageController {
     this.selectedCountry = this.session.country.country_code;
 
     /*Network event*/
-    this.events.networkChange.subscribe(async (online) => {
+    this.subscriptions.add(this.events.networkChanged.asObservable().subscribe(async (online) => {
       await super.ngOnInit();
       if (online) {
         await this.hideToastMsg();
@@ -62,10 +60,10 @@ export class DashboardPage extends PageController {
           this.loadDashboardView();
         }
       }
-    });
+    }));
 
     /*Country Changed event*/
-    this.events.countryChange.subscribe(async (changed) => {
+    this.subscriptions.add(this.events.countryChanged.asObservable().subscribe(async (changed) => {
       await super.ngOnInit();
       if (changed) {
         this.loadDashboardView();
@@ -73,36 +71,40 @@ export class DashboardPage extends PageController {
         /*Set default country*/
         this.selectedCountry = this.session.country.country_code;
       }
-    });
+    }));
 
     /*Trips updated event*/
-    this.events.tripsUpdated.subscribe(async (updated) => {
+    this.subscriptions.add(this.events.tripsUpdated.asObservable().subscribe(async (id) => {
       await super.ngOnInit();
-      if (updated) {
+      if (!this.dashboard || !this.dashboard.active_trips || (this.dashboard && this.dashboard.active_trips && (!id || this.dashboard.active_trips.some((trip) => trip.trip_id === id)))) {
         this.loadDashboardView();
       }
-    });
+    }));
 
     /*Bookings updated event*/
-    this.events.bookingsUpdated.subscribe(async (updated) => {
+    this.subscriptions.add(this.events.bookingsUpdated.asObservable().subscribe(async (id) => {
       await super.ngOnInit();
-      if (updated) {
+      if (id) {
         this.loadDashboardView();
       }
-    });
+    }));
 
     /*Check if web scanning available */
     if (!this.platform.is('cordova')) {
       this.checkMediaDevice((available) => {
         if (available) {
           /*Web scanner event*/
-          this.events.webScannerResult.subscribe(async (code) => {
+          this.subscriptions.add(this.events.webScannerCompleted.asObservable().subscribe(async (code) => {
             this.referenceCode = code;
             this.findBooking();
-          });
+          }));
         }
       });
     }
+  }
+
+  public ngOnDestroy() {
+    super.ngOnDestroy();
   }
 
   public async ionViewDidEnter() {

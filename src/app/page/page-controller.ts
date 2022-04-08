@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnChanges, OnDestroy, OnInit } from "@angular/core";
 import { Params } from "@angular/router";
 import { MD5 } from "crypto-js";
 import { AppComponent } from "../app.component";
@@ -9,6 +9,7 @@ import { User } from "../models/User/User";
 import { Session } from "../models/Session";
 import { CONFIGS } from "../../environments/environment";
 import { Events } from "../services/app/Events";
+import { Subscription } from "rxjs";
 
 @Component({
   template: ''
@@ -19,7 +20,8 @@ export class PageController implements OnInit, OnDestroy {
   public strings = Strings;
   public assets = Assets;
 
-  public events: Events;
+  protected events: Events;
+  protected subscriptions: Subscription = new Subscription();
 
   public selectedCountry: string = null;
   public session: Session = null;
@@ -44,15 +46,23 @@ export class PageController implements OnInit, OnDestroy {
     await this.loadUser();
     this.routeKey = await this.getRouteKey();
   }
+
   public ngOnDestroy() {
+    // Clear intervals
     if (this.interval) {
       clearInterval(this.interval);
     }
+    // Remove route params
     if (this.routeKey) {
-      SessionManager.remove(this.routeKey); //remove params after use
+      SessionManager.remove(this.routeKey);
       this.routeKey = null;
     }
+    // Subscriptions
+    if(this.subscriptions) {
+      this.subscriptions.unsubscribe();
+    }
   }
+
   public ionViewWillEnter() {
     this.hideLoading();
   }
@@ -60,11 +70,13 @@ export class PageController implements OnInit, OnDestroy {
     this.hideLoading();
   }
   public ionViewWillLeave() {
+    // Clear intervals
     if (this.interval) {
       clearInterval(this.interval);
     }
+    // Remove route params
     if (this.routeKey) {
-      SessionManager.remove(this.routeKey); //remove params after use
+      SessionManager.remove(this.routeKey);
       this.routeKey = null;
     }
   }
@@ -73,7 +85,6 @@ export class PageController implements OnInit, OnDestroy {
       clearInterval(this.interval);
     }
   }
-
 
   /**Get App instance*/
   get instance() {
@@ -110,9 +121,9 @@ export class PageController implements OnInit, OnDestroy {
       this.showLoading().then(() => {
         this.instance.set_country(this.selectedCountry, async (status, msg) => {
           if (status) {
-            this.instance.events.countryChange.emit(true);
+            this.instance.events.countryChanged.next(true);
           } else {
-            this.instance.events.countryChange.emit(false);
+            this.instance.events.countryChanged.next(false);
             await this.showToastMsg(msg ? msg : Strings.getString("error_unexpected"), ToastType.ERROR);
           }
           this.hideLoading();

@@ -8,7 +8,6 @@ import { ViewTripPage } from "../../trip/view-trip/view-trip.page";
 import { ToastType } from "../../../helpers/Utils";
 import { Strings } from "../../../resources";
 import { Api } from "../../../helpers/Api";
-import { Events } from '../../../services/app/Events';
 
 @Component({
   selector: 'app-view-booking',
@@ -99,7 +98,7 @@ export class ViewBookingPage extends PageController {
           if (this.assertAvailable(result)) {
             this.showToastMsg(result.msg, ToastType.SUCCESS);
             await this.hideLoading();
-            this.events.bookingsUpdated.emit(true);
+            this.events.bookingsUpdated.next(bookingId);
             this.dismiss();
           }
           else {

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ModalController } from "@ionic/angular";
+import { IonToggle, ModalController } from "@ionic/angular";
 import { PageController } from "../page-controller";
 import { LocationType } from "../../models/Location/LocationType";
 import { Location } from "../../models/Location/Location";
@@ -8,6 +8,7 @@ import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { AddLocationPage } from './add-location/add-location.page';
 import { SessionManager } from '../../helpers/SessionManager';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-view-locations',
@@ -25,12 +26,22 @@ export class LocationsPage extends PageController {
   currentLocations: Location[] = null;
   locationTypes: LocationType[] = null;
 
+  public readonly updated = new Subject<string>();
+
   constructor(public modalCtrl: ModalController) {
     super();
   }
 
   public async ngOnInit() {
     await super.ngOnInit();
+
+    /*Location updated event*/
+    this.subscriptions.add(this.updated.asObservable().subscribe(async (id) => {
+      await super.ngOnInit();
+      if (!this.locations || (this.locations && (!id || this.locations.some((location) => String(location.loc_id) === id)))) {
+        this.loadLocationsView();
+      }
+    }));
   }
 
   public async ionViewDidEnter() {
@@ -79,7 +90,7 @@ export class LocationsPage extends PageController {
   }
 
   /**Refresh View*/
-  public refreshLocationsView(event?) {
+  public refreshLocationsView(event) {
     this.loadLocationsView(() => {
       if (event) {
         event.target.complete();
@@ -128,7 +139,8 @@ export class LocationsPage extends PageController {
     });
     chooseModal.onDidDismiss().then(data => {
       if (data.data) {
-        this.loadLocationsView();
+        this.updated.next();
+        this.events.locationUpdated.next();
       }
     });
     return await chooseModal.present();
@@ -160,7 +172,8 @@ export class LocationsPage extends PageController {
         if (status) {
           if (this.assertAvailable(result)) {
             if (result.status) {
-              this.loadLocationsView();
+              this.updated.next(String(location.loc_id));
+              this.events.locationUpdated.next(String(location.loc_id));
               this.showToastMsg(result.msg, ToastType.SUCCESS);
             } else {
               this.showToastMsg(result.msg, ToastType.ERROR);
@@ -176,31 +189,36 @@ export class LocationsPage extends PageController {
   }
 
   /**Toggle Location active status*/
-  public toggleLocation(location: Location, toggle: boolean) {
-    if (location.is_active !== toggle) {
+  public toggleLocation(event: CustomEvent<IonToggle>, location: Location) {
+    if (location.is_active !== event.detail.checked) {
+      location.is_active = event.detail.checked;
       this.showLoading().then(() => {
-        Api.updateLocationActiveStatus(location.loc_id, toggle, (status, result) => {
+        Api.updateLocationActiveStatus(location.loc_id, Boolean(location.is_active), (status, result) => {
           this.hideLoading();
           if (status) {
             if (this.assertAvailable(result)) {
               if (result.status) {
+                this.updated.next(String(location.loc_id));
+                this.events.locationUpdated.next(String(location.loc_id));
                 this.showToastMsg(result.msg, ToastType.SUCCESS);
                 if (location.is_default) {
                   this.refreshUser();
                 }
               }
               else {
+                location.is_active = !event.detail.checked;
                 this.showToastMsg(result.msg, ToastType.ERROR);
               }
             }
             else {
+              location.is_active = !event.detail.checked;
               this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
             }
           }
           else {
+            location.is_active = !event.detail.checked;
             this.showToastMsg(result, ToastType.ERROR);
           }
-          this.loadLocationsView();
         });
       });
     }
@@ -235,6 +253,8 @@ export class LocationsPage extends PageController {
             if (this.assertAvailable(result)) {
               if (result.status) {
                 this.showToastMsg(result.msg, ToastType.SUCCESS);
+                this.updated.next(String(location.loc_id));
+                this.events.locationUpdated.next(String(location.loc_id));
                 this.refreshUser();
               }
               else {
@@ -248,7 +268,6 @@ export class LocationsPage extends PageController {
           else {
             this.showToastMsg(result, ToastType.ERROR);
           }
-          this.loadLocationsView();
         });
       });
     }

@@ -57,7 +57,7 @@
                                 <ion-toggle *ngIf="user.agent_id != agent.agent_id && agent.partner_user_id != user.id && !(agent.is_admin && user.is_admin && !user.is_partner)"
                                             color="success"
                                             [checked] = "agent.is_active"
-                                            (ionChange)="toggleAgent(agent, !agent.is_active)">
+                                            (ionChange)="toggleAgent($event, agent)">
                                 </ion-toggle>
                             </ion-col>
                             <ion-col size="6" class="cell cell-flex cell-flex-right">

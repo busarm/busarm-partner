@@ -6,9 +6,9 @@ import { Status } from "../../../models/Status";
 import { Bus } from "../../../models/Bus/Bus";
 import { TicketType } from "../../../models/Ticket/TicketType";
 import { Ticket } from "../../../models/Ticket/Ticket";
-import { TripSeat } from "../../../models/Trip/TripSeat";
+import { SeatStatus, TripSeat } from "../../../models/Trip/TripSeat";
 import { Trip } from "../../../models/Trip/Trip";
-import { ModalController } from "@ionic/angular";
+import { IonToggle, ModalController } from "@ionic/angular";
 import { ToastType, Utils } from "../../../helpers/Utils";
 import { Api } from "../../../helpers/Api";
 import { Strings } from "../../../resources";
@@ -17,8 +17,8 @@ import { AddBusPage } from "../../bus/add-bus/add-bus.page";
 import { ViewBusPage } from "../../bus/view-bus/view-bus.page";
 import { SelectStatusPage } from "./select-status/select-status.page";
 import { AddTripPage } from '../add-trip/add-trip.page';
-import { Events } from '../../../services/app/Events';
 import { Chart } from 'chart.js';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-view-trip',
@@ -30,6 +30,8 @@ export class ViewTripPage extends PageController {
   @ViewChild('seatCanvas') seatCanvas: ElementRef<HTMLCanvasElement>;
   @Input() trip: Trip = null;
 
+  seatStatus = SeatStatus;
+
   statusList: Status[] = null;
   busTypes: BusType[] = null;
   ticketTypes: TicketType[] = null;
@@ -39,12 +41,22 @@ export class ViewTripPage extends PageController {
   allowAddTicket: boolean = true;
   allowDeactivateTicket: boolean = false;
 
+  public readonly updated = new Subject<string>();
+
   constructor(private modalCtrl: ModalController) {
     super();
   }
 
   public async ngOnInit() {
     await super.ngOnInit();
+
+    /*Trips updated event*/
+    this.subscriptions.add(this.updated.asObservable().subscribe(async (id) => {
+      await super.ngOnInit();
+      if (this.trip && (!id || this.trip.trip_id === id)) {
+        this.loadTripView(true);
+      }
+    }));
   }
 
   public ngOnDestroy() {
@@ -226,8 +238,8 @@ export class ViewTripPage extends PageController {
         this.hideLoading();
         if (status) {
           if (result.status) {
-            this.events.tripsUpdated.emit(true);
-            this.loadTripView(true);
+            this.updated.next(this.trip.trip_id);
+            this.events.tripsUpdated.next(this.trip.trip_id);
             this.showToastMsg(result.msg, ToastType.SUCCESS);
           }
           else {
@@ -272,8 +284,8 @@ export class ViewTripPage extends PageController {
         this.hideLoading();
         if (status) {
           if (result.status) {
-            this.events.tripsUpdated.emit(true);
-            this.loadTripView(true);
+            this.updated.next(this.trip.trip_id);
+            this.events.tripsUpdated.next(this.trip.trip_id);
             this.showToastMsg(result.msg, ToastType.SUCCESS);
           }
           else {
@@ -313,9 +325,9 @@ export class ViewTripPage extends PageController {
         this.hideLoading();
         if (status) {
           if (result.status) {
-            this.loadTripView(true);
-            this.events.tripsUpdated.emit(true);
-            this.events.busesUpdated.emit(true);
+            this.updated.next(this.trip.trip_id);
+            this.events.tripsUpdated.next(this.trip.trip_id);
+            this.events.busesUpdated.next(bus.id);
             this.showToastMsg(result.msg, ToastType.SUCCESS);
           }
           else {
@@ -339,7 +351,8 @@ export class ViewTripPage extends PageController {
     });
     chooseModal.onDidDismiss().then(data => {
       if (data.data) {
-        this.loadTripView();
+        this.updated.next(this.trip.trip_id);
+        this.events.tripsUpdated.next(this.trip.trip_id);
       }
     });
     return await chooseModal.present();
@@ -352,8 +365,8 @@ export class ViewTripPage extends PageController {
         this.hideLoading();
         if (status) {
           if (result.status) {
-            this.loadTripView(true);
-            this.events.tripsUpdated.emit(true);
+            this.updated.next(this.trip.trip_id);
+            this.events.tripsUpdated.next(this.trip.trip_id);
             this.showToastMsg(result.msg, ToastType.SUCCESS);
           } else {
             this.showToastMsg(result.msg, ToastType.ERROR);
@@ -437,7 +450,8 @@ export class ViewTripPage extends PageController {
         if (status) {
           if (this.assertAvailable(result)) {
             if (result.status) {
-              this.events.tripsUpdated.emit(true);
+              this.updated.next(this.trip.trip_id);
+              this.events.tripsUpdated.next(this.trip.trip_id);
               this.showToastMsg(result.msg, ToastType.SUCCESS);
               this.dismiss();
             } else {
@@ -454,60 +468,68 @@ export class ViewTripPage extends PageController {
   }
 
   /**Toggle Trip Ticket*/
-  public toggleTripTicket(ticket: Ticket, toggle: boolean) {
-    if (ticket.is_active !== toggle) {
+  public toggleTripTicket(event: CustomEvent<IonToggle>, ticket: Ticket) {
+    if (ticket.is_active !== event.detail.checked) {
+      ticket.is_active = event.detail.checked;
       this.showLoading().then(() => {
-        Api.toggleTicket(ticket.ticket_id, ticket.type_id, toggle, (status, result) => {
+        Api.toggleTicket(ticket.ticket_id, ticket.type_id, ticket.is_active, (status, result) => {
           this.hideLoading();
           if (status) {
             if (this.assertAvailable(result)) {
               if (result.status) {
-                this.events.tripsUpdated.emit(true);
+                this.updated.next(this.trip.trip_id);
+                this.events.tripsUpdated.next(this.trip.trip_id);
                 this.showToastMsg(result.msg, ToastType.SUCCESS);
               }
               else {
+                ticket.is_active = !event.detail.checked;
                 this.showToastMsg(result.msg, ToastType.ERROR);
               }
             }
             else {
+              ticket.is_active = !event.detail.checked;
               this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
             }
           }
           else {
+            ticket.is_active = !event.detail.checked;
             this.showToastMsg(result, ToastType.ERROR);
           }
-          //Reload trip
-          this.loadTrip();
         });
       });
     }
   }
 
   /**Reseave trip seat*/
-  public reserveTripSeat(seat: TripSeat, toggle: boolean) {
-    if ((seat.status == 'reserved') !== toggle && seat.status != 'booked' || seat.status != 'locked') {
+  public reserveTripSeat(event: CustomEvent<IonToggle>, seat: TripSeat) {
+
+    if ((seat.status !== SeatStatus.RESERVED) !== event.detail.checked && seat.status !== SeatStatus.BOOKED && seat.status !== SeatStatus.LOCKED) {
+      seat.status = event.detail.checked ? SeatStatus.AVAILABLE : SeatStatus.RESERVED;
+      console.log("Toggled Status", seat.status);
       this.showLoading().then(() => {
-        Api.researveSeat(seat.trip_id, seat.seat_id, !toggle, (status, result) => {
+        Api.researveSeat(seat.trip_id, seat.seat_id, seat.status === SeatStatus.RESERVED, (status, result) => {
           this.hideLoading();
           if (status) {
             if (this.assertAvailable(result)) {
               if (result.status) {
-                this.events.tripsUpdated.emit(true);
+                this.updated.next(this.trip.trip_id);
+                this.events.tripsUpdated.next(this.trip.trip_id);
                 this.showToastMsg(result.msg, ToastType.SUCCESS);
               }
               else {
+                seat.status =  seat.status === SeatStatus.RESERVED ? SeatStatus.AVAILABLE : SeatStatus.RESERVED;
                 this.showToastMsg(result.msg, ToastType.ERROR);
               }
             }
             else {
+              seat.status =  seat.status === SeatStatus.RESERVED ? SeatStatus.AVAILABLE : SeatStatus.RESERVED;
               this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
             }
           }
           else {
+            seat.status =  seat.status === SeatStatus.RESERVED ? SeatStatus.AVAILABLE : SeatStatus.RESERVED;
             this.showToastMsg(result, ToastType.ERROR);
           }
-          //Reload trip
-          this.loadTrip();
         });
       });
     }
@@ -539,9 +561,9 @@ export class ViewTripPage extends PageController {
         if (status) {
           if (this.assertAvailable(result)) {
             if (result.status) {
-              this.loadTripView(true);
-              this.events.tripsUpdated.emit(true);
-              this.events.busesUpdated.emit(true);
+              this.updated.next(this.trip.trip_id);
+              this.events.tripsUpdated.next(this.trip.trip_id);
+              this.events.busesUpdated.next(busId);
               this.showToastMsg(result.msg, ToastType.SUCCESS);
             }
             else {
@@ -591,16 +613,16 @@ export class ViewTripPage extends PageController {
   }
 
   /**Get Status class for trip seat status*/
-  public getTripSeatStatusClass(status: string): string {
+  public getTripSeatStatusClass(status: SeatStatus): string {
     if (this.assertAvailable(status)) {
       switch (status) {
-        case "booked":
+        case SeatStatus.BOOKED:
           return "status-ok";
-        case "locked":
+        case SeatStatus.LOCKED:
           return "status-cancel";
-        case "reserved":
+        case SeatStatus.RESERVED:
           return "status-warn";
-        case "available":
+        case SeatStatus.AVAILABLE:
         default:
           return "status-default";
       }
@@ -609,16 +631,16 @@ export class ViewTripPage extends PageController {
 
 
   /**Get Status text for trip seat status*/
-  public getTripSeatStatusText(status: string): string {
+  public getTripSeatStatusText(status: SeatStatus): string {
     if (this.assertAvailable(status)) {
       switch (status) {
-        case "booked":
+        case SeatStatus.BOOKED:
           return this.strings.getString('booked_txt');
-        case "locked":
+        case SeatStatus.LOCKED:
           return this.strings.getString('locked_txt');
-        case "reserved":
+        case SeatStatus.RESERVED:
           return this.strings.getString('reserved_txt');
-        case "available":
+        case SeatStatus.AVAILABLE:
         default:
           return this.strings.getString('available_txt');
       }

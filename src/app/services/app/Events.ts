@@ -1,16 +1,18 @@
 import { EventEmitter, Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class Events {
-  public darkModeChange = new EventEmitter<boolean>(true);
+  public readonly darkModeChanged = new Subject<boolean>();
+  public readonly networkChanged = new Subject<boolean>();
+  public readonly countryChanged = new Subject<boolean>();
+  public readonly webScannerCompleted = new Subject<string>();
 
-  public networkChange = new EventEmitter<boolean>(true);
-  public countryChange = new EventEmitter<boolean>(true);
-  public webScannerResult = new EventEmitter<string>(true);
-
-  public tripsUpdated = new EventEmitter<boolean>(true);
-  public busesUpdated = new EventEmitter<boolean>(true);
-  public bookingsUpdated = new EventEmitter<boolean>(true);
+  public readonly tripsUpdated = new Subject<string>();
+  public readonly busesUpdated = new Subject<string>();
+  public readonly bookingsUpdated = new Subject<string>();
+  public readonly userUpdated = new Subject<string>();
+  public readonly locationUpdated = new Subject<string>();
 }
