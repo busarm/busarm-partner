@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.wecari.partners" version="1.0.57" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Wecari Partners</name>
-    <description>Wecari Partners App</description>
-    <author email="support@wecari.com" href="https://wecari.com/">Wecari Team</author>
+<widget id="com.busarm.partners" version="1.0.58" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Busarm Partners</name>
+    <description>Busarm Partners App</description>
+    <author email="support@busarm.com" href="https://busarm.com/">Busarm Team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -23,7 +23,7 @@
         <splash src="resources/splash.png" />
     </platform>
     <platform name="android">
-        <allow-intent href="wecari:*" />
+        <allow-intent href="busarm:*" />
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
@@ -45,7 +45,7 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
-        <allow-intent href="wecari:*" />
+        <allow-intent href="busarm:*" />
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
@@ -151,9 +151,9 @@
     <plugin name="cordova-plugin-inappbrowser" spec="3.0.0" />
     <plugin name="cordova-plugin-telerik-imagepicker" spec="2.2.4" />
     <plugin name="ionic-plugin-deeplinks" spec="^1.0.19">
-        <variable name="URL_SCHEME" value="wecari" />
+        <variable name="URL_SCHEME" value="busarm" />
         <variable name="DEEPLINK_SCHEME" value="https" />
-        <variable name="DEEPLINK_HOST" value="partner.wecari.com" />
+        <variable name="DEEPLINK_HOST" value="partner.busarm.com" />
         <variable name="ANDROID_PATH_PREFIX" value="/" />
         <variable name="ANDROID_2_PATH_PREFIX" value="/" />
         <variable name="ANDROID_3_PATH_PREFIX" value="/" />

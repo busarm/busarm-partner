@@ -1,7 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../page-controller";
 import {ModalController} from "@ionic/angular";
-import {Booking, BookingInfo} from "../../models/ApiResponse";
+import { Booking } from "../../models/Booking/Booking";
+import { BookingTrip } from "../../models/Booking/BookingTrip";
 import {ToastType} from "../../helpers/Utils";
 import {Api} from "../../helpers/Api";
 import {Strings} from "../../resources";
@@ -87,11 +88,11 @@ export class BookingsPage extends PageController {
     }
 
     /**Launch Booking details*/
-    async showBooking(bookingInfo:BookingInfo){
+    async showBooking(booking:BookingTrip){
         let chooseModal = await this.modalCtrl.create({
             component: ViewBookingPage,
             componentProps: {
-                bookingInfo: bookingInfo
+                booking: booking
             }
         });
         chooseModal.onDidDismiss().then((data) => {

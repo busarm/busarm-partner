@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../../page-controller";
 import {ModalController} from "@ionic/angular";
-import {BusInfo} from "../../../models/ApiResponse";
+import { Bus } from "../../../models/Bus/Bus";
 import {ToastType} from "../../../helpers/Utils";
 import {Api} from "../../../helpers/Api";
 
@@ -12,7 +12,7 @@ import {Api} from "../../../helpers/Api";
 })
 export class ShareBusPage extends PageController {
 
-    @Input() busId: BusInfo;
+    @Input() busId: Bus;
 
     accountId: string;
     title: string;
@@ -33,7 +33,7 @@ export class ShareBusPage extends PageController {
 
     /**Add Share Bus*/
     public add(){
-        
+
         //Show Loader
         this.showLoading().then(()=>{
             Api.addSharedBus(this.busId, this.accountId, this.title, (status, result) => {

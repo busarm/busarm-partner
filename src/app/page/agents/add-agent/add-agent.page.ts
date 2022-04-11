@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../../page-controller";
 import {ModalController} from "@ionic/angular";
-import {UserInfo} from "../../../models/ApiResponse";
+import { User } from "../../../models/User/User";
 import {ToastType} from "../../../helpers/Utils";
 import {Api} from "../../../helpers/Api";
 
@@ -18,7 +18,7 @@ export class AddAgentPage extends PageController {
     dialCode:string;
     isAdmin: boolean;
     isExistingUser: boolean;
-    
+
     updated:boolean = false;
 
     constructor(private modalCtrl: ModalController) {
@@ -35,7 +35,7 @@ export class AddAgentPage extends PageController {
 
     /**Add Bus*/
     public add(){
-        let user: UserInfo;
+        let user: User;
         if (this.isExistingUser){
             user = {
                 email:this.email,

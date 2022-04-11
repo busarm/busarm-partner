@@ -1,8 +1,8 @@
-# Wecari Partner
+# Busarm Partner
 
 ## Description
 
-App for Wecari Partners
+App for Busarm Partners
 
 ## Requirementts
 
@@ -13,7 +13,7 @@ App for Wecari Partners
 
 ### Authentication
 
-- Requires oauth jwt tokens issued by `Wecari Oauth` to access API resources
+- Requires oauth jwt tokens issued by `Busarm Oauth` to access API resources
 
 ### Authorization
 

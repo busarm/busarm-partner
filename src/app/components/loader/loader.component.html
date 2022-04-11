@@ -1,0 +1,8 @@
+<div class="loader cell cell-flex cell-flex-center">
+  <div>
+    <div class="cell cell-flex cell-flex-center">
+      <fa-icon class="color-gray cell-margin-auto" size="6x" [icon]="icon || ['fas', failed ? 'face-sad-tear' : 'arrows-spin']" [spin]="!failed && !icon" ></fa-icon>
+    </div>
+    <ion-label class="cell-content cell-center cell-padding-3x color-dark">{{text || strings.getString('loading_txt')}}</ion-label>
+  </div>
+</div>

@@ -37,7 +37,7 @@
     <ion-refresher
             slot="fixed"
             [pullMin]="80"
-            (ionRefresh)="refreshLocationsView($event)" 
+            (ionRefresh)="refreshLocationsView($event)"
             slot="fixed">
         <ion-refresher-content
                 [pullingText]="strings.getString('pull_refresh_txt')"
@@ -47,17 +47,9 @@
     </ion-refresher>
 
     <!--Loading view - Show if nothing hasn't been loaded yet-->
-    <div class="loader cell" *ngIf="currentLocations==null">
-        <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
-        <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
-    </div>
-
+    <app-loader *ngIf="currentLocations==null" [text]="strings.getString('loading_txt')"></app-loader>
     <!--Not found view -->
-    <div class="loader cell" *ngIf="currentLocations!=null && currentLocations.length <= 0">
-        <ion-img [src]="assets.getPath('not_found')"> </ion-img>
-        <br>
-        <ion-label class="cell-content">{{strings.getString('not_found_txt')}}</ion-label>
-    </div>
+    <app-loader *ngIf="currentLocations!=null && currentLocations.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
 
     <ion-grid *ngIf="currentLocations!=null && currentLocations.length > 0">
         <ion-row wrap>
@@ -68,7 +60,7 @@
                             <ion-col size="6" class="cell cell-flex cell-flex-left">
                                 <ion-toggle color="success"
                                             [checked] = "location.is_active"
-                                            (ionChange)="toggleLocation(location, !location.is_active)">
+                                            (ionChange)="toggleLocation($event, location)">
                                 </ion-toggle>
                             </ion-col>
                             <ion-col size="6" class="cell cell-flex cell-flex-right">
@@ -90,7 +82,7 @@
                                         <ion-label class="cell-content">{{location.city_name}}</ion-label>
                                     </ion-col>
                                     <ion-col size="12">
-                                        <ion-label class="cell-content">{{location.prov_name}}</ion-label>
+                                        <ion-label class="cell-content">{{location.prov_name}}, {{location.country_name}} </ion-label>
                                     </ion-col>
                                 </ion-row>
                             </ion-col>

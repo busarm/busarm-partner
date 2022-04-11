@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../../../page-controller";
 import {ModalController} from "@ionic/angular";
-import {TripStatus} from "../../../../models/ApiResponse";
+import { Status } from "../../../../models/Status";
 
 @Component({
     selector: 'app-select-status',
@@ -10,9 +10,9 @@ import {TripStatus} from "../../../../models/ApiResponse";
 })
 export class SelectStatusPage extends PageController {
 
-    @Input() statusList: TripStatus[] = null;
+    @Input() statusList: Status[] = null;
 
-    status: TripStatus;
+    status: Status;
 
     constructor(private modalCtrl: ModalController) {
         super();
@@ -22,7 +22,7 @@ export class SelectStatusPage extends PageController {
     public async ionViewDidEnter(){}
 
     /**Add status*/
-    public add(status?:TripStatus){
+    public add(status?:Status){
         if (this.assertAvailable(status)) { //If bus selected
             this.status = status;
             this.dismiss();

@@ -1,7 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {PageController} from "../../page-controller";
 import {ModalController} from "@ionic/angular";
-import {BusInfo, BusType} from "../../../models/ApiResponse";
+import { BusType } from "../../../models/Bus/BusType";
+import { Bus } from "../../../models/Bus/Bus";
 import {ToastType, Utils} from "../../../helpers/Utils";
 import {Api} from "../../../helpers/Api";
 
@@ -13,7 +14,7 @@ import {Api} from "../../../helpers/Api";
 export class AddBusPage extends PageController {
 
     @Input() busTypes: BusType[];
-    @Input() buses: BusInfo[] = null;
+    @Input() buses: Bus[] = null;
     @Input() selectedBusType: number;
 
     busType: BusType;
@@ -43,7 +44,7 @@ export class AddBusPage extends PageController {
     }
 
     /**Add Bus*/
-    public add(bus?:BusInfo){
+    public add(bus?:Bus){
 
         if (this.assertAvailable(bus)) { //If bus selected
             this.dismiss(bus);
@@ -54,7 +55,7 @@ export class AddBusPage extends PageController {
 
                 if (Utils.assertAvailable(this.busPlateNumber)) {
 
-                    let bus:BusInfo|any = {};
+                    let bus:Bus|any = {};
                     if (this.busType){
                         if (this.busSeats < Utils.safeInt(this.busType.seats)){
                             this.showToastMsg(this.strings.format(this.strings.getString('bus_seat_size_error'), this.busType.seats), ToastType.ERROR);
@@ -119,7 +120,7 @@ export class AddBusPage extends PageController {
     }
 
     /**Close Modal*/
-    async dismiss(bus?:BusInfo){
+    async dismiss(bus?:Bus){
         const modal = await this.modalCtrl.getTop();
         if(modal)
             modal.dismiss(Utils.assertAvailable(bus)?bus:false);

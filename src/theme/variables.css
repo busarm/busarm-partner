@@ -57,10 +57,10 @@
   --ion-color-medium-shade: #373737;
   --ion-color-medium-tint: #373737;
   /** light **/
-  --ion-color-light: white;
-  --ion-color-light-rgb: white;
+  --ion-color-light: var(--ion-color-light);
+  --ion-color-light-rgb: var(--ion-color-light);
   --ion-color-light-contrast: #000000;
-  --ion-color-light-contrast-rgb: white;
+  --ion-color-light-contrast-rgb: var(--ion-color-light);
   --ion-color-light-shade: whitesmoke;
   --ion-color-light-tint: whitesmoke;
   /** normal **/

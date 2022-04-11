@@ -55,11 +55,11 @@ export class SelectDatePage extends PageController {
 }
 
 export enum DatePickerType {
-  Date = "date", 
-  DateTime = "date-time", 
-  Month = "month", 
-  MonthYear = "month-year", 
-  Time = "time", 
-  TimeDate = "time-date", 
+  Date = "date",
+  DateTime = "date-time",
+  Month = "month",
+  MonthYear = "month-year",
+  Time = "time",
+  TimeDate = "time-date",
   Year = "year"
 }

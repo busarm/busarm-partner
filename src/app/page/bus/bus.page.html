@@ -36,7 +36,7 @@
     <ion-refresher
             slot="fixed"
             [pullMin]="80"
-            (ionRefresh)="refreshBusesView($event)" 
+            (ionRefresh)="refreshBusesView($event)"
             slot="fixed">
         <ion-refresher-content
                 [pullingText]="strings.getString('pull_refresh_txt')"
@@ -46,17 +46,9 @@
     </ion-refresher>
 
     <!--Loading view - Show if nothing hasn't been loaded yet-->
-    <div class="loader cell" *ngIf="currentBuses==null">
-        <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
-        <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
-    </div>
-
-    <!--No bus view - Show if currentBuses has been loaded but is empty-->
-    <div class="loader cell" *ngIf="currentBuses!=null && currentBuses.length <= 0">
-        <ion-img [src]="assets.getPath('not_found')"> </ion-img>
-        <br>
-        <ion-label class="cell-content">{{strings.getString('no_bus_txt')}}</ion-label>
-    </div>
+    <app-loader *ngIf="currentBuses==null" [text]="strings.getString('loading_txt')"></app-loader>
+    <!--Not found view -->
+    <app-loader *ngIf="currentBuses!=null && currentBuses.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
 
     <!--Bus Images-->
     <div id="dashCards" *ngIf="currentBuses!=null && currentBuses.length > 0">
@@ -112,7 +104,7 @@
         </ion-grid>
     </div>
     <br><br><br>
-    <ion-fab  *ngIf="busTypes!=null && userInfo!=null && userInfo.is_admin" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab  *ngIf="busTypes!=null && user!=null && user.is_admin" vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button (click)="showAddBus()">
             <ion-icon name="add">
             </ion-icon>

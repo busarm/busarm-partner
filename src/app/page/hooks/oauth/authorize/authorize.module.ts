@@ -6,15 +6,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { AuthorizePage } from './authorize.page';
+import { LoaderModule } from '../../../../components/loader/loader.module';
 
-const routes: Routes = [ 
-    { 
-      path: '', 
-      component: AuthorizePage 
+const routes: Routes = [
+    {
+      path: '',
+      component: AuthorizePage
     }
 ]
 @NgModule({
   imports: [
+    LoaderModule,
     CommonModule,
     FormsModule,
     IonicModule,
