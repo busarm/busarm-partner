@@ -35,7 +35,7 @@ export class SessionManager {
     secureStorageCallback?: (secureStorage: SecureStorageObject) => any
   ) {
     let subscription = this.context.secureStorage.create(
-      "wecari_secure_storage"
+      "busarm_secure_storage"
     );
     if (Utils.assertAvailable(subscription)) {
       //use Secure Storage if available

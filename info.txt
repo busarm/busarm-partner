@@ -2,13 +2,13 @@ Node version: v8.11.4
 
 Cordova version: 8.1.1
 
-Config.xml file: 
+Config.xml file:
 
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.wecari.partners" version="1.0.58" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Wecari Partners</name>
-    <description>Wecari Partners App</description>
-    <author email="support@wecari.com" href="http://wecari.com/">Wecari Team</author>
+<widget id="com.busarm.partners" version="1.0.58" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Busarm Partners</name>
+    <description>Busarm Partners App</description>
+    <author email="support@busarm.com" href="http://busarm.com/">Busarm Team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -107,12 +107,12 @@ Config.xml file:
 </widget>
 
 
-Plugins: 
+Plugins:
 
 cordova-plugin-app-version,cordova-plugin-camera,cordova-plugin-datepicker,cordova-plugin-device,cordova-plugin-file,cordova-plugin-filepath,cordova-plugin-geolocation,cordova-plugin-ionic-keyboard,cordova-plugin-ionic-webview,cordova-plugin-network-information,cordova-plugin-secure-storage,cordova-plugin-splashscreen,cordova-plugin-statusbar,cordova-plugin-whitelist,phonegap-plugin-barcodescanner
 
-Error retrieving Android platform information: 
-Android SDK is not set up properly. Make sure that the Android SDK 'tools' and 'platform-tools' directories are in the PATH variable. 
+Error retrieving Android platform information:
+Android SDK is not set up properly. Make sure that the Android SDK 'tools' and 'platform-tools' directories are in the PATH variable.
 
 Error: cmd: Command failed with exit code 1 Error output:
 'android' is not recognized as an internal or external command,

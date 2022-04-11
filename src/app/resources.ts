@@ -401,7 +401,7 @@ const English: String = {
   support_txt: "Support",
   terms_and_condition_txt: "Terms and Conditions",
   privacy_policy_txt: "Privacy Policy",
-  go_to_app_txt: "Go to Wecari App",
+  go_to_app_txt: "Go to Busarm App",
   pay_before_txt: "Pay before:",
   authorizing_txt: "Authorizing access. Please wait ...",
   error_authorize_txt: "Failed to authorize access",

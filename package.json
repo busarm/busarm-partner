@@ -1,8 +1,8 @@
 {
-  "name": "wecari-partner",
+  "name": "busarm-partner",
   "version": "1.0.58",
   "author": "Ionic Framework",
-  "homepage": "https://partner.wecari.com/",
+  "homepage": "https://partner.busarm.com/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -134,9 +134,9 @@
       "cordova-plugin-aes256-encryption": {},
       "cordova-plugin-inappbrowser": {},
       "ionic-plugin-deeplinks": {
-        "URL_SCHEME": "wecari",
+        "URL_SCHEME": "busarm",
         "DEEPLINK_SCHEME": "https",
-        "DEEPLINK_HOST": "partner.wecari.com",
+        "DEEPLINK_HOST": "partner.busarm.com",
         "ANDROID_PATH_PREFIX": "/",
         "ANDROID_2_PATH_PREFIX": "/",
         "ANDROID_3_PATH_PREFIX": "/",

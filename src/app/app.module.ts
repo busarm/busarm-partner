@@ -69,7 +69,7 @@ export function errorHandlerFactory() {
     }),
     HttpClientModule,
     IonicStorageModule.forRoot({
-      name: "wecari_storage",
+      name: "busarm_storage",
       driverOrder: ['indexeddb', 'localstorage', 'websql', 'sqlite']
     }),
     AppRoutingModule,

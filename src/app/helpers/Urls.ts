@@ -9,9 +9,9 @@ export class Urls {
   public static get appUrl(): string {
     switch (ENVIRONMENT) {
       case ENV.PROD:
-        return "https://wecari.com/";
+        return "https://busarm.com/";
       case ENV.TEST:
-        return "https://staging.wecari.com/";
+        return "https://staging.busarm.com/";
       case ENV.DEV:
       default:
         return "http://localhost/";
@@ -20,9 +20,9 @@ export class Urls {
   public static get apiBaseUrl(): string {
     switch (ENVIRONMENT) {
       case ENV.PROD:
-        return "https://api.wecari.com/";
+        return "https://api.busarm.com/";
       case ENV.TEST:
-        return "https://api.staging.wecari.com/";
+        return "https://api.staging.busarm.com/";
       case ENV.DEV:
       default:
         return "http://localhost:8080/";
@@ -31,9 +31,9 @@ export class Urls {
   public static get oauthBaseUrl(): string {
     switch (ENVIRONMENT) {
       case ENV.PROD:
-        return "https://oauth.wecari.com/";
+        return "https://oauth.busarm.com/";
       case ENV.TEST:
-        return "https://oauth.staging.wecari.com/";
+        return "https://oauth.staging.busarm.com/";
       case ENV.DEV:
       default:
         return "http://localhost:8000/";
@@ -42,9 +42,9 @@ export class Urls {
   public static baseUrl(env = ENVIRONMENT): string {
     switch (env) {
       case ENV.PROD:
-        return "https://partner.wecari.com/";
+        return "https://partner.busarm.com/";
       case ENV.TEST:
-        return "https://partner.staging.wecari.com/";
+        return "https://partner.staging.busarm.com/";
       case ENV.DEV:
       default:
         return "http://localhost:8100/";
