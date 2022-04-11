@@ -474,6 +474,13 @@ ion-refresher {
   ion-refresher-content {
     padding: 10px;
     margin: auto;
+    --background: var(--ion-color-light);
+    --color: var(--ion-text-color);
+    .refresher-pulling-icon {
+      background: var(--ion-color-light);
+      --color: var(--ion-text-color);
+    }
+
   }
 
   ion-icon {
@@ -602,6 +609,7 @@ ion-searchbar {
 ion-menu-button {
   padding-top: 4px;
 }
+
 
 input {
   position: relative;

@@ -38,10 +38,10 @@ export class WebScannerPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-        this.scanner.torchCompatible.subscribe((enabled: boolean) => {
+        this.subscriptions.add(this.scanner.torchCompatible.subscribe((enabled: boolean) => {
             this.flashAllowed = enabled;
-        });
-        this.scanner.autostarted.subscribe(() => {
+        }));
+        this.subscriptions.add(this.scanner.autostarted.subscribe(() => {
             this.checkMediaDevice((device) => {
                 this.hideLoading();
                 if (device) {
@@ -56,13 +56,13 @@ export class WebScannerPage extends PageController {
                     this.dismiss();
                 }
             });
-        });
-        this.scanner.scanSuccess.subscribe((code: any) => {
+        }));
+        this.subscriptions.add(this.scanner.scanSuccess.subscribe((code: any) => {
             if (this.canScanAgain(code)) {
                 this.lastScanned = { timestamp: Date.now(), code: code };
                 this.events.webScannerCompleted.next(code);
             }
-        });
+        }));
         this.checkPermission();
     }
 

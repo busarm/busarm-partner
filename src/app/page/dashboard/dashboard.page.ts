@@ -95,8 +95,10 @@ export class DashboardPage extends PageController {
         if (available) {
           /*Web scanner event*/
           this.subscriptions.add(this.events.webScannerCompleted.asObservable().subscribe(async (code) => {
-            this.referenceCode = code;
-            this.findBooking();
+            if (this.referenceCode !== code) {
+              this.referenceCode = code;
+              this.findBooking();
+            }
           }));
         }
       });
@@ -350,8 +352,10 @@ export class DashboardPage extends PageController {
       showTorchButton: true
     }).then(barcodeData => {
       if (Utils.assertAvailable(barcodeData.text)) {
-        this.referenceCode = barcodeData.text;
-        this.findBooking();
+        if (this.referenceCode !== barcodeData.text) {
+          this.referenceCode = barcodeData.text;
+          this.findBooking();
+        }
       }
     }).catch(e => {
       this.showToastMsg(e, ToastType.ERROR);
