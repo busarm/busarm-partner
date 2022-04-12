@@ -4,7 +4,7 @@ services:
   node:
     restart: always
     build: .
-    image: busarm-partner:latest
+    image: wecari-partner:latest
     ports:
       - 8100:80
     volumes:

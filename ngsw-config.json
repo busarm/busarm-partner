@@ -13,8 +13,8 @@
           "/*.js"
         ],
         "urls": [
-          "https://cdn.busarm.com/*",
-          "https://cdn.staging.busarm.com/*"
+          "https://cdn.wecari.com/*",
+          "https://cdn.staging.wecari.com/*"
         ]
       }
     }, {
@@ -27,8 +27,8 @@
           "/svg/**"
         ],
         "urls": [
-          "https://cdn.busarm.com/*",
-          "https://cdn.staging.busarm.com/*"
+          "https://cdn.wecari.com/*",
+          "https://cdn.staging.wecari.com/*"
         ]
       }
     }
