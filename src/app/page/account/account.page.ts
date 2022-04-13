@@ -11,8 +11,7 @@ import { Strings } from "../../resources";
 import { DestinationType } from "@ionic-native/camera";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { Urls } from "../../helpers/Urls";
-import { OauthStorage } from "../../helpers/Oauth";
-
+import { OauthStorage } from "busarm-oauth-client-js";
 @Component({
   selector: 'app-account',
   templateUrl: './account.page.html',

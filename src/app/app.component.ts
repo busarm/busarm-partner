@@ -5,6 +5,7 @@ import {
   ViewChild,
   ViewChildren,
 } from "@angular/core";
+import { SwUpdate } from "@angular/service-worker";
 import { HttpClient } from "@angular/common/http";
 import { NavigationStart, Router, UrlTree } from "@angular/router";
 import {
@@ -29,6 +30,9 @@ import { SecureStorage } from "@ionic-native/secure-storage/ngx";
 import { Storage } from "@ionic/storage";
 import { AES256 } from "@ionic-native/aes-256/ngx";
 import { Deeplinks } from "@ionic-native/deeplinks/ngx";
+import { NavigationOptions } from "@ionic/angular/providers/nav-controller";
+
+import { Oauth, OauthGrantType } from "busarm-oauth-client-js";
 
 import { NetworkProvider } from "./services/app/NetworkProvider";
 import { SessionManager } from "./helpers/SessionManager";
@@ -36,14 +40,11 @@ import { ToastType, Utils } from "./helpers/Utils";
 import { Api, ApiResponseType } from "./helpers/Api";
 import { Urls } from "./helpers/Urls";
 import { Langs, Strings } from "./resources";
-import { Oauth, OauthGrantType } from "./helpers/Oauth";
 import { ENVIRONMENT, CONFIGS } from "../environments/environment";
 import { Events } from "./services/app/Events";
-import { NavigationOptions } from "@ionic/angular/providers/nav-controller";
 import { PingResponse } from "./models/PingResponse";
 import { Session } from "./models/Session";
 import { ENV } from "../environments/ENV";
-import { SwUpdate } from "@angular/service-worker";
 
 @Component({
   selector: "app-root",

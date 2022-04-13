@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
+import { Platform } from '@ionic/angular';
+
+import { OauthGrantType } from 'busarm-oauth-client-js';
 
 import { Strings } from '../../resources';
 import { ApiResponseType } from '../../helpers/Api';
 import { PageController } from '../page-controller';
-import { OauthGrantType } from '../../helpers/Oauth';
 import { ToastType, Utils } from '../../helpers/Utils';
 import { SessionManager } from '../../helpers/SessionManager';
 import { Urls } from '../../helpers/Urls';
 import { CONFIGS } from '../../../environments/environment';
-import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
