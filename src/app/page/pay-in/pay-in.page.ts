@@ -1,17 +1,16 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from "@angular/core";
 import { PayInTransaction } from "../../models/Transaction/PayInTransaction";
 import { ToastType } from "../../helpers/Utils";
 import { Api } from "../../helpers/Api";
 import { PageController } from "../page-controller";
-import { Urls } from '../../helpers/Urls';
+import { Urls } from "../../helpers/Urls";
 
 @Component({
-  selector: 'app-pay-in',
-  templateUrl: './pay-in.page.html',
-  styleUrls: ['./pay-in.page.scss'],
+  selector: "app-pay-in",
+  templateUrl: "./pay-in.page.html",
+  styleUrls: ["./pay-in.page.scss"],
 })
 export class PayInPage extends PageController {
-
   payIn: PayInTransaction;
   accountName: string;
   bankName: string;
@@ -43,17 +42,16 @@ export class PayInPage extends PageController {
    */
   private loadPayin() {
     this.showLoading().then(() => {
-      Api.getPayInTransactions(async (status, result) => {
+      Api.getPayInTransactions(async ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           this.payIn = result.data;
+        } else if (!this.payIn) {
+          await this.showToastMsg(msg, ToastType.ERROR);
+          this.instance.routeService.goHome();
         }
-        else if (!this.payIn) {
-          await this.showToastMsg(result, ToastType.ERROR);
-          this.instance.goHome();
-        }
-      })
-    })
+      });
+    });
   }
 
   /**Submit request form*/
@@ -66,19 +64,17 @@ export class PayInPage extends PageController {
       amount: this.payIn.balance,
     };
     this.showLoading().then(() => {
-      Api.addPayInRequest(payInRequest, (status, result) => {
+      Api.addPayInRequest(payInRequest, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           this.loadPayin();
           if (result.data && result.data.paymentUrl) {
             this.gotoPayment(result.data.paymentUrl);
-          }
-          else {
+          } else {
             this.showToastMsg(result.msg, ToastType.SUCCESS);
           }
-        }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });
@@ -89,9 +85,12 @@ export class PayInPage extends PageController {
    * @param paymentUrl
    */
   public gotoPayment(paymentUrl) {
-    paymentUrl += "&redirect_uri=" + Urls.baseUrl() + this.instance.router.url.replace('/', '');
+    paymentUrl +=
+      "&redirect_uri=" +
+      Urls.baseUrl() +
+      this.instance.router.url.replace("/", "");
     this.ngOnDestroy();
-    window.open(paymentUrl, '_self');
+    window.open(paymentUrl, "_self");
   }
 
   /**Get Status class for status*/

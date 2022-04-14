@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from "@angular/core";
 import { PageController } from "../page-controller";
 import { ModalController, Platform } from "@ionic/angular";
 import { BookingMonth } from "../../models/Booking/BookingMonth";
@@ -12,21 +12,20 @@ import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { ViewTripPage } from "../trip/view-trip/view-trip.page";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
-import { Chart } from 'chart.js';
+import { Chart } from "chart.js";
 import { ViewBookingPage } from "../bookings/view-booking/view-booking.page";
-import { MD5 } from 'crypto-js';
-import { ENVIRONMENT } from '../../../environments/environment';
-import { ENV } from '../../../environments/ENV';
+import { MD5 } from "crypto-js";
+import { ENVIRONMENT } from "../../../environments/environment";
+import { ENV } from "../../../environments/ENV";
 // import { WebScannerPage } from './web-scanner/web-scanner.page';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.page.html',
-  styleUrls: ['./dashboard.page.scss'],
+  selector: "app-dashboard",
+  templateUrl: "./dashboard.page.html",
+  styleUrls: ["./dashboard.page.scss"],
 })
 export class DashboardPage extends PageController {
-
-  @ViewChild('bookingCanvas') bookingCanvas: ElementRef<HTMLCanvasElement>;
+  @ViewChild("bookingCanvas") bookingCanvas: ElementRef<HTMLCanvasElement>;
 
   referenceCode: string = null;
   selectedBookingMonth: number = 0;
@@ -39,9 +38,11 @@ export class DashboardPage extends PageController {
   private isBookingShowing = false;
   private isFindBookingProcessing = false;
 
-  constructor(public modalCtrl: ModalController,
+  constructor(
+    public modalCtrl: ModalController,
     private barcodeScanner: BarcodeScanner,
-    public platform: Platform) {
+    public platform: Platform
+  ) {
     super();
   }
 
@@ -52,54 +53,73 @@ export class DashboardPage extends PageController {
     this.selectedCountry = this.session.country.country_code;
 
     /*Network event*/
-    this.subscriptions.add(this.events.networkChanged.asObservable().subscribe(async (online) => {
-      await super.ngOnInit();
-      if (online) {
-        await this.hideToastMsg();
-        if (!this.dashboard) {
-          this.loadDashboardView();
+    this.subscriptions.add(
+      this.events.networkChanged.asObservable().subscribe(async (online) => {
+        await super.ngOnInit();
+        if (online) {
+          await this.hideToastMsg();
+          if (!this.dashboard) {
+            this.loadDashboardView();
+          }
         }
-      }
-    }));
+      })
+    );
 
     /*Country Changed event*/
-    this.subscriptions.add(this.events.countryChanged.asObservable().subscribe(async (changed) => {
-      await super.ngOnInit();
-      if (changed) {
-        this.loadDashboardView();
-      } else {
-        /*Set default country*/
-        this.selectedCountry = this.session.country.country_code;
-      }
-    }));
+    this.subscriptions.add(
+      this.events.countryChanged.asObservable().subscribe(async (changed) => {
+        await super.ngOnInit();
+        if (changed) {
+          this.loadDashboardView();
+        } else {
+          /*Set default country*/
+          this.selectedCountry = this.session.country.country_code;
+        }
+      })
+    );
 
     /*Trips updated event*/
-    this.subscriptions.add(this.events.tripsUpdated.asObservable().subscribe(async (id) => {
-      await super.ngOnInit();
-      if (!this.dashboard || !this.dashboard.active_trips || (this.dashboard && this.dashboard.active_trips && (!id || this.dashboard.active_trips.some((trip) => trip.trip_id === id)))) {
-        this.loadDashboardView();
-      }
-    }));
+    this.subscriptions.add(
+      this.events.tripsUpdated.asObservable().subscribe(async (id) => {
+        await super.ngOnInit();
+        if (
+          !this.dashboard ||
+          !this.dashboard.active_trips ||
+          (this.dashboard &&
+            this.dashboard.active_trips &&
+            (!id ||
+              this.dashboard.active_trips.some((trip) => trip.trip_id === id)))
+        ) {
+          this.loadDashboardView();
+        }
+      })
+    );
 
     /*Bookings updated event*/
-    this.subscriptions.add(this.events.bookingsUpdated.asObservable().subscribe(async (id) => {
-      await super.ngOnInit();
-      if (id) {
-        this.loadDashboardView();
-      }
-    }));
+    this.subscriptions.add(
+      this.events.bookingsUpdated.asObservable().subscribe(async (id) => {
+        await super.ngOnInit();
+        if (id) {
+          this.loadDashboardView();
+        }
+      })
+    );
 
     /*Check if web scanning available */
-    if (!this.platform.is('cordova')) {
+    if (!this.platform.is("cordova")) {
       this.checkMediaDevice((available) => {
         if (available) {
           /*Web scanner event*/
-          this.subscriptions.add(this.events.webScannerCompleted.asObservable().subscribe(async (code) => {
-            if (this.referenceCode !== code) {
-              this.referenceCode = code;
-              this.findBooking();
-            }
-          }));
+          this.subscriptions.add(
+            this.events.webScannerCompleted
+              .asObservable()
+              .subscribe(async (code) => {
+                if (this.referenceCode !== code) {
+                  this.referenceCode = code;
+                  this.findBooking();
+                }
+              })
+          );
         }
       });
     }
@@ -121,9 +141,12 @@ export class DashboardPage extends PageController {
     }
 
     /*Refresh dashboard periodically*/
-    this.setInterval(() => {
-      this.loadDashboardView(false);
-    }, ENVIRONMENT == ENV.PROD ? 5000 : 10000);
+    this.setInterval(
+      () => {
+        this.loadDashboardView(false);
+      },
+      ENVIRONMENT == ENV.PROD ? 5000 : 10000
+    );
   }
 
   public async ionViewWillEnter() {
@@ -137,17 +160,19 @@ export class DashboardPage extends PageController {
   private checkMediaDevice(callback: (available: boolean) => any) {
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
       let checking = ["videoinput"];
-      navigator.mediaDevices.enumerateDevices()
+      navigator.mediaDevices
+        .enumerateDevices()
         .then((devices) => {
-          this.webScanAvailable = devices.some(device => checking.includes(device.kind));
+          this.webScanAvailable = devices.some((device) =>
+            checking.includes(device.kind)
+          );
           callback(this.webScanAvailable);
         })
         .catch(() => {
           this.webScanAvailable = false;
           callback(this.webScanAvailable);
         });
-    }
-    else {
+    } else {
       this.webScanAvailable = true;
       callback(this.webScanAvailable);
     }
@@ -157,9 +182,7 @@ export class DashboardPage extends PageController {
    * @return {Promise<void>}
    */
   public async initDashboard(): Promise<void> {
-
     if (this.dashboard) {
-
       // Set up status alerts
       if (this.dashboard.alert && this.dashboard.alert.status) {
         let toastType: ToastType = ToastType.NORMAL;
@@ -185,11 +208,13 @@ export class DashboardPage extends PageController {
           await this.showToastMsg(
             this.dashboard.alert.desc,
             toastType,
-            duration, true,
+            duration,
+            true,
             Utils.convertHTMLEntity("&times;"),
             () => {
-              this.isAlertShowing = false
-            });
+              this.isAlertShowing = false;
+            }
+          );
         }
       }
 
@@ -198,57 +223,70 @@ export class DashboardPage extends PageController {
       this.bookingMonths.push({
         min_date: "",
         max_date: "",
-        display_date: this.strings.getString('all_months_txt'),
+        display_date: this.strings.getString("all_months_txt"),
       });
-      if (this.dashboard.booking_months && this.dashboard.booking_months.length > 0) {
+      if (
+        this.dashboard.booking_months &&
+        this.dashboard.booking_months.length > 0
+      ) {
         this.dashboard.booking_months.forEach((month: BookingMonth) => {
-          this.bookingMonths.push(month)
+          this.bookingMonths.push(month);
         });
-      }
-      else {
+      } else {
         this.selectedBookingMonth = 0;
       }
 
       // Set up Charts
       this.setTimeout(800).then(() => {
-
         // Active Trips charts
         if (this.dashboard.active_trips) {
           this.dashboard.active_trips.forEach((trip: Trip) => {
-            let element = (<any>document.getElementById('seatCanvas' + trip.trip_id));
+            let element = <any>(
+              document.getElementById("seatCanvas" + trip.trip_id)
+            );
             if (element) {
-              new Chart(element.getContext('2d'), {
-                type: 'pie',
+              new Chart(element.getContext("2d"), {
+                type: "pie",
                 data: {
-                  labels: [this.strings.getString("booked_txt"), this.strings.getString("locked_txt"), this.strings.getString("reserved_txt"), this.strings.getString("available_txt")],
-                  datasets: [{
-                    data: [parseInt(trip.booked_seats), parseInt(trip.locked_seats), parseInt(trip.reserved_seats), parseInt(trip.available_seats)],
-                    backgroundColor: [
-                      'rgb(46, 139, 87)',
-                      'rgb(95, 95, 95)',
-                      'rgba(223, 168, 48,1)',
-                      'rgba(84, 142, 171,1)',
-                    ],
-                    hoverBackgroundColor: [
-                      'rgb(35, 107, 67)',
-                      'rgb(55, 55, 55)',
-                      'rgb(155, 115, 40)',
-                      "rgb(56, 89, 115)",
-                    ]
-                  }]
-                }
-
+                  labels: [
+                    this.strings.getString("booked_txt"),
+                    this.strings.getString("locked_txt"),
+                    this.strings.getString("reserved_txt"),
+                    this.strings.getString("available_txt"),
+                  ],
+                  datasets: [
+                    {
+                      data: [
+                        parseInt(trip.booked_seats),
+                        parseInt(trip.locked_seats),
+                        parseInt(trip.reserved_seats),
+                        parseInt(trip.available_seats),
+                      ],
+                      backgroundColor: [
+                        "rgb(46, 139, 87)",
+                        "rgb(95, 95, 95)",
+                        "rgba(223, 168, 48,1)",
+                        "rgba(84, 142, 171,1)",
+                      ],
+                      hoverBackgroundColor: [
+                        "rgb(35, 107, 67)",
+                        "rgb(55, 55, 55)",
+                        "rgb(155, 115, 40)",
+                        "rgb(56, 89, 115)",
+                      ],
+                    },
+                  ],
+                },
               }).update();
             }
-
           });
         }
 
         // Bookings chart
         if (this.dashboard.bookings) {
           if (this.bookingCanvas) {
-            new Chart(this.bookingCanvas.nativeElement.getContext('2d'), {
-              type: 'doughnut',
+            new Chart(this.bookingCanvas.nativeElement.getContext("2d"), {
+              type: "doughnut",
               data: {
                 labels: [
                   this.strings.getString("unpaid_txt"),
@@ -257,32 +295,33 @@ export class DashboardPage extends PageController {
                   this.strings.getString("verified_txt"),
                   this.strings.getString("canceled_txt"),
                 ],
-                datasets: [{
-                  data: [
-                    this.dashboard.bookings.unpaid,
-                    this.dashboard.bookings.paid,
-                    this.dashboard.bookings.pending,
-                    this.dashboard.bookings.verified,
-                    this.dashboard.bookings.canceled,
-                  ],
-                  backgroundColor: [
-                    'rgba(223, 99, 45,1)',
-                    'rgba(84, 142, 171,1)',
-                    'rgba(223, 168, 48,1)',
-                    'rgb(46, 139, 87)',
-                    'rgb(95, 95, 95)',
-                  ],
-                  hoverBackgroundColor: [
-                    'rgb(155, 70, 32)',
-                    "rgb(56, 89, 115)",
-                    'rgb(155, 115, 40)',
-                    'rgb(35, 107, 67)',
-                    'rgb(55, 55, 55)',
-                  ]
-                }]
-              }
-
-            }).update()
+                datasets: [
+                  {
+                    data: [
+                      this.dashboard.bookings.unpaid,
+                      this.dashboard.bookings.paid,
+                      this.dashboard.bookings.pending,
+                      this.dashboard.bookings.verified,
+                      this.dashboard.bookings.canceled,
+                    ],
+                    backgroundColor: [
+                      "rgba(223, 99, 45,1)",
+                      "rgba(84, 142, 171,1)",
+                      "rgba(223, 168, 48,1)",
+                      "rgb(46, 139, 87)",
+                      "rgb(95, 95, 95)",
+                    ],
+                    hoverBackgroundColor: [
+                      "rgb(155, 70, 32)",
+                      "rgb(56, 89, 115)",
+                      "rgb(155, 115, 40)",
+                      "rgb(35, 107, 67)",
+                      "rgb(55, 55, 55)",
+                    ],
+                  },
+                ],
+              },
+            }).update();
           }
         }
       });
@@ -297,10 +336,10 @@ export class DashboardPage extends PageController {
     let chooseModal = await this.modalCtrl.create({
       component: ViewTripPage,
       componentProps: {
-        trip: trip
-      }
+        trip: trip,
+      },
     });
-    chooseModal.onDidDismiss().then(data => {
+    chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
         this.loadDashboardView();
       }
@@ -314,16 +353,22 @@ export class DashboardPage extends PageController {
    */
   async showBookings(status: number, count: number): Promise<any> {
     if (count > 0) {
-      let min_date = this.bookingMonths ? this.bookingMonths[this.selectedBookingMonth].min_date : "";
-      let max_date = this.bookingMonths ? this.bookingMonths[this.selectedBookingMonth].max_date : "";
-      return this.navigate('bookings', {
+      let min_date = this.bookingMonths
+        ? this.bookingMonths[this.selectedBookingMonth].min_date
+        : "";
+      let max_date = this.bookingMonths
+        ? this.bookingMonths[this.selectedBookingMonth].max_date
+        : "";
+      return this.navigate("bookings", {
         status: status,
         min_date: min_date,
         max_date: max_date,
       });
-    }
-    else {
-      return this.showToastMsg(Strings.getString("no_booking_txt"), ToastType.ERROR);
+    } else {
+      return this.showToastMsg(
+        Strings.getString("no_booking_txt"),
+        ToastType.ERROR
+      );
     }
   }
 
@@ -332,7 +377,7 @@ export class DashboardPage extends PageController {
    * @return {Promise<any>}
    */
   async showPayIn(payin: PayInTransaction): Promise<any> {
-    return this.navigate('pay-in', payin);
+    return this.navigate("pay-in", payin);
   }
 
   /**Launch payout page
@@ -340,32 +385,35 @@ export class DashboardPage extends PageController {
    * @return {Promise<any>}
    */
   async showPayout(payout: PayOutTransaction): Promise<any> {
-    return this.navigate('payout', payout);
+    return this.navigate("payout", payout);
   }
 
   /**Launch scan Qr Code page
    */
   async showScanCode() {
-    this.barcodeScanner.scan({
-      resultDisplayDuration: 0,
-      disableSuccessBeep: false,
-      showTorchButton: true
-    }).then(barcodeData => {
-      if (Utils.assertAvailable(barcodeData.text)) {
-        if (this.referenceCode !== barcodeData.text) {
-          this.referenceCode = barcodeData.text;
-          this.findBooking();
+    this.barcodeScanner
+      .scan({
+        resultDisplayDuration: 0,
+        disableSuccessBeep: false,
+        showTorchButton: true,
+      })
+      .then((barcodeData) => {
+        if (Utils.assertAvailable(barcodeData.text)) {
+          if (this.referenceCode !== barcodeData.text) {
+            this.referenceCode = barcodeData.text;
+            this.findBooking();
+          }
         }
-      }
-    }).catch(e => {
-      this.showToastMsg(e, ToastType.ERROR);
-    });
+      })
+      .catch((e) => {
+        this.showToastMsg(e, ToastType.ERROR);
+      });
   }
 
   /**Launch scan Qr Code for Web
    */
   async showWebScanCode() {
-    return this.navigate('web-scanner');
+    return this.navigate("web-scanner");
   }
 
   /**Search input event
@@ -374,7 +422,12 @@ export class DashboardPage extends PageController {
    */
   public onInput(event, isSearch: boolean = false) {
     if (event.isTrusted) {
-      if (event.target.value && isSearch && event.target.value.length > 6 && !this.isFindBookingProcessing) {
+      if (
+        event.target.value &&
+        isSearch &&
+        event.target.value.length > 6 &&
+        !this.isFindBookingProcessing
+      ) {
         this.referenceCode = String(event.target.value).toUpperCase().trim();
         this.findBooking();
       }
@@ -399,7 +452,7 @@ export class DashboardPage extends PageController {
         this.onClear(event);
         event.target.complete();
       }
-    })
+    });
   }
 
   /**Get Status class for booking status
@@ -424,7 +477,6 @@ export class DashboardPage extends PageController {
     }
   }
 
-
   /**Launch Booking details
    * @param {BookingTrip} booking
    * @return {Promise<any>}
@@ -434,8 +486,8 @@ export class DashboardPage extends PageController {
     let chooseModal = await this.modalCtrl.create({
       component: ViewBookingPage,
       componentProps: {
-        booking: booking
-      }
+        booking: booking,
+      },
     });
     chooseModal.onDidDismiss().then(() => {
       this.referenceCode = null;
@@ -454,26 +506,25 @@ export class DashboardPage extends PageController {
     if (this.referenceCode && !this.isFindBookingProcessing) {
       this.isFindBookingProcessing = true;
       this.showLoading().then(() => {
-        Api.getBookingInfo(this.referenceCode, (status, result) => {
+        Api.getBookingInfo(this.referenceCode, ({ status, result, msg }) => {
           this.hideLoading();
           this.isFindBookingProcessing = false;
           if (status) {
             if (this.assertAvailable(result)) {
               this.showBooking(result.data);
+            } else {
+              this.showToastMsg(
+                Strings.getString("error_unexpected"),
+                ToastType.ERROR
+              );
             }
-            else {
-              this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-            }
-          }
-          else {
-            this.showToastMsg(result, ToastType.ERROR);
+          } else {
+            this.showToastMsg(msg, ToastType.ERROR);
           }
         });
       });
     }
   }
-
-
 
   /**
    * Select Month
@@ -482,8 +533,8 @@ export class DashboardPage extends PageController {
     this.showLoading().then(() => {
       this.loadDashboardView(false, () => {
         this.hideLoading();
-      })
-    })
+      });
+    });
   }
 
   /**Load Active Trips View
@@ -497,21 +548,33 @@ export class DashboardPage extends PageController {
       return;
     }
 
-    let min_date = this.bookingMonths ? this.bookingMonths[this.selectedBookingMonth].min_date : "";
-    let max_date = this.bookingMonths ? this.bookingMonths[this.selectedBookingMonth].max_date : "";
+    let min_date = this.bookingMonths
+      ? this.bookingMonths[this.selectedBookingMonth].min_date
+      : "";
+    let max_date = this.bookingMonths
+      ? this.bookingMonths[this.selectedBookingMonth].max_date
+      : "";
     this.isDashboardLoading = true;
-    Api.getDashboard(min_date, max_date, async (status, result) => {
+    Api.getDashboard(min_date, max_date, async ({ status, result, msg }) => {
       this.isDashboardLoading = false;
-      if (status) { //Save user data to session
+      if (status) {
+        //Save user data to session
         if (this.assertAvailable(result)) {
-          if (force || (result.data && (String(MD5(Utils.toJson(this.dashboard))) != String(MD5(Utils.toJson(result.data)))))) {
+          if (
+            force ||
+            (result.data &&
+              String(MD5(Utils.toJson(this.dashboard))) !=
+                String(MD5(Utils.toJson(result.data))))
+          ) {
             this.dashboard = result.data;
             await this.initDashboard();
           }
-        }
-        else if (force) await this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-      }
-      else if (force) await this.showToastMsg(result, ToastType.ERROR);
+        } else if (force)
+          await this.showToastMsg(
+            Strings.getString("error_unexpected"),
+            ToastType.ERROR
+          );
+      } else if (force) await this.showToastMsg(msg, ToastType.ERROR);
       if (this.assertAvailable(completed)) completed();
     });
   }

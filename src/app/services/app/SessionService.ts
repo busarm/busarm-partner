@@ -2,58 +2,28 @@
  * Use this class to manage
  * the all data stored in the session
  * */
-import { SecureStorageObject } from "@ionic-native/secure-storage/ngx";
-import { User } from "../models/User/User";
-import { PingResponse } from "../models/PingResponse";
-import { Session } from "../models/Session";
-import { Utils } from "./Utils";
-import { AppComponent } from "../app.component";
+import { Injectable } from "@angular/core";
+import { User } from "../../models/User/User";
+import { PingResponse } from "../../models/PingResponse";
+import { Session } from "../../models/Session";
+import { Utils } from "../../helpers/Utils";
 import { Storage } from "@ionic/storage";
-import { OauthStorage } from "./Oauth";
+import { RouteService } from "./RouteService";
+import { AlertService } from "./AlertService";
+import { Events } from "./Events";
 
-export class SessionManager {
-  private static session_info = "session_info";
-  private static ping = "ping";
-  private static dark_mode = "dark_mode";
-
-  private static context: AppComponent;
-  private static instance: SessionManager;
-
-  constructor(
-    private storage: Storage
-  ) { }
-
-
-  /**Initialize*/
-  public static initialize(context: AppComponent) {
-    this.context = context;
-    this.instance = new SessionManager(context.storage);
+@Injectable({
+  providedIn: "root",
+})
+export class SessionService {
+  /**Get app instance*/
+  public static get instance(): SessionService {
+    return SessionService._instance;
   }
+  private static _instance: SessionService;
 
-  /**Initialize Secure storage*/
-  private static initSecureStorage(
-    secureStorageCallback?: (secureStorage: SecureStorageObject) => any
-  ) {
-    let subscription = this.context.secureStorage.create(
-      "busarm_secure_storage"
-    );
-    if (Utils.assertAvailable(subscription)) {
-      //use Secure Storage if available
-      subscription
-        .then((value) => {
-          console.log("Secure Storage is ready!");
-          if (Utils.assertAvailable(secureStorageCallback))
-            secureStorageCallback(value);
-        })
-        .catch(() => {
-          console.log("Secure Storage failed!");
-          if (Utils.assertAvailable(secureStorageCallback))
-            secureStorageCallback(null);
-        });
-    } else {
-      if (Utils.assertAvailable(secureStorageCallback))
-        secureStorageCallback(null);
-    }
+  constructor(private storage: Storage) {
+    SessionService._instance = this;
   }
 
   /** Set data - localStorage
@@ -62,14 +32,14 @@ export class SessionManager {
    * @param value  value
    * @return Promise if no callback given
    * */
-  static set(
+  set(
     key: string,
     value: any,
     callback?: (status: boolean) => any
   ): Promise<boolean> {
-    if (this.instance.storage != null) {
+    if (this.storage != null) {
       return new Promise(async (resolve) => {
-        this.instance.storage
+        this.storage
           .set(key, value)
           .then(() => {
             if (Utils.assertAvailable(callback)) callback(true);
@@ -97,10 +67,10 @@ export class SessionManager {
    * @param callback
    * @return Promise if no callback given
    * */
-  static async get(key: string, callback?: (data: any) => any): Promise<any> {
-    if (this.instance.storage != null) {
+  get(key: string, callback?: (data: any) => any): Promise<any> {
+    if (this.storage != null) {
       return new Promise(async (resolve) => {
-        this.instance.storage
+        this.storage
           .get(key)
           .then((value) => {
             if (Utils.assertAvailable(callback)) callback(value);
@@ -125,9 +95,9 @@ export class SessionManager {
   /** Remove data - localStorage
    * @param key  string
    * */
-  static async remove(key: string): Promise<any> {
-    if (this.instance.storage != null) {
-      return this.instance.storage.remove(key);
+  async remove(key: string): Promise<any> {
+    if (this.storage != null) {
+      return this.storage.remove(key);
     } else {
       return new Promise((resolve) => {
         localStorage.removeItem(key);
@@ -138,9 +108,9 @@ export class SessionManager {
 
   /** Remove all data - localStorage
    * */
-  static async clear(): Promise<any> {
-    if (this.instance.storage != null) {
-      return this.instance.storage.clear();
+  async clear(): Promise<any> {
+    if (this.storage != null) {
+      return this.storage.clear();
     } else {
       return new Promise((resolve) => {
         localStorage.clear();
@@ -152,7 +122,7 @@ export class SessionManager {
   /** Get User Info from session
    * @param callback
    * */
-  static getUserInfo(callback?: (data: User) => any): Promise<User> {
+  getUserInfo(callback?: (data: User) => any): Promise<User> {
     if (Utils.assertAvailable(callback)) {
       return this.getSession((session) => {
         callback(session ? session.user : null);
@@ -170,7 +140,7 @@ export class SessionManager {
    * @param user
    * @param callback
    * */
-  static setUserInfo(user: User, callback?: (status: boolean) => any) {
+  setUserInfo(user: User, callback?: (status: boolean) => any) {
     if (Utils.assertAvailable(callback)) {
       return this.getSession((session) => {
         if (session) session.user = user;
@@ -189,61 +159,51 @@ export class SessionManager {
   /** Get Ping Data from session
    * @param callback
    * */
-  static getPing(callback?: (data: PingResponse) => any): Promise<PingResponse> {
-    return this.get(this.ping, callback);
+  getPing(callback?: (data: PingResponse) => any): Promise<PingResponse> {
+    return this.get(SessionKeys.PING, callback);
   }
 
   /**Save Ping Data to session
    * @param ping
    * @param callback
    * */
-  static setPing(ping: PingResponse, callback?: (status: boolean) => any) {
-    return this.set(this.ping, ping, callback);
+  setPing(ping: PingResponse, callback?: (status: boolean) => any) {
+    return this.set(SessionKeys.PING, ping, callback);
   }
 
   /**Get Session Token
    * @param callback
    * */
-  static getSession(callback?: (data: Session) => any): Promise<Session> {
-    return this.get(this.session_info, callback);
+  getSession(callback?: (data: Session) => any): Promise<Session> {
+    return this.get(SessionKeys.SESSION_INFO, callback);
   }
 
   /**Set Session Token
    * @param session
    * @param callback
    * */
-  static setSession(session: Session, callback?: (status: boolean) => any) {
-    return this.set(this.session_info, session, callback);
+  setSession(session: Session, callback?: (status: boolean) => any) {
+    return this.set(SessionKeys.SESSION_INFO, session, callback);
   }
 
   /** Get dark mode
    * @param callback
    * */
-  static getDarkMode(callback?: (darkMode: boolean) => any): Promise<boolean> {
-    return this.get(this.dark_mode, callback);
+  getDarkMode(callback?: (darkMode: boolean) => any): Promise<boolean> {
+    return this.get(SessionKeys.DARK_MODE, callback);
   }
 
   /** Save dark mode
    * @param darkMode
    * @param callback
    * */
-  static setDarkMode(darkMode: boolean, callback?: (status: boolean) => any) {
-    return this.set(this.dark_mode, darkMode, callback);
+  setDarkMode(darkMode: boolean, callback?: (status: boolean) => any) {
+    return this.set(SessionKeys.DARK_MODE, darkMode, callback);
   }
+}
 
-  /**
-   * Logout user
-   * @param redirectUri
-   */
-  static async logout(redirectUri?: string) {
-    this.clear();
-    OauthStorage.clearAccess();
-    this.context.authorized = false;
-    await this.context.goToLogin(
-      redirectUri ? { queryParams: { redirectUri: redirectUri } } : {}
-    );
-    if (!this.context.loaded) {
-      this.context.hideLoadingScreen();
-    }
-  }
+export enum SessionKeys {
+  SESSION_INFO = "session_info",
+  PING = "ping",
+  DARK_MODE = "dark_mode",
 }

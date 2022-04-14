@@ -1,6 +1,14 @@
-import { Component, Input } from '@angular/core';
-import { ActionSheetController, ModalController, Platform } from "@ionic/angular";
-import { Camera, CameraOptions, PictureSourceType } from "@ionic-native/camera/ngx";
+import { Component, Input } from "@angular/core";
+import {
+  ActionSheetController,
+  ModalController,
+  Platform,
+} from "@ionic/angular";
+import {
+  Camera,
+  CameraOptions,
+  PictureSourceType,
+} from "@ionic-native/camera/ngx";
 import { File, FileEntry } from "@ionic-native/file/ngx";
 import { PageController } from "../../page-controller";
 import { BusImage } from "../../../models/Bus/BusImage";
@@ -10,16 +18,15 @@ import { ToastType } from "../../../helpers/Utils";
 import { Api } from "../../../helpers/Api";
 import { Strings } from "../../../resources";
 import { DestinationType } from "@ionic-native/camera";
-import { ShareBusPage } from '../share-bus/share-bus.page';
-import { Subject } from 'rxjs';
+import { ShareBusPage } from "../share-bus/share-bus.page";
+import { Subject } from "rxjs";
 
 @Component({
-  selector: 'app-view-bus',
-  templateUrl: './view-bus.page.html',
-  styleUrls: ['./view-bus.page.scss'],
+  selector: "app-view-bus",
+  templateUrl: "./view-bus.page.html",
+  styleUrls: ["./view-bus.page.scss"],
 })
 export class ViewBusPage extends PageController {
-
   @Input() bus: Bus = null;
 
   platform: Platform;
@@ -29,11 +36,13 @@ export class ViewBusPage extends PageController {
 
   public readonly updated = new Subject<string>();
 
-  constructor(private camera: Camera,
+  constructor(
+    private camera: Camera,
     private file: File,
     private actionSheetController: ActionSheetController,
     private modalCtrl: ModalController,
-    platform: Platform) {
+    platform: Platform
+  ) {
     super();
     this.platform = platform;
   }
@@ -42,12 +51,14 @@ export class ViewBusPage extends PageController {
     await super.ngOnInit();
 
     /*Buses updated event*/
-    this.subscriptions.add(this.updated.asObservable().subscribe(async (id) => {
-      await super.ngOnInit();
-      if (this.bus && (!id || this.bus.id === id)) {
-        this.loadBusView();
-      }
-    }));
+    this.subscriptions.add(
+      this.updated.asObservable().subscribe(async (id) => {
+        await super.ngOnInit();
+        if (this.bus && (!id || this.bus.id === id)) {
+          this.loadBusView();
+        }
+      })
+    );
   }
 
   public ngOnDestroy() {
@@ -57,26 +68,29 @@ export class ViewBusPage extends PageController {
 
   public async ionViewDidEnter() {
     if (!this.assertAvailable(this.bus)) {
-      this.showToastMsg(this.strings.getString("error_unexpected"), ToastType.ERROR);
+      this.showToastMsg(
+        this.strings.getString("error_unexpected"),
+        ToastType.ERROR
+      );
       this.modalCtrl.dismiss();
     }
   }
 
   /**Load Bus View*/
   public loadBusView(completed?: () => any) {
-
     /*Get bus*/
-    Api.getBus(this.bus.id, (status, result) => {
+    Api.getBus(this.bus.id, ({ status, result, msg }) => {
       if (status) {
         if (this.assertAvailable(result)) {
           this.bus = result.data;
+        } else {
+          this.showToastMsg(
+            Strings.getString("error_unexpected"),
+            ToastType.ERROR
+          );
         }
-        else {
-          this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-        }
-      }
-      else {
-        this.showToastMsg(result, ToastType.ERROR);
+      } else {
+        this.showToastMsg(msg, ToastType.ERROR);
       }
 
       if (this.assertAvailable(completed)) {
@@ -85,7 +99,6 @@ export class ViewBusPage extends PageController {
     });
   }
 
-
   /**Show Delete confirmation
    * */
   public confirmDelete() {
@@ -93,14 +106,14 @@ export class ViewBusPage extends PageController {
       this.strings.getString("delete_bus_title_txt"),
       this.strings.getString("delete_bus_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.deleteBus(this.bus.id);
-        }
-      },
+        },
+      }
     );
   }
 
@@ -117,31 +130,34 @@ export class ViewBusPage extends PageController {
   public updateBus() {
     if (this.busDescription && this.busDescription != this.bus.description) {
       this.showLoading().then(() => {
-        Api.updateBus(this.bus.id, this.busDescription, (status, result) => {
-          this.hideLoading();
-          if (status) {
-            if (this.assertAvailable(result)) {
-              if (result.status) {
-                this.hideUpdateBus();
-                this.updated.next(this.bus.id);
-                this.events.busesUpdated.next(this.bus.id);
-                this.showToastMsg(result.msg, ToastType.SUCCESS);
+        Api.updateBus(
+          this.bus.id,
+          this.busDescription,
+          ({ status, result, msg }) => {
+            this.hideLoading();
+            if (status) {
+              if (this.assertAvailable(result)) {
+                if (result.status) {
+                  this.hideUpdateBus();
+                  this.updated.next(this.bus.id);
+                  this.events.busesUpdated.next(this.bus.id);
+                  this.showToastMsg(result.msg, ToastType.SUCCESS);
+                } else {
+                  this.showToastMsg(result.msg, ToastType.ERROR);
+                }
+              } else {
+                this.showToastMsg(
+                  Strings.getString("error_unexpected"),
+                  ToastType.ERROR
+                );
               }
-              else {
-                this.showToastMsg(result.msg, ToastType.ERROR);
-              }
-            }
-            else {
-              this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+            } else {
+              this.showToastMsg(msg, ToastType.ERROR);
             }
           }
-          else {
-            this.showToastMsg(result, ToastType.ERROR);
-          }
-        });
+        );
       });
-    }
-    else {
+    } else {
       this.hideUpdateBus();
     }
   }
@@ -149,7 +165,7 @@ export class ViewBusPage extends PageController {
   /**Delete Bus*/
   public deleteBus(busId: string) {
     this.showLoading().then(() => {
-      Api.deleteBus(busId, (status, result) => {
+      Api.deleteBus(busId, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {
@@ -158,45 +174,44 @@ export class ViewBusPage extends PageController {
               this.events.busesUpdated.next(busId);
               this.showToastMsg(result.msg, ToastType.SUCCESS);
               this.dismiss();
-            }
-            else {
+            } else {
               this.showToastMsg(result.msg, ToastType.ERROR);
             }
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
           }
-          else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-          }
-        }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });
   }
 
-
   /**Select Image to upload*/
   async selectImage() {
     const actionSheet = await this.actionSheetController.create({
-      header: this.strings.getString('select_image_source_txt'),
+      header: this.strings.getString("select_image_source_txt"),
       buttons: [
         {
-          text: this.strings.getString('load_library_txt'),
+          text: this.strings.getString("load_library_txt"),
           handler: () => {
             this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
-          }
+          },
         },
         {
-          text: this.strings.getString('use_camera_txt'),
+          text: this.strings.getString("use_camera_txt"),
           handler: () => {
             this.takePicture(this.camera.PictureSourceType.CAMERA);
-          }
+          },
         },
         {
-          text: this.strings.getString('cancel_txt'),
-          role: 'cancel'
-        }
-      ]
+          text: this.strings.getString("cancel_txt"),
+          role: "cancel",
+        },
+      ],
     });
     await actionSheet.present();
   }
@@ -209,29 +224,29 @@ export class ViewBusPage extends PageController {
       allowEdit: true,
       sourceType: sourceType,
       saveToPhotoAlbum: false,
-      correctOrientation: true
+      correctOrientation: true,
     };
 
-    this.camera.getPicture(options).then(imagePath => {
+    this.camera.getPicture(options).then((imagePath) => {
       this.startUpload(imagePath);
     });
-
   }
 
   /**On Input change listener*/
   changeListener(event) {
     if (event && event.isTrusted) {
-      this.readFile(event.target.files[0])
+      this.readFile(event.target.files[0]);
     }
   }
 
   /**Initiate File Upload*/
   startUpload(filePath: string) {
-    this.file.resolveLocalFilesystemUrl(filePath)
-      .then(entry => {
-        (<FileEntry>entry).file(file => this.readFile(file))
+    this.file
+      .resolveLocalFilesystemUrl(filePath)
+      .then((entry) => {
+        (<FileEntry>entry).file((file) => this.readFile(file));
       })
-      .catch(err => {
+      .catch((err) => {
         // this.showToastMsg('Error while reading file.',ToastType.ERROR);
         this.showToastMsg(err, ToastType.ERROR);
       });
@@ -243,10 +258,10 @@ export class ViewBusPage extends PageController {
     reader.onloadend = () => {
       const formData = new FormData();
       const imgBlob = new Blob([reader.result], {
-        type: file.type
+        type: file.type,
       });
-      formData.append('busImage', imgBlob, file.name);
-      formData.append('busId', this.bus.id);
+      formData.append("busImage", imgBlob, file.name);
+      formData.append("busId", this.bus.id);
       this.uploadImageData(formData);
     };
     reader.readAsArrayBuffer(file);
@@ -255,7 +270,7 @@ export class ViewBusPage extends PageController {
   /**Upload File to server*/
   uploadImageData(formData: FormData) {
     this.showLoading().then(() => {
-      Api.addBusImage(formData, (status, result) => {
+      Api.addBusImage(formData, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {
@@ -263,17 +278,17 @@ export class ViewBusPage extends PageController {
               this.updated.next(this.bus.id);
               this.events.busesUpdated.next(this.bus.id);
               this.showToastMsg(result.msg, ToastType.SUCCESS);
-            }
-            else {
+            } else {
               this.showToastMsg(result.msg, ToastType.ERROR);
             }
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
           }
-          else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-          }
-        }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });
@@ -286,10 +301,10 @@ export class ViewBusPage extends PageController {
     let chooseModal = await this.modalCtrl.create({
       component: ShareBusPage,
       componentProps: {
-        busId: this.bus.id
-      }
+        busId: this.bus.id,
+      },
     });
-    chooseModal.onDidDismiss().then(data => {
+    chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
         this.updated.next(this.bus.id);
         this.events.busesUpdated.next(this.bus.id);
@@ -305,21 +320,21 @@ export class ViewBusPage extends PageController {
       this.strings.getString("delete_image_title_txt"),
       this.strings.getString("delete_image_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.deleteBusImage(image.id);
-        }
-      },
+        },
+      }
     );
   }
 
   /**Delete Image*/
   public deleteBusImage(imagedId: string) {
     this.showLoading().then(() => {
-      Api.deleteBusImage(this.bus.id, imagedId, (status, result) => {
+      Api.deleteBusImage(this.bus.id, imagedId, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {
@@ -327,22 +342,21 @@ export class ViewBusPage extends PageController {
               this.updated.next(this.bus.id);
               this.events.busesUpdated.next(this.bus.id);
               this.showToastMsg(result.msg, ToastType.SUCCESS);
-            }
-            else {
+            } else {
               this.showToastMsg(result.msg, ToastType.ERROR);
             }
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
           }
-          else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-          }
-        }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });
   }
-
 
   /**Show Delete confirmation
    * */
@@ -351,41 +365,45 @@ export class ViewBusPage extends PageController {
       this.strings.getString("delete_bus_share_title_txt"),
       this.strings.getString("delete_bus_share_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.deleteSharedBus(shared);
-        }
-      },
+        },
+      }
     );
   }
 
   /**Delete Shared Bus*/
   public deleteSharedBus(shared: BusSharedPartner) {
     this.showLoading().then(() => {
-      Api.deleteSharedBus(shared.bus_id, shared.partner_id, (status, result) => {
-        this.hideLoading();
-        if (status) {
-          if (this.assertAvailable(result)) {
-            if (result.status) {
-              this.updated.next(shared.bus_id);
-              this.events.busesUpdated.next(shared.bus_id);
-              this.showToastMsg(result.msg, ToastType.SUCCESS);
+      Api.deleteSharedBus(
+        shared.bus_id,
+        shared.partner_id,
+        ({ status, result, msg }) => {
+          this.hideLoading();
+          if (status) {
+            if (this.assertAvailable(result)) {
+              if (result.status) {
+                this.updated.next(shared.bus_id);
+                this.events.busesUpdated.next(shared.bus_id);
+                this.showToastMsg(result.msg, ToastType.SUCCESS);
+              } else {
+                this.showToastMsg(result.msg, ToastType.ERROR);
+              }
+            } else {
+              this.showToastMsg(
+                Strings.getString("error_unexpected"),
+                ToastType.ERROR
+              );
             }
-            else {
-              this.showToastMsg(result.msg, ToastType.ERROR);
-            }
-          }
-          else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+          } else {
+            this.showToastMsg(msg, ToastType.ERROR);
           }
         }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
-        }
-      });
+      );
     });
   }
 
@@ -393,8 +411,7 @@ export class ViewBusPage extends PageController {
   public getBusStatusClass(available: boolean): string {
     if (available) {
       return "status-ok";
-    }
-    else {
+    } else {
       return "status-error";
     }
   }
@@ -402,16 +419,14 @@ export class ViewBusPage extends PageController {
   /**Get Status text for bus status*/
   public getBusStatus(available: boolean): string {
     if (available) {
-      return this.strings.getString('available_txt');
-    }
-    else {
-      return this.strings.getString('in_use_txt');
+      return this.strings.getString("available_txt");
+    } else {
+      return this.strings.getString("in_use_txt");
     }
   }
 
   async dismiss() {
     const modal = await this.modalCtrl.getTop();
-    if (modal)
-      modal.dismiss();
+    if (modal) modal.dismiss();
   }
 }

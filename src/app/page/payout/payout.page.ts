@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
 import { PageController } from "../page-controller";
 import { Bank } from "../../models/Bank";
 import { PaymentMethod } from "../../models/Transaction/PaymentMethod";
@@ -7,13 +7,11 @@ import { ToastType, Utils } from "../../helpers/Utils";
 import { Api } from "../../helpers/Api";
 
 @Component({
-  selector: 'app-payout',
-  templateUrl: './payout.page.html',
-  styleUrls: ['./payout.page.scss'],
+  selector: "app-payout",
+  templateUrl: "./payout.page.html",
+  styleUrls: ["./payout.page.scss"],
 })
-
 export class PayoutPage extends PageController {
-
   payout: PayOutTransaction;
   banks: Bank[];
   selectedMethod: PaymentMethod;
@@ -42,9 +40,12 @@ export class PayoutPage extends PageController {
     this.setTimeout(500).then(() => {
       if (!this.payout) {
         this.loadPayout();
-      }
-      else {
-        if (this.payout.action_required && this.payout.payment_methods && this.payout.payment_methods.length == 1) {
+      } else {
+        if (
+          this.payout.action_required &&
+          this.payout.payment_methods &&
+          this.payout.payment_methods.length == 1
+        ) {
           this.selectedMethod = this.payout.payment_methods[0];
           this.selectedMethodId = this.selectedMethod.method_id;
           this.loadBanks(true);
@@ -57,7 +58,9 @@ export class PayoutPage extends PageController {
    * Set selected bank
    */
   public setBank() {
-    let bank = this.banks ? this.banks.find((bank) => bank.code == this.receiverBankCode) : null;
+    let bank = this.banks
+      ? this.banks.find((bank) => bank.code == this.receiverBankCode)
+      : null;
     this.receiverBank = bank ? bank.name : null;
   }
 
@@ -65,7 +68,11 @@ export class PayoutPage extends PageController {
    * Set selected method
    */
   public setMethod() {
-    this.selectedMethod = this.payout.payment_methods ? this.payout.payment_methods.find((method) => method.method_id == this.selectedMethodId) : null;
+    this.selectedMethod = this.payout.payment_methods
+      ? this.payout.payment_methods.find(
+          (method) => method.method_id == this.selectedMethodId
+        )
+      : null;
     this.receiverBankCode = null;
     this.receiverBank = null;
     this.loadBanks();
@@ -79,19 +86,22 @@ export class PayoutPage extends PageController {
       return;
     }
     this.showLoading().then(() => {
-      Api.getBanks(this.session.country.country_code, this.selectedMethod.method_id, async (status, result) => {
-        this.hideLoading();
-        if (status) {
-          this.banks = result.data;
-        }
-        else {
-          await this.showToastMsg(result, ToastType.ERROR);
-          if (force) {
-            this.instance.goHome();
+      Api.getBanks(
+        this.session.country.country_code,
+        this.selectedMethod.method_id,
+        async ({ status, result, msg }) => {
+          this.hideLoading();
+          if (status) {
+            this.banks = result.data;
+          } else {
+            await this.showToastMsg(msg, ToastType.ERROR);
+            if (force) {
+              this.instance.routeService.goHome();
+            }
           }
         }
-      })
-    })
+      );
+    });
   }
 
   /**
@@ -99,8 +109,11 @@ export class PayoutPage extends PageController {
    * @param amount
    */
   public getFeeAlert() {
-    if (!this.selectedMethod) return '';
-    return this.strings.format(this.strings.getString('payout_fee_alert_txt'), this.payout.currency_code + " " + this.selectedMethod.transfer_minimum);
+    if (!this.selectedMethod) return "";
+    return this.strings.format(
+      this.strings.getString("payout_fee_alert_txt"),
+      this.payout.currency_code + " " + this.selectedMethod.transfer_minimum
+    );
   }
 
   /**
@@ -108,35 +121,42 @@ export class PayoutPage extends PageController {
    * @param amount
    */
   public getFee() {
-    if (!this.selectedMethod) return '';
-    return Utils.parseFloat(this.selectedMethod.transfer_fee) + ((Utils.parseFloat(this.selectedMethod.transfer_fee_percent) / 100) * Utils.parseFloat(this.payout.balance));
+    if (!this.selectedMethod) return "";
+    return (
+      Utils.parseFloat(this.selectedMethod.transfer_fee) +
+      (Utils.parseFloat(this.selectedMethod.transfer_fee_percent) / 100) *
+        Utils.parseFloat(this.payout.balance)
+    );
   }
   /**
    * Load Payout Transactions
    */
   private loadPayout() {
     this.showLoading().then(() => {
-      Api.getPayOutTransactions(async (status, result) => {
+      Api.getPayOutTransactions(async ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           this.payout = result.data;
-          if (this.payout.payment_methods && this.payout.payment_methods.length == 1) {
+          if (
+            this.payout.payment_methods &&
+            this.payout.payment_methods.length == 1
+          ) {
             this.selectedMethod = this.payout.payment_methods[0];
             this.selectedMethodId = this.selectedMethod.method_id;
             this.loadBanks(true);
           }
+        } else if (!this.payout) {
+          await this.showToastMsg(msg, ToastType.ERROR);
+          this.instance.routeService.goHome();
         }
-        else if (!this.payout) {
-          await this.showToastMsg(result, ToastType.ERROR);
-          this.instance.goHome();
-        }
-      })
-    })
+      });
+    });
   }
 
   /**Submit request form*/
   public submit() {
-    let save = this.saveAccount &&
+    let save =
+      this.saveAccount &&
       (!this.user.bank_account ||
         (this.user.bank_account &&
           (this.receiverAccount != this.user.bank_account.account_name ||
@@ -154,17 +174,16 @@ export class PayoutPage extends PageController {
       dateTo: this.payout.to,
       currencyCode: this.payout.currency_code,
       amount: this.payout.balance,
-      saveAccount: save ? 1 : 0
+      saveAccount: save ? 1 : 0,
     };
     this.showLoading().then(() => {
-      Api.addPayoutRequest(payoutRequest, (status, result) => {
+      Api.addPayoutRequest(payoutRequest, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           this.showToastMsg(result.msg, ToastType.SUCCESS);
           this.loadPayout();
-        }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });
