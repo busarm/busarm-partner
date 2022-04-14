@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from "@angular/core";
 import { IonToggle, ModalController } from "@ionic/angular";
 import { PageController } from "../page-controller";
 import { LocationType } from "../../models/Location/LocationType";
@@ -6,17 +6,16 @@ import { Location } from "../../models/Location/Location";
 import { ToastType, Utils } from "../../helpers/Utils";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
-import { AddLocationPage } from './add-location/add-location.page';
-import { SessionManager } from '../../helpers/SessionManager';
-import { Subject } from 'rxjs';
+import { AddLocationPage } from "./add-location/add-location.page";
+import { SessionService } from "../../services/app/SessionService";
+import { Subject } from "rxjs";
 
 @Component({
-  selector: 'app-view-locations',
-  templateUrl: './locations.page.html',
-  styleUrls: ['./locations.page.scss'],
+  selector: "app-view-locations",
+  templateUrl: "./locations.page.html",
+  styleUrls: ["./locations.page.scss"],
 })
 export class LocationsPage extends PageController {
-
   @Input() title: string;
   @Input() selector: boolean;
   @Input() country: string;
@@ -36,12 +35,21 @@ export class LocationsPage extends PageController {
     await super.ngOnInit();
 
     /*Location updated event*/
-    this.subscriptions.add(this.updated.asObservable().subscribe(async (id) => {
-      await super.ngOnInit();
-      if (!this.locations || (this.locations && (!id || this.locations.some((location) => String(location.loc_id) === id)))) {
-        this.loadLocationsView();
-      }
-    }));
+    this.subscriptions.add(
+      this.updated.asObservable().subscribe(async (id) => {
+        await super.ngOnInit();
+        if (
+          !this.locations ||
+          (this.locations &&
+            (!id ||
+              this.locations.some(
+                (location) => String(location.loc_id) === id
+              )))
+        ) {
+          this.loadLocationsView();
+        }
+      })
+    );
   }
 
   public async ionViewDidEnter() {
@@ -51,7 +59,11 @@ export class LocationsPage extends PageController {
   /*Get Filterred Current Location */
   public filterCurrentLocations() {
     if (this.selector) {
-      return this.currentLocations.filter(x => x.is_active == true && (!this.country || this.country === x.country_code));
+      return this.currentLocations.filter(
+        (x) =>
+          x.is_active == true &&
+          (!this.country || this.country === x.country_code)
+      );
     }
     return this.currentLocations;
   }
@@ -66,15 +78,18 @@ export class LocationsPage extends PageController {
           this.currentLocations = [];
           for (let index in this.locations) {
             let location: Location = this.locations[index];
-            let reg = new RegExp(this.searchText, 'gi');
-            if (location.loc_name.match(reg) || location.city_name.match(reg) || location.prov_name.match(reg)) {
+            let reg = new RegExp(this.searchText, "gi");
+            if (
+              location.loc_name.match(reg) ||
+              location.city_name.match(reg) ||
+              location.prov_name.match(reg)
+            ) {
               this.currentLocations.push(location);
               this.currentLocations = this.filterCurrentLocations();
             }
           }
         }
-      }
-      else {
+      } else {
         this.onClear(event);
       }
     }
@@ -95,14 +110,13 @@ export class LocationsPage extends PageController {
       if (event) {
         event.target.complete();
       }
-    })
+    });
   }
 
   /**Load Locations View*/
   public loadLocationsView(completed?: () => any) {
-
     /*Get Location Types*/
-    Api.getLocationTypes((status, result) => {
+    Api.getLocationTypes(({ status, result }) => {
       if (status) {
         if (this.assertAvailable(result)) {
           this.locationTypes = result.data;
@@ -111,16 +125,19 @@ export class LocationsPage extends PageController {
     });
 
     /*Get Locations*/
-    Api.getLocations((status, result) => {
+    Api.getLocations(({ status, result, msg }) => {
       if (status) {
         if (this.assertAvailable(result)) {
           this.locations = this.currentLocations = result.data;
           this.currentLocations = this.filterCurrentLocations();
         } else {
-          this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+          this.showToastMsg(
+            Strings.getString("error_unexpected"),
+            ToastType.ERROR
+          );
         }
       } else {
-        this.showToastMsg(result, ToastType.ERROR);
+        this.showToastMsg(msg, ToastType.ERROR);
       }
 
       if (this.assertAvailable(completed)) {
@@ -135,9 +152,9 @@ export class LocationsPage extends PageController {
       component: AddLocationPage,
       componentProps: {
         locationTypes: this.locationTypes,
-      }
+      },
     });
-    chooseModal.onDidDismiss().then(data => {
+    chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
         this.updated.next();
         this.events.locationUpdated.next();
@@ -153,21 +170,21 @@ export class LocationsPage extends PageController {
       this.strings.getString("delete_location_title_txt"),
       this.strings.getString("delete_location_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.deleteLocation(location);
-        }
-      },
+        },
+      }
     );
   }
 
   /**Delete Location*/
   public deleteLocation(location: Location) {
     this.showLoading().then(() => {
-      Api.deleteLocation(location.loc_id, (status, result) => {
+      Api.deleteLocation(location.loc_id, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {
@@ -179,10 +196,13 @@ export class LocationsPage extends PageController {
               this.showToastMsg(result.msg, ToastType.ERROR);
             }
           } else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
           }
         } else {
-          this.showToastMsg(result, ToastType.ERROR);
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });
@@ -193,37 +213,40 @@ export class LocationsPage extends PageController {
     if (location.is_active !== event.detail.checked) {
       location.is_active = event.detail.checked;
       this.showLoading().then(() => {
-        Api.updateLocationActiveStatus(location.loc_id, Boolean(location.is_active), (status, result) => {
-          this.hideLoading();
-          if (status) {
-            if (this.assertAvailable(result)) {
-              if (result.status) {
-                this.updated.next(String(location.loc_id));
-                this.events.locationUpdated.next(String(location.loc_id));
-                this.showToastMsg(result.msg, ToastType.SUCCESS);
-                if (location.is_default) {
-                  this.refreshUser();
+        Api.updateLocationActiveStatus(
+          location.loc_id,
+          Boolean(location.is_active),
+          ({ status, result, msg }) => {
+            this.hideLoading();
+            if (status) {
+              if (this.assertAvailable(result)) {
+                if (result.status) {
+                  this.updated.next(String(location.loc_id));
+                  this.events.locationUpdated.next(String(location.loc_id));
+                  this.showToastMsg(result.msg, ToastType.SUCCESS);
+                  if (location.is_default) {
+                    this.refreshUser();
+                  }
+                } else {
+                  location.is_active = !event.detail.checked;
+                  this.showToastMsg(result.msg, ToastType.ERROR);
                 }
-              }
-              else {
+              } else {
                 location.is_active = !event.detail.checked;
-                this.showToastMsg(result.msg, ToastType.ERROR);
+                this.showToastMsg(
+                  Strings.getString("error_unexpected"),
+                  ToastType.ERROR
+                );
               }
-            }
-            else {
+            } else {
               location.is_active = !event.detail.checked;
-              this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+              this.showToastMsg(msg, ToastType.ERROR);
             }
           }
-          else {
-            location.is_active = !event.detail.checked;
-            this.showToastMsg(result, ToastType.ERROR);
-          }
-        });
+        );
       });
     }
   }
-
 
   /**Show confirmation
    * */
@@ -232,14 +255,14 @@ export class LocationsPage extends PageController {
       this.strings.getString("make_default_txt"),
       this.strings.getString("make_default_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.makeDefaultLocation(location);
-        }
-      },
+        },
+      }
     );
   }
 
@@ -247,28 +270,32 @@ export class LocationsPage extends PageController {
   public makeDefaultLocation(location: Location) {
     if (!location.is_default) {
       this.showLoading().then(() => {
-        Api.updateLocationdDefaultStatus(location.loc_id, true, (status, result) => {
-          this.hideLoading();
-          if (status) {
-            if (this.assertAvailable(result)) {
-              if (result.status) {
-                this.showToastMsg(result.msg, ToastType.SUCCESS);
-                this.updated.next(String(location.loc_id));
-                this.events.locationUpdated.next(String(location.loc_id));
-                this.refreshUser();
+        Api.updateLocationdDefaultStatus(
+          location.loc_id,
+          true,
+          ({ status, result, msg }) => {
+            this.hideLoading();
+            if (status) {
+              if (this.assertAvailable(result)) {
+                if (result.status) {
+                  this.showToastMsg(result.msg, ToastType.SUCCESS);
+                  this.updated.next(String(location.loc_id));
+                  this.events.locationUpdated.next(String(location.loc_id));
+                  this.refreshUser();
+                } else {
+                  this.showToastMsg(result.msg, ToastType.ERROR);
+                }
+              } else {
+                this.showToastMsg(
+                  Strings.getString("error_unexpected"),
+                  ToastType.ERROR
+                );
               }
-              else {
-                this.showToastMsg(result.msg, ToastType.ERROR);
-              }
-            }
-            else {
-              this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+            } else {
+              this.showToastMsg(msg, ToastType.ERROR);
             }
           }
-          else {
-            this.showToastMsg(result, ToastType.ERROR);
-          }
-        });
+        );
       });
     }
   }
@@ -282,12 +309,12 @@ export class LocationsPage extends PageController {
 
   /**Refresh session user info*/
   public refreshUser() {
-    Api.getUserInfo((status, result) => {
+    Api.getUserInfo(({ status, result }) => {
       if (status) {
         if (Utils.assertAvailable(result)) {
           if (result.status) {
             // Save user data to session
-            SessionManager.setUserInfo(result.data);
+            this.instance.sessionService.setUserInfo(result.data);
             this.user = result.data;
           }
         }

@@ -1,29 +1,27 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 import { IonToggle, ModalController } from "@ionic/angular";
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { PageController } from "../page-controller";
 import { User } from "../../models/User/User";
 import { ToastType } from "../../helpers/Utils";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { AddAgentPage } from "./add-agent/add-agent.page";
-import { Subject } from 'rxjs';
+import { Subject } from "rxjs";
 
 @Component({
-  selector: 'app-view-agents',
-  templateUrl: './agents.page.html',
-  styleUrls: ['./agents.page.scss'],
+  selector: "app-view-agents",
+  templateUrl: "./agents.page.html",
+  styleUrls: ["./agents.page.scss"],
 })
 export class AgentsPage extends PageController {
-
   searchText: string = null;
   agents: User[] = null;
   currentAgents: User[] = null;
 
   public readonly updated = new Subject<string>();
 
-  constructor(public modalCtrl: ModalController,
-    private iab: InAppBrowser) {
+  constructor(public modalCtrl: ModalController, private iab: InAppBrowser) {
     super();
   }
 
@@ -31,12 +29,18 @@ export class AgentsPage extends PageController {
     await super.ngOnInit();
 
     /*User updated event*/
-    this.subscriptions.add(this.updated.asObservable().subscribe(async (id) => {
-      await super.ngOnInit();
-      if (!this.agents || (this.agents && (!id || this.agents.some((agent) => agent.agent_id === id)))) {
-        this.loadAgentsView();
-      }
-    }));
+    this.subscriptions.add(
+      this.updated.asObservable().subscribe(async (id) => {
+        await super.ngOnInit();
+        if (
+          !this.agents ||
+          (this.agents &&
+            (!id || this.agents.some((agent) => agent.agent_id === id)))
+        ) {
+          this.loadAgentsView();
+        }
+      })
+    );
   }
 
   public async ionViewDidEnter() {
@@ -50,7 +54,6 @@ export class AgentsPage extends PageController {
     }
   }
 
-
   /**Search input event
    * */
   public onInput(event, isSearch?) {
@@ -58,22 +61,24 @@ export class AgentsPage extends PageController {
       this.searchText = event.target.value;
       if (this.assertAvailable(this.searchText) && this.searchText.length > 1) {
         this.filterAgents(this.searchText);
-      }
-      else {
+      } else {
         this.onClear(event);
       }
     }
   }
 
-
   /**Filter
    * */
   public filterAgents(search: string) {
     if (search && this.assertAvailable(this.agents)) {
-      this.currentAgents = this.agents.filter(agent => {
-        let reg = new RegExp(search, 'gi');
-        return search === agent.agent_id || agent.name.match(reg) || agent.email.match(reg);
-      })
+      this.currentAgents = this.agents.filter((agent) => {
+        let reg = new RegExp(search, "gi");
+        return (
+          search === agent.agent_id ||
+          agent.name.match(reg) ||
+          agent.email.match(reg)
+        );
+      });
     }
   }
 
@@ -91,21 +96,24 @@ export class AgentsPage extends PageController {
       if (event) {
         event.target.complete();
       }
-    })
+    });
   }
 
   /**Load Agents View*/
   public loadAgentsView(completed?: () => any) {
     /*Get Agents*/
-    Api.getAgents((status, result) => {
+    Api.getAgents(({ status, result, msg }) => {
       if (status) {
         if (this.assertAvailable(result)) {
           this.agents = this.currentAgents = result.data;
         } else {
-          this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+          this.showToastMsg(
+            Strings.getString("error_unexpected"),
+            ToastType.ERROR
+          );
         }
       } else {
-        this.showToastMsg(result, ToastType.ERROR);
+        this.showToastMsg(msg, ToastType.ERROR);
       }
 
       if (this.assertAvailable(completed)) {
@@ -117,9 +125,9 @@ export class AgentsPage extends PageController {
   /**Launch add user page*/
   async showAddAgent() {
     let chooseModal = await this.modalCtrl.create({
-      component: AddAgentPage
+      component: AddAgentPage,
     });
-    chooseModal.onDidDismiss().then(data => {
+    chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
         this.updated.next();
         this.events.userUpdated.next();
@@ -135,21 +143,21 @@ export class AgentsPage extends PageController {
       this.strings.getString("delete_agent_title_txt"),
       this.strings.getString("delete_agent_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.deleteAgent(user);
-        }
-      },
+        },
+      }
     );
   }
 
   /**Delete Agent*/
   public deleteAgent(user: User) {
     this.showLoading().then(() => {
-      Api.deleteAgent(user.agent_id, (status, result) => {
+      Api.deleteAgent(user.agent_id, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {
@@ -161,10 +169,13 @@ export class AgentsPage extends PageController {
               this.showToastMsg(result.msg, ToastType.ERROR);
             }
           } else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
           }
         } else {
-          this.showToastMsg(result, ToastType.ERROR);
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });
@@ -175,30 +186,34 @@ export class AgentsPage extends PageController {
     if (user.is_active !== event.detail.checked) {
       user.is_active = event.detail.checked;
       this.showLoading().then(() => {
-        Api.toggleAgent(user.agent_id, Boolean(user.is_active), (status, result) => {
-          this.hideLoading();
-          if (status) {
-            if (this.assertAvailable(result)) {
-              if (result.status) {
-                this.updated.next(user.agent_id);
-                this.events.userUpdated.next(user.agent_id);
-                this.showToastMsg(result.msg, ToastType.SUCCESS);
-              }
-              else {
+        Api.toggleAgent(
+          user.agent_id,
+          Boolean(user.is_active),
+          ({ status, result, msg }) => {
+            this.hideLoading();
+            if (status) {
+              if (this.assertAvailable(result)) {
+                if (result.status) {
+                  this.updated.next(user.agent_id);
+                  this.events.userUpdated.next(user.agent_id);
+                  this.showToastMsg(result.msg, ToastType.SUCCESS);
+                } else {
+                  user.is_active = !event.detail.checked;
+                  this.showToastMsg(result.msg, ToastType.ERROR);
+                }
+              } else {
                 user.is_active = !event.detail.checked;
-                this.showToastMsg(result.msg, ToastType.ERROR);
+                this.showToastMsg(
+                  Strings.getString("error_unexpected"),
+                  ToastType.ERROR
+                );
               }
-            }
-            else {
+            } else {
               user.is_active = !event.detail.checked;
-              this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+              this.showToastMsg(msg, ToastType.ERROR);
             }
           }
-          else {
-            user.is_active = !event.detail.checked;
-            this.showToastMsg(result, ToastType.ERROR);
-          }
-        });
+        );
       });
     }
   }
@@ -210,14 +225,14 @@ export class AgentsPage extends PageController {
       this.strings.getString("make_admin_title_txt"),
       this.strings.getString("make_admin_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.updateAdmin(user.agent_id, 0);
-        }
-      },
+        },
+      }
     );
   }
 
@@ -228,21 +243,21 @@ export class AgentsPage extends PageController {
       this.strings.getString("remove_admin_title_txt"),
       this.strings.getString("remove_admin_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.updateAdmin(user.agent_id, 1);
-        }
-      },
+        },
+      }
     );
   }
 
   /**Update Administrator status for user*/
   public updateAdmin(agentId: string, remove: number) {
     this.showLoading().then(() => {
-      Api.updateAdminStatus(agentId, remove, (status, result) => {
+      Api.updateAdminStatus(agentId, remove, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {
@@ -250,17 +265,17 @@ export class AgentsPage extends PageController {
               this.updated.next(agentId);
               this.events.userUpdated.next(agentId);
               this.showToastMsg(result.msg, ToastType.SUCCESS);
-            }
-            else {
+            } else {
               this.showToastMsg(result.msg, ToastType.ERROR);
             }
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
           }
-          else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-          }
-        }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });
@@ -273,43 +288,43 @@ export class AgentsPage extends PageController {
       this.strings.getString("forgot_password_title_txt"),
       this.strings.getString("forgot_password_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.sendAuthorization(user.email);
-        }
-      },
+        },
+      }
     );
   }
 
   /**Send authorization for user*/
-  public sendAuthorization(email: string,) {
+  public sendAuthorization(email: string) {
     this.showLoading().then(() => {
-      Api.processEmailAuthorization(email, (status, result) => {
+      Api.processEmailAuthorization(email, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {
             if (result.status) {
               if (this.assertAvailable(result.data)) {
-                this.iab.create(result.data, '_blank', {
+                this.iab.create(result.data, "_blank", {
                   zoom: "no",
-                  hardwareback: "yes"
+                  hardwareback: "yes",
                 });
               }
               this.showToastMsg(result.msg, ToastType.SUCCESS);
-            }
-            else {
+            } else {
               this.showToastMsg(result.msg, ToastType.ERROR);
             }
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
           }
-          else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-          }
-        }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });

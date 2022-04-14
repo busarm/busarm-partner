@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from "@angular/core";
 import { TripSeat } from "../../../models/Trip/TripSeat";
 import { Trip } from "../../../models/Trip/Trip";
 import { BookingTrip } from "../../../models/Booking/BookingTrip";
@@ -10,13 +10,11 @@ import { Strings } from "../../../resources";
 import { Api } from "../../../helpers/Api";
 
 @Component({
-  selector: 'app-view-booking',
-  templateUrl: './view-booking.page.html',
-  styleUrls: ['./view-booking.page.scss'],
+  selector: "app-view-booking",
+  templateUrl: "./view-booking.page.html",
+  styleUrls: ["./view-booking.page.scss"],
 })
-
 export class ViewBookingPage extends PageController {
-
   @Input() booking: BookingTrip = null;
   activeBookingSegment: string = "summary";
 
@@ -27,7 +25,7 @@ export class ViewBookingPage extends PageController {
   public async ngOnInit() {
     await super.ngOnInit();
     if (this.booking == null) {
-      this.instance.goHome();
+      this.instance.routeService.goHome();
     }
   }
 
@@ -38,15 +36,14 @@ export class ViewBookingPage extends PageController {
 
   /**Get Status class for booking status*/
   public getBookingSeatsText(seats: TripSeat[]): string {
-    let text = '';
+    let text = "";
     seats.forEach((seat, index) => {
       if (index == 0) {
-        text += (seat.seat_id);
+        text += seat.seat_id;
+      } else {
+        text += ", " + seat.seat_id;
       }
-      else {
-        text += (', ' + seat.seat_id);
-      }
-    })
+    });
     return text.trim();
   }
 
@@ -69,7 +66,6 @@ export class ViewBookingPage extends PageController {
     }
   }
 
-
   /**Show booking confirmation verification
    * on button click
    * */
@@ -78,21 +74,21 @@ export class ViewBookingPage extends PageController {
       this.strings.getString("verify_booking_txt"),
       this.strings.getString("confirm_verify_msg"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.verifyBooking(this.booking.booking_id);
-        }
-      },
+        },
+      }
     );
   }
 
   /**Verify booking*/
   public verifyBooking(bookingId: string) {
     this.showLoading().then(() => {
-      Api.verifyUserBooking(bookingId, async (status, result) => {
+      Api.verifyUserBooking(bookingId, async ({ status, result, msg }) => {
         if (status) {
           //Save user data to session
           if (this.assertAvailable(result)) {
@@ -100,36 +96,34 @@ export class ViewBookingPage extends PageController {
             await this.hideLoading();
             this.events.bookingsUpdated.next(bookingId);
             this.dismiss();
-          }
-          else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
             await this.hideLoading();
           }
-        }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
           await this.hideLoading();
         }
       });
     });
-
   }
-
 
   /**Launch add trip page*/
   async showTrip(trip: Trip) {
     let chooseModal = await this.modalCtrl.create({
       component: ViewTripPage,
       componentProps: {
-        trip: trip
-      }
+        trip: trip,
+      },
     });
     return await chooseModal.present();
   }
 
   async dismiss() {
     const modal = await this.modalCtrl.getTop();
-    if (modal)
-      modal.dismiss();
+    if (modal) modal.dismiss();
   }
 }

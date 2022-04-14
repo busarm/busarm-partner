@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 import { AlertController, ModalController } from "@ionic/angular";
 import { Network } from "@ionic-native/network/ngx";
 import { Api } from "../../helpers/Api";
@@ -11,28 +11,32 @@ import { Trip } from "../../models/Trip/Trip";
 import { PageController } from "../page-controller";
 import { ViewTripPage } from "./view-trip/view-trip.page";
 import { AddTripPage } from "./add-trip/add-trip.page";
-import { DatePickerType, SelectDatePage } from '../select-date/select-date.page';
+import {
+  DatePickerType,
+  SelectDatePage,
+} from "../select-date/select-date.page";
 
-type GroupedTrips = { date: string, list: Trip[] };
+type GroupedTrips = { date: string; list: Trip[] };
 @Component({
-  selector: 'app-trip',
-  templateUrl: './trip.page.html',
-  styleUrls: ['./trip.page.scss'],
+  selector: "app-trip",
+  templateUrl: "./trip.page.html",
+  styleUrls: ["./trip.page.scss"],
 })
 export class TripPage extends PageController {
-
   // Current
   currentDate: Date = new Date();
 
   //Max Plus 1 month
   maxDate: Date = new Date(
     this.currentDate.getFullYear(),
-    this.currentDate.getMonth() + 1);
+    this.currentDate.getMonth() + 1
+  );
 
   //Min - Max Minus 1 year
   minDate: Date = new Date(
     this.maxDate.getFullYear() - 1,
-    this.maxDate.getMonth());
+    this.maxDate.getMonth()
+  );
 
   selectedDate: string = null;
   searchText: string = null;
@@ -42,9 +46,11 @@ export class TripPage extends PageController {
   busTypes: BusType[] = null;
   ticketTypes: TicketType[] = null;
 
-  constructor(public alertCtrl: AlertController,
+  constructor(
+    public alertCtrl: AlertController,
     public modalCtrl: ModalController,
-    public network: Network) {
+    public network: Network
+  ) {
     super();
   }
 
@@ -52,35 +58,44 @@ export class TripPage extends PageController {
     await super.ngOnInit();
 
     /*Network event*/
-    this.subscriptions.add(this.events.networkChanged.asObservable().subscribe(async (online) => {
-      await super.ngOnInit();
-      if (online) {
-        await this.hideToastMsg();
-        if (!this.trips) {
-          this.loadTripsView();
+    this.subscriptions.add(
+      this.events.networkChanged.asObservable().subscribe(async (online) => {
+        await super.ngOnInit();
+        if (online) {
+          await this.hideToastMsg();
+          if (!this.trips) {
+            this.loadTripsView();
+          }
         }
-      }
-    }));
+      })
+    );
 
     /*Country Changed event*/
-    this.subscriptions.add(this.events.countryChanged.asObservable().subscribe(async (changed) => {
-      await super.ngOnInit();
-      if (changed) {
-        this.loadTripsView();
-      }
-      else {
-        /*Set default country*/
-        this.selectedCountry = this.session.country.country_code;
-      }
-    }));
+    this.subscriptions.add(
+      this.events.countryChanged.asObservable().subscribe(async (changed) => {
+        await super.ngOnInit();
+        if (changed) {
+          this.loadTripsView();
+        } else {
+          /*Set default country*/
+          this.selectedCountry = this.session.country.country_code;
+        }
+      })
+    );
 
     /*Trips updated event*/
-    this.subscriptions.add(this.events.tripsUpdated.asObservable().subscribe(async (id) => {
-      await super.ngOnInit();
-      if (!this.trips || (this.trips && (!id || this.trips.some((trip) => trip.trip_id === id)))) {
-        this.loadTripsView();
-      }
-    }));
+    this.subscriptions.add(
+      this.events.tripsUpdated.asObservable().subscribe(async (id) => {
+        await super.ngOnInit();
+        if (
+          !this.trips ||
+          (this.trips &&
+            (!id || this.trips.some((trip) => trip.trip_id === id)))
+        ) {
+          this.loadTripsView();
+        }
+      })
+    );
   }
 
   public ngOnDestroy() {
@@ -104,31 +119,30 @@ export class TripPage extends PageController {
         if (this.assertAvailable(this.trips)) {
           this.filterTrips(this.searchText);
         }
-      }
-      else {
+      } else {
         this.onClear(event);
       }
     }
   }
 
-
   /**Filter
    * */
   public filterTrips(search: string) {
     if (search && this.assertAvailable(this.trips)) {
-      let list: Trip[] = this.trips.filter(trip => {
-        let reg = new RegExp(search, 'gi');
-        return trip.pickup_loc_name.match(reg) ||
+      let list: Trip[] = this.trips.filter((trip) => {
+        let reg = new RegExp(search, "gi");
+        return (
+          trip.pickup_loc_name.match(reg) ||
           trip.pickup_city.match(reg) ||
           trip.dropoff_loc_name.match(reg) ||
           trip.dropoff_city.match(reg) ||
           trip.agent_email.match(reg) ||
-          (trip.bus && trip.bus.plate_num.match(reg));
+          (trip.bus && trip.bus.plate_num.match(reg))
+        );
       });
       this.currentTrips = this.groupTrips(list);
     }
   }
-
 
   /**Filter
    * */
@@ -136,12 +150,11 @@ export class TripPage extends PageController {
     let list: GroupedTrips[] = [];
     for (let trip of trips) {
       let date = new Date(trip.trip_date).toDateString();
-      let match = list.find(t => t.date === date)
+      let match = list.find((t) => t.date === date);
       if (match) {
-        let matchIndex = list.findIndex(t => t.date === match.date)
+        let matchIndex = list.findIndex((t) => t.date === match.date);
         list[matchIndex].list.push(trip);
-      }
-      else {
+      } else {
         list.push({ date, list: [trip] });
       }
     }
@@ -156,7 +169,7 @@ export class TripPage extends PageController {
       let year = selectedDate.getFullYear(),
         month = selectedDate.getMonth(),
         day = selectedDate.getDate();
-      return year + "-" + Utils.harold(month + 1) + "-" + Utils.harold(day)
+      return year + "-" + Utils.harold(month + 1) + "-" + Utils.harold(day);
     }
     return null;
   }
@@ -165,7 +178,19 @@ export class TripPage extends PageController {
    * Return Date string for selected date
    * */
   public getDisplayDateString() {
-    return Utils.beginningOfMonth(this.selectedDate, this.session?.country?.tz_text).toDateString() + " " + this.strings.getString('to_txt').toLocaleLowerCase() + " " + Utils.endOfMonth(this.selectedDate, this.session?.country?.tz_text).toDateString();
+    return (
+      Utils.beginningOfMonth(
+        this.selectedDate,
+        this.session?.country?.tz_text
+      ).toDateString() +
+      " " +
+      this.strings.getString("to_txt").toLocaleLowerCase() +
+      " " +
+      Utils.endOfMonth(
+        this.selectedDate,
+        this.session?.country?.tz_text
+      ).toDateString()
+    );
   }
 
   /**Reset Search bar*/
@@ -180,17 +205,15 @@ export class TripPage extends PageController {
   async showSelectDate() {
     let chooseModal = await this.modalCtrl.create({
       component: SelectDatePage,
-      cssClass: 'date-modal',
+      cssClass: "date-modal",
       componentProps: {
-        date: this.selectedDate
-          ? new Date(this.selectedDate)
-          : new Date(),
+        date: this.selectedDate ? new Date(this.selectedDate) : new Date(),
         minDate: this.minDate,
         maxDate: this.maxDate,
-        type: DatePickerType.MonthYear
-      }
+        type: DatePickerType.MonthYear,
+      },
     });
-    chooseModal.onDidDismiss().then(data => {
+    chooseModal.onDidDismiss().then((data) => {
       if (data.data && data.data !== NaN && data.data !== null) {
         this.selectedDate = data.data;
         this.loadTripsView();
@@ -207,9 +230,9 @@ export class TripPage extends PageController {
         statusList: this.statusList,
         busTypes: this.busTypes,
         ticketTypes: this.ticketTypes,
-      }
+      },
     });
-    chooseModal.onDidDismiss().then(data => {
+    chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
         this.loadTripsView();
       }
@@ -222,10 +245,10 @@ export class TripPage extends PageController {
     let chooseModal = await this.modalCtrl.create({
       component: ViewTripPage,
       componentProps: {
-        trip: trip
-      }
+        trip: trip,
+      },
     });
-    chooseModal.onDidDismiss().then(data => {
+    chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
         this.loadTripsView();
       }
@@ -235,7 +258,7 @@ export class TripPage extends PageController {
 
   /**Clear date*/
   public clearDate() {
-    this.selectedDate = null
+    this.selectedDate = null;
   }
 
   /**Refresh View*/
@@ -249,9 +272,8 @@ export class TripPage extends PageController {
 
   /**Load Trips View*/
   public loadTripsView(completed?: () => any) {
-
     /*Get Trip status*/
-    Api.getNewTripStatusList((status, result) => {
+    Api.getNewTripStatusList(({ status, result }) => {
       if (status) {
         if (this.assertAvailable(result)) {
           this.statusList = result.data;
@@ -260,7 +282,7 @@ export class TripPage extends PageController {
     });
 
     /*Get Bus Types*/
-    Api.getPartnerBusTypes((status, result) => {
+    Api.getPartnerBusTypes(({ status, result }) => {
       if (status) {
         if (this.assertAvailable(result)) {
           this.busTypes = result.data;
@@ -269,7 +291,7 @@ export class TripPage extends PageController {
     });
 
     /*Get Ticket Types*/
-    Api.getTicketTypes((status, result) => {
+    Api.getTicketTypes(({ status, result }) => {
       if (status) {
         if (this.assertAvailable(result)) {
           this.ticketTypes = result.data;
@@ -278,28 +300,37 @@ export class TripPage extends PageController {
     });
 
     /*Get trips*/
-    Api.getTrips(this.selectedDate ? this.getDateString(Utils.beginningOfMonth(this.selectedDate, this.session?.country?.tz_text)) : '', (status, result) => {
-      if (status) {
-        if (this.assertAvailable(result)) {
-          this.searchText = null;
-          this.trips = result.data;
-          this.currentTrips = this.groupTrips(this.trips);
+    Api.getTrips(
+      this.selectedDate
+        ? this.getDateString(
+            Utils.beginningOfMonth(
+              this.selectedDate,
+              this.session?.country?.tz_text
+            )
+          )
+        : "",
+      ({ status, result, msg }) => {
+        if (status) {
+          if (this.assertAvailable(result)) {
+            this.searchText = null;
+            this.trips = result.data;
+            this.currentTrips = this.groupTrips(this.trips);
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
+          }
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
         }
-        else {
-          this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
+
+        if (this.assertAvailable(completed)) {
+          completed();
         }
       }
-      else {
-        this.showToastMsg(result, ToastType.ERROR);
-      }
-
-      if (this.assertAvailable(completed)) {
-        completed();
-      }
-    });
-
+    );
   }
-
 
   /**Get Status class for trip status*/
   public getTripStatusClass(status: string): string {

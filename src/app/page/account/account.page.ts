@@ -1,79 +1,85 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 import { ActionSheetController, Platform } from "@ionic/angular";
 import { Network } from "@ionic-native/network/ngx";
 import { ToastType, Utils } from "../../helpers/Utils";
 import { PageController } from "../page-controller";
-import { SessionManager } from "../../helpers/SessionManager";
+import { SessionService } from "../../services/app/SessionService";
 import { Api } from "../../helpers/Api";
-import { Camera, CameraOptions, PictureSourceType } from "@ionic-native/camera/ngx";
+import {
+  Camera,
+  CameraOptions,
+  PictureSourceType,
+} from "@ionic-native/camera/ngx";
 import { File, FileEntry } from "@ionic-native/file/ngx";
 import { Strings } from "../../resources";
 import { DestinationType } from "@ionic-native/camera";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { Urls } from "../../helpers/Urls";
-import { OauthStorage } from "busarm-oauth-client-js";
+import { Oauth, OauthStorageKeys } from "busarm-oauth-client-js";
 @Component({
-  selector: 'app-account',
-  templateUrl: './account.page.html',
-  styleUrls: ['./account.page.scss'],
+  selector: "app-account",
+  templateUrl: "./account.page.html",
+  styleUrls: ["./account.page.scss"],
 })
 export class AccountPage extends PageController {
-
   public darkMode: boolean = false;
 
-  constructor(private actionSheetController: ActionSheetController,
+  constructor(
+    private actionSheetController: ActionSheetController,
     private camera: Camera,
     private file: File,
     private iab: InAppBrowser,
     public network: Network,
-    public platform: Platform) {
+    public platform: Platform
+  ) {
     super();
   }
 
   public async ngOnInit() {
     await super.ngOnInit();
-    this.subscriptions.add(this.events.darkModeChanged.subscribe(enabled => {
-      this.darkMode = enabled;
-    }))
-    this.darkMode = await SessionManager.getDarkMode();
+    this.subscriptions.add(
+      this.events.darkModeChanged.subscribe((enabled) => {
+        this.darkMode = enabled;
+      })
+    );
+    this.darkMode = await this.instance.sessionService.getDarkMode();
   }
 
   public ngOnDestroy() {
     super.ngOnDestroy();
   }
 
-  public async ionViewDidEnter() {
-  }
+  public async ionViewDidEnter() {}
 
   /**On Input change listener*/
   changeListener(event) {
     if (event && event.isTrusted) {
-      this.readFile(event.target.files[0])
+      this.readFile(event.target.files[0]);
     }
   }
 
   /**Select Image to upload*/
   async selectImage() {
     const actionSheet = await this.actionSheetController.create({
-      header: this.strings.getString('select_image_source_txt'),
+      header: this.strings.getString("select_image_source_txt"),
       buttons: [
         {
-          text: this.strings.getString('load_library_txt'),
+          text: this.strings.getString("load_library_txt"),
           handler: () => {
             this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
-          }
+          },
         },
         {
-          text: this.strings.getString('use_camera_txt'),
+          text: this.strings.getString("use_camera_txt"),
           handler: () => {
             this.takePicture(this.camera.PictureSourceType.CAMERA);
-          }
+          },
         },
         {
-          text: this.strings.getString('cancel_txt'),
-          role: 'cancel'
-        }
-      ]
+          text: this.strings.getString("cancel_txt"),
+          role: "cancel",
+        },
+      ],
     });
     await actionSheet.present();
   }
@@ -86,21 +92,22 @@ export class AccountPage extends PageController {
       allowEdit: true,
       sourceType: sourceType,
       saveToPhotoAlbum: false,
-      correctOrientation: true
+      correctOrientation: true,
     };
 
-    this.camera.getPicture(options).then(imagePath => {
+    this.camera.getPicture(options).then((imagePath) => {
       this.startUpload(imagePath);
     });
   }
 
   /**Initiate File Upload*/
   startUpload(filePath: string) {
-    this.file.resolveLocalFilesystemUrl(filePath)
-      .then(entry => {
-        (<FileEntry>entry).file(file => this.readFile(file))
+    this.file
+      .resolveLocalFilesystemUrl(filePath)
+      .then((entry) => {
+        (<FileEntry>entry).file((file) => this.readFile(file));
       })
-      .catch(err => {
+      .catch((err) => {
         // this.showToastMsg('Error while reading file.',ToastType.ERROR);
         this.showToastMsg(err, ToastType.ERROR);
       });
@@ -112,9 +119,9 @@ export class AccountPage extends PageController {
     reader.onloadend = () => {
       const formData = new FormData();
       const imgBlob = new Blob([reader.result], {
-        type: file.type
+        type: file.type,
       });
-      formData.append('partnerLogo', imgBlob, file.name);
+      formData.append("partnerLogo", imgBlob, file.name);
       this.uploadImageData(formData);
     };
     reader.readAsArrayBuffer(file);
@@ -123,7 +130,7 @@ export class AccountPage extends PageController {
   /**Upload File to server*/
   uploadImageData(formData: FormData) {
     this.showLoading().then(() => {
-      Api.addPartnerLogo(formData, (status, result) => {
+      Api.addPartnerLogo(formData, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {
@@ -134,22 +141,21 @@ export class AccountPage extends PageController {
                   this.loadUser();
                 }
               });
-            }
-            else {
+            } else {
               this.showToastMsg(result.msg, ToastType.ERROR);
             }
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
           }
-          else {
-            this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-          }
-        }
-        else {
-          this.showToastMsg(result, ToastType.ERROR);
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
         }
       });
     });
   }
-
 
   /**Show Logout confirmation
    * */
@@ -158,14 +164,14 @@ export class AccountPage extends PageController {
       this.strings.getString("logout_txt"),
       this.strings.getString("logout_msg_txt"),
       {
-        title: this.strings.getString("no_txt")
+        title: this.strings.getString("no_txt"),
       },
       {
         title: this.strings.getString("yes_txt"),
         callback: () => {
           this.logout();
-        }
-      },
+        },
+      }
     );
   }
 
@@ -181,47 +187,49 @@ export class AccountPage extends PageController {
 
   /**Show Terms and Conditions page*/
   public showTerms() {
-    this.iab.create(Urls.termsUrl, '_blank', {
+    this.iab.create(Urls.termsUrl, "_blank", {
       zoom: "no",
-      hardwareback: "yes"
+      hardwareback: "yes",
     });
   }
 
   /**Show Privacy Policy page*/
   public showPrivacy() {
-    this.iab.create(Urls.privacyUrl, '_blank', {
+    this.iab.create(Urls.privacyUrl, "_blank", {
       zoom: "no",
-      hardwareback: "yes"
+      hardwareback: "yes",
     });
   }
 
   /**Show Support page*/
-  public showSupport() {
-    this.iab.create(Urls.support + "?access_token=" + OauthStorage.accessToken, '_blank', {
+  public async showSupport() {
+    let token = await Oauth.storage.get(OauthStorageKeys.AccessTokenKey);
+    this.iab.create(Urls.support + "?access_token=" + token, "_blank", {
       zoom: "no",
-      hardwareback: "yes"
+      hardwareback: "yes",
     });
   }
 
   /**Show App page*/
-  public showApp() {
-    this.iab.create(Urls.appUrl + "?access_token=" + OauthStorage.accessToken, '_blank', {
+  public async showApp() {
+    let token = await Oauth.storage.get(OauthStorageKeys.AccessTokenKey);
+    this.iab.create(Urls.appUrl + "?access_token=" + token, "_blank", {
       zoom: "no",
-      hardwareback: "yes"
+      hardwareback: "yes",
     });
   }
 
   /**Toggle Theme*/
   public toggleTheme() {
-    SessionManager.setDarkMode(this.darkMode);
-    document.body.classList.toggle('dark', this.darkMode);
+    this.instance.sessionService.setDarkMode(this.darkMode);
+    document.body.classList.toggle("dark", this.darkMode);
   }
 
   /**Logout user*/
   public logout() {
     this.showLoading().then(() => {
       Api.logout(() => {
-        SessionManager.logout();
+        this.instance.authService.logout();
         this.hideLoading();
       });
     });
@@ -229,35 +237,38 @@ export class AccountPage extends PageController {
 
   /**Get User Data*/
   public getUser(callback?: (status: boolean, msg: string) => any) {
-    Api.getUserInfo((status, result) => {
+    Api.getUserInfo(({ status, result, msg }) => {
       if (status) {
         if (Utils.assertAvailable(result)) {
           if (result.status) {
             // Save user data to session
-            SessionManager.setUserInfo(result.data, done => {
+            this.instance.sessionService.setUserInfo(result.data, (done) => {
               if (done) {
                 if (Utils.assertAvailable(callback)) {
-                  callback(done, result);
+                  callback(done, msg);
                 }
               } else {
                 if (Utils.assertAvailable(callback)) {
-                  callback(done, Strings.getString('error_unexpected'));
+                  callback(done, Strings.getString("error_unexpected"));
                 }
               }
             });
           } else {
             if (Utils.assertAvailable(callback)) {
-              callback(false, result.msg ? result.msg : Strings.getString('error_unexpected'));
+              callback(
+                false,
+                result.msg ? result.msg : Strings.getString("error_unexpected")
+              );
             }
           }
         } else {
           if (Utils.assertAvailable(callback)) {
-            callback(false, Strings.getString('error_unexpected'));
+            callback(false, Strings.getString("error_unexpected"));
           }
         }
       } else {
         if (Utils.assertAvailable(callback)) {
-          callback(status, result);
+          callback(status, msg);
         }
       }
     });
