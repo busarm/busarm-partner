@@ -65,7 +65,8 @@ export class LoginPage extends PageController {
             } else {
               // Load Home
               await this.instance.routeService.goHome();
-              this.instance.hideLoadingScreen();
+              // Trigger access granted event
+              this.events.accessGranted.next(true);
             }
           } else {
             await this.instance.authService.logout();

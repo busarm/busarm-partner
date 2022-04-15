@@ -9,10 +9,12 @@ import { Strings } from "../../resources";
 import { AuthService } from "../app/AuthService";
 import { RouteService } from "../app/RouteService";
 import { AlertService } from "../app/AlertService";
+import { Events } from "../app/Events";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
+    public events: Events,
     public authService: AuthService,
     public routeService: RouteService,
     public alertService: AlertService
@@ -25,19 +27,26 @@ export class AuthGuard implements CanActivate {
           // If login page, go to home if already authorized
           if (status) {
             this.routeService.goHome();
+            // Trigger access granted event
+            this.events.accessGranted.next(true);
+            return false; // 'false' not permit showing login page - go to home rather
           } else {
-            this.authService.logout(false, route.routeConfig.path);
+            // Trigger logout event
+            this.events.logoutTriggered.next(true);
+            return true; // 'true' permit showing login page
           }
-          return !status;
         } else {
           if (!status) {
             this.alertService.showToastMsg(
-              Strings.getString("error_access_expired"),
+              Strings.getString("error_access_expired") + "- HAHAHAH",
               ToastType.ERROR
             );
             this.authService.logout(true, route.routeConfig.path);
+            return false;
           }
-          return status;
+          // Trigger access granted event
+          this.events.accessGranted.next(true);
+          return true;
         }
       })
       .catch((err) => {

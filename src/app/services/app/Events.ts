@@ -6,6 +6,7 @@ import { Subject } from "rxjs";
 })
 export class Events {
   public readonly logoutTriggered = new Subject<boolean>();
+  public readonly accessGranted = new Subject<boolean>();
   public readonly darkModeChanged = new Subject<boolean>();
   public readonly networkChanged = new Subject<boolean>();
   public readonly countryChanged = new Subject<boolean>();

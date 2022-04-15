@@ -42,17 +42,19 @@ export class AccountPage extends PageController {
         this.darkMode = enabled;
       })
     );
-    this.darkMode = await this.instance.sessionService.getDarkMode();
+    this.darkMode = (await this.instance.sessionService.getDarkMode());
   }
 
   public ngOnDestroy() {
     super.ngOnDestroy();
   }
 
-  public async ionViewDidEnter() {}
+  public async ionViewDidEnter() {
+    this.darkMode = (await this.instance.sessionService.getDarkMode());
+  }
 
   /**On Input change listener*/
-  changeListener(event) {
+  changeListener(event: { isTrusted: any; target: { files: any[]; }; }) {
     if (event && event.isTrusted) {
       this.readFile(event.target.files[0]);
     }
