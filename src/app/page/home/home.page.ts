@@ -3,7 +3,6 @@ import { PageController } from "../page-controller";
 import { MenuController, Platform } from "@ionic/angular";
 import { Router, RouterEvent } from "@angular/router";
 import { Api } from '../../helpers/Api';
-import { SessionService } from '../../services/app/SessionService';
 
 @Component({
   selector: 'app-home',

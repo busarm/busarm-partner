@@ -8,9 +8,6 @@ import { PingResponse } from "../../models/PingResponse";
 import { Session } from "../../models/Session";
 import { Utils } from "../../helpers/Utils";
 import { Storage } from "@ionic/storage";
-import { RouteService } from "./RouteService";
-import { AlertService } from "./AlertService";
-import { Events } from "./Events";
 
 @Injectable({
   providedIn: "root",
@@ -32,24 +29,20 @@ export class SessionService {
    * @param value  value
    * @return Promise if no callback given
    * */
-  set(
+  async set(
     key: string,
     value: any,
     callback?: (status: boolean) => any
   ): Promise<boolean> {
     if (this.storage != null) {
-      return new Promise(async (resolve) => {
-        this.storage
-          .set(key, value)
-          .then(() => {
-            if (Utils.assertAvailable(callback)) callback(true);
-            else resolve(true);
-          })
-          .catch(() => {
-            if (Utils.assertAvailable(callback)) callback(false);
-            else resolve(false);
-          });
-      });
+      try {
+        await this.storage.set(key, value);
+        if (Utils.assertAvailable(callback)) callback(true);
+        return true;
+      } catch {
+        if (Utils.assertAvailable(callback)) callback(false);
+        return false;
+      }
     } else {
       return new Promise((resolve) => {
         if (typeof value === "object")
@@ -57,7 +50,7 @@ export class SessionService {
         else localStorage.setItem(key, value);
 
         if (Utils.assertAvailable(callback)) callback(true);
-        else resolve(true);
+        resolve(true);
       });
     }
   }
@@ -67,27 +60,23 @@ export class SessionService {
    * @param callback
    * @return Promise if no callback given
    * */
-  get(key: string, callback?: (data: any) => any): Promise<any> {
+  async get(key: string, callback?: (data: any) => any): Promise<any> {
     if (this.storage != null) {
-      return new Promise(async (resolve) => {
-        this.storage
-          .get(key)
-          .then((value) => {
-            if (Utils.assertAvailable(callback)) callback(value);
-            else resolve(value);
-          })
-          .catch(() => {
-            if (Utils.assertAvailable(callback)) callback(null);
-            else resolve(null);
-          });
-      });
+      try {
+        const value = await this.storage.get(key);
+        if (Utils.assertAvailable(callback)) callback(value);
+        return value;
+      } catch {
+        if (Utils.assertAvailable(callback)) callback(null);
+        return null;
+      }
     } else {
       return new Promise((resolve) => {
         let value = localStorage.getItem(key);
         let obj = Utils.parseJson(value);
         if (Utils.assertAvailable(callback))
           callback(Utils.assertAvailable(obj) ? obj : value);
-        else resolve(Utils.assertAvailable(obj) ? obj : value);
+        resolve(Utils.assertAvailable(obj) ? obj : value);
       });
     }
   }
@@ -189,7 +178,7 @@ export class SessionService {
   /** Get dark mode
    * @param callback
    * */
-  getDarkMode(callback?: (darkMode: boolean) => any): Promise<boolean> {
+  getDarkMode(callback?: (status: boolean) => any): Promise<boolean> {
     return this.get(SessionKeys.DARK_MODE, callback);
   }
 

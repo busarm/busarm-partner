@@ -8,7 +8,7 @@ import {
   OauthStorageKeys,
 } from "busarm-oauth-client-js";
 
-import { Api, ApiResponseType } from "../../helpers/Api";
+import { Api, ApiResponse, ApiResponseType } from "../../helpers/Api";
 import { SessionService } from "./SessionService";
 import { Urls } from "../../helpers/Urls";
 import { Utils } from "../../helpers/Utils";
@@ -18,6 +18,7 @@ import { CONFIGS } from "../../../environments/environment";
 import { NetworkProvider } from "./NetworkProvider";
 import { Events } from "./Events";
 import { RouteService } from "./RouteService";
+import { BaseResponse } from "../../models/BaseResponse";
 
 @Injectable({
   providedIn: "root",
@@ -94,7 +95,7 @@ export class AuthService {
                     resolve(true);
                   } else {
                     this.authAttempted = false;
-                    switch (result.responseType) {
+                    switch (result.type) {
                       case ApiResponseType.Authorization_error:
                         this.authorized = false;
                         resolve(false);
@@ -122,7 +123,7 @@ export class AuthService {
             },
           });
         } else {
-          resolve(this.authorized && !this.oauth.hasExpired());
+          resolve(this.authorized && !(await this.oauth.hasExpired()));
         }
       }
     );
@@ -148,7 +149,7 @@ export class AuthService {
                   resolve(true);
                 } else {
                   this.authorized = false;
-                  switch (result.responseType) {
+                  switch (result.type) {
                     case ApiResponseType.Api_Error:
                       await this.logout();
                       break;
@@ -173,7 +174,7 @@ export class AuthService {
    * @returns {Promise<boolean>}
    */
   public async isAuthorize(): Promise<boolean> {
-    return this.authorized && !this.oauth.hasExpired();
+    return !(await this.oauth.hasExpired());
   }
 
   /**
@@ -239,64 +240,55 @@ export class AuthService {
   }
 
   /**
+   *
    * Validate existing session, or create one
+   * @returns {Promise<ApiResponse<BaseResponse>>}
    */
-  public async validateSession() {
+  public async validateSession(): Promise<ApiResponse<BaseResponse>> {
     // Get session params
     let data = await this.getAuthSessionParams();
-    return new Promise(
-      (
-        resolve: ({
-          status: boolean,
-          msg: string,
-          responseType: ApiResponseType,
-        }) => any
-      ) => {
-        Api.initialize(
-          {
-            os: data.os,
-            version: data.appVersion,
-            app_name: data.appName,
-            device_type: data.deviceType,
-            device_name: data.deviceModel,
-            partner: true,
-          },
-          async ({ status, result, type, msg }) => {
-            if (status && result) {
-              let session: Session = result.data;
-              // Save  session info
-              await this.sessionService.setSession(session);
-              if (session.user) {
-                // Set app's Language with user's
-                if (Utils.assertAvailable(session.user.lang)) {
-                  const key = session.user.lang.toUpperCase();
-                  if (Langs[key]) {
-                    // If Language Supported
-                    Strings.setLanguage(key);
-                  }
+    return new Promise((resolve: (data: ApiResponse<BaseResponse>) => any) => {
+      Api.initialize(
+        {
+          os: data.os,
+          version: data.appVersion,
+          app_name: data.appName,
+          device_type: data.deviceType,
+          device_name: data.deviceModel,
+          partner: true,
+        },
+        async ({ status, result, type, msg }) => {
+          if (status && result) {
+            let session: Session = result.data;
+            // Save  session info
+            await this.sessionService.setSession(session);
+            if (session.user) {
+              // Set app's Language with user's
+              if (Utils.assertAvailable(session.user.lang)) {
+                const key = session.user.lang.toUpperCase();
+                if (Langs[key]) {
+                  // If Language Supported
+                  Strings.setLanguage(key);
                 }
-                resolve({ status: true, msg: result.msg, responseType: type });
-              } else {
-                resolve({
-                  status: false,
-                  msg:
-                    result && result.msg
-                      ? result.msg
-                      : Strings.getString("error_unexpected"),
-                  responseType: type,
-                });
               }
+              resolve({ status, result, type, msg });
             } else {
               resolve({
                 status: false,
-                msg: msg || Strings.getString("error_unexpected"),
-                responseType: type,
+                msg: Strings.getString("error_unexpected"),
+                type,
               });
             }
+          } else {
+            resolve({
+              status: false,
+              msg: msg || Strings.getString("error_unexpected"),
+              type: type,
+            });
           }
-        );
-      }
-    );
+        }
+      );
+    });
   }
 
   /**

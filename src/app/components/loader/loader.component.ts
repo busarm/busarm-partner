@@ -8,6 +8,7 @@ import { Assets, Strings } from '../../resources';
 export class LoaderComponent implements OnInit {
 
   @Input() text: String = null;
+  @Input() details: String = null;
   @Input() failed: Boolean = false;
   @Input() icon: [String, String] = null;
 

@@ -80,9 +80,14 @@ export class AppComponent {
     this.networkProvider.initializeNetworkEvents();
     this.networkProvider.checkConnection();
 
-    // Subsrcibe to logout event
+    // Subsrcibe to access & logout event
     this.events.logoutTriggered.subscribe((loggedOut) => {
       if (loggedOut && !this.loaded) {
+        this.hideLoadingScreen();
+      }
+    });
+    this.events.accessGranted.subscribe((granted) => {
+      if (granted && !this.loaded) {
         this.hideLoadingScreen();
       }
     });
@@ -91,13 +96,13 @@ export class AppComponent {
     let systemDark = window.matchMedia("(prefers-color-scheme: dark)");
     this.authService.isAuthorize().then(async (authorized) => {
       if (!authorized) {
-        sessionService.setDarkMode(systemDark.matches);
+        await sessionService.setDarkMode(systemDark.matches);
         document.body.classList.toggle("dark", systemDark.matches);
       } else {
-        document.body.classList.toggle("dark", await sessionService.getDarkMode());
+        document.body.classList.toggle("dark", (await sessionService.getDarkMode()));
       }
     }).catch (async () => {
-      document.body.classList.toggle("dark", await sessionService.getDarkMode());
+      document.body.classList.toggle("dark", (await sessionService.getDarkMode()));
     });
 
     // Listen to system changes

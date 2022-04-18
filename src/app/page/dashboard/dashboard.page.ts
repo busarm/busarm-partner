@@ -12,7 +12,7 @@ import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { ViewTripPage } from "../trip/view-trip/view-trip.page";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
-import { Chart } from "chart.js";
+import Chart, { ChartDataset } from "chart.js/auto";
 import { ViewBookingPage } from "../bookings/view-booking/view-booking.page";
 import { MD5 } from "crypto-js";
 import { ENVIRONMENT } from "../../../environments/environment";
@@ -37,6 +37,9 @@ export class DashboardPage extends PageController {
   private isAlertShowing = false;
   private isBookingShowing = false;
   private isFindBookingProcessing = false;
+  private showBookingsInfo = false;
+
+  private bookingsChart: Chart = null;
 
   constructor(
     public modalCtrl: ModalController,
@@ -236,16 +239,31 @@ export class DashboardPage extends PageController {
         this.selectedBookingMonth = 0;
       }
 
+      // Determine whether to show booking info
+      this.showBookingsInfo =
+        Number(this.dashboard.bookings.unpaid) +
+          Number(this.dashboard.bookings.paid) +
+          Number(this.dashboard.bookings.pending) +
+          Number(this.dashboard.bookings.verified) +
+          Number(this.dashboard.bookings.canceled) >
+        0;
+
       // Set up Charts
-      this.setTimeout(800).then(() => {
+      this.setTimeout(500).then(() => {
         // Active Trips charts
         if (this.dashboard.active_trips) {
           this.dashboard.active_trips.forEach((trip: Trip) => {
-            let element = <any>(
-              document.getElementById("seatCanvas" + trip.trip_id)
+            let seatCanvasBox = <HTMLDivElement>(
+              document.getElementById("seatCanvasBox" + trip.trip_id)
             );
-            if (element) {
-              new Chart(element.getContext("2d"), {
+            console.log("seatCanvasBox before", seatCanvasBox);
+            if (seatCanvasBox) {
+              let seatCanvas = document.createElement("canvas");
+              seatCanvas.id = "seatCanvas" + trip.trip_id;
+              seatCanvas.classList.add("cell-chart", "chart-max");
+              seatCanvasBox.innerHTML = "";
+              seatCanvasBox.append(seatCanvas);
+              new Chart(seatCanvas.getContext("2d"), {
                 type: "pie",
                 data: {
                   labels: [
@@ -279,49 +297,60 @@ export class DashboardPage extends PageController {
                 },
               }).update();
             }
+            console.log("seatCanvasBox after", seatCanvasBox);
           });
         }
 
         // Bookings chart
         if (this.dashboard.bookings) {
           if (this.bookingCanvas) {
-            new Chart(this.bookingCanvas.nativeElement.getContext("2d"), {
-              type: "doughnut",
-              data: {
-                labels: [
-                  this.strings.getString("unpaid_txt"),
-                  this.strings.getString("paid_txt"),
-                  this.strings.getString("pending_txt"),
-                  this.strings.getString("verified_txt"),
-                  this.strings.getString("canceled_txt"),
+            let datasets: ChartDataset[] = [
+              {
+                data: [
+                  this.dashboard.bookings.unpaid,
+                  this.dashboard.bookings.paid,
+                  this.dashboard.bookings.pending,
+                  this.dashboard.bookings.verified,
+                  this.dashboard.bookings.canceled,
                 ],
-                datasets: [
-                  {
-                    data: [
-                      this.dashboard.bookings.unpaid,
-                      this.dashboard.bookings.paid,
-                      this.dashboard.bookings.pending,
-                      this.dashboard.bookings.verified,
-                      this.dashboard.bookings.canceled,
-                    ],
-                    backgroundColor: [
-                      "rgba(223, 99, 45,1)",
-                      "rgba(84, 142, 171,1)",
-                      "rgba(223, 168, 48,1)",
-                      "rgb(46, 139, 87)",
-                      "rgb(95, 95, 95)",
-                    ],
-                    hoverBackgroundColor: [
-                      "rgb(155, 70, 32)",
-                      "rgb(56, 89, 115)",
-                      "rgb(155, 115, 40)",
-                      "rgb(35, 107, 67)",
-                      "rgb(55, 55, 55)",
-                    ],
-                  },
+                backgroundColor: [
+                  "rgba(223, 99, 45,1)",
+                  "rgba(84, 142, 171,1)",
+                  "rgba(223, 168, 48,1)",
+                  "rgb(46, 139, 87)",
+                  "rgb(95, 95, 95)",
+                ],
+                hoverBackgroundColor: [
+                  "rgb(155, 70, 32)",
+                  "rgb(56, 89, 115)",
+                  "rgb(155, 115, 40)",
+                  "rgb(35, 107, 67)",
+                  "rgb(55, 55, 55)",
                 ],
               },
-            }).update();
+            ];
+            if (this.bookingsChart) {
+              this.bookingsChart.config.data.datasets = datasets;
+              this.bookingsChart.update("show");
+            } else {
+              this.bookingsChart = new Chart(
+                this.bookingCanvas.nativeElement.getContext("2d"),
+                {
+                  type: "doughnut",
+                  data: {
+                    labels: [
+                      this.strings.getString("unpaid_txt"),
+                      this.strings.getString("paid_txt"),
+                      this.strings.getString("pending_txt"),
+                      this.strings.getString("verified_txt"),
+                      this.strings.getString("canceled_txt"),
+                    ],
+                    datasets,
+                  },
+                }
+              );
+              this.bookingsChart.update();
+            }
           }
         }
       });
