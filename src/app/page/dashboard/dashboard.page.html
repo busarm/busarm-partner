@@ -82,9 +82,7 @@
               <ion-card-content>
                 <ion-row>
                   <ion-col size="12" position="center" class="cell cell-center cell-flex cell-flex-center">
-                    <div class="cell">
-                      <canvas class="cell-chart" id="{{'seatCanvas'+trip.trip_id}}">
-                      </canvas>
+                    <div id="{{'seatCanvasBox'+trip.trip_id}}" class="cell">
                     </div>
                   </ion-col>
                   <ion-col size="12" position="center" class="cell cell-center cell-flex cell-flex-center">
@@ -136,7 +134,7 @@
         <ion-label class="cell-content">{{strings.getString('no_active_trip_txt')}}</ion-label>
       </div>
     </div>
-    <div id="bookingList">
+    <div id="bookingList" *ngIf="showBookingsInfo">
       <!--Bookings header-->
       <div class="cell cell-center cell-margin-auto">
         <div class="section-title">

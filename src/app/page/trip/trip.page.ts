@@ -88,9 +88,23 @@ export class TripPage extends PageController {
       this.events.tripsUpdated.asObservable().subscribe(async (id) => {
         await super.ngOnInit();
         if (
-          !this.trips ||
+          !this.trips || this.trips.length == 0 ||
           (this.trips &&
             (!id || this.trips.some((trip) => trip.trip_id === id)))
+        ) {
+          this.loadTripsView();
+        }
+      })
+    );
+
+    /*Bus updated event*/
+    this.subscriptions.add(
+      this.events.busesUpdated.asObservable().subscribe(async (id) => {
+        await super.ngOnInit();
+        if (
+          !this.trips || this.trips.length == 0 ||
+          (this.trips &&
+            (!id || this.trips.some((trip) => trip.bus_id === id)))
         ) {
           this.loadTripsView();
         }

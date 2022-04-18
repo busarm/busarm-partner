@@ -17,7 +17,7 @@ import { AddBusPage } from "../../bus/add-bus/add-bus.page";
 import { ViewBusPage } from "../../bus/view-bus/view-bus.page";
 import { SelectStatusPage } from "./select-status/select-status.page";
 import { AddTripPage } from "../add-trip/add-trip.page";
-import { Chart } from "chart.js";
+import Chart, {ChartDataset} from "chart.js/auto";
 import { Subject } from "rxjs";
 
 @Component({
@@ -195,9 +195,36 @@ export class ViewTripPage extends PageController {
   /**
    * Set up bus seats chart
    */
+  private seatChart: Chart = null
   private setUpSeatChart() {
     if (this.seatCanvas) {
-      new Chart(this.seatCanvas.nativeElement.getContext("2d"), {
+      let datasets: ChartDataset[] = [
+        {
+          data: [
+            parseInt(this.trip.booked_seats),
+            parseInt(this.trip.locked_seats),
+            parseInt(this.trip.reserved_seats),
+            parseInt(this.trip.available_seats),
+          ],
+          backgroundColor: [
+            "rgb(46, 139, 87)",
+            "rgb(95, 95, 95)",
+            "rgba(223, 168, 48,1)",
+            "rgba(84, 142, 171,1)",
+          ],
+          hoverBackgroundColor: [
+            "rgb(35, 107, 67)",
+            "rgb(55, 55, 55)",
+            "rgb(155, 115, 40)",
+            "rgb(56, 89, 115)",
+          ],
+        }
+      ];
+      if(this.seatChart) {
+        this.seatChart.config.data.datasets = datasets;
+        return this.seatChart.update('show');
+      }
+      this.seatChart = new Chart(this.seatCanvas.nativeElement.getContext("2d"), {
         type: "pie",
         data: {
           labels: [
@@ -206,30 +233,10 @@ export class ViewTripPage extends PageController {
             this.strings.getString("reserved_txt"),
             this.strings.getString("available_txt"),
           ],
-          datasets: [
-            {
-              data: [
-                parseInt(this.trip.booked_seats),
-                parseInt(this.trip.locked_seats),
-                parseInt(this.trip.reserved_seats),
-                parseInt(this.trip.available_seats),
-              ],
-              backgroundColor: [
-                "rgb(46, 139, 87)",
-                "rgb(95, 95, 95)",
-                "rgba(223, 168, 48,1)",
-                "rgba(84, 142, 171,1)",
-              ],
-              hoverBackgroundColor: [
-                "rgb(35, 107, 67)",
-                "rgb(55, 55, 55)",
-                "rgb(155, 115, 40)",
-                "rgb(56, 89, 115)",
-              ],
-            },
-          ],
+          datasets: datasets,
         },
-      }).update();
+      });
+      this.seatChart.update();
     }
   }
 
