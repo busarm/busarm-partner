@@ -786,7 +786,7 @@ export class Api {
    * @param callback
    * */
   public static getBookings(
-    status: number,
+    status: string,
     min_date: string,
     max_date: string,
     callback: ApiCallback<BookingListResponse>
@@ -807,21 +807,40 @@ export class Api {
     });
   }
 
-  /**Get Booking Data
+  /**Validate Booking
    * @param referenceCode
    * @param callback
    * */
-  public static getBookingInfo(
+  public static validateBooking(
     referenceCode: string,
     callback: ApiCallback<BookingResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetBookingInfo,
+      url: Urls.apiValidateBooking,
       params: {
         reference_code: referenceCode,
       },
       cache: true,
-      cacheId: String(Utils.hashString(Urls.apiGetBookingInfo + referenceCode)),
+      cacheId: String(Utils.hashString(Urls.apiValidateBooking + referenceCode)),
+      callback: callback,
+    });
+  }
+
+  /**Get Booking
+   * @param id
+   * @param callback
+   * */
+   public static getBooking(
+    id: string,
+    callback: ApiCallback<BookingResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiGetBooking,
+      params: {
+        booking_id: id
+      },
+      cache: true,
+      cacheId: String(Utils.hashString(Urls.apiGetBooking + id)),
       callback: callback,
     });
   }

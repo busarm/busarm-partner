@@ -23,6 +23,22 @@ export class BookingsPage extends PageController {
 
   public async ngOnInit() {
     await super.ngOnInit();
+
+    /*Bookings updated event*/
+    this.subscriptions.add(
+      this.events.bookingsUpdated.asObservable().subscribe(async (id) => {
+        await super.ngOnInit();
+        if (id) {
+          let params = await this.getRouteParams();
+          if (params) {
+            this.loadBookings(params.status, params.min_date, params.max_date);
+          } else {
+            this.loadBookings();
+          }
+        }
+      })
+    );
+
     let params = await this.getRouteParams();
     if (params) {
       this.loadBookings(params.status, params.min_date, params.max_date);
@@ -40,9 +56,9 @@ export class BookingsPage extends PageController {
     max_date?: string
   ) {
     Api.getBookings(
-      status,
-      min_date,
-      max_date,
+      String(status || ''),
+      min_date || '',
+      max_date || '',
       async ({ status, result, msg }) => {
         if (status) {
           this.bookings = result.data;
@@ -76,7 +92,7 @@ export class BookingsPage extends PageController {
   /**Search booking for booking id*/
   public findBooking(booking_id: string) {
     this.showLoading().then(() => {
-      Api.getBookingInfo(booking_id, ({ status, result, msg }) => {
+      Api.getBooking(booking_id, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {

@@ -19,6 +19,8 @@ export class SessionService {
   }
   private static _instance: SessionService;
 
+  private memoize = {};
+
   constructor(private storage: Storage) {
     SessionService._instance = this;
   }
@@ -36,7 +38,9 @@ export class SessionService {
   ): Promise<boolean> {
     if (this.storage != null) {
       try {
-        await this.storage.set(key, value);
+        await this.storage
+          .set(key, value)
+          .then(() => (this.memoize[key] = value));
         if (Utils.assertAvailable(callback)) callback(true);
         return true;
       } catch {
@@ -45,6 +49,7 @@ export class SessionService {
       }
     } else {
       return new Promise((resolve) => {
+        this.memoize[key] = value;
         if (typeof value === "object")
           localStorage.setItem(key, Utils.toJson(value));
         else localStorage.setItem(key, value);
@@ -63,7 +68,10 @@ export class SessionService {
   async get(key: string, callback?: (data: any) => any): Promise<any> {
     if (this.storage != null) {
       try {
-        const value = await this.storage.get(key);
+        const value = this.memoize[key]
+          ? this.memoize[key]
+          : await this.storage.get(key);
+        this.memoize[key] = value; // mem cache
         if (Utils.assertAvailable(callback)) callback(value);
         return value;
       } catch {
@@ -72,7 +80,10 @@ export class SessionService {
       }
     } else {
       return new Promise((resolve) => {
-        let value = localStorage.getItem(key);
+        let value = this.memoize[key]
+          ? this.memoize[key]
+          : localStorage.getItem(key);
+        this.memoize[key] = value; // mem cache
         let obj = Utils.parseJson(value);
         if (Utils.assertAvailable(callback))
           callback(Utils.assertAvailable(obj) ? obj : value);
@@ -86,9 +97,11 @@ export class SessionService {
    * */
   async remove(key: string): Promise<any> {
     if (this.storage != null) {
+      delete this.memoize[key];
       return this.storage.remove(key);
     } else {
       return new Promise((resolve) => {
+        delete this.memoize[key];
         localStorage.removeItem(key);
         resolve(true);
       });

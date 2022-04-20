@@ -39,7 +39,7 @@ export class RouteService {
    * @param path
    * @param params
    */
-   public async navigate(path: string, params?: any) {
+  public async navigate(path: string, params?: any) {
     if (params) {
       await this.setRouteParams(path, params);
     }
@@ -69,7 +69,7 @@ export class RouteService {
    * Clear Route Params
    * @param path
    */
-   public async clearRouteParams(path?: string) {
+  public async clearRouteParams(path?: string) {
     return this.sessionService.remove(await this.getRouteKey(path));
   }
 
@@ -78,7 +78,7 @@ export class RouteService {
    * @param path
    */
   public async getRouteParams(path?: string) {
-    return  this.sessionService.get(await this.getRouteKey(path));
+    return this.sessionService.get(await this.getRouteKey(path));
   }
 
   /**
@@ -90,9 +90,7 @@ export class RouteService {
       resolve(
         MD5(
           "route_" +
-            Utils.safeString(
-              (path ? path : this.router.url).replace("/", "")
-            )
+            Utils.safeString((path ? path : this.router.url).replace("/", ""))
         ).toString()
       );
     });

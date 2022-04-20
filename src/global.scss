@@ -349,11 +349,11 @@ button {
     background: seagreen !important;
     --background: var(--ion-color-success) !important;
     --background-focused: var(--ion-color-success-tint) !important;
-    color: var(--ion-color-light) !important;
-    --color: var(--ion-color-light) !important;
+    color: var(--text-color-light) !important;
+    --color: var(--ion-text-color-light) !important;
 
     ion-icon {
-      color: var(--ion-color-light) !important;
+      color: var(--text-color-light) !important;
     }
   }
 
@@ -361,11 +361,11 @@ button {
     background: var(--ion-color-danger) !important;
     --background: var(--ion-color-danger) !important;
     --background-focused: var(--ion-color-danger-tint) !important;
-    color: var(--ion-color-light) !important;
-    --color: var(--ion-color-light) !important;
+    color: var(--text-color-light) !important;
+    --color: var(--text-color-light) !important;
 
     ion-icon {
-      color: var(--ion-color-light) !important;
+      color: var(--text-color-light) !important;
     }
   }
 
@@ -373,11 +373,11 @@ button {
     background: var(--ion-color-warning) !important;
     --background: var(--ion-color-warning) !important;
     --background-focused: var(--ion-color-warning-tint) !important;
-    color: var(--ion-text-color-darker) !important;
-    --color: var(--ion-color-dark) !important;
+    color: var(--text-color-light) !important;
+    --color: var(--text-color-light) !important;
 
     ion-icon {
-      color: var(--ion-text-color-darker) !important;
+      color: var(--text-color-light) !important;
     }
   }
 
@@ -1329,7 +1329,8 @@ input {
   width: auto;
 
   &.chart-max {
-    min-width: 250px !important;
+    min-width: 200px !important;
+    max-width: 250px !important;
   }
 }
 
