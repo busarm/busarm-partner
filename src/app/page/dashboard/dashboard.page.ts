@@ -256,7 +256,6 @@ export class DashboardPage extends PageController {
             let seatCanvasBox = <HTMLDivElement>(
               document.getElementById("seatCanvasBox" + trip.trip_id)
             );
-            console.log("seatCanvasBox before", seatCanvasBox);
             if (seatCanvasBox) {
               let seatCanvas = document.createElement("canvas");
               seatCanvas.id = "seatCanvas" + trip.trip_id;
@@ -297,7 +296,6 @@ export class DashboardPage extends PageController {
                 },
               }).update();
             }
-            console.log("seatCanvasBox after", seatCanvasBox);
           });
         }
 
@@ -535,7 +533,7 @@ export class DashboardPage extends PageController {
     if (this.referenceCode && !this.isFindBookingProcessing) {
       this.isFindBookingProcessing = true;
       this.showLoading().then(() => {
-        Api.getBookingInfo(this.referenceCode, ({ status, result, msg }) => {
+        Api.validateBooking(this.referenceCode, ({ status, result, msg }) => {
           this.hideLoading();
           this.isFindBookingProcessing = false;
           if (status) {

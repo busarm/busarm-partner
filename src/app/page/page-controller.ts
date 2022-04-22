@@ -116,7 +116,7 @@ export class PageController implements OnInit, OnDestroy {
    * @param params
    */
   public async navigate(path: string, params?: any) {
-    return this.instance.routeService.navigate(path, params);
+    return await this.instance.routeService.navigate(path, params);
   }
 
   /**
@@ -125,7 +125,7 @@ export class PageController implements OnInit, OnDestroy {
    * @param params
    */
   public async setRouteParams(path: string, params: any) {
-    return this.instance.routeService.setRouteParams(path, params);
+    return await this.instance.routeService.setRouteParams(path, params);
   }
 
   /**
@@ -133,7 +133,7 @@ export class PageController implements OnInit, OnDestroy {
    * @param path
    */
   public async clearRouteParams(path?: string) {
-    return this.instance.routeService.clearRouteParams(path);
+    return await this.instance.routeService.clearRouteParams(path);
   }
 
   /**
@@ -141,7 +141,7 @@ export class PageController implements OnInit, OnDestroy {
    * @param path
    */
   public async getRouteParams(path?: string) {
-    return this.instance.routeService.getRouteParams(path);
+    return await this.instance.routeService.getRouteParams(path);
   }
 
   /**
@@ -149,7 +149,7 @@ export class PageController implements OnInit, OnDestroy {
    * @param path
    */
   public async getQueryParams() {
-    return this.instance.routeService.getQueryParams();
+    return await this.instance.routeService.getQueryParams();
   }
 
   /**Show Network error msg*/

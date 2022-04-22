@@ -11,6 +11,7 @@
 @import "~@ionic/angular/css/flex-utils.css";
 @import "theme/variables";
 
+
 /*Loader specific contents*/
 .app-page-loader {
   z-index: 20000 !important;
@@ -348,11 +349,11 @@ button {
     background: seagreen !important;
     --background: var(--ion-color-success) !important;
     --background-focused: var(--ion-color-success-tint) !important;
-    color: var(--ion-color-light) !important;
-    --color: var(--ion-color-light) !important;
+    color: var(--text-color-light) !important;
+    --color: var(--ion-text-color-light) !important;
 
     ion-icon {
-      color: var(--ion-color-light) !important;
+      color: var(--text-color-light) !important;
     }
   }
 
@@ -360,11 +361,11 @@ button {
     background: var(--ion-color-danger) !important;
     --background: var(--ion-color-danger) !important;
     --background-focused: var(--ion-color-danger-tint) !important;
-    color: var(--ion-color-light) !important;
-    --color: var(--ion-color-light) !important;
+    color: var(--text-color-light) !important;
+    --color: var(--text-color-light) !important;
 
     ion-icon {
-      color: var(--ion-color-light) !important;
+      color: var(--text-color-light) !important;
     }
   }
 
@@ -372,11 +373,11 @@ button {
     background: var(--ion-color-warning) !important;
     --background: var(--ion-color-warning) !important;
     --background-focused: var(--ion-color-warning-tint) !important;
-    color: var(--ion-text-color-darker) !important;
-    --color: var(--ion-color-dark) !important;
+    color: var(--text-color-light) !important;
+    --color: var(--text-color-light) !important;
 
     ion-icon {
-      color: var(--ion-text-color-darker) !important;
+      color: var(--text-color-light) !important;
     }
   }
 
@@ -547,6 +548,10 @@ ion-picker-internal {
 ion-segment-button {
   color: var(--ion-color-dark) !important;
   --color: var(--ion-color-dark) !important;
+}
+
+ion-checkbox {
+  --border-color: var(--ion-border-color);
 }
 
 input,
@@ -1324,7 +1329,8 @@ input {
   width: auto;
 
   &.chart-max {
-    min-width: 250px !important;
+    min-width: 200px !important;
+    max-width: 250px !important;
   }
 }
 

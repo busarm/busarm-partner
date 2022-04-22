@@ -96,7 +96,7 @@
   "photo_txt": "Photo(s)",
   "no_photo_txt": "No Photo Available",
   "plate_no_txt": "Plate Number",
-  "seats_txt": "TripSeat(s)",
+  "seats_txt": "Seat(s)",
   "enter_bus_seats_txt": "Enter Number of Seats",
   "enter_bus_plate_no_txt": "Enter Plate Number",
   "bus_search_hint": "Search plate number, type etc.",
