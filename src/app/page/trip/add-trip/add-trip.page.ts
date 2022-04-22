@@ -13,7 +13,10 @@ import { Api } from "../../../helpers/Api";
 import { Strings } from "../../../resources";
 import { LocationsModal } from "../../locations/locations.modal";
 import { AddTicketPage } from "../add-ticket/add-ticket.page";
-import { DatePickerType, SelectDatePage } from "../../select-date/select-date.page";
+import {
+  DatePickerType,
+  SelectDatePage,
+} from "../../select-date/select-date.page";
 
 declare var google: any;
 
@@ -64,7 +67,11 @@ export class AddTripPage extends PageController {
   public ionViewDidEnter() {
     // Ensure selected pickup country matches current country
     let location = this.user?.default_location;
-    if (location && (location.country_code == this.session.country.country_code || location.country_name == this.session.country.country_name)) {
+    if (
+      location &&
+      (location.country_code == this.session.country.country_code ||
+        location.country_name == this.session.country.country_name)
+    ) {
       this.selectedPickup = location;
     }
   }
@@ -95,20 +102,19 @@ export class AddTripPage extends PageController {
   async showSelectDate() {
     let chooseModal = await this.modalCtrl.create({
       component: SelectDatePage,
-      cssClass: 'date-modal',
+      cssClass: "date-modal",
       componentProps: {
         date: this.selectedDateTime
           ? new Date(this.selectedDateTime)
           : new Date(),
         minDate: this.minDate,
         maxDate: this.maxDate,
-        type: DatePickerType.DateTime
+        type: DatePickerType.DateTime,
       },
     });
     chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
         this.selectedDateTime = new Date(data.data).toString();
-
       }
     });
     return await chooseModal.present();
@@ -232,7 +238,8 @@ export class AddTripPage extends PageController {
     if (event.isTrusted) {
       if (this.user) {
         this.selectLocation(
-          this.strings.getString("select_dropoff_txt"), null,
+          this.strings.getString("select_dropoff_txt"),
+          null,
           (location: Location) => {
             if (
               // Destination location can either be from default country or any of the supported countries
@@ -283,13 +290,17 @@ export class AddTripPage extends PageController {
   }
 
   /**Launch location selector*/
-  async selectLocation(title: string, country: string, callback: (place: any) => any) {
+  async selectLocation(
+    title: string,
+    country: string,
+    callback: (place: any) => any
+  ) {
     let chooseModal = await this.modalCtrl.create({
       component: LocationsModal,
       componentProps: {
         title: title,
         selector: true,
-        country: country
+        country: country,
       },
     });
     chooseModal.onDidDismiss().then((data) => {
@@ -323,11 +334,13 @@ export class AddTripPage extends PageController {
       Api.addNewTrip(
         this.selectedPickup.loc_id,
         this.selectedDropOff.loc_id,
-        this.selectedDateTime ? new Date(this.selectedDateTime).toISOString() : null,
+        this.selectedDateTime
+          ? new Date(this.selectedDateTime).toISOString()
+          : null,
         this.selectedBusType,
         this.selectedStatus,
         this.selectedTickets,
-        (status, result) => {
+        ({ status, result, msg }) => {
           if (status) {
             this.hideLoading();
             if (this.assertAvailable(result)) {
@@ -342,7 +355,7 @@ export class AddTripPage extends PageController {
             }
           } else {
             this.hideLoading();
-            this.showToastMsg(result, ToastType.ERROR);
+            this.showToastMsg(msg, ToastType.ERROR);
           }
         }
       );

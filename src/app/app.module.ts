@@ -41,6 +41,10 @@ if (CONFIGS.production) {
   enableProdMode();
 }
 
+// Add buffer to window
+import buffer from 'buffer';
+(window as any).Buffer = buffer.Buffer;
+
 // Configure Bugsnag
 if (CONFIGS.bugsnag_key != "") {
   Bugsnag.start({

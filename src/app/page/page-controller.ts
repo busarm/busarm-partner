@@ -4,18 +4,18 @@ import { MD5 } from "crypto-js";
 import { AppComponent } from "../app.component";
 import { ToastType, Utils } from "../helpers/Utils";
 import { Assets, Strings } from "../resources";
-import { SessionManager } from "../helpers/SessionManager";
+import { SessionService } from "../services/app/SessionService";
 import { User } from "../models/User/User";
 import { Session } from "../models/Session";
 import { CONFIGS } from "../../environments/environment";
 import { Events } from "../services/app/Events";
 import { Subscription } from "rxjs";
+import { Api } from "../helpers/Api";
 
 @Component({
-  template: ''
+  template: "",
 })
 export class PageController implements OnInit, OnDestroy {
-
   //Define resources for views to use
   public strings = Strings;
   public assets = Assets;
@@ -24,9 +24,10 @@ export class PageController implements OnInit, OnDestroy {
   protected subscriptions: Subscription = new Subscription();
 
   public selectedCountry: string = null;
+  public selectedLanguage: string = null;
+
   public session: Session = null;
   public user: User = null;
-  public routeKey: string = null;
 
   public timer: any = null;
   public interval: any = null;
@@ -35,30 +36,27 @@ export class PageController implements OnInit, OnDestroy {
   protected constructor() {
     this.loadSession();
     this.loadUser();
-
     // Load common event handler
-    this.events = this.instance.events
+    this.events = this.instance.events;
   }
 
   /* lifecycle events */
   public async ngOnInit() {
     await this.loadSession();
     await this.loadUser();
-    this.routeKey = await this.getRouteKey();
+    // Check connection
+    this.instance.networkProvider.checkConnection();
   }
 
   public ngOnDestroy() {
+    // Remove route params
+    this.clearRouteParams();
     // Clear intervals
     if (this.interval) {
       clearInterval(this.interval);
     }
-    // Remove route params
-    if (this.routeKey) {
-      SessionManager.remove(this.routeKey);
-      this.routeKey = null;
-    }
     // Subscriptions
-    if(this.subscriptions) {
+    if (this.subscriptions) {
       this.subscriptions.unsubscribe();
     }
   }
@@ -70,14 +68,11 @@ export class PageController implements OnInit, OnDestroy {
     this.hideLoading();
   }
   public ionViewWillLeave() {
+    // Remove route params
+    this.clearRouteParams();
     // Clear intervals
     if (this.interval) {
       clearInterval(this.interval);
-    }
-    // Remove route params
-    if (this.routeKey) {
-      SessionManager.remove(this.routeKey);
-      this.routeKey = null;
     }
   }
   public ionViewDidLeave() {
@@ -93,7 +88,7 @@ export class PageController implements OnInit, OnDestroy {
 
   /**Get oauth instance*/
   get oauth() {
-    return AppComponent.oauth;
+    return this.instance.authService.getOauth();
   }
 
   /**Get app version*/
@@ -102,34 +97,17 @@ export class PageController implements OnInit, OnDestroy {
   }
 
   /**Get Session Info
-   * @return {Session}
+   * @return {Promise<Session>}
    */
-  public async loadSession() {
-    return this.session = await SessionManager.getSession();
+  public async loadSession(): Promise<Session> {
+    return (this.session = await this.instance.sessionService.getSession());
   }
 
   /**Get User Info
-   * @return {User}
+   * @return {Promise<User>}
    */
-  public async loadUser() {
-    return this.user = await SessionManager.getUserInfo();
-  }
-
-  /**Set Country*/
-  public async setCountry() {
-    if (this.selectedCountry != null && (this.selectedCountry != this.session.country.country_code) && this.user.allow_multi_countries) {
-      this.showLoading().then(() => {
-        this.instance.set_country(this.selectedCountry, async (status, msg) => {
-          if (status) {
-            this.instance.events.countryChanged.next(true);
-          } else {
-            this.instance.events.countryChanged.next(false);
-            await this.showToastMsg(msg ? msg : Strings.getString("error_unexpected"), ToastType.ERROR);
-          }
-          this.hideLoading();
-        })
-      });
-    }
+  public async loadUser(): Promise<User> {
+    return (this.user = await this.instance.sessionService.getUserInfo());
   }
 
   /**
@@ -138,8 +116,7 @@ export class PageController implements OnInit, OnDestroy {
    * @param params
    */
   public async navigate(path: string, params?: any) {
-    if (params) { await this.setRouteParams(path, params) }
-    return this.instance.router.navigateByUrl(path);
+    return await this.instance.routeService.navigate(path, params);
   }
 
   /**
@@ -148,15 +125,15 @@ export class PageController implements OnInit, OnDestroy {
    * @param params
    */
   public async setRouteParams(path: string, params: any) {
-    return await new Promise<boolean>(async (resolve: (data: boolean) => any) => {
-      SessionManager.set((await this.getRouteKey(path)), params, data => {
-        if (data) {
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      });
-    });
+    return await this.instance.routeService.setRouteParams(path, params);
+  }
+
+  /**
+   * Clear Route Params
+   * @param path
+   */
+  public async clearRouteParams(path?: string) {
+    return await this.instance.routeService.clearRouteParams(path);
   }
 
   /**
@@ -164,25 +141,7 @@ export class PageController implements OnInit, OnDestroy {
    * @param path
    */
   public async getRouteParams(path?: string) {
-    return new Promise<any>(async (resolve: (data: any) => any) => {
-      SessionManager.get((path ? (await this.getRouteKey(path)) : this.routeKey), data => {
-        if (data) {
-          resolve(data);
-        } else {
-          resolve(null);
-        }
-      });
-    });
-  }
-
-  /**
-   * Get Route params
-   * @param path
-   */
-  public async getRouteKey(path?: string) {
-    return new Promise<any>((resolve: (data: any) => any) => {
-      resolve(MD5('route_' + Utils.safeString((path ? path : this.instance.router.url).replace('/', ''))).toString());
-    });
+    return await this.instance.routeService.getRouteParams(path);
   }
 
   /**
@@ -190,72 +149,82 @@ export class PageController implements OnInit, OnDestroy {
    * @param path
    */
   public async getQueryParams() {
-    return await new Promise<Params>((resolve: (data: Params) => any) => {
-      this.instance.router.routerState.root.queryParams.subscribe(async (queryParams) => {
-        if (queryParams) {
-          resolve(queryParams)
-        }
-        else {
-          resolve(null);
-        }
-      })
-    });
+    return await this.instance.routeService.getQueryParams();
   }
 
   /**Show Network error msg*/
   public showNotConnectedMsg(onDismiss?: (data: any, role: string) => any) {
-    this.instance.showNotConnectedMsg(onDismiss);
+    this.instance.alertService.showNotConnectedMsg(onDismiss);
   }
 
   /**Show Loader*/
   public showLoading(backdropDismiss = false, showBackdrop = true) {
-    return this.instance.showLoading({ backdropDismiss, showBackdrop });
+    return this.instance.alertService.showLoading({
+      backdropDismiss,
+      showBackdrop,
+    });
   }
 
   /**Hide Loader*/
   public hideLoading() {
-    return this.instance.hideLoading();
+    return this.instance.alertService.hideLoading();
   }
 
   /**Show Toast*/
-  public showToastMsg(msg: string,
+  public showToastMsg(
+    msg: string,
     type: ToastType,
     duration: number = 10000,
     showCloseButton: boolean = true,
     closeButton: string = Utils.convertHTMLEntity("&times;"),
     onDismiss?: (data: any, role: string) => any,
-    position: 'bottom' | 'top' = 'bottom') {
-    return this.instance.showToastMsg(msg, type, duration, showCloseButton, closeButton, onDismiss, position);
+    position: "bottom" | "top" = "bottom"
+  ) {
+    return this.instance.alertService.showToastMsg(
+      msg,
+      type,
+      duration,
+      showCloseButton,
+      closeButton,
+      onDismiss,
+      position
+    );
   }
 
   /**Hide Toast*/
   public hideToastMsg() {
-    return this.instance.hideToastMsg();
+    return this.instance.alertService.hideToastMsg();
   }
 
   /**Show Alert*/
-  public showAlert(title?: string,
+  public showAlert(
+    title?: string,
     message?: string,
     primaryBt?: {
-      title: string,
-      callback?: (data?: any) => any
+      title: string;
+      callback?: (data?: any) => any;
     },
     secondaryBt?: {
-      title: string,
-      callback?: (data?: any) => any
-    }) {
-    return this.instance.showAlert(title, message, primaryBt, secondaryBt);
+      title: string;
+      callback?: (data?: any) => any;
+    }
+  ) {
+    return this.instance.alertService.showAlert(
+      title,
+      message,
+      primaryBt,
+      secondaryBt
+    );
   }
 
   /**Hide Alert*/
   public hideAlert() {
-    return this.instance.hideAlert();
+    return this.instance.alertService.hideAlert();
   }
-
 
   /**Check if Assert available in variable*/
   public assertAvailable(data: any) {
-    return Utils.assertAvailable(data)
+    return Utils.assertAvailable(data);
   }
 
   /**
@@ -268,7 +237,7 @@ export class PageController implements OnInit, OnDestroy {
       if (stopPrevious && this.timer) {
         clearTimeout(this.timer);
       }
-      this.timer = setTimeout(resolve, ms)
+      this.timer = setTimeout(resolve, ms);
     });
   }
 
@@ -279,10 +248,46 @@ export class PageController implements OnInit, OnDestroy {
    * @param timeout
    * @param stopPrevious
    */
-  public async setInterval(handler?: TimerHandler, ms?: number, stopPrevious: boolean = true) {
+  public async setInterval(
+    handler?: TimerHandler,
+    ms?: number,
+    stopPrevious: boolean = true
+  ) {
     if (stopPrevious && this.interval) {
       clearInterval(this.interval);
     }
-    this.interval = setInterval(handler, ms)
+    this.interval = setInterval(handler, ms);
+  }
+
+  /**Set Country*/
+  public async setCountry() {
+    if (
+      this.selectedCountry != null &&
+      this.selectedCountry != this.session.country.country_code &&
+      this.user.allow_multi_countries
+    ) {
+      this.showLoading().then(() => {
+        Api.setCountry(this.selectedCountry, async ({ status }) => {
+          if (status) {
+            let session = await this.instance.authService.validateSession();
+            if (session) {
+              if (session.status) {
+                this.instance.events.countryChanged.next(true);
+              } else {
+                this.instance.events.countryChanged.next(false);
+                await this.showToastMsg(
+                  session.msg
+                    ? session.msg
+                    : Strings.getString("error_unexpected"),
+                  ToastType.ERROR
+                );
+              }
+            }
+          } else {
+            this.hideLoading();
+          }
+        });
+      });
+    }
   }
 }

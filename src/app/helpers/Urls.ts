@@ -86,9 +86,10 @@ export class Urls {
   public static apiTicketToggle = Urls.apiBaseUrl + "agent/ticket/toggle";
   public static apiGetDashboard = Urls.apiBaseUrl + "agent/common/dashboard";
   public static apiGetPartnerBusTypes = Urls.apiBaseUrl + "agent/bus/types";
-  public static apiGetBookings = Urls.apiBaseUrl + "agent/booking/triplist";
-  public static apiGetBookingInfo = Urls.apiBaseUrl + "agent/booking/tripinfo";
-  public static apiVerifyBooking = Urls.apiBaseUrl + "agent/booking/verifytrip";
+  public static apiGetBooking = Urls.apiBaseUrl + "agent/booking";
+  public static apiGetBookings = Urls.apiBaseUrl + "agent/booking/list";
+  public static apiValidateBooking = Urls.apiBaseUrl + "agent/booking/validate";
+  public static apiVerifyBooking = Urls.apiBaseUrl + "agent/booking/verify";
   public static apiUpdateTripStatus = Urls.apiBaseUrl + "agent/trip/status";
   public static apiUpdateTripBusType = Urls.apiBaseUrl + "agent/trip/bustype";
   public static apiUpdatePartnerLogo = Urls.apiBaseUrl + "agent/user/logo";

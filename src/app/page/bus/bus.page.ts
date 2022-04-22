@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 import { AlertController, ModalController } from "@ionic/angular";
 import { Network } from "@ionic-native/network/ngx";
 import { Api } from "../../helpers/Api";
@@ -11,20 +11,21 @@ import { ViewBusPage } from "./view-bus/view-bus.page";
 import { AddBusPage } from "./add-bus/add-bus.page";
 
 @Component({
-  selector: 'app-bus',
-  templateUrl: './bus.page.html',
-  styleUrls: ['./bus.page.scss'],
+  selector: "app-bus",
+  templateUrl: "./bus.page.html",
+  styleUrls: ["./bus.page.scss"],
 })
 export class BusPage extends PageController {
-
   searchText: string = null;
   buses: Bus[] = null;
   currentBuses: Bus[] = null;
   busTypes: BusType[] = null;
 
-  constructor(public alertCtrl: AlertController,
+  constructor(
+    public alertCtrl: AlertController,
     public modalCtrl: ModalController,
-    public network: Network) {
+    public network: Network
+  ) {
     super();
   }
 
@@ -32,35 +33,43 @@ export class BusPage extends PageController {
     await super.ngOnInit();
 
     /*Network event*/
-    this.subscriptions.add(this.events.networkChanged.asObservable().subscribe(async (online) => {
-      await super.ngOnInit();
-      if (online) {
-        await this.hideToastMsg();
-        if (!this.buses) {
-          this.loadBusesView();
+    this.subscriptions.add(
+      this.events.networkChanged.asObservable().subscribe(async (online) => {
+        await super.ngOnInit();
+        if (online) {
+          await this.hideToastMsg();
+          if (!this.buses) {
+            this.loadBusesView();
+          }
         }
-      }
-    }));
+      })
+    );
 
     /*Country Changed event*/
-    this.subscriptions.add(this.events.countryChanged.asObservable().subscribe(async (changed) => {
-      await super.ngOnInit();
-      if (changed) {
-        this.loadBusesView();
-      }
-      else {
-        /*Set default country*/
-        this.selectedCountry = this.session.country.country_code;
-      }
-    }));
+    this.subscriptions.add(
+      this.events.countryChanged.asObservable().subscribe(async (changed) => {
+        await super.ngOnInit();
+        if (changed) {
+          this.loadBusesView();
+        } else {
+          /*Set default country*/
+          this.selectedCountry = this.session.country.country_code;
+        }
+      })
+    );
 
     /*Buses updated event*/
-    this.subscriptions.add(this.events.busesUpdated.asObservable().subscribe(async (id) => {
-      await super.ngOnInit();
-      if (!this.buses || (this.buses && (!id || this.buses.some((bus) => bus.id === id)))) {
-        this.loadBusesView();
-      }
-    }));
+    this.subscriptions.add(
+      this.events.busesUpdated.asObservable().subscribe(async (id) => {
+        await super.ngOnInit();
+        if (
+          !this.buses ||
+          (this.buses && (!id || this.buses.some((bus) => bus.id === id)))
+        ) {
+          this.loadBusesView();
+        }
+      })
+    );
   }
 
   public ngOnDestroy() {
@@ -84,16 +93,17 @@ export class BusPage extends PageController {
           this.currentBuses = [];
           for (let index in this.buses) {
             let bus: Bus = this.buses[index];
-            let reg = new RegExp(this.searchText, 'gi');
-            if (bus.plate_num.match(reg) ||
+            let reg = new RegExp(this.searchText, "gi");
+            if (
+              bus.plate_num.match(reg) ||
               bus.type.match(reg) ||
-              bus.description.match(reg)) {
-              this.currentBuses.push(bus)
+              bus.description.match(reg)
+            ) {
+              this.currentBuses.push(bus);
             }
           }
         }
-      }
-      else {
+      } else {
         this.onClear(event);
       }
     }
@@ -113,9 +123,9 @@ export class BusPage extends PageController {
       component: AddBusPage,
       componentProps: {
         busTypes: this.busTypes,
-      }
+      },
     });
-    chooseModal.onDidDismiss().then(data => {
+    chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
         this.loadBusesView();
       }
@@ -128,10 +138,10 @@ export class BusPage extends PageController {
     let chooseModal = await this.modalCtrl.create({
       component: ViewBusPage,
       componentProps: {
-        bus: bus
-      }
+        bus: bus,
+      },
     });
-    chooseModal.onDidDismiss().then(data => {
+    chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
         this.loadBusesView();
       }
@@ -145,14 +155,13 @@ export class BusPage extends PageController {
       if (event) {
         event.target.complete();
       }
-    })
+    });
   }
 
   /**Load Buses View*/
   public loadBusesView(completed?: () => any) {
-
     /*Get Bus Types*/
-    Api.getBusTypes((status, result) => {
+    Api.getBusTypes(({ status, result }) => {
       if (status) {
         if (this.assertAvailable(result)) {
           this.busTypes = result.data;
@@ -161,18 +170,19 @@ export class BusPage extends PageController {
     });
 
     /*Get buses*/
-    Api.getBuses((status, result) => {
+    Api.getBuses(({ status, result, msg }) => {
       if (status) {
         if (this.assertAvailable(result)) {
           this.searchText = null;
           this.buses = this.currentBuses = result.data;
+        } else {
+          this.showToastMsg(
+            Strings.getString("error_unexpected"),
+            ToastType.ERROR
+          );
         }
-        else {
-          this.showToastMsg(Strings.getString("error_unexpected"), ToastType.ERROR);
-        }
-      }
-      else {
-        this.showToastMsg(result, ToastType.ERROR);
+      } else {
+        this.showToastMsg(msg, ToastType.ERROR);
       }
 
       if (this.assertAvailable(completed)) {
@@ -185,8 +195,7 @@ export class BusPage extends PageController {
   public getBusStatusClass(available: boolean): string {
     if (available) {
       return "status-ok";
-    }
-    else {
+    } else {
       return "status-error";
     }
   }
@@ -194,10 +203,9 @@ export class BusPage extends PageController {
   /**Get Status text for bus status*/
   public getBusStatus(available: boolean): string {
     if (available) {
-      return this.strings.getString('available_txt');
-    }
-    else {
-      return this.strings.getString('in_use_txt');
+      return this.strings.getString("available_txt");
+    } else {
+      return this.strings.getString("in_use_txt");
     }
   }
 }

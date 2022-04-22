@@ -3,7 +3,6 @@ import { PageController } from "../page-controller";
 import { MenuController, Platform } from "@ionic/angular";
 import { Router, RouterEvent } from "@angular/router";
 import { Api } from '../../helpers/Api';
-import { SessionManager } from '../../helpers/SessionManager';
 
 @Component({
   selector: 'app-home',
@@ -65,7 +64,7 @@ export class HomePage extends PageController {
   public logout() {
     this.showLoading().then(() => {
       Api.logout(() => {
-        SessionManager.logout();
+        this.instance.authService.logout();
         this.hideLoading();
       });
     });

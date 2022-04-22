@@ -1,3 +1,7 @@
+import { HttpResponse, HttpErrorResponse } from "@angular/common/http";
+import { Oauth, OauthStorageKeys } from "busarm-oauth-client-js";
+import CryptoJS from "crypto-js";
+
 import { Urls } from "./Urls";
 import { DashboardResponse } from "../models/DashboardResponse";
 import { BankListResponse } from "../models/BankListResponse";
@@ -18,14 +22,12 @@ import { UserListResponse } from "../models/User/UserListResponse";
 import { UserResponse } from "../models/User/UserResponse";
 import { SessionResponse } from "../models/SessionResponse";
 import { BaseResponse } from "../models/BaseResponse";
-import { Utils, ToastType } from "./Utils";
-import { SessionManager } from "./SessionManager";
-import { NetworkProvider } from "../services/app/NetworkProvider";
+import { Utils } from "./Utils";
 import { Strings } from "../resources";
-import { OauthRequestMethod, OauthStorage } from "./Oauth";
 import { CIPHER } from "./CIPHER";
-import { HttpResponse, HttpErrorResponse } from "@angular/common/http";
-import * as CryptoJS from "crypto-js";
+import { SessionService } from "../services/app/SessionService";
+import { NetworkProvider } from "../services/app/NetworkProvider";
+import { AuthService } from "../services/app/AuthService";
 
 /**Define the types of Api Responses*/
 export enum ApiResponseType {
@@ -36,23 +38,35 @@ export enum ApiResponseType {
   Unknown,
 }
 
-/**Define the Api Request Params*/
+/**Http Request Method*/
+export enum ApiRequestMethod {
+  GET = "get",
+  POST = "post",
+  PUT = "put",
+  DELETE = "delete",
+}
 
-type ApiCallback<T> = (
-  status: boolean,
-  result: T | string | any,
-  responseType: ApiResponseType,
-  cacheLoaded: boolean) => any;
-interface ApiRequestParams {
+/**Define the Api Request & Response Params*/
+export interface ApiResponse<T> {
+  status: boolean;
+  msg?: string;
+  result?: T;
+  type?: ApiResponseType;
+  cached?: boolean;
+}
+
+export type ApiCallback<T> = (data: ApiResponse<T>) => any;
+
+export interface ApiRequestParams {
   url: string;
-  method?: OauthRequestMethod;
+  method?: ApiRequestMethod;
   headers?: { [key in string]: any };
   params?: { [key in string]: any };
   encrypt?: boolean;
   cache?: boolean;
   cacheId?: string;
   loadCache?: boolean;
-  callback?: ApiCallback<BaseResponse>
+  callback?: ApiCallback<BaseResponse>;
 }
 
 /**Put All Api requests here so it can be
@@ -79,14 +93,17 @@ export class Api {
    * @param requestParams ApiRequestParams
    */
   private async start(requestParams: ApiRequestParams) {
-    /**Get Session Token First*/
-    let session = await SessionManager.getSession();
     if (requestParams.headers == null) {
       requestParams.headers = [];
     }
+
+    /**Add Session Token header*/
+    let session = await SessionService.instance.getSession();
     requestParams.headers["X-Session-Token"] = Utils.assertAvailable(session)
       ? Utils.safeString(session.session_token)
       : "";
+
+    /**Encrypt params if requested*/
     if (requestParams.encrypt) {
       if (session != null) {
         CIPHER.encrypt(
@@ -97,6 +114,7 @@ export class Api {
               requestParams.params = {
                 data: cipher,
               };
+              /**Add Encrypted header*/
               requestParams.headers["X-Encrypted"] = "1";
               this.processRequest(requestParams, true, session.encryption_key);
             } else {
@@ -119,7 +137,7 @@ export class Api {
   private static performRequest(
     requestParams: ApiRequestParams = {
       url: null,
-      method: OauthRequestMethod.GET,
+      method: ApiRequestMethod.GET,
       params: null,
       encrypt: false,
       cache: false,
@@ -144,20 +162,15 @@ export class Api {
   ) {
     const processWithMethod = () => {
       switch (requestParams.method) {
-        case OauthRequestMethod.DELETE:
-          // return OauthRequest.delete(req);
-          return NetworkProvider.getInstance().httpClient.delete(
-            requestParams.url,
-            {
-              headers: requestParams.headers,
-              params: requestParams.params,
-              observe: "response",
-              responseType: "text",
-            }
-          );
-        case OauthRequestMethod.PUT:
-          // return OauthRequest.put(req);
-          return NetworkProvider.getInstance().httpClient.put(
+        case ApiRequestMethod.DELETE:
+          return NetworkProvider.instance.httpClient.delete(requestParams.url, {
+            headers: requestParams.headers,
+            params: requestParams.params,
+            observe: "response",
+            responseType: "text",
+          });
+        case ApiRequestMethod.PUT:
+          return NetworkProvider.instance.httpClient.put(
             requestParams.url,
             requestParams.params,
             {
@@ -166,9 +179,8 @@ export class Api {
               responseType: "text",
             }
           );
-        case OauthRequestMethod.POST:
-          // return OauthRequest.post(req);
-          return NetworkProvider.getInstance().httpClient.post(
+        case ApiRequestMethod.POST:
+          return NetworkProvider.instance.httpClient.post(
             requestParams.url,
             requestParams.params,
             {
@@ -177,35 +189,44 @@ export class Api {
               responseType: "text",
             }
           );
-        case OauthRequestMethod.GET:
+        case ApiRequestMethod.GET:
         default:
-          // return OauthRequest.get(req);
-          return NetworkProvider.getInstance().httpClient.get(
-            requestParams.url,
-            {
-              observe: "response",
-              responseType: "text",
-              headers: requestParams.headers,
-              params: requestParams.params,
-            }
-          );
+          return NetworkProvider.instance.httpClient.get(requestParams.url, {
+            observe: "response",
+            responseType: "text",
+            headers: requestParams.headers,
+            params: requestParams.params,
+          });
       }
     };
 
     /*Respond first from cache*/
     if (requestParams.cache && requestParams.loadCache) {
       // Get cached response
-      let cache = await SessionManager.get(requestParams.cacheId);
+      let cache = await SessionService.instance.get(requestParams.cacheId);
       if (cache) {
         if (requestParams.callback) {
-          requestParams.callback(true, cache, ApiResponseType.Api_Success, true);
+          requestParams.callback({
+            status: true,
+            result: cache,
+            type: ApiResponseType.Api_Success,
+            cached: true,
+          });
           this.cacheLoaded = true;
         }
       }
     }
 
+    /*Add Authorization header*/
+    let token = await Oauth.storage.get(OauthStorageKeys.AccessTokenKey);
+    let tokenType = await Oauth.storage.get(OauthStorageKeys.TokenTypeKey);
+    if (token) {
+      requestParams.headers["Authorization"] = `${
+        tokenType || "Bearer"
+      } ${token}`;
+    }
+
     /*Process Request*/
-    requestParams.headers["Authorization"] = OauthStorage.accessToken;
     processWithMethod().subscribe(
       (result) => {
         const encryptedResponse = result.headers.get("X-Encrypted") == "1";
@@ -232,23 +253,21 @@ export class Api {
                 );
               } else {
                 if (!this.cacheLoaded) {
-                  requestParams.callback(
-                    false,
-                    Strings.getString("error_unexpected"),
-                    ApiResponseType.Unknown,
-                    false
-                  );
+                  requestParams.callback({
+                    status: false,
+                    msg: Strings.getString("error_unexpected"),
+                    type: ApiResponseType.Unknown,
+                  });
                 }
               }
             });
           } else {
             if (!this.cacheLoaded) {
-              requestParams.callback(
-                false,
-                Strings.getString("error_unexpected"),
-                ApiResponseType.Unknown,
-                false
-              );
+              requestParams.callback({
+                status: false,
+                msg: Strings.getString("error_unexpected"),
+                type: ApiResponseType.Unknown,
+              });
             }
           }
         } else {
@@ -281,198 +300,189 @@ export class Api {
           if (data.status) {
             if (requestParams.cache) {
               // Get cached response
-              let cache = await SessionManager.get(requestParams.cacheId);
+              let cache = await SessionService.instance.get(
+                requestParams.cacheId
+              );
               if (cache) {
                 // Compare new response to cached response
                 if (Utils.toJson(cache) != Utils.toJson(data)) {
                   if (requestParams.callback) {
-                    requestParams.callback(
-                      true,
-                      data,
-                      ApiResponseType.Api_Success,
-                      false
-                    );
+                    requestParams.callback({
+                      status: true,
+                      result: data,
+                      type: ApiResponseType.Api_Success,
+                    });
                   }
-                  SessionManager.set(requestParams.cacheId, data); // cache response
+                  SessionService.instance.set(requestParams.cacheId, data); // cache response
                 } else {
                   if (!this.cacheLoaded) {
                     if (requestParams.callback) {
-                      requestParams.callback(
-                        true,
-                        data,
-                        ApiResponseType.Api_Success,
-                        false
-                      );
+                      requestParams.callback({
+                        status: true,
+                        result: data,
+                        type: ApiResponseType.Api_Success,
+                      });
                     }
                   }
                 }
               } else {
                 if (requestParams.callback) {
-                  requestParams.callback(
-                    true,
-                    data,
-                    ApiResponseType.Api_Success,
-                    false
-                  );
+                  requestParams.callback({
+                    status: true,
+                    result: data,
+                    type: ApiResponseType.Api_Success,
+                  });
                 }
-                SessionManager.set(requestParams.cacheId, data); // cache response
+                SessionService.instance.set(requestParams.cacheId, data); // cache response
               }
             } else {
               if (requestParams.callback) {
-                requestParams.callback(true, data, ApiResponseType.Api_Success, false);
+                requestParams.callback({
+                  status: true,
+                  result: data,
+                  type: ApiResponseType.Api_Success,
+                });
               }
             }
           } else {
-            if (Utils.assertAvailable(data.msg)) {
-              if (requestParams.callback) {
-                requestParams.callback(
-                  false,
-                  data.msg,
-                  ApiResponseType.Api_Error,
-                  false
-                );
-              }
-            } else {
-              if (requestParams.callback) {
-                requestParams.callback(
-                  false,
-                  Strings.getString("error_unexpected"),
-                  ApiResponseType.Api_Error,
-                  false
-                );
-              }
+            if (requestParams.callback) {
+              requestParams.callback({
+                status: false,
+                msg: data.msg || Strings.getString("error_connection"),
+                type: ApiResponseType.Api_Error,
+              });
             }
-            SessionManager.remove(requestParams.cacheId); // remove cache
+            SessionService.instance.remove(requestParams.cacheId); // remove cache
           }
         } else {
-          requestParams.callback(
-            false,
-            Strings.getString("error_unexpected"),
-            ApiResponseType.Unknown,
-            false
-          );
-          SessionManager.remove(requestParams.cacheId); // remove cache
+          requestParams.callback({
+            status: false,
+            msg: Strings.getString("error_unexpected"),
+            type: ApiResponseType.Unknown,
+          });
+          SessionService.instance.remove(requestParams.cacheId); // remove cache
         }
       } else {
         const data = result.body
           ? Utils.parseJson(result.body)
           : result.error
-            ? Utils.parseJson(result.error)
-            : {};
+          ? Utils.parseJson(result.error)
+          : {};
         if (result.status === 401) {
           // Failed to authenticate api access
           if (requestParams.callback) {
-            requestParams.callback(
-              false,
-              data && data.msg
-                ? data.msg
-                : Strings.getString("error_access_expired"),
-              ApiResponseType.Authorization_error,
-              false
-            );
+            requestParams.callback({
+              status: false,
+              msg:
+                data && data.msg
+                  ? data.msg
+                  : Strings.getString("error_access_expired"),
+              type: ApiResponseType.Authorization_error,
+            });
           }
-          SessionManager.logout();
+          // Logout
+          AuthService.instance.logout();
         } else if (result.status === 403) {
           // Failed to authorize access
           if (requestParams.callback) {
-            requestParams.callback(
-              false,
-              data && data.msg
-                ? data.msg
-                : Strings.getString("error_access_expired"),
-              ApiResponseType.Authorization_error,
-              false
-            );
+            requestParams.callback({
+              status: false,
+              msg:
+                data && data.msg
+                  ? data.msg
+                  : Strings.getString("error_access_expired"),
+              type: ApiResponseType.Authorization_error,
+            });
           }
         } else {
           if (requestParams.cache) {
             // Get cached response
-            let cache = await SessionManager.get(requestParams.cacheId);
+            let cache = await SessionService.instance.get(
+              requestParams.cacheId
+            );
             if (cache) {
               // Check Internet connection
               if (!NetworkProvider.isOnline()) {
                 if (requestParams.callback) {
-                  requestParams.callback(
-                    true,
-                    cache,
-                    ApiResponseType.Api_Success,
-                    true
-                  );
-                  NetworkProvider.getInstance().checkConnection().then((connected) => {
-                    if (!connected) {
-                      requestParams.callback(
-                        false,
-                        Strings.getString("error_connection"),
-                        ApiResponseType.Network_error,
-                        false
-                      );
-                    }
+                  requestParams.callback({
+                    status: true,
+                    result: cache,
+                    type: ApiResponseType.Api_Success,
+                    cached: true,
                   });
+                  NetworkProvider.instance
+                    .checkConnection()
+                    .then((connected) => {
+                      if (!connected) {
+                        requestParams.callback({
+                          status: false,
+                          msg: Strings.getString("error_connection"),
+                          type: ApiResponseType.Network_error,
+                        });
+                      }
+                    });
                 }
               } else if (requestParams.callback) {
-                requestParams.callback(
-                  true,
-                  cache,
-                  ApiResponseType.Api_Success,
-                  false
-                );
+                requestParams.callback({
+                  status: true,
+                  result: cache,
+                  type: ApiResponseType.Api_Success,
+                });
               }
             } else if (!this.cacheLoaded && requestParams.callback) {
               // Check Internet connection
               if (!NetworkProvider.isOnline()) {
-                NetworkProvider.getInstance().checkConnection().then((connected) => {
+                NetworkProvider.instance.checkConnection().then((connected) => {
                   if (requestParams.callback) {
-                    requestParams.callback(
-                      false,
-                      connected
+                    requestParams.callback({
+                      status: false,
+                      msg: connected
                         ? data && data.msg
                           ? data.msg
                           : Strings.getString("error_unexpected")
                         : Strings.getString("error_connection"),
-                      connected
+                      type: connected
                         ? ApiResponseType.Unknown
                         : ApiResponseType.Network_error,
-                      false
-                    );
+                    });
                   }
                 });
               } else if (requestParams.callback) {
-                requestParams.callback(
-                  false,
-                  data && data.msg
-                    ? data.msg
-                    : Strings.getString("error_unexpected"),
-                  ApiResponseType.Unknown,
-                  false
-                );
+                requestParams.callback({
+                  status: false,
+                  msg:
+                    data && data.msg
+                      ? data.msg
+                      : Strings.getString("error_unexpected"),
+                  type: ApiResponseType.Unknown,
+                });
               }
             }
           } else {
             // Check Internet connection
             if (!NetworkProvider.isOnline()) {
-              NetworkProvider.getInstance().checkConnection().then((connected) => {
+              NetworkProvider.instance.checkConnection().then((connected) => {
                 if (requestParams.callback) {
-                  requestParams.callback(
-                    false,
-                    connected
+                  requestParams.callback({
+                    status: false,
+                    msg: connected
                       ? Strings.getString("error_unexpected")
                       : Strings.getString("error_connection"),
-                    connected
+                    type: connected
                       ? ApiResponseType.Unknown
                       : ApiResponseType.Network_error,
-                    false
-                  );
+                  });
                 }
               });
             } else if (!this.cacheLoaded && requestParams.callback) {
-              requestParams.callback(
-                false,
-                data && data.msg
-                  ? data.msg
-                  : Strings.getString("error_unexpected"),
-                ApiResponseType.Unknown,
-                false
-              );
+              requestParams.callback({
+                status: false,
+                msg:
+                  data && data.msg
+                    ? data.msg
+                    : Strings.getString("error_unexpected"),
+                type: ApiResponseType.Unknown,
+              });
             }
           }
         }
@@ -480,12 +490,11 @@ export class Api {
     } else {
       if (!this.cacheLoaded) {
         if (requestParams.callback) {
-          requestParams.callback(
-            false,
-            Strings.getString("error_unexpected"),
-            ApiResponseType.Unknown,
-            false
-          );
+          requestParams.callback({
+            status: false,
+            msg: Strings.getString("error_unexpected"),
+            type: ApiResponseType.Unknown,
+          });
         }
       }
     }
@@ -521,7 +530,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiInitialize,
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: data,
       cache: false,
       callback: callback,
@@ -537,7 +546,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         country: country_code,
       },
@@ -556,7 +565,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         lang: lang_code,
       },
@@ -569,12 +578,10 @@ export class Api {
   /**Logout Users
    * @param callback
    * */
-  public static logout(
-    callback: ApiCallback<BaseResponse>
-  ) {
+  public static logout(callback: ApiCallback<BaseResponse>) {
     this.performRequest({
       url: Urls.apiLogout,
-      method: OauthRequestMethod.GET,
+      method: ApiRequestMethod.GET,
       callback: callback,
     });
   }
@@ -582,9 +589,7 @@ export class Api {
   /**Get User Data
    * @param callback
    * */
-  public static getUserInfo(
-    callback: ApiCallback<UserResponse>
-  ) {
+  public static getUserInfo(callback: ApiCallback<UserResponse>) {
     this.performRequest({
       url: Urls.apiUser,
       callback: callback,
@@ -611,10 +616,7 @@ export class Api {
    * @param tripId
    * @param callback
    * */
-  public static getTrip(
-    tripId: string,
-    callback: ApiCallback<TripResponse>
-  ) {
+  public static getTrip(tripId: string, callback: ApiCallback<TripResponse>) {
     this.performRequest({
       url: Urls.apiTrip,
       params: {
@@ -631,10 +633,7 @@ export class Api {
    * @param date
    * @param callback
    * */
-  public static getTrips(
-    date,
-    callback: ApiCallback<TripListResponse>
-  ) {
+  public static getTrips(date, callback: ApiCallback<TripListResponse>) {
     this.performRequest({
       url: Urls.apiTrips,
       params: {
@@ -651,10 +650,7 @@ export class Api {
    * @param busId
    * @param callback
    * */
-  public static getBus(
-    busId: string,
-    callback: ApiCallback<BusResponse>
-  ) {
+  public static getBus(busId: string, callback: ApiCallback<BusResponse>) {
     this.performRequest({
       url: Urls.apiBus,
       params: {
@@ -670,9 +666,7 @@ export class Api {
   /**Get bus lists
    * @param callback
    * */
-  public static getBuses(
-    callback: ApiCallback<BusListResponse>
-  ) {
+  public static getBuses(callback: ApiCallback<BusListResponse>) {
     this.performRequest({
       url: Urls.apiBuses,
       cache: true,
@@ -704,9 +698,7 @@ export class Api {
   /**Get Partner Locations Data
    * @param callback
    * */
-  public static getLocations(
-    callback: ApiCallback<LocationListResponse>
-  ) {
+  public static getLocations(callback: ApiCallback<LocationListResponse>) {
     this.performRequest({
       url: Urls.apiLocations,
       cache: true,
@@ -794,7 +786,7 @@ export class Api {
    * @param callback
    * */
   public static getBookings(
-    status: number,
+    status: string,
     min_date: string,
     max_date: string,
     callback: ApiCallback<BookingListResponse>
@@ -815,21 +807,40 @@ export class Api {
     });
   }
 
-  /**Get Booking Data
+  /**Validate Booking
    * @param referenceCode
    * @param callback
    * */
-  public static getBookingInfo(
+  public static validateBooking(
     referenceCode: string,
     callback: ApiCallback<BookingResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetBookingInfo,
+      url: Urls.apiValidateBooking,
       params: {
         reference_code: referenceCode,
       },
       cache: true,
-      cacheId: String(Utils.hashString(Urls.apiGetBookingInfo + referenceCode)),
+      cacheId: String(Utils.hashString(Urls.apiValidateBooking + referenceCode)),
+      callback: callback,
+    });
+  }
+
+  /**Get Booking
+   * @param id
+   * @param callback
+   * */
+   public static getBooking(
+    id: string,
+    callback: ApiCallback<BookingResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiGetBooking,
+      params: {
+        booking_id: id
+      },
+      cache: true,
+      cacheId: String(Utils.hashString(Urls.apiGetBooking + id)),
       callback: callback,
     });
   }
@@ -869,9 +880,7 @@ export class Api {
   /**Get All Bus Types
    * @param callback
    * */
-  public static getBusTypes(
-    callback: ApiCallback<BusTypeListResponse>
-  ) {
+  public static getBusTypes(callback: ApiCallback<BusTypeListResponse>) {
     this.performRequest({
       url: Urls.apiGetBusTypes,
       cache: true,
@@ -883,9 +892,7 @@ export class Api {
   /**Get Partner Bus Types
    * @param callback
    * */
-  public static getPartnerBusTypes(
-    callback: ApiCallback<BusTypeListResponse>
-  ) {
+  public static getPartnerBusTypes(callback: ApiCallback<BusTypeListResponse>) {
     this.performRequest({
       url: Urls.apiGetPartnerBusTypes,
       cache: true,
@@ -897,9 +904,7 @@ export class Api {
   /**Get Ticket Types
    * @param callback
    * */
-  public static getTicketTypes(
-    callback: ApiCallback<TicketTypeListRepsonse>
-  ) {
+  public static getTicketTypes(callback: ApiCallback<TicketTypeListRepsonse>) {
     this.performRequest({
       url: Urls.apiGetTicketTypes,
       cache: true,
@@ -932,7 +937,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiVerifyBooking,
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         booking_id: bookingId,
       },
@@ -951,7 +956,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiVerify,
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         email: email,
       },
@@ -965,12 +970,9 @@ export class Api {
    * @param data
    * @param callback
    * */
-  public static addNewAgent(
-    data: any,
-    callback: ApiCallback<BaseResponse>
-  ) {
+  public static addNewAgent(data: any, callback: ApiCallback<BaseResponse>) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: data,
       url: Urls.apiUser,
       cache: false,
@@ -997,7 +999,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         pickup: pickup,
         dropoff: dropoff,
@@ -1021,7 +1023,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: ticket,
       url: Urls.apiTicket,
       cache: false,
@@ -1040,7 +1042,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         tripId: tripId,
         busId: busId,
@@ -1061,7 +1063,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         location: location,
         is_default: isDefault,
@@ -1075,12 +1077,9 @@ export class Api {
    * @param bus
    * @param callback
    * */
-  public static addBus(
-    bus: any,
-    callback: ApiCallback<BaseResponse>
-  ) {
+  public static addBus(bus: any, callback: ApiCallback<BaseResponse>) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: bus,
       url: Urls.apiBus,
       callback: callback,
@@ -1096,7 +1095,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: formData,
       url: Urls.apiBusImage,
       callback: callback,
@@ -1116,7 +1115,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         busId: busId,
         accountId: accountId,
@@ -1136,7 +1135,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: formData,
       url: Urls.apiUpdatePartnerLogo,
       callback: callback,
@@ -1152,7 +1151,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: payInRequest,
       url: Urls.apiPayInRequest,
       encrypt: true,
@@ -1169,7 +1168,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: payoutRequest,
       url: Urls.apiPayoutRequest,
       encrypt: true,
@@ -1189,7 +1188,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiAdmin,
-      method: OauthRequestMethod.PUT,
+      method: ApiRequestMethod.PUT,
       params: {
         agentId: agentId,
         remove: remove,
@@ -1212,7 +1211,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiUpdateTripStatus,
-      method: OauthRequestMethod.PUT,
+      method: ApiRequestMethod.PUT,
       params: {
         tripId: tripId,
         statusId: statusId,
@@ -1234,7 +1233,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiUpdateTripBusType,
-      method: OauthRequestMethod.PUT,
+      method: ApiRequestMethod.PUT,
       params: {
         tripId: tripId,
         typeId: typeId,
@@ -1255,7 +1254,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiBus,
-      method: OauthRequestMethod.PUT,
+      method: ApiRequestMethod.PUT,
       params: {
         busId: busId,
         description: description,
@@ -1269,13 +1268,10 @@ export class Api {
    * @param busId
    * @param callback
    * */
-  public static deleteBus(
-    busId: string,
-    callback: ApiCallback<BaseResponse>
-  ) {
+  public static deleteBus(busId: string, callback: ApiCallback<BaseResponse>) {
     this.performRequest({
       url: Urls.apiBus,
-      method: OauthRequestMethod.DELETE,
+      method: ApiRequestMethod.DELETE,
       params: {
         busId: busId,
       },
@@ -1294,7 +1290,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiTrip,
-      method: OauthRequestMethod.DELETE,
+      method: ApiRequestMethod.DELETE,
       params: {
         tripId: tripId,
       },
@@ -1316,7 +1312,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiLocation,
-      method: OauthRequestMethod.PUT,
+      method: ApiRequestMethod.PUT,
       params: {
         loc_id: locId,
         is_active: is_active ? 1 : 0,
@@ -1339,7 +1335,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiLocation,
-      method: OauthRequestMethod.PUT,
+      method: ApiRequestMethod.PUT,
       params: {
         loc_id: locId,
         is_default: is_default ? 1 : 0,
@@ -1363,7 +1359,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiTicketToggle,
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         ticketId: ticketId,
         typeId: typeId,
@@ -1385,7 +1381,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         agentId: agentId,
         active: active ? 1 : 0,
@@ -1411,7 +1407,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiTripReserve,
-      method: OauthRequestMethod.POST,
+      method: ApiRequestMethod.POST,
       params: {
         tripId: tripId,
         seatId: seatId,
@@ -1434,7 +1430,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiTripBus,
-      method: OauthRequestMethod.DELETE,
+      method: ApiRequestMethod.DELETE,
       params: {
         tripId: tripId,
         busId: busId,
@@ -1455,7 +1451,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.DELETE,
+      method: ApiRequestMethod.DELETE,
       params: {
         busId: busId,
         imageId: imageId,
@@ -1477,7 +1473,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.DELETE,
+      method: ApiRequestMethod.DELETE,
       params: {
         busId: busId,
         partnerId: partnerId,
@@ -1497,7 +1493,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      method: OauthRequestMethod.DELETE,
+      method: ApiRequestMethod.DELETE,
       params: {
         agentId: agentId,
       },
@@ -1519,7 +1515,7 @@ export class Api {
   ) {
     this.performRequest({
       url: Urls.apiLocation,
-      method: OauthRequestMethod.DELETE,
+      method: ApiRequestMethod.DELETE,
       params: {
         loc_id: locId,
       },
