@@ -38,3 +38,4 @@ env.test.json
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+package-lock.json
