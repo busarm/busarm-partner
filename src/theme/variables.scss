@@ -1,12 +1,7 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
-<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-=======
-@import url("https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@500&display=swap");
-@import "mixins";
->>>>>>> 3c49f03da7b20c24c9aeaed85fd97228c81818cf
 
 /** Ionic CSS Variables **/
 :root {
@@ -160,12 +155,7 @@
   --margin: 16px;
 
   // Fonts
-<<<<<<< HEAD
   --font-global: "Nunito", "Palatino Linotype", "Georgia", sans-serif, cursive !important;
-=======
-  --font-global: "Arima Madurai", "Palatino Linotype", "Georgia", sans-serif,
-    cursive !important;
->>>>>>> 3c49f03da7b20c24c9aeaed85fd97228c81818cf
   --ion-font-family: var(--font-global);
 }
 
