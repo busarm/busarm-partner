@@ -1,11 +1,10 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
 
 /** Ionic CSS Variables **/
 :root {
-
   /** gray scale **/
   --ion-color-step-950: #1f1f1f;
   --ion-color-step-900: #222222;
@@ -42,35 +41,85 @@
   --text-color-dark: #202020;
   --text-color-darker: #111111;
 
+  --color-theme-dark: 63, 95, 68;
+  --color-theme-dark-shade: 57, 96, 64;
+  --color-theme-dark-tint: 33, 63, 38;
+
+  --color-theme-dark-sub: 84, 171, 157;
+  --color-theme-dark-sub-shade: 72, 147, 135;
+  --color-theme-dark-sub-tint: 62, 126, 116;
+
+  --color-theme-light: 241, 218, 142;
+  --color-theme-light-shade: 189, 169, 105;
+  --color-theme-light-tint: 155, 139, 86;
+
+  --color-theme-light-sub: 223, 168, 48;
+  --color-theme-light-sub-shade: 155, 115, 40;
+  --color-theme-light-sub-tint: 155, 115, 40;
+
   /** primary **/
-  --ion-color-primary: rgb(63, 95, 68);
-  --ion-color-primary-rgb: rgb(63, 95, 68);
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: rgb(63, 95, 68);
-  --ion-color-primary-shade: rgb(35, 65, 40);
-  --ion-color-primary-tint: rgb(35, 65, 40);
-  --ion-color-primary-light: rgba(63, 95, 68, 0.5);
-  --ion-color-primary-lighter: rgba(63, 95, 68, 0.3);
-  --ion-color-primary-lightest: rgba(63, 95, 68, 0.05);
+  --ion-color-primary: rgb(var(--color-theme-dark));
+  --ion-color-primary-shade: rgb(var(--color-theme-dark-shade));
+  --ion-color-primary-tint: rgb(var(--color-theme-dark-tint));
+  --ion-color-primary-light: rgba(var(--color-theme-dark), 0.5);
+  --ion-color-primary-lighter: rgba(var(--color-theme-dark), 0.3);
+  --ion-color-primary-lightest: rgba(var(--color-theme-dark), 0.05);
+  --ion-color-primary-gradient: linear-gradient(
+    90deg,
+    rgb(var(--color-theme-dark-tint)) 0%,
+    rgb(var(--color-theme-dark-shade)) 25%,
+    rgb(var(--color-theme-dark)) 50%,
+    rgb(var(--color-theme-dark-sub-shade)) 75%,
+    rgb(var(--color-theme-dark-sub-tint)) 100%
+  );
+  --ion-color-primary-gradient-light: linear-gradient(
+    90deg,
+    rgba(var(--color-theme-dark-tint), 0.7) 0%,
+    rgba(var(--color-theme-dark-shade), 0.5) 25%,
+    rgba(var(--color-theme-dark), 0.3) 50%,
+    rgba(var(--color-theme-dark-sub-shade), 0.5) 75%,
+    rgba(var(--color-theme-dark-sub-tint), 0.7) 100%
+  );
 
   /** secondary **/
-  --ion-color-secondary: rgb(241, 218, 142);
-  --ion-color-secondary-rgb: rgb(241, 218, 142);
-  --ion-color-secondary-contrast: #ffffff;
-  --ion-color-secondary-contrast-rgb: rgb(241, 218, 142);
-  --ion-color-secondary-shade: rgb(155, 139, 86);
-  --ion-color-secondary-tint: rgb(155, 139, 86);
-  --ion-color-secondary-light: rgba(241, 218, 142, 0.7);
-  --ion-color-secondary-lighter: rgba(241, 218, 142, 0.5);
-  --ion-color-secondary-lightest: rgba(241, 218, 142, 0.3);
+  --ion-color-secondary: rgb(var(--color-theme-light));
+  --ion-color-secondary-shade: rgb(var(--color-theme-light-shade));
+  --ion-color-secondary-tint: rgb(var(--color-theme-light-tint));
+  --ion-color-secondary-light: rgba(var(--color-theme-light), 0.5);
+  --ion-color-secondary-lighter: rgba(var(--color-theme-light), 0.3);
+  --ion-color-secondary-lightest: rgba(var(--color-theme-light), 0.05);
+  --ion-color-secondary-gradient: linear-gradient(
+    90deg,
+    rgb(var(--color-theme-light-tint)) 0%,
+    rgb(var(--color-theme-light-shade)) 25%,
+    rgb(var(--color-theme-light)) 50%,
+    rgb(var(--color-theme-light-sub-shade)) 75%,
+    rgb(var(--color-theme-light-sub-tint)) 100%
+  );
+  --ion-color-secondary-gradient-light: linear-gradient(
+    90deg,
+    rgba(var(--color-theme-light-tint), 0.7) 0%,
+    rgba(var(--color-theme-light-shade), 0.5) 25%,
+    rgba(var(--color-theme-light), 0.3) 50%,
+    rgba(var(--color-theme-light-sub-shade), 0.5) 75%,
+    rgba(var(--color-theme-light-sub-tint), 0.7) 100%
+  );
+
+  /** normal **/
+  --ion-color-normal: rgb(var(--color-theme-dark-sub));
+  --ion-color-normal-shade: rgb(var(--color-theme-dark-sub-shade));
+  --ion-color-normal-tint: rgb(var(--color-theme-dark-sub-tint));
+  --ion-color-normal-light: rgba(var(--color-theme-dark-sub), 0.5);
+  --ion-color-normal-lighter: rgba(var(--color-theme-dark-sub), 0.3);
+  --ion-color-normal-lightest: rgba(var(--color-theme-dark-sub), 0.05);
 
   /** tertiary **/
-  --ion-color-tertiary: rgba(223, 168, 48, 1);
-  --ion-color-tertiary-rgb: rgba(223, 168, 48, 1);
-  --ion-color-tertiary-contrast: #ffffff;
-  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-  --ion-color-tertiary-shade: rgb(155, 115, 40);
-  --ion-color-tertiary-tint: rgb(155, 115, 40);
+  --ion-color-tertiary: rgb(var(--color-theme-light-sub));
+  --ion-color-tertiary-shade: rgb(var(--color-theme-light-sub-shade));
+  --ion-color-tertiary-tint: rgb(var(--color-theme-light-sub-tint));
+  --ion-color-tertiary-light: rgba(var(--color-theme-light-sub), 0.5);
+  --ion-color-tertiary-lighter: rgba(var(--color-theme-light-sub), 0.3);
+  --ion-color-tertiary-lightest: rgba(var(--color-theme-light-sub), 0.05);
 
   /** success **/
   --ion-color-success: rgb(46, 139, 87);
@@ -122,14 +171,6 @@
   --ion-color-medium-shade: #444444;
   --ion-color-medium-tint: #383838;
 
-  /** normal **/
-  --ion-color-normal: rgba(84, 142, 171, 1);
-  --ion-color-normal-rgb: rgb(84, 142, 171);
-  --ion-color-normal-contrast: #ffffff;
-  --ion-color-normal-contrast-rgb: rgb(255, 255, 255);
-  --ion-color-normal-shade: rgb(51, 120, 155);
-  --ion-color-normal-tint: rgb(49, 103, 131);
-
   /** others */
   --cancel-button-color: var(--ion-color-secondary);
   --ion-background-color: var(--ion-color-light);
@@ -161,7 +202,6 @@
 
 /* Dark mode - Fallback for older browsers or manual mode */
 body.dark {
-
   // Step colors
   --ion-color-step-50: #1f1f1f;
   --ion-color-step-100: #222222;
