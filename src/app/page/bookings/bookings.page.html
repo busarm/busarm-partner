@@ -9,17 +9,9 @@
 <ion-content class="ion-padding">
 
     <!--Loading view - Show if nothing hasn't been loaded yet-->
-    <div class="loader cell" *ngIf="bookings==null">
-        <ion-img [src]="assets.getPath('loading_page')"> </ion-img>
-        <ion-label class="cell-content">{{strings.getString('loading_txt')}}</ion-label>
-    </div>
-
+    <app-loader *ngIf="bookings==null" [text]="strings.getString('loading_txt')"></app-loader>
     <!--Not found view -->
-    <div class="loader cell" *ngIf="bookings!=null && bookings.length <= 0">
-        <ion-img [src]="assets.getPath('not_found')"> </ion-img>
-        <br>
-        <ion-label class="cell-content">{{strings.getString('not_found_txt')}}</ion-label>
-    </div>
+    <app-loader *ngIf="bookings!=null && bookings.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
 
     <ion-grid *ngIf="bookings!=null && bookings.length > 0">
         <ion-row wrap>
@@ -54,7 +46,7 @@
                             </ion-label>
                         </div>
                         <div class="cell cell-center ">
-                            <ion-button *ngIf="booking.status_id!='10' && booking.status_id!='13'" color="primary" (click)="findBooking(booking.booking_id)">
+                            <ion-button *ngIf="booking.status_id!='0' && booking.status_id!='10' && booking.status_id!='13'" color="primary" (click)="findBooking(booking.booking_id)">
                                 <ion-icon slot="start" name="open"> </ion-icon>
                                 {{strings.getString("view_txt")}}
                             </ion-button>

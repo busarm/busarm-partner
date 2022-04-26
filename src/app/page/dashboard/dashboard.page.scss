@@ -1,49 +1,57 @@
-@import "../../../theme/variables";
 ion-content {
 
   /*Active Trip Info Div*/
-  #dashCards{
+  #dashCards {
     ion-icon {
-      color: $themeColorDark;
+      color: var(--ion-color-primary);
     }
-    ion-card{
-      ion-card-content{
-        background: $disabledGray;
-        --background: $disabledGray;
-        ion-list{
-          background: $disabledGray;
-          --background: $disabledGray;
+
+    ion-card {
+      ion-card-content {
+        background: transparent;
+        --background: transparent;
+
+        ion-list {
+          background: transparent;
+          --background: transparent;
         }
-        ion-item{
-          background: $disabledGray;
-          --background: $disabledGray;
+
+        ion-item {
+          background: transparent;
+          --background: transparent;
         }
       }
     }
-    #activeTrips{
-      ion-col{
-        &[index="0"]{
-          ion-card-header{
-            background:$themeColorDark;
-            color: white !important;
+
+    #activeTrips {
+      ion-col {
+        &[index="0"] {
+          ion-card-header {
+            background: var(--ion-color-medium);
+            color: var(--ion-color-light) !important;
           }
-          ion-card-content{
-            background: white;
-          }
-        }
-        &:not([index="0"]){
-          ion-card-header{
-            background:$themeColorLight;
-            color: white !important;
-          }
-          ion-card-content{
-            background: $disabledGray;
-            --background: $disabledGray;
+
+          ion-card-content {
+            background: var(--ion-color-light-tint);
+            --background: var(--ion-color-light-tint);
           }
         }
-        ion-card-content{
-          ion-col[left]{
-            .cell{
+
+        &:not([index="0"]) {
+          ion-card-header {
+            background: var(--disabled-color);
+            color: var(--ion-color-dark) !important;
+          }
+
+          ion-card-content {
+            background: var(--ion-color-light-tint);
+            --background: var(--ion-color-light-tint);
+          }
+        }
+
+        ion-card-content {
+          ion-col[left] {
+            .cell {
               padding: 10px;
             }
           }

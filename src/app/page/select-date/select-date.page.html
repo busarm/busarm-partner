@@ -11,7 +11,7 @@
 
 <ion-content>
 
-  <ion-datetime name="date" 
+  <ion-datetime name="date"
     [(ngModel)]="selectedDate"
     [min]="getDateString(minDate)"
     [max]="getDateString(maxDate)"
@@ -23,6 +23,6 @@
       <ion-button color="danger" (click)="dismiss()">{{strings.getString('cancel_txt')}}</ion-button>
     </ion-buttons>
   </ion-toolbar>
-  
+
 
 </ion-content>

@@ -1,0 +1,54 @@
+import { Bus } from "../Bus/Bus";
+import { Ticket } from "../Ticket/Ticket";
+import { TripSeat } from "./TripSeat";
+
+
+export interface Trip {
+  trip_id?: string;
+  status_id?: string;
+  status: string;
+  pickup_loc_id?: string;
+  pickup_loc_name?: string;
+  pickup_loc_address?: string;
+  pickup_loc_lat?: string;
+  pickup_loc_lng?: string;
+  pickup_city_id?: string;
+  pickup_city?: string;
+  pickup_prov_name?: string;
+  pickup_prov_code?: string;
+  pickup_loc_type?: string;
+  dropoff_loc_id?: string;
+  dropoff_loc_name?: string;
+  dropoff_loc_address?: string;
+  dropoff_loc_lat?: string;
+  dropoff_loc_lng?: string;
+  dropoff_city_id?: string;
+  dropoff_city?: string;
+  dropoff_prov_name?: string;
+  dropoff_prov_code?: string;
+  dropoff_loc_type?: string;
+  ticket_id?: string;
+  price?: string;
+  currency_code?: string;
+  agent_id?: string;
+  agent_name?: string;
+  agent_email?: string;
+  partner_id?: string;
+  partner_name?: string;
+  partner_logo?: string;
+  verified?: string;
+  bus_type_id?: string;
+  bus_type?: string;
+  bus_seats?: string;
+  trip_date?: string;
+  date?: string;
+  time?: string;
+  locked_seats?: string;
+  booked_seats?: string;
+  reserved_seats?: string;
+  available_seats?: string;
+  bus_id?: string;
+  bus?: Bus;
+  tickets?: Ticket[];
+  trip_seats?: TripSeat[];
+}

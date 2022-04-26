@@ -4,7 +4,6 @@ import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { BarcodeFormat } from '@zxing/library';
 import { PageController } from "../../page-controller";
 import { ToastType } from "../../../helpers/Utils";
-import { Events } from '../../../services/Events';
 
 @Component({
     selector: 'app-web-scanner',
@@ -27,12 +26,11 @@ export class WebScannerPage extends PageController {
     lastScanned: { timestamp: number, code: string } = null
 
     constructor(public navCtrl: NavController,
-        private modalCtrl: ModalController,
-        public event: Events) {
+        private modalCtrl: ModalController) {
         super();
         this.allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX /*, ...*/];
     }
-    
+
     public ionViewWillEnter (){}
     public ionViewDidEnter(){
         this.showLoading(true);
@@ -40,10 +38,10 @@ export class WebScannerPage extends PageController {
 
     public async ngOnInit() {
         await super.ngOnInit();
-        this.scanner.torchCompatible.subscribe((enabled: boolean) => {
+        this.subscriptions.add(this.scanner.torchCompatible.subscribe((enabled: boolean) => {
             this.flashAllowed = enabled;
-        });
-        this.scanner.autostarted.subscribe(() => {
+        }));
+        this.subscriptions.add(this.scanner.autostarted.subscribe(() => {
             this.checkMediaDevice((device) => {
                 this.hideLoading();
                 if (device) {
@@ -58,23 +56,23 @@ export class WebScannerPage extends PageController {
                     this.dismiss();
                 }
             });
-        });
-        this.scanner.scanSuccess.subscribe((code: any) => {
+        }));
+        this.subscriptions.add(this.scanner.scanSuccess.subscribe((code: any) => {
             if (this.canScanAgain(code)) {
                 this.lastScanned = { timestamp: Date.now(), code: code };
-                this.event.webScannerResult.emit(code);
+                this.events.webScannerCompleted.next(code);
             }
-        });
+        }));
         this.checkPermission();
     }
 
-    /** 
-     * Check if can scan code again 
+    /**
+     * Check if can scan code again
      * This is to prevent scanning the same code
      * too many times at an instance
      * @param code
      * @param interval - default 5s
-     * @return boolean 
+     * @return boolean
      */
     private canScanAgain(code: string, interval = 5000) {
         return !(this.lastScanned
@@ -138,7 +136,7 @@ export class WebScannerPage extends PageController {
 
     /**
      * Toggle Flash on & off
-     * @param toggle 
+     * @param toggle
      */
     public async toggleFlash() {
         if (this.scanner) {
