@@ -53,7 +53,7 @@ export class PageController implements OnInit, OnDestroy {
     this.clearRouteParams();
     // Clear intervals
     if (this.interval) {
-      clearInterval(this.interval);
+      this.clearInterval();
     }
     // Subscriptions
     if (this.subscriptions) {
@@ -72,12 +72,12 @@ export class PageController implements OnInit, OnDestroy {
     this.clearRouteParams();
     // Clear intervals
     if (this.interval) {
-      clearInterval(this.interval);
+      this.clearInterval();
     }
   }
   public ionViewDidLeave() {
     if (this.interval) {
-      clearInterval(this.interval);
+      this.clearInterval();
     }
   }
 
@@ -245,18 +245,24 @@ export class PageController implements OnInit, OnDestroy {
    * Set Interval
    * @param handler
    * @param ms
-   * @param timeout
    * @param stopPrevious
    */
-  public async setInterval(
+  public setInterval(
     handler?: TimerHandler,
     ms?: number,
     stopPrevious: boolean = true
   ) {
     if (stopPrevious && this.interval) {
-      clearInterval(this.interval);
+      this.clearInterval();
     }
     this.interval = setInterval(handler, ms);
+  }
+
+  /**
+   * Clear Interval
+   */
+  public clearInterval() {
+    clearInterval(this.interval);
   }
 
   /**Set Country*/

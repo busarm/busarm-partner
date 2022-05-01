@@ -8,6 +8,26 @@ import { PingResponse } from "../models/PingResponse";
  * */
 
 export class Utils {
+
+  /**
+   * Number formatter
+   * @param {number} num
+   * @param {number} declimals
+   * @returns {string}
+   */
+   static nFormatter(num: number, declimals: number = 1): string {
+    if (num >= 1000000000) {
+      return (num / 1000000000).toFixed(declimals).replace(/\.0$/, "") + "B";
+    }
+    else if (num >= 1000000) {
+      return (num / 1000000).toFixed(declimals).replace(/\.0$/, "") + "M";
+    }
+    else if (num >= 1000) {
+      return (num / 1000).toFixed(declimals).replace(/\.0$/, "") + "K";
+    }
+    return String(num);
+  }
+
   /** Parse Float
    * @param str
    * @return number
@@ -209,7 +229,7 @@ export class Utils {
    * @param item
    * @return number
    *  */
-  static safeFloat(item): number {
+  static safeFloat(item: any): number {
     if (Utils.assertAvailable(item)) {
       try {
         return parseFloat(item);
