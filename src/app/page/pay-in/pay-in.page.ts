@@ -84,13 +84,22 @@ export class PayInPage extends PageController {
    * Open payment url
    * @param paymentUrl
    */
-  public gotoPayment(paymentUrl) {
+  public gotoPayment(paymentUrl: string) {
     paymentUrl +=
       "&redirect_uri=" +
       Urls.baseUrl() +
       this.instance.router.url.replace("/", "");
-    this.ngOnDestroy();
-    window.open(paymentUrl, "_self");
+
+    let url = new URL(paymentUrl);
+    url.searchParams.set("mode", "dialog");
+    let browser = window.open(url.toString(), "_blank");
+    this.setInterval(() => {
+      if (browser.closed) {
+        this.loadPayin();
+        console.log("browser closed");
+        this.clearInterval();
+      }
+    }, 500);
   }
 
   /**Get Status class for status*/

@@ -214,5 +214,9 @@
   "make_default_msg_txt": "Are you sure you want to make this the default location for this account?",
   "created_by_txt": "Created By",
   "dark_mode_txt": "Dark Mode",
-  "add_bus_prompt_txt": "You need to add at least one bus before you can add a trip"
+  "add_bus_prompt_txt": "You need to add at least one bus before you can add a trip",
+  "on_hold_txt": "On Hold",
+  "on_hold_info_msg": "Payment will not be released until the respective services such as trips, has been completed",
+  "released_txt": "Released",
+  "released_info_msg": "Payment is released and can be cashed out"
 }

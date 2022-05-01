@@ -1,10 +1,10 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { PageController } from "../page-controller";
-import { ModalController, Platform } from "@ionic/angular";
+import { IonSegment, ModalController, Platform } from "@ionic/angular";
 import { BookingMonth } from "../../models/Booking/BookingMonth";
 import { PayOutTransaction } from "../../models/Transaction/PayOutTransaction";
 import { PayInTransaction } from "../../models/Transaction/PayInTransaction";
-import { Dashboard } from "../../models/Dashboard";
+import { Dashboard, TransactionGroup } from "../../models/Dashboard";
 import { Trip } from "../../models/Trip/Trip";
 import { BookingTrip } from "../../models/Booking/BookingTrip";
 import { ToastType, Utils } from "../../helpers/Utils";
@@ -26,18 +26,19 @@ import { ENV } from "../../../environments/ENV";
 })
 export class DashboardPage extends PageController {
   @ViewChild("bookingCanvas") bookingCanvas: ElementRef<HTMLCanvasElement>;
+  activeTransactionSegment: "on_hold" | "released" = "on_hold";
 
   referenceCode: string = null;
   selectedBookingMonth: number = 0;
   dashboard: Dashboard = null;
   bookingMonths: BookingMonth[] = null;
+  transactionGroup: TransactionGroup = null;
 
   public webScanAvailable = false;
-
-  private isAlertShowing = false;
-  private isBookingShowing = false;
-  private isFindBookingProcessing = false;
-  private showBookingsInfo = false;
+  public isAlertShowing = false;
+  public isBookingShowing = false;
+  public isFindBookingProcessing = false;
+  public showBookingsInfo = false;
 
   private bookingsChart: Chart = null;
 
@@ -247,6 +248,13 @@ export class DashboardPage extends PageController {
           Number(this.dashboard.bookings.verified) +
           Number(this.dashboard.bookings.canceled) >
         0;
+
+      // Set selectd transaction
+      if (this.activeTransactionSegment == "on_hold") {
+        this.transactionGroup = this.dashboard.transactions?.on_hold;
+      } else if (this.activeTransactionSegment == "released") {
+        this.transactionGroup = this.dashboard.transactions?.released;
+      }
 
       // Set up Charts
       this.setTimeout(500).then(() => {
@@ -604,5 +612,29 @@ export class DashboardPage extends PageController {
       } else if (force) await this.showToastMsg(msg, ToastType.ERROR);
       if (this.assertAvailable(completed)) completed();
     });
+  }
+
+  /**
+   * Transaction segment chnaged
+   * @param {CustomEvent<IonSegment>} event
+   */
+  public transactionSegmentChanged(event: CustomEvent<IonSegment>) {
+    console.log("Segment changed", event.detail.value);
+    if (event.detail.value == "on_hold") {
+      this.activeTransactionSegment = event.detail.value;
+      this.transactionGroup = this.dashboard?.transactions?.on_hold;
+    } else if (event.detail.value == "released") {
+      this.activeTransactionSegment = event.detail.value;
+      this.transactionGroup = this.dashboard?.transactions?.released;
+    }
+  }
+
+  /**
+   * Number formatter
+   * @param num
+   * @returns {string}
+   */
+  public nFormatter(num: number): string {
+    return Utils.nFormatter(num);
   }
 }
