@@ -15,7 +15,6 @@ import {
   DatePickerType,
   SelectDatePage,
 } from "../../components/select-date/select-date.page";
-import { format, parseISO } from 'date-fns';
 
 type GroupedTrips = { date: string; list: Trip[] };
 @Component({
