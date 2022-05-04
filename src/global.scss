@@ -176,12 +176,9 @@ ion-modal {
   --color: var(--ion-text-color) !important;
 
   &.date-modal {
-    --max-width: 300px !important;
-    --max-height: 550px !important;
     --box-shadow: none;
     --backdrop-opacity: 0.4 !important;
     --border-radius: 4px;
-    z-index: 10000;
 
     &::part(content) {
       margin: auto;
@@ -644,7 +641,7 @@ input {
 }
 
 .logoContainer {
-  margin: 30px;
+  margin: 20px;
 }
 
 .logoImg {

@@ -12,6 +12,7 @@ import { SelectDatePage } from './select-date.page';
     FormsModule,
     IonicModule
   ],
-  declarations: [SelectDatePage]
+  declarations: [SelectDatePage],
+  exports: [SelectDatePage],
 })
 export class SelectDatePageModule {}

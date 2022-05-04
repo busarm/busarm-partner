@@ -35,7 +35,8 @@
   <app-loader *ngIf="currentTrips == null" [text]="strings.getString('loading_txt')"></app-loader>
   <!--Not found view -->
   <app-loader *ngIf="currentTrips!=null && currentTrips.length == 0" [failed]="true"
-    [text]="strings.getString('not_found_txt')" [details]="busTypes == null || busTypes.length == 0  ? strings.getString('add_bus_prompt_txt') : null"></app-loader>
+    [text]="strings.getString('not_found_txt')"
+    [details]="busTypes == null || busTypes.length == 0  ? strings.getString('add_bus_prompt_txt') : null"></app-loader>
 
   <!--Trip list-->
   <div id="dashCards" *ngIf="currentTrips!=null && currentTrips.length > 0">
@@ -125,8 +126,9 @@
     </ion-accordion-group>
   </div>
   <br /><br /><br />
-  <ion-fab *ngIf="(statusList!=null && statusList.length > 0) && (busTypes!=null && busTypes.length > 0) && (ticketTypes!=null && ticketTypes.length > 0)" vertical="bottom" horizontal="end"
-    slot="fixed">
+  <ion-fab
+    *ngIf="(statusList!=null && statusList.length > 0) && (busTypes!=null && busTypes.length > 0) && (ticketTypes!=null && ticketTypes.length > 0)"
+    vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="showAddTrip()">
       <ion-icon name="add"> </ion-icon>
     </ion-fab-button>

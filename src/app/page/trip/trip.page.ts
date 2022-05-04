@@ -14,7 +14,8 @@ import { AddTripPage } from "./add-trip/add-trip.page";
 import {
   DatePickerType,
   SelectDatePage,
-} from "../select-date/select-date.page";
+} from "../../components/select-date/select-date.page";
+import { format, parseISO } from 'date-fns';
 
 type GroupedTrips = { date: string; list: Trip[] };
 @Component({
@@ -45,6 +46,8 @@ export class TripPage extends PageController {
   statusList: Status[] = null;
   busTypes: BusType[] = null;
   ticketTypes: TicketType[] = null;
+
+  showSelectDateModal = false;
 
   constructor(
     public alertCtrl: AlertController,
@@ -218,6 +221,7 @@ export class TripPage extends PageController {
 
   /**Launch select date model*/
   async showSelectDate() {
+    // this.showSelectDateModal = true;
     let chooseModal = await this.modalCtrl.create({
       component: SelectDatePage,
       cssClass: "date-modal",

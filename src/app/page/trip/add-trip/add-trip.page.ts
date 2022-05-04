@@ -16,7 +16,7 @@ import { AddTicketPage } from "../add-ticket/add-ticket.page";
 import {
   DatePickerType,
   SelectDatePage,
-} from "../../select-date/select-date.page";
+} from "../../../components/select-date/select-date.page";
 
 declare var google: any;
 

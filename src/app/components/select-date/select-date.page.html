@@ -1,0 +1,15 @@
+<ion-content class="ion-padding">
+  <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+    <div style="margin: auto;">
+      <ion-datetime style="padding: 20px;" name="date" [(ngModel)]="selectedDate" [min]="minDate ? getDateString(minDate) : undefined"
+        [max]="maxDate ? getDateString(maxDate) : undefined" [presentation]="type">
+      </ion-datetime>
+      <ion-toolbar style="padding: 10px;" color="light">
+        <ion-buttons slot="primary">
+          <ion-button color="success" (click)="dismiss(true)">{{strings.getString('done_txt')}}</ion-button>
+          <ion-button color="danger" (click)="dismiss()">{{strings.getString('cancel_txt')}}</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </div>
+  </div>
+</ion-content>
