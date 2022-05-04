@@ -88,7 +88,8 @@ export class TripPage extends PageController {
       this.events.tripsUpdated.asObservable().subscribe(async (id) => {
         await super.ngOnInit();
         if (
-          !this.trips || this.trips.length == 0 ||
+          !this.trips ||
+          this.trips.length == 0 ||
           (this.trips &&
             (!id || this.trips.some((trip) => trip.trip_id === id)))
         ) {
@@ -102,9 +103,9 @@ export class TripPage extends PageController {
       this.events.busesUpdated.asObservable().subscribe(async (id) => {
         await super.ngOnInit();
         if (
-          !this.trips || this.trips.length == 0 ||
-          (this.trips &&
-            (!id || this.trips.some((trip) => trip.bus_id === id)))
+          !this.trips ||
+          this.trips.length == 0 ||
+          (this.trips && (!id || this.trips.some((trip) => trip.bus_id === id)))
         ) {
           this.loadTripsView();
         }
@@ -163,7 +164,9 @@ export class TripPage extends PageController {
   public groupTrips(trips: Trip[]): GroupedTrips[] {
     let list: GroupedTrips[] = [];
     for (let trip of trips) {
-      let date = new Date(trip.trip_date).toDateString();
+      let date = new Date(
+        Date.parse(trip.trip_date || trip.date)
+      ).toDateString();
       let match = list.find((t) => t.date === date);
       if (match) {
         let matchIndex = list.findIndex((t) => t.date === match.date);

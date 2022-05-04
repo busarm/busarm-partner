@@ -133,13 +133,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         },
         "ionic-cordova-build": {
@@ -188,9 +183,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -210,13 +203,26 @@
   "build": {
     "builder": "@angular-devkit/build-angular:browser",
     "options": {
-       "allowedCommonJsDependencies": [
-          "chart.js",
-          "crypto-js",
-          "rxjs",
-          "@zxing/library",
-          "@bugsnag/js"
-       ]
-     }
+      "allowedCommonJsDependencies": [
+        "chart.js",
+        "crypto-js",
+        "rxjs",
+        "@zxing/library",
+        "@bugsnag/js"
+      ]
+    },
+    "configurations": {
+      "production": {
+      },
+      "development": {
+        "buildOptimizer": false,
+        "optimization": false,
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "sourceMap": true,
+        "namedChunks": false
+      }
+    },
+    "defaultConfiguration": "development"
   }
 }

@@ -10,7 +10,6 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
     <!--Bus list-->
     <div *ngIf="buses!=null && buses.length > 0">
         <ion-list>
@@ -58,6 +57,7 @@
             </ion-card>
         </ion-list>
     </div>
+    <!--Bus Form-->
     <form #busForm="ngForm" *ngIf="buses==null || buses.length < 1" (ngSubmit)="add()" autocomplete="off">
         <ion-row>
             <ion-col>

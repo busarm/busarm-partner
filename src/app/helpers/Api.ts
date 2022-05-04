@@ -402,7 +402,7 @@ export class Api {
             );
             if (cache) {
               // Check Internet connection
-              if (!NetworkProvider.isOnline()) {
+              if (!NetworkProvider.instance.isOnline()) {
                 if (requestParams.callback) {
                   requestParams.callback({
                     status: true,
@@ -431,7 +431,7 @@ export class Api {
               }
             } else if (!this.cacheLoaded && requestParams.callback) {
               // Check Internet connection
-              if (!NetworkProvider.isOnline()) {
+              if (!NetworkProvider.instance.isOnline()) {
                 NetworkProvider.instance.checkConnection().then((connected) => {
                   if (requestParams.callback) {
                     requestParams.callback({
@@ -460,7 +460,7 @@ export class Api {
             }
           } else {
             // Check Internet connection
-            if (!NetworkProvider.isOnline()) {
+            if (!NetworkProvider.instance.isOnline()) {
               NetworkProvider.instance.checkConnection().then((connected) => {
                 if (requestParams.callback) {
                   requestParams.callback({
@@ -821,7 +821,9 @@ export class Api {
         reference_code: referenceCode,
       },
       cache: true,
-      cacheId: String(Utils.hashString(Urls.apiValidateBooking + referenceCode)),
+      cacheId: String(
+        Utils.hashString(Urls.apiValidateBooking + referenceCode)
+      ),
       callback: callback,
     });
   }
@@ -830,14 +832,11 @@ export class Api {
    * @param id
    * @param callback
    * */
-   public static getBooking(
-    id: string,
-    callback: ApiCallback<BookingResponse>
-  ) {
+  public static getBooking(id: string, callback: ApiCallback<BookingResponse>) {
     this.performRequest({
       url: Urls.apiGetBooking,
       params: {
-        booking_id: id
+        booking_id: id,
       },
       cache: true,
       cacheId: String(Utils.hashString(Urls.apiGetBooking + id)),
