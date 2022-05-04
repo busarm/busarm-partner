@@ -6,7 +6,7 @@ export const ENVIRONMENT: ENV =
 export const CONFIGS = {
   production: true,
   app_name: "Busarm Partner",
-  app_version: "1.0.60",
+  app_version: "1.0.61",
   oauth_scopes:
     ENVIRONMENT == ENV.TEST
       ? ["openid", "user", "agent", "tester"]

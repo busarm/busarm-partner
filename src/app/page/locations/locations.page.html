@@ -1,122 +1,109 @@
 <ion-header>
-    <ion-toolbar color="primary">
-        <ion-buttons *ngIf="!selector" slot="start">
-            <ion-back-button color='secondary' defaultHref="/home/account"> </ion-back-button>
-        </ion-buttons>
-        <ion-title>{{title ? title : strings.getString("my_locations_txt")}}</ion-title>
-        <ion-buttons *ngIf="!selector" slot="end">
-            <ion-button (click)="refreshLocationsView()">
-                <ion-icon slot="icon-only" class="secondary" name="refresh">
-                </ion-icon>
-            </ion-button>
-        </ion-buttons>
-        <ion-buttons *ngIf="selector" slot="end">
-            <ion-button (click)="dismiss()">
-                <ion-icon slot="icon-only" name="close"></ion-icon>
-            </ion-button>
-        </ion-buttons>
-    </ion-toolbar>
-    <ion-searchbar
-            showCancelButton="focus"
-            placeholder="{{strings.getString('my_location_search_hint')}}"
-            (input)="onInput($event)"
-            (search)="onInput($event, true)"
-            (clear)="onClear($event)"
-            (cancel)="onClear($event)"
-            [animated]="true"
-            inputmode="search"
-            enterkeyhint="search"
-            [autocomplete]="false"
-            [autocorrect]="false"
-            [(ngModel)]="searchText">
-    </ion-searchbar>
+  <ion-toolbar color="primary">
+    <ion-buttons *ngIf="!selector" slot="start">
+      <ion-back-button color='secondary' defaultHref="/home/account"> </ion-back-button>
+    </ion-buttons>
+    <ion-title>{{title ? title : strings.getString("my_locations_txt")}}</ion-title>
+    <ion-buttons *ngIf="!selector" slot="end">
+      <ion-button (click)="refreshLocationsView()">
+        <ion-icon slot="icon-only" class="secondary" name="refresh">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="selector" slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar showCancelButton="focus" placeholder="{{strings.getString('my_location_search_hint')}}"
+    (input)="onInput($event)" (search)="onInput($event, true)" (clear)="onClear($event)" (cancel)="onClear($event)"
+    [animated]="true" inputmode="search" enterkeyhint="search" [autocomplete]="false" [autocorrect]="false"
+    [(ngModel)]="searchText">
+  </ion-searchbar>
 </ion-header>
 <ion-content class="ion-padding">
 
-    <!--Refresher -->
-    <ion-refresher
-            slot="fixed"
-            [pullMin]="80"
-            (ionRefresh)="refreshLocationsView($event)"
-            slot="fixed">
-        <ion-refresher-content
-                [pullingText]="strings.getString('pull_refresh_txt')"
-                [refreshingText]="strings.getString('refreshing_txt')"
-                [refreshingSpinner]="'circles'">
-        </ion-refresher-content>
-    </ion-refresher>
+  <!--Refresher -->
+  <ion-refresher *ngIf="!is_ios()" slot="fixed" [pullMin]="80" (ionRefresh)="refreshLocationsView($event)" slot="fixed">
+    <ion-refresher-content [pullingText]="strings.getString('pull_refresh_txt')"
+      [refreshingText]="strings.getString('refreshing_txt')" [refreshingSpinner]="'circles'">
+    </ion-refresher-content>
+  </ion-refresher>
 
-    <!--Loading view - Show if nothing hasn't been loaded yet-->
-    <app-loader *ngIf="currentLocations==null" [text]="strings.getString('loading_txt')"></app-loader>
-    <!--Not found view -->
-    <app-loader *ngIf="currentLocations!=null && currentLocations.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
+  <!--Loading view - Show if nothing hasn't been loaded yet-->
+  <app-loader *ngIf="currentLocations==null" [text]="strings.getString('loading_txt')"></app-loader>
+  <!--Not found view -->
+  <app-loader *ngIf="currentLocations!=null && currentLocations.length == 0" [failed]="true"
+    [text]="strings.getString('not_found_txt')"></app-loader>
 
-    <ion-grid *ngIf="currentLocations!=null && currentLocations.length > 0">
-        <ion-row wrap>
-            <ion-col size="12" size-md="6" *ngFor="let location of currentLocations; let i = index" [attr.index]="i">
-                <ion-card>
-                    <ion-card-header *ngIf="!selector">
-                        <ion-row>
-                            <ion-col size="6" class="cell cell-flex cell-flex-left">
-                                <ion-toggle color="success"
-                                            [checked] = "location.is_active"
-                                            (ionChange)="toggleLocation($event, location)">
-                                </ion-toggle>
-                            </ion-col>
-                            <ion-col size="6" class="cell cell-flex cell-flex-right">
-                                <ion-label *ngIf="location.is_default" class="status-ok small-text">Default</ion-label>
-                            </ion-col>
-                        </ion-row>
-                    </ion-card-header>
-                    <ion-card-content>
-                        <ion-row>
-                            <ion-col size="12" class="cell cell-center cell-flex cell-flex-left">
-                                <ion-row>
-                                    <ion-col size="12">
-                                        <ion-label class="cell-title">{{location.loc_name}}</ion-label>
-                                    </ion-col>
-                                    <ion-col size="12">
-                                        <ion-label class="cell-sub">{{location.loc_address}}</ion-label>
-                                    </ion-col>
-                                    <ion-col size="12">
-                                        <ion-label class="cell-content">{{location.city_name}}</ion-label>
-                                    </ion-col>
-                                    <ion-col size="12">
-                                        <ion-label class="cell-content">{{location.prov_name}}, {{location.country_name}} </ion-label>
-                                    </ion-col>
-                                </ion-row>
-                            </ion-col>
-                            <ion-col *ngIf="selector" size="12" class="cell cell-center cell-flex cell-flex-left">
-                                <div>
-                                    <div class="cell cell-center ">
-                                        <ion-button color="primary" (click)="dismiss(location)">
-                                            <ion-icon name="add" slot="start"></ion-icon>
-                                            {{strings.getString("select_txt")}}
-                                        </ion-button>
-                                    </div>
-                                </div>
-                            </ion-col>
-                            <ion-col size="12" *ngIf="location.is_active && !selector" class="cell cell-center cell-flex cell-flex-left ion-no-padding">
-                                <ion-button color="dark" (click)="confirmDeleteLocation(location)">
-                                    <ion-icon color="danger" name="remove-circle" slot="start"> </ion-icon>
-                                    {{strings.getString("delete_txt")}}
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="12" *ngIf="location.is_active  && !selector && !location.is_default" class="cell cell-center  cell-flex cell-flex-left ion-no-padding">
-                                <ion-button color="tertiary" (click)="confirmMakeDefault(location)">
-                                    {{strings.getString("make_default_txt")}}
-                                </ion-button>
-                            </ion-col>
-                        </ion-row>
-                    </ion-card-content>
-                </ion-card>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-    <br><br><br>
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button (click)="showAddLocation()">
-            <ion-icon name="add"> </ion-icon>
-        </ion-fab-button>
-    </ion-fab>
+  <ion-grid *ngIf="currentLocations!=null && currentLocations.length > 0">
+    <ion-row wrap>
+      <ion-col size="12" size-md="6" *ngFor="let location of currentLocations; let i = index" [attr.index]="i">
+        <ion-card>
+          <ion-card-header *ngIf="!selector">
+            <ion-row>
+              <ion-col size="6" class="cell cell-flex cell-flex-left">
+                <ion-toggle color="success" [checked]="location.is_active"
+                  (ionChange)="toggleLocation($event, location)">
+                </ion-toggle>
+              </ion-col>
+              <ion-col size="6" class="cell cell-flex cell-flex-right">
+                <ion-label *ngIf="location.is_default" class="status-ok small-text">Default</ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="12" class="cell cell-center cell-flex cell-flex-left">
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-label class="cell-title">{{location.loc_name}}</ion-label>
+                  </ion-col>
+                  <ion-col size="12">
+                    <ion-label class="cell-sub">{{location.loc_address}}</ion-label>
+                  </ion-col>
+                  <ion-col size="12">
+                    <ion-label class="cell-content">{{location.city_name}}</ion-label>
+                  </ion-col>
+                  <ion-col size="12">
+                    <ion-label class="cell-content">{{location.prov_name}}, {{location.country_name}} </ion-label>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+              <ion-col *ngIf="selector" size="12" class="cell cell-center cell-flex cell-flex-left">
+                <div>
+                  <div class="cell cell-center ">
+                    <ion-button color="primary" (click)="dismiss(location)">
+                      <ion-icon name="add" slot="start"></ion-icon>
+                      {{strings.getString("select_txt")}}
+                    </ion-button>
+                  </div>
+                </div>
+              </ion-col>
+              <ion-col size="12" *ngIf="location.is_active && !selector"
+                class="cell cell-center cell-flex cell-flex-left ion-no-padding">
+                <ion-button color="dark" (click)="confirmDeleteLocation(location)">
+                  <ion-icon color="danger" name="remove-circle" slot="start"> </ion-icon>
+                  {{strings.getString("delete_txt")}}
+                </ion-button>
+              </ion-col>
+              <ion-col size="12" *ngIf="location.is_active  && !selector && !location.is_default"
+                class="cell cell-center  cell-flex cell-flex-left ion-no-padding">
+                <ion-button color="tertiary" (click)="confirmMakeDefault(location)">
+                  {{strings.getString("make_default_txt")}}
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <br><br><br>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="showAddLocation()">
+      <ion-icon name="add"> </ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

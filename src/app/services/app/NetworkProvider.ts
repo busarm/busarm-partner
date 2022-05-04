@@ -61,7 +61,7 @@ export class NetworkProvider {
       });
       window.addEventListener("offline", () => {
         console.log("Network offline");
-        this.notify(false);
+        this.notify(false, true);
       });
     }
   }
