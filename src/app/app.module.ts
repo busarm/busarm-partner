@@ -36,7 +36,7 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 
-//Turn on production mode
+// Turn on production mode
 if (CONFIGS.production) {
   enableProdMode();
 }

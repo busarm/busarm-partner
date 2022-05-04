@@ -76,9 +76,14 @@ export class AppComponent {
   ) {
     AppComponent._instance = this;
 
-    // Subscribe to network changes
-    this.networkProvider.initializeNetworkEvents();
-    this.networkProvider.checkConnection();
+    // Subscribe to network change event
+    this.events.networkChanged.asObservable().subscribe((online) => {
+      if (online) {
+        this.alertService.hideToastMsg();
+      } else {
+        this.alertService.showNotConnectedMsg();
+      }
+    });
 
     // Subsrcibe to access & logout event
     this.events.logoutTriggered.subscribe((loggedOut) => {
@@ -133,14 +138,8 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      // Network event
-      this.events.networkChanged.asObservable().subscribe(async (online) => {
-        if (online) {
-          await this.alertService.hideToastMsg();
-        } else {
-          await this.alertService.showNotConnectedMsg();
-        }
-      });
+      // Start network change events
+      this.networkProvider.initializeNetworkEvents();
     });
   }
 

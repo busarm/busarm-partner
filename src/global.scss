@@ -134,12 +134,12 @@
 
 /*Global App Styles*/
 ion-split-pane {
-  --border: 0.8px solid #e4e4e4 !important;
-
+  // --border: 0.8px solid var(--ion-color-step-100) !important;
+  --border: none !important;
   .split-pane-side {
     &:not(.show-menu) {
       min-width: 200px !important;
-      max-width: 20% !important;
+      max-width: 300px !important;
     }
   }
 }
@@ -657,6 +657,8 @@ input {
 
 .logoNameTxt {
   margin: auto;
+  padding: 5px;
+  font-weight: 600;
   color: var(--ion-text-color);
 }
 

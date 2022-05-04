@@ -548,12 +548,14 @@ export class DashboardPage extends PageController {
             if (this.assertAvailable(result)) {
               this.showBooking(result.data);
             } else {
+              this.referenceCode = null;
               this.showToastMsg(
                 Strings.getString("error_unexpected"),
                 ToastType.ERROR
               );
             }
           } else {
+            this.referenceCode = null;
             this.showToastMsg(msg, ToastType.ERROR);
           }
         });
@@ -619,7 +621,6 @@ export class DashboardPage extends PageController {
    * @param {CustomEvent<IonSegment>} event
    */
   public transactionSegmentChanged(event: CustomEvent<IonSegment>) {
-    console.log("Segment changed", event.detail.value);
     if (event.detail.value == "on_hold") {
       this.activeTransactionSegment = event.detail.value;
       this.transactionGroup = this.dashboard?.transactions?.on_hold;

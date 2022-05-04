@@ -27,12 +27,8 @@ export class AddBusPage extends PageController {
 
   public async ngOnInit() {
     await super.ngOnInit();
-  }
 
-  public async ionViewDidEnter() {}
-
-  /**Set bus seats for selected type*/
-  public setBusType() {
+    /**Set bus seats for selected type*/
     if (this.selectedBusType) {
       this.busType = this.busTypes.find(
         (type) => Utils.safeInt(type.id) == this.selectedBusType
@@ -50,7 +46,6 @@ export class AddBusPage extends PageController {
       this.dismiss(bus);
     } else {
       //Get new bus entries
-
       if (Utils.assertAvailable(this.selectedBusType)) {
         if (Utils.assertAvailable(this.busPlateNumber)) {
           let bus: Bus | any = {};
