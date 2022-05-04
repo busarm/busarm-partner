@@ -8,6 +8,21 @@ import { PingResponse } from "../models/PingResponse";
  * */
 
 export class Utils {
+  /**
+   * Convert server side date format to reliable date format
+   * @param {String} str
+   * @returns {Date}
+   */
+  static parseServerDate(str: string): Date {
+    const [dateparts, timeparts] = str.split(" ");
+    const [year, month, day] = dateparts.split("-");
+    const [hours = 0, minutes = 0, seconds = 0] = timeparts?.split(":") ?? [];
+    // Treats the string as UTC, but you can remove the `Date.UTC` part and use
+    // `new Date` directly to treat the string as local time
+    return new Date(
+      Date.UTC(+year, +month - 1, +day, +hours, +minutes, +seconds)
+    );
+  }
 
   /**
    * Number formatter
@@ -15,14 +30,12 @@ export class Utils {
    * @param {number} declimals
    * @returns {string}
    */
-   static nFormatter(num: number, declimals: number = 1): string {
+  static nFormatter(num: number, declimals: number = 1): string {
     if (num >= 1000000000) {
       return (num / 1000000000).toFixed(declimals).replace(/\.0$/, "") + "B";
-    }
-    else if (num >= 1000000) {
+    } else if (num >= 1000000) {
       return (num / 1000000).toFixed(declimals).replace(/\.0$/, "") + "M";
-    }
-    else if (num >= 1000) {
+    } else if (num >= 1000) {
       return (num / 1000).toFixed(declimals).replace(/\.0$/, "") + "K";
     }
     return String(num);
@@ -79,14 +92,14 @@ export class Utils {
     return String(
       CryptoJS.MD5(
         Utils.harold(date.getDay()) +
-        "-" +
-        Utils.harold(date.getMonth()) +
-        "-" +
-        Utils.harold(date.getFullYear()) +
-        "|" +
-        ip +
-        "|" +
-        location.host
+          "-" +
+          Utils.harold(date.getMonth()) +
+          "-" +
+          Utils.harold(date.getFullYear()) +
+          "|" +
+          ip +
+          "|" +
+          location.host
       )
     );
   }
@@ -105,7 +118,7 @@ export class Utils {
 
   /**Load Google Api*/
   static async loadGoogleApi(key: string) {
-    await Utils.loadScript(Urls.googleApiUrl.replace("<key>", key),);
+    await Utils.loadScript(Urls.googleApiUrl.replace("<key>", key));
   }
 
   /**Get hash of string
@@ -258,7 +271,7 @@ export class Utils {
     let result = null;
     try {
       result = JSON.parse(json);
-    } catch (e) { }
+    } catch (e) {}
     return result;
   }
 
@@ -315,8 +328,8 @@ export class Utils {
             } else {
               encoded.push(
                 encodeURIComponent(parent + "[" + subKey + "]") +
-                "=" +
-                encodeURIComponent(data[key][subKey])
+                  "=" +
+                  encodeURIComponent(data[key][subKey])
               );
             }
           }

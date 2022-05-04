@@ -5,10 +5,10 @@ Cordova version: 8.1.1
 Config.xml file:
 
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.wecari.partners" version="1.0.60" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Wecari Partners</name>
-    <description>Wecari Partners App</description>
-    <author email="support@wecari.com" href="http://wecari.com/">Wecari Team</author>
+<widget id="com.wecari.partners" version="1.0.61" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Busarm Partners</name>
+    <description>Busarm Partners App</description>
+    <author email="support@busarm.com" href="http://busarm.com/">Busarm Team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />

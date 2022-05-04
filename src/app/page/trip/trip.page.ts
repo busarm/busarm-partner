@@ -14,7 +14,7 @@ import { AddTripPage } from "./add-trip/add-trip.page";
 import {
   DatePickerType,
   SelectDatePage,
-} from "../select-date/select-date.page";
+} from "../../components/select-date/select-date.page";
 
 type GroupedTrips = { date: string; list: Trip[] };
 @Component({
@@ -45,6 +45,8 @@ export class TripPage extends PageController {
   statusList: Status[] = null;
   busTypes: BusType[] = null;
   ticketTypes: TicketType[] = null;
+
+  showSelectDateModal = false;
 
   constructor(
     public alertCtrl: AlertController,
@@ -164,9 +166,7 @@ export class TripPage extends PageController {
   public groupTrips(trips: Trip[]): GroupedTrips[] {
     let list: GroupedTrips[] = [];
     for (let trip of trips) {
-      let date = new Date(
-        Date.parse(trip.trip_date || trip.date)
-      ).toDateString();
+      let date = Utils.parseServerDate(trip.trip_date).toDateString();
       let match = list.find((t) => t.date === date);
       if (match) {
         let matchIndex = list.findIndex((t) => t.date === match.date);
@@ -220,6 +220,7 @@ export class TripPage extends PageController {
 
   /**Launch select date model*/
   async showSelectDate() {
+    // this.showSelectDateModal = true;
     let chooseModal = await this.modalCtrl.create({
       component: SelectDatePage,
       cssClass: "date-modal",

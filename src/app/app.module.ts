@@ -1,4 +1,4 @@
-import { enableProdMode, ErrorHandler, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, enableProdMode, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -101,7 +101,8 @@ export function errorHandlerFactory() {
     Deeplinks,
     { provide: ErrorHandler, useFactory: errorHandlerFactory }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas:  [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {
   constructor(library: FaIconLibrary) {

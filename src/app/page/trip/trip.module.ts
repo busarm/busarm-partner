@@ -10,7 +10,6 @@ import { AddTripPage } from "./add-trip/add-trip.page";
 import { ViewTripPageModule } from "./view-trip/view-trip.module";
 import { AddTripPageModule } from "./add-trip/add-trip.module";
 import { LoaderModule } from '../../components/loader/loader.module';
-
 @NgModule({
   imports: [
     LoaderModule,
@@ -18,7 +17,7 @@ import { LoaderModule } from '../../components/loader/loader.module';
     FormsModule,
     IonicModule,
     ViewTripPageModule,
-    AddTripPageModule
+    AddTripPageModule,
   ],
   declarations: [TripPage],
   entryComponents: [

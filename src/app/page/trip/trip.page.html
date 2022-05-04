@@ -25,7 +25,7 @@
 
 <ion-content class="ion-padding">
   <!--Refresher -->
-  <ion-refresher slot="fixed" [pullMin]="80" (ionRefresh)="refreshTripsView($event)" slot="fixed">
+  <ion-refresher *ngIf="!is_ios()" slot="fixed" [pullMin]="80" (ionRefresh)="refreshTripsView($event)" slot="fixed">
     <ion-refresher-content [pullingText]="strings.getString('pull_refresh_txt')"
       [refreshingText]="strings.getString('refreshing_txt')" [refreshingSpinner]="'circles'">
     </ion-refresher-content>
@@ -35,11 +35,12 @@
   <app-loader *ngIf="currentTrips == null" [text]="strings.getString('loading_txt')"></app-loader>
   <!--Not found view -->
   <app-loader *ngIf="currentTrips!=null && currentTrips.length == 0" [failed]="true"
-    [text]="strings.getString('not_found_txt')" [details]="busTypes == null || busTypes.length == 0  ? strings.getString('add_bus_prompt_txt') : null"></app-loader>
+    [text]="strings.getString('not_found_txt')"
+    [details]="busTypes == null || busTypes.length == 0  ? strings.getString('add_bus_prompt_txt') : null"></app-loader>
 
   <!--Trip list-->
   <div id="dashCards" *ngIf="currentTrips!=null && currentTrips.length > 0">
-    <ion-accordion-group value="trip_groups" expand="compact" class="ion-no-margin class">
+    <ion-accordion-group value="trip-groups" class="ion-no-margin">
       <ion-accordion *ngFor="let item of currentTrips">
         <ion-item slot="header" class="background-disabled">
           <ion-label class="cell cell-padding-2x">
@@ -125,8 +126,9 @@
     </ion-accordion-group>
   </div>
   <br /><br /><br />
-  <ion-fab *ngIf="(statusList!=null && statusList.length > 0) && (busTypes!=null && busTypes.length > 0) && (ticketTypes!=null && ticketTypes.length > 0)" vertical="bottom" horizontal="end"
-    slot="fixed">
+  <ion-fab
+    *ngIf="(statusList!=null && statusList.length > 0) && (busTypes!=null && busTypes.length > 0) && (ticketTypes!=null && ticketTypes.length > 0)"
+    vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="showAddTrip()">
       <ion-icon name="add"> </ion-icon>
     </ion-fab-button>

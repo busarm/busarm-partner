@@ -296,4 +296,24 @@ export class PageController implements OnInit, OnDestroy {
       });
     }
   }
+
+  public is_cordova() {
+    return this.instance.platform.is("cordova");
+  }
+  public is_ios() {
+    return (
+      this.instance.platform.is("ios") ||
+      this.instance.platform.is("ipad") ||
+      this.instance.platform.is("iphone")
+    );
+  }
+  public is_android() {
+    return (
+      this.instance.platform.is("android") ||
+      this.instance.platform.is("phablet")
+    );
+  }
+  public is_mobile() {
+    return this.instance.platform.is("mobile");
+  }
 }

@@ -103,7 +103,9 @@ export class LoginPage extends PageController {
             CONFIGS.oauth_scopes,
             Urls.partnerOauthRedirectUrl,
             this.username,
-            Utils.getCurrentSignature(await this.instance.sessionService.getPing())
+            Utils.getCurrentSignature(
+              await this.instance.sessionService.getPing()
+            )
           );
         },
       }

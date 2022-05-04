@@ -1,28 +1,30 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit, Output } from "@angular/core";
 import { ModalController, NavParams } from "@ionic/angular";
 import { Utils } from "../../helpers/Utils";
-import { PageController } from "../page-controller";
-import { format, parseISO } from 'date-fns';
+import { format } from "date-fns";
+import { Assets, Strings } from "../../resources";
 
 @Component({
   selector: "app-select-date",
   templateUrl: "./select-date.page.html",
   styleUrls: ["./select-date.page.scss"],
 })
-export class SelectDatePage extends PageController {
-
+export class SelectDatePage implements OnInit {
   DEFAULT_FORMAT = "yyyy-MM-dd'T'hh:mm:ss.SSSx";
 
-  @Input() date: Date = null;
-  @Input() minDate: Date = null;
-  @Input() maxDate: Date = null;
-  @Input() type: DatePickerType = DatePickerType.Date;
+  // Define resources for views to use
+  public strings = Strings;
+  public assets = Assets;
+
+  @Input() date?: Date = null;
+  @Input() minDate?: Date = null;
+  @Input() maxDate?: Date = null;
+  @Input() type?: DatePickerType = DatePickerType.Date;
+  @Output() onComplete?: (date: Date|false|null) => any = null;
 
   public selectedDate = null;
 
-  constructor(private modalCtrl: ModalController, public navParams: NavParams) {
-    super();
-  }
+  constructor(private modalCtrl: ModalController) {}
 
   public async ngOnInit() {
     this.selectedDate = format(this.date || new Date(), this.DEFAULT_FORMAT);
@@ -50,7 +52,12 @@ export class SelectDatePage extends PageController {
 
   /**Close Modal*/
   dismiss(success = false) {
-    this.modalCtrl.dismiss(success && new Date(this.selectedDate).getTime() > 0 ? this.selectedDate : null);
+    let date =
+      new Date(this.selectedDate).getTime() > 0 ? this.selectedDate : null;
+    this.modalCtrl.dismiss(success && date);
+    if (this.onComplete) {
+      this.onComplete(success && date);
+    }
   }
 }
 
@@ -61,5 +68,5 @@ export enum DatePickerType {
   MonthYear = "month-year",
   Time = "time",
   TimeDate = "time-date",
-  Year = "year"
+  Year = "year",
 }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { HomePage } from './home.page';
 import { DashboardPage } from '../dashboard/dashboard.page';
@@ -15,8 +16,7 @@ import { TripPageModule } from '../trip/trip.module';
 import { BusPageModule } from '../bus/bus.module';
 import { AccountPageModule } from '../account/account.module';
 import { LoaderModule } from '../../components/loader/loader.module';
-
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SelectDatePageModule } from '../../components/select-date/select-date.module';
 
 const routes: Routes = [
   {
@@ -60,6 +60,7 @@ const routes: Routes = [
     TripPageModule,
     BusPageModule,
     AccountPageModule,
+    SelectDatePageModule,
     RouterModule.forChild(routes)
   ],
   declarations: [HomePage]

@@ -41,7 +41,7 @@
 </ion-header>
 <ion-content class="ion-padding">
   <!--Refresher -->
-  <ion-refresher slot="fixed" [pullMin]="80" (ionRefresh)="refreshDashboardView($event)" slot="fixed">
+  <ion-refresher *ngIf="!is_ios()" slot="fixed" [pullMin]="80" (ionRefresh)="refreshDashboardView($event)" slot="fixed">
     <ion-refresher-content [pullingText]="strings.getString('pull_refresh_txt')"
       [refreshingText]="strings.getString('refreshing_txt')" [refreshingSpinner]="'circles'">
     </ion-refresher-content>

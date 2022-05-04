@@ -12,7 +12,7 @@ export class LoaderComponent implements OnInit {
   @Input() failed: Boolean = false;
   @Input() icon: [String, String] = null;
 
-  //Define resources for views to use
+  // Define resources for views to use
   public strings = Strings;
   public assets = Assets;
 
