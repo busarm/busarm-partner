@@ -46,8 +46,6 @@ export class TripPage extends PageController {
   busTypes: BusType[] = null;
   ticketTypes: TicketType[] = null;
 
-  showSelectDateModal = false;
-
   constructor(
     public alertCtrl: AlertController,
     public modalCtrl: ModalController,
@@ -220,7 +218,6 @@ export class TripPage extends PageController {
 
   /**Launch select date model*/
   async showSelectDate() {
-    // this.showSelectDateModal = true;
     let chooseModal = await this.modalCtrl.create({
       component: SelectDatePage,
       cssClass: "date-modal",
@@ -230,6 +227,8 @@ export class TripPage extends PageController {
         maxDate: this.maxDate,
         type: DatePickerType.MonthYear,
       },
+      enterAnimation: (el: Element) => this.animation.modalZoomInEnterAnimation(el),
+      leaveAnimation: (el: Element) => this.animation.modalZoomOutLeaveAnimation(el),
     });
     chooseModal.onDidDismiss().then((data) => {
       if (data.data && data.data !== NaN && data.data !== null) {

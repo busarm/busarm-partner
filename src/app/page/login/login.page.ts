@@ -47,17 +47,21 @@ export class LoginPage extends PageController {
     }
   }
 
+  private isProccessing = false
   /**
    * Process Login
    */
   public processLogin() {
+    if(this.isProccessing) return;
     // Show Loader
     this.showLoading().then(() => {
+      this.isProccessing = true;
       this.instance.authService
         .login(this.username, this.password)
         .then(async (success) => {
           // Hide Loader
           await this.hideLoading();
+          this.isProccessing = false;
           if (success) {
             if (this.redirectUri) {
               // Set Redirect uri as root
@@ -82,6 +86,7 @@ export class LoginPage extends PageController {
               : Strings.getString("error_unexpected"),
             ToastType.ERROR
           );
+          this.isProccessing = false;
         });
     });
   }
