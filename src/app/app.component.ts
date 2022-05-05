@@ -29,6 +29,7 @@ import { ENV } from "../environments/ENV";
 import { AuthService } from "./services/app/AuthService";
 import { RouteService } from "./services/app/RouteService";
 import { AlertService } from "./services/app/AlertService";
+import { AnimationService } from "./services/app/AnimationService";
 @Component({
   selector: "app-root",
   templateUrl: "app.component.html",
@@ -72,7 +73,8 @@ export class AppComponent {
     public authService: AuthService,
     public routeService: RouteService,
     public alertService: AlertService,
-    public sessionService: SessionService
+    public sessionService: SessionService,
+    public animationService: AnimationService
   ) {
     AppComponent._instance = this;
 

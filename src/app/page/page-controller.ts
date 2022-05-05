@@ -1,16 +1,14 @@
-import { Component, OnChanges, OnDestroy, OnInit } from "@angular/core";
-import { Params } from "@angular/router";
-import { MD5 } from "crypto-js";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AppComponent } from "../app.component";
 import { ToastType, Utils } from "../helpers/Utils";
 import { Assets, Strings } from "../resources";
-import { SessionService } from "../services/app/SessionService";
 import { User } from "../models/User/User";
 import { Session } from "../models/Session";
 import { CONFIGS } from "../../environments/environment";
 import { Events } from "../services/app/Events";
 import { Subscription } from "rxjs";
 import { Api } from "../helpers/Api";
+import { AnimationService } from "../services/app/AnimationService";
 
 @Component({
   template: "",
@@ -20,6 +18,7 @@ export class PageController implements OnInit, OnDestroy {
   public strings = Strings;
   public assets = Assets;
 
+  protected animation: AnimationService;
   protected events: Events;
   protected subscriptions: Subscription = new Subscription();
 
@@ -38,6 +37,7 @@ export class PageController implements OnInit, OnDestroy {
     this.loadUser();
     // Load common event handler
     this.events = this.instance.events;
+    this.animation = this.instance.animationService;
   }
 
   /* lifecycle events */

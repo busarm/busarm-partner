@@ -111,6 +111,8 @@ export class AddTripPage extends PageController {
         maxDate: this.maxDate,
         type: DatePickerType.DateTime,
       },
+      enterAnimation: (el: Element) => this.animation.modalZoomInEnterAnimation(el),
+      leaveAnimation: (el: Element) => this.animation.modalZoomOutLeaveAnimation(el),
     });
     chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
