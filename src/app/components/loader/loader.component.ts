@@ -1,23 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Assets, Strings } from '../../resources';
+import { Component, Input, OnInit } from "@angular/core";
+import { Assets, Strings } from "../../resources";
 @Component({
-  selector: 'app-loader',
-  templateUrl: './loader.component.html',
-  styleUrls: ['./loader.component.scss'],
+  selector: "app-loader",
+  templateUrl: "./loader.component.html",
+  styleUrls: ["./loader.component.scss"],
 })
 export class LoaderComponent implements OnInit {
-
   @Input() text: String = null;
-  @Input() details: String = null;
-  @Input() failed: Boolean = false;
-  @Input() icon: [String, String] = null;
+  @Input() details?: String = null;
+  @Input() error?: String = null;
+  @Input() failed?: Boolean = false;
+  @Input() icon?: [String, String] = null;
 
   // Define resources for views to use
   public strings = Strings;
   public assets = Assets;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {}
-
 }

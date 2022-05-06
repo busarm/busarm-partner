@@ -199,7 +199,7 @@
   "payment_not_made_txt": "I've not paid",
   "payment_type": "Payment Type",
   "permission_required_txt": "Permission Required",
-  "no_camera_permission_msg": "Failed to get camera. Please ensure this app has permission to access camera",
+  "no_camera_permission_msg": "Failed to load camera. Please ensure this app has permission to access camera",
   "no_camera_msg": "Failed to get camera",
   "select_bank_txt": "Select Bank",
   "payment_method_txt": "Payment Method",
@@ -218,5 +218,6 @@
   "on_hold_txt": "On Hold",
   "on_hold_info_msg": "Payment will not be released until the respective services such as trips, has been completed",
   "released_txt": "Released",
-  "released_info_msg": "Payment is released and can be cashed out"
+  "released_info_msg": "Payment is released and can be cashed out",
+  "loading_camera_txt": "Loading Camera..."
 }
