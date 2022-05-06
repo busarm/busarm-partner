@@ -66,6 +66,10 @@
       <ion-label>{{strings.getString('trips_title_txt')}}</ion-label>
     </ion-tab-button>
 
+    <ion-fab-button (click)="showScanCode()">
+      <ion-icon name="qr-code"></ion-icon>
+    </ion-fab-button>
+
     <ion-tab-button tab="bus">
       <ion-icon name="bus"> </ion-icon>
       <ion-label>{{strings.getString('buses_title_txt')}}</ion-label>

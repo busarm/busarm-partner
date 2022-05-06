@@ -2,7 +2,7 @@ import { Component, Input } from "@angular/core";
 import { PageController } from "../../page-controller";
 import { ModalController } from "@ionic/angular";
 import { Bus } from "../../../models/Bus/Bus";
-import { ToastType } from "../../../helpers/Utils";
+import { ToastType } from "../../../services/app/AlertService";
 import { Api } from "../../../helpers/Api";
 
 @Component({

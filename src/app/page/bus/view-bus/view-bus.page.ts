@@ -14,7 +14,7 @@ import { PageController } from "../../page-controller";
 import { BusImage } from "../../../models/Bus/BusImage";
 import { BusSharedPartner } from "../../../models/Bus/BusSharedPartner";
 import { Bus } from "../../../models/Bus/Bus";
-import { ToastType } from "../../../helpers/Utils";
+import { ToastType } from "../../../services/app/AlertService";
 import { Api } from "../../../helpers/Api";
 import { Strings } from "../../../resources";
 import { DestinationType } from "@ionic-native/camera";

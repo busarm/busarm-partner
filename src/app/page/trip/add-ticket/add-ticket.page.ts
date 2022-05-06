@@ -4,7 +4,8 @@ import { ModalController } from "@ionic/angular";
 import { TicketType } from "../../../models/Ticket/TicketType";
 import { Ticket } from "../../../models/Ticket/Ticket";
 import { Country } from "../../../models/Country";
-import { ToastType, Utils } from "../../../helpers/Utils";
+import { Utils } from "../../../helpers/Utils";
+import { ToastType } from "../../../services/app/AlertService";
 
 @Component({
   selector: 'app-add-ticket',

@@ -4,11 +4,10 @@ import {
   RouterStateSnapshot,
 } from "@angular/router";
 import { Injectable } from "@angular/core";
-import { ToastType } from "../../helpers/Utils";
 import { Strings } from "../../resources";
 import { AuthService } from "../app/AuthService";
 import { RouteService } from "../app/RouteService";
-import { AlertService } from "../app/AlertService";
+import { AlertService, ToastType } from "../app/AlertService";
 import { Events } from "../app/Events";
 
 @Injectable()

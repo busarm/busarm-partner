@@ -3,7 +3,7 @@ import { PageController } from "../page-controller";
 import { ModalController } from "@ionic/angular";
 import { Booking } from "../../models/Booking/Booking";
 import { BookingTrip } from "../../models/Booking/BookingTrip";
-import { ToastType } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { ViewBookingPage } from "./view-booking/view-booking.page";

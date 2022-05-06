@@ -3,7 +3,8 @@ import { PageController } from "../../page-controller";
 import { ModalController } from "@ionic/angular";
 import { BusType } from "../../../models/Bus/BusType";
 import { Bus } from "../../../models/Bus/Bus";
-import { ToastType, Utils } from "../../../helpers/Utils";
+import { Utils } from "../../../helpers/Utils";
+import { ToastType } from "../../../services/app/AlertService";
 import { Api } from "../../../helpers/Api";
 
 @Component({

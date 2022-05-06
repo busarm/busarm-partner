@@ -5,7 +5,8 @@ import { LocationRequest } from "../../../models/Location/LocationRequest";
 import { Country } from "../../../models/Country";
 import { PageController } from "../../page-controller";
 import { SearchPlacePage } from "../../search-place/search-place.page";
-import { ToastType, Utils } from "../../../helpers/Utils";
+import { Utils } from "../../../helpers/Utils";
+import { ToastType } from "../../../services/app/AlertService";
 import { Api } from "../../../helpers/Api";
 import { Strings } from "../../../resources";
 

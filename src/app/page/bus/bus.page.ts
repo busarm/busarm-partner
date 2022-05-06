@@ -3,7 +3,7 @@ import { AlertController, ModalController } from "@ionic/angular";
 import { Network } from "@ionic-native/network/ngx";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
-import { ToastType } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { BusType } from "../../models/Bus/BusType";
 import { Bus } from "../../models/Bus/Bus";
 import { PageController } from "../page-controller";
