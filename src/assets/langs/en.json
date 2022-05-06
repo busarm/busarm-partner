@@ -200,7 +200,7 @@
   "payment_type": "Payment Type",
   "permission_required_txt": "Permission Required",
   "no_camera_permission_msg": "Failed to load camera. Please ensure this app has permission to access camera",
-  "no_camera_msg": "Failed to get camera",
+  "no_camera_msg": "Failed to load camera",
   "select_bank_txt": "Select Bank",
   "payment_method_txt": "Payment Method",
   "select_payment_method_txt": "Select Payment Method",

@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { PageController } from "../../../../page/page-controller";
-import { ToastType, Utils } from "../../../../helpers/Utils";
+import { Utils } from "../../../../helpers/Utils";
+import { ToastType } from "../../../../services/app/AlertService";
 import { Urls } from "../../../../helpers/Urls";
 import { Strings } from "../../.../../../../resources";
 import { SessionService } from "../../../../services/app/SessionService";

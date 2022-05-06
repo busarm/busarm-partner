@@ -442,10 +442,4 @@ export class Utils {
   }
 }
 
-/**Define Type of toast message*/
-export enum ToastType {
-  WARNING = "toast-warning",
-  ERROR = "toast-error",
-  SUCCESS = "toast-success",
-  NORMAL = "toast-normal",
-}
+

@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { PayInTransaction } from "../../models/Transaction/PayInTransaction";
-import { ToastType } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { Api } from "../../helpers/Api";
 import { PageController } from "../page-controller";
 import { Urls } from "../../helpers/Urls";

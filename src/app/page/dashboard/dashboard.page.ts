@@ -6,18 +6,16 @@ import { PayOutTransaction } from "../../models/Transaction/PayOutTransaction";
 import { PayInTransaction } from "../../models/Transaction/PayInTransaction";
 import { Dashboard, TransactionGroup } from "../../models/Dashboard";
 import { Trip } from "../../models/Trip/Trip";
-import { BookingTrip } from "../../models/Booking/BookingTrip";
-import { ToastType, Utils } from "../../helpers/Utils";
+import { Utils } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { ViewTripPage } from "../trip/view-trip/view-trip.page";
-import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import Chart, { ChartDataset } from "chart.js/auto";
-import { ViewBookingPage } from "../bookings/view-booking/view-booking.page";
 import { MD5 } from "crypto-js";
 import { ENVIRONMENT } from "../../../environments/environment";
 import { ENV } from "../../../environments/ENV";
-import { WebScannerPage } from "./web-scanner/web-scanner.page";
+import { ScannerService } from "../../services/app/ScannerService";
 
 @Component({
   selector: "app-dashboard",
@@ -28,7 +26,6 @@ export class DashboardPage extends PageController {
   @ViewChild("bookingCanvas") bookingCanvas: ElementRef<HTMLCanvasElement>;
   activeTransactionSegment: "on_hold" | "released" = "on_hold";
 
-  referenceCode: string = null;
   selectedBookingMonth: number = 0;
   dashboard: Dashboard = null;
   bookingMonths: BookingMonth[] = null;
@@ -44,7 +41,7 @@ export class DashboardPage extends PageController {
 
   constructor(
     public modalCtrl: ModalController,
-    private barcodeScanner: BarcodeScanner,
+    private scannerService: ScannerService,
     public platform: Platform
   ) {
     super();
@@ -108,25 +105,6 @@ export class DashboardPage extends PageController {
         }
       })
     );
-
-    /*Check if web scanning available */
-    if (!this.platform.is("cordova")) {
-      this.checkMediaDevice((available) => {
-        if (available) {
-          /*Web scanner event*/
-          this.subscriptions.add(
-            this.events.webScannerCompleted
-              .asObservable()
-              .subscribe(async (code) => {
-                if (this.referenceCode !== code) {
-                  this.referenceCode = code;
-                  this.findBooking();
-                }
-              })
-          );
-        }
-      });
-    }
   }
 
   public ngOnDestroy() {
@@ -157,28 +135,6 @@ export class DashboardPage extends PageController {
     /*Reload dashboard*/
     if (this.dashboard) {
       this.initDashboard();
-    }
-  }
-
-  /**Check if Media Device is available */
-  private checkMediaDevice(callback: (available: boolean) => any) {
-    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-      let checking = ["videoinput"];
-      navigator.mediaDevices
-        .enumerateDevices()
-        .then((devices) => {
-          this.webScanAvailable = devices.some((device) =>
-            checking.includes(device.kind)
-          );
-          callback(this.webScanAvailable);
-        })
-        .catch(() => {
-          this.webScanAvailable = false;
-          callback(this.webScanAvailable);
-        });
-    } else {
-      this.webScanAvailable = true;
-      callback(this.webScanAvailable);
     }
   }
 
@@ -426,44 +382,7 @@ export class DashboardPage extends PageController {
   /**Launch scan Qr Code page
    */
   async showScanCode() {
-    this.barcodeScanner
-      .scan({
-        resultDisplayDuration: 0,
-        disableSuccessBeep: false,
-        showTorchButton: true,
-      })
-      .then((barcodeData) => {
-        if (Utils.assertAvailable(barcodeData.text)) {
-          if (this.referenceCode !== barcodeData.text) {
-            this.referenceCode = barcodeData.text;
-            this.findBooking();
-          }
-        }
-      })
-      .catch((e) => {
-        this.showToastMsg(e, ToastType.ERROR);
-      });
-  }
-
-  /**Launch scan Qr Code for Web
-   */
-  async showWebScanCode() {
-    // return this.navigate("web-scanner");
-    let chooseModal = await this.modalCtrl.create({
-      component: WebScannerPage,
-      componentProps: {
-        isModal: true,
-      },
-    });
-    chooseModal.onDidDismiss().then((data) => {
-      if (data.data) {
-        if (this.referenceCode !== data.data) {
-          this.referenceCode = data.data;
-          this.findBooking();
-        }
-      }
-    });
-    return await chooseModal.present();
+    this.scannerService.showScanCode();
   }
 
   /**Refresh View
@@ -472,7 +391,6 @@ export class DashboardPage extends PageController {
   public refreshDashboardView(event?: any) {
     this.loadDashboardView(true, () => {
       if (event) {
-        this.referenceCode = null;
         event.target.complete();
       }
     });
@@ -497,57 +415,6 @@ export class DashboardPage extends PageController {
         default:
           return "status-error";
       }
-    }
-  }
-
-  /**Launch Booking details
-   * @param {BookingTrip} booking
-   * @return {Promise<any>}
-   */
-  async showBooking(booking: BookingTrip): Promise<any> {
-    if (this.isBookingShowing) return;
-    let chooseModal = await this.modalCtrl.create({
-      component: ViewBookingPage,
-      componentProps: {
-        booking: booking,
-      },
-    });
-    chooseModal.onDidDismiss().then(() => {
-      this.referenceCode = null;
-      this.isBookingShowing = false;
-      return this.loadDashboardView();
-    });
-    return await chooseModal.present().then(() => {
-      this.isBookingShowing = true;
-    });
-  }
-
-  /**
-   * Search booking for reference number
-   */
-  private findBooking() {
-    if (this.referenceCode && !this.isFindBookingProcessing) {
-      this.isFindBookingProcessing = true;
-      this.showLoading().then(() => {
-        Api.validateBooking(this.referenceCode, ({ status, result, msg }) => {
-          this.hideLoading();
-          this.isFindBookingProcessing = false;
-          if (status) {
-            if (this.assertAvailable(result)) {
-              this.showBooking(result.data);
-            } else {
-              this.referenceCode = null;
-              this.showToastMsg(
-                Strings.getString("error_unexpected"),
-                ToastType.ERROR
-              );
-            }
-          } else {
-            this.referenceCode = null;
-            this.showToastMsg(msg, ToastType.ERROR);
-          }
-        });
-      });
     }
   }
 

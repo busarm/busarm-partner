@@ -3,7 +3,7 @@ import { IonToggle, ModalController } from "@ionic/angular";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { PageController } from "../page-controller";
 import { User } from "../../models/User/User";
-import { ToastType } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { AddAgentPage } from "./add-agent/add-agent.page";

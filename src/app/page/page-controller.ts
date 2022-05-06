@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AppComponent } from "../app.component";
-import { ToastType, Utils } from "../helpers/Utils";
+import { Utils } from "../helpers/Utils";
+import { ToastType } from "../services/app/AlertService";
 import { Assets, Strings } from "../resources";
 import { User } from "../models/User/User";
 import { Session } from "../models/Session";

@@ -1,9 +1,9 @@
-import { Component, Input, ViewChild } from "@angular/core";
-import { IonSearchbar, ModalController, NavController } from "@ionic/angular";
+import { Component, ViewChild } from "@angular/core";
+import { ModalController } from "@ionic/angular";
 import { ZXingScannerComponent } from "@zxing/ngx-scanner";
 import { BarcodeFormat } from "@zxing/library";
 import { PageController } from "../../page-controller";
-import { ToastType } from "../../../helpers/Utils";
+import { ToastType } from "../../../services/app/AlertService";
 
 @Component({
   selector: "app-web-scanner",
@@ -27,10 +27,7 @@ export class WebScannerPage extends PageController {
 
   lastScanned: { timestamp: number; code: string } = null;
 
-  constructor(
-    public navCtrl: NavController,
-    private modalCtrl: ModalController
-  ) {
+  constructor(private modalCtrl: ModalController) {
     super();
     this.allowedFormats = [
       BarcodeFormat.QR_CODE,
@@ -72,8 +69,7 @@ export class WebScannerPage extends PageController {
       this.scanner.scanSuccess.subscribe((code: any) => {
         if (this.canScanAgain(code)) {
           this.lastScanned = { timestamp: Date.now(), code: code };
-          this.events.webScannerCompleted.next(code);
-          this.dismiss();
+          this.dismiss(code);
         }
       })
     );
@@ -96,8 +92,7 @@ export class WebScannerPage extends PageController {
           timestamp: Date.now(),
           code: String(event.target.value).toUpperCase().trim(),
         };
-        this.events.webScannerCompleted.next(event.target.value);
-        this.dismiss();
+        this.dismiss(event.target.value);
       }
     }
   }
@@ -214,9 +209,8 @@ export class WebScannerPage extends PageController {
   }
 
   /**Close Modal*/
-  async dismiss() {
+  async dismiss(code?: string) {
     const modal = await this.modalCtrl.getTop();
-    if (modal) modal.dismiss();
-    else this.navCtrl.pop();
+    if (modal) modal.dismiss(code);
   }
 }
