@@ -3,7 +3,6 @@ import { Routes, RouterModule, PreloadAllModules } from "@angular/router";
 import { AuthGuard } from "./services/guards/AuthGuard";
 
 const rootRouts: Routes = [
-  { path: "", redirectTo: "login", pathMatch: "full" },
   {
     path: "hooks/oauth/authorize",
     loadChildren: () =>
@@ -65,14 +64,7 @@ const rootRouts: Routes = [
       ),
     canActivate: [AuthGuard],
   },
-  {
-    path: "web-scanner",
-    loadChildren: () =>
-      import("./page/dashboard/web-scanner/web-scanner.module").then(
-        (module) => module.WebScannerPageModule
-      ),
-    canActivate: [AuthGuard],
-  },
+  { path: "**", redirectTo: "login" },
 ];
 
 @NgModule({

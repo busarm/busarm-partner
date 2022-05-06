@@ -182,22 +182,26 @@ export class AuthService {
    * @returns {Promise<AuthSessionParams>}
    */
   public async getAuthSessionParams(): Promise<AuthSessionParams> {
-    const appVersion = await this.appVersion
-      .getVersionNumber()
-      .then((value) => {
-        return value;
-      })
-      .catch(() => {
-        return CONFIGS.app_version;
-      });
-    const appName = await this.appVersion
-      .getAppName()
-      .then((value) => {
-        return value;
-      })
-      .catch(() => {
-        return CONFIGS.app_name;
-      });
+    const appVersion = this.platform.is("cordova")
+      ? await this.appVersion
+          .getVersionNumber()
+          .then((value) => {
+            return value;
+          })
+          .catch(() => {
+            return CONFIGS.app_version;
+          })
+      : CONFIGS.app_version;
+    const appName = this.platform.is("cordova")
+      ? await this.appVersion
+          .getAppName()
+          .then((value) => {
+            return value;
+          })
+          .catch(() => {
+            return CONFIGS.app_name;
+          })
+      : CONFIGS.app_version;
 
     const platform = this.platform.is("android")
       ? "Android"
@@ -216,16 +220,19 @@ export class AuthService {
       : "Unknown";
 
     const os =
+      this.platform.is("cordova") &&
       Utils.assertAvailable(this.device.platform) &&
       Utils.assertAvailable(this.device.version)
         ? this.device.platform + " " + this.device.version
         : platform;
 
     const deviceModel =
+      this.platform.is("cordova") &&
       Utils.assertAvailable(this.device.manufacturer) &&
       Utils.assertAvailable(this.device.model)
         ? this.device.manufacturer + " " + this.device.model
-        : Utils.assertAvailable(this.device.manufacturer)
+        : this.platform.is("cordova") &&
+          Utils.assertAvailable(this.device.manufacturer)
         ? this.device.manufacturer
         : null;
 

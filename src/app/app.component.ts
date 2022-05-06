@@ -23,13 +23,14 @@ import { NetworkProvider } from "./services/app/NetworkProvider";
 import { SessionService } from "./services/app/SessionService";
 import { Urls } from "./helpers/Urls";
 import { Strings } from "./resources";
-import { ENVIRONMENT } from "../environments/environment";
+import { ENVIRONMENT, CONFIGS } from "../environments/environment";
 import { Events } from "./services/app/Events";
 import { ENV } from "../environments/ENV";
 import { AuthService } from "./services/app/AuthService";
 import { RouteService } from "./services/app/RouteService";
 import { AlertService } from "./services/app/AlertService";
 import { AnimationService } from "./services/app/AnimationService";
+import Bugsnag from "@bugsnag/browser";
 @Component({
   selector: "app-root",
   templateUrl: "app.component.html",
@@ -93,38 +94,56 @@ export class AppComponent {
         this.hideLoadingScreen();
       }
     });
-    this.events.accessGranted.subscribe((granted) => {
-      if (granted && !this.loaded) {
-        this.hideLoadingScreen();
+    this.events.accessGranted.subscribe(async (granted) => {
+      if (granted) {
+        let user = await this.sessionService.getUserInfo();
+        if (user && CONFIGS.bugsnag_key != "") {
+          Bugsnag.setUser(user.id);
+        }
+        if (!this.loaded) {
+          this.hideLoadingScreen();
+        }
       }
     });
 
     // Set up dark mode using system setting if not signed in
     let systemDark = window.matchMedia("(prefers-color-scheme: dark)");
-    this.authService.isAuthorize().then(async (authorized) => {
-      if (!authorized) {
-        await sessionService.setDarkMode(systemDark.matches);
-        document.body.classList.toggle("dark", systemDark.matches);
-      } else {
-        document.body.classList.toggle("dark", (await sessionService.getDarkMode()));
-      }
-    }).catch (async () => {
-      document.body.classList.toggle("dark", (await sessionService.getDarkMode()));
-    });
+    this.authService
+      .isAuthorize()
+      .then(async (authorized) => {
+        if (!authorized) {
+          await sessionService.setDarkMode(systemDark.matches);
+          document.body.classList.toggle("dark", systemDark.matches);
+        } else {
+          document.body.classList.toggle(
+            "dark",
+            await sessionService.getDarkMode()
+          );
+        }
+      })
+      .catch(async () => {
+        document.body.classList.toggle(
+          "dark",
+          await sessionService.getDarkMode()
+        );
+      });
 
     // Listen to system changes
     systemDark.onchange = (sys) => {
-      this.authService.isAuthorize().then((authorized) => {
-        if (!authorized) {
+      this.authService
+        .isAuthorize()
+        .then((authorized) => {
+          if (!authorized) {
+            sessionService.setDarkMode(sys.matches);
+            document.body.classList.toggle("dark", sys.matches);
+            events.darkModeChanged.next(sys.matches);
+          }
+        })
+        .catch(() => {
           sessionService.setDarkMode(sys.matches);
           document.body.classList.toggle("dark", sys.matches);
           events.darkModeChanged.next(sys.matches);
-        }
-      }).catch (() => {
-        sessionService.setDarkMode(sys.matches);
-        document.body.classList.toggle("dark", sys.matches);
-        events.darkModeChanged.next(sys.matches);
-      });;
+        });
     };
 
     // Subscribe to any updates
@@ -137,8 +156,10 @@ export class AppComponent {
 
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      if (this.platform.is("cordova")) {
+        this.statusBar.styleDefault();
+        this.splashScreen.hide();
+      }
 
       // Start network change events
       this.networkProvider.initializeNetworkEvents();

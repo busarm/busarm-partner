@@ -334,8 +334,8 @@ export class AddTripPage extends PageController {
   public submit() {
     this.showLoading().then(() => {
       Api.addNewTrip(
-        this.selectedPickup.loc_id,
-        this.selectedDropOff.loc_id,
+        this.selectedPickup?.loc_id,
+        this.selectedDropOff?.loc_id,
         this.selectedDateTime
           ? new Date(this.selectedDateTime).toISOString()
           : null,
@@ -362,11 +362,6 @@ export class AddTripPage extends PageController {
         }
       );
     });
-  }
-
-  /**Convert to string*/
-  public toJson(data: any) {
-    return Utils.toJson(data);
   }
 
   /**Close Modal*/

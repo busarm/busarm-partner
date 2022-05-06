@@ -1,8 +1,12 @@
 ion-content {
-    --background:black;
-    margin: auto;
-    object-fit: contain;
-    #scanner-container {
-        height: 100% !important;
+  // --background:black;
+  margin: auto;
+  object-fit: contain;
+  #scanner-container {
+    height: 100% !important;
+    video {
+      border: 2px solid var(--ion-color-medium) !important;
+      border-radius: 5px !important;
     }
+  }
 }

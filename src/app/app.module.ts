@@ -36,14 +36,14 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 
+// Add buffer to window
+import buffer from 'buffer';
+(window as any).Buffer = buffer.Buffer;
+
 // Turn on production mode
 if (CONFIGS.production) {
   enableProdMode();
 }
-
-// Add buffer to window
-import buffer from 'buffer';
-(window as any).Buffer = buffer.Buffer;
 
 // Configure Bugsnag
 if (CONFIGS.bugsnag_key != "") {

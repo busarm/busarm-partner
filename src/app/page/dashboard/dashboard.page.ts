@@ -17,7 +17,7 @@ import { ViewBookingPage } from "../bookings/view-booking/view-booking.page";
 import { MD5 } from "crypto-js";
 import { ENVIRONMENT } from "../../../environments/environment";
 import { ENV } from "../../../environments/ENV";
-// import { WebScannerPage } from './web-scanner/web-scanner.page';
+import { WebScannerPage } from "./web-scanner/web-scanner.page";
 
 @Component({
   selector: "app-dashboard",
@@ -448,43 +448,31 @@ export class DashboardPage extends PageController {
   /**Launch scan Qr Code for Web
    */
   async showWebScanCode() {
-    return this.navigate("web-scanner");
-  }
-
-  /**Search input event
-   * @param event
-   * @param {boolean} isSearch
-   */
-  public onInput(event, isSearch: boolean = false) {
-    if (event.isTrusted) {
-      if (
-        event.target.value &&
-        isSearch &&
-        event.target.value.length > 6 &&
-        !this.isFindBookingProcessing
-      ) {
-        this.referenceCode = String(event.target.value).toUpperCase().trim();
-        this.findBooking();
+    // return this.navigate("web-scanner");
+    let chooseModal = await this.modalCtrl.create({
+      component: WebScannerPage,
+      componentProps: {
+        isModal: true,
+      },
+    });
+    chooseModal.onDidDismiss().then((data) => {
+      if (data.data) {
+        if (this.referenceCode !== data.data) {
+          this.referenceCode = data.data;
+          this.findBooking();
+        }
       }
-    }
-  }
-
-  /**Reset Search bar
-   * @param event
-   */
-  public onClear(event) {
-    if (event.isTrusted) {
-      this.referenceCode = null;
-    }
+    });
+    return await chooseModal.present();
   }
 
   /**Refresh View
    * @param event
    */
-  public refreshDashboardView(event?) {
+  public refreshDashboardView(event?: any) {
     this.loadDashboardView(true, () => {
       if (event) {
-        this.onClear(event);
+        this.referenceCode = null;
         event.target.complete();
       }
     });
