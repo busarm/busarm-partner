@@ -27,10 +27,9 @@
   </ion-refresher>
 
   <!--Loading view - Show if nothing hasn't been loaded yet-->
-  <app-loader *ngIf="currentAgents==null" [text]="strings.getString('loading_txt')"></app-loader>
-  <!--Not found view -->
-  <app-loader *ngIf="currentAgents!=null && currentAgents.length == 0" [failed]="true"
-    [text]="strings.getString('not_found_txt')"></app-loader>
+  <app-loader *ngIf="currentAgents==null || currentAgents.length == 0" [text]="strings.getString('loading_txt')"
+    [failed]="currentAgents!=null && currentAgents.length == 0" [error]="strings.getString('not_found_txt')">
+  </app-loader>
 
   <ion-grid *ngIf="currentAgents!=null && currentAgents.length > 0">
     <ion-row wrap>
