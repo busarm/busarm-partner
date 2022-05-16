@@ -31,12 +31,11 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <!--Loading view - Show if Trips hasn't been loaded yet-->
-  <app-loader *ngIf="currentTrips == null" [text]="strings.getString('loading_txt')"></app-loader>
-  <!--Not found view -->
-  <app-loader *ngIf="currentTrips!=null && currentTrips.length == 0" [failed]="true"
-    [text]="strings.getString('not_found_txt')"
-    [details]="busTypes == null || busTypes.length == 0  ? strings.getString('add_bus_prompt_txt') : null"></app-loader>
+  <!--Loading view - Show if nothing hasn't been loaded yet-->
+  <app-loader *ngIf="currentTrips==null || currentTrips.length == 0" [text]="strings.getString('loading_txt')"
+    [failed]="currentTrips!=null && currentTrips.length == 0"
+    [error]="busTypes == null || busTypes.length == 0  ? strings.getString('add_bus_prompt_txt') : strings.getString('not_found_txt')">
+  </app-loader>
 
   <!--Trip list-->
   <div id="dashCards" *ngIf="currentTrips!=null && currentTrips.length > 0">
