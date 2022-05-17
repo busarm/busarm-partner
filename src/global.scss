@@ -169,6 +169,7 @@ ion-datetime {
 }
 
 ion-modal {
+  --min-height: 90vh;
   --background: var(--ion-color-light);
   --color: var(--ion-text-color) !important;
 

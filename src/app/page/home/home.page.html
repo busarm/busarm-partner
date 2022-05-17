@@ -1,5 +1,5 @@
 <!-- Split Pane -->
-<ion-split-pane *ngIf="!platform.is('mobile') || platform.is('tablet')" when="lg" contentId="home-router">
+<ion-split-pane *ngIf="!is_mobile() || is_tablet()" when="lg" contentId="home-router">
   <!--Menu Controller-->
   <ion-menu size="start" menuId="home" contentId="home-router" type="overlay">
     <ion-content class="background-primary">
@@ -38,7 +38,7 @@
         </ion-item>
       </ion-menu-toggle>
     </ion-content>
-    <ion-footer *ngIf="!platform.is('mobile')">
+    <ion-footer *ngIf="!is_mobile()">
       <ion-toolbar class="background-primary cell-padding-3x">
         <ion-button expand="full" color="danger" (click)="confirmLogout()">
           <ion-icon name="exit" color="secondary" slot="start">
@@ -54,7 +54,7 @@
 </ion-split-pane>
 
 <!--Tab Controller-->
-<ion-tabs *ngIf="platform.is('mobile') && !platform.is('tablet')" (ionTabsWillChange)="willChange($event)">
+<ion-tabs *ngIf="is_mobile() && !is_tablet()" (ionTabsWillChange)="willChange($event)">
   <ion-tab-bar class="cell" slot="bottom">
     <ion-tab-button tab="dashboard">
       <ion-icon name="stats-chart"> </ion-icon>

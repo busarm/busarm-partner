@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { PageController } from "../page-controller";
-import { MenuController, ModalController, Platform } from "@ionic/angular";
+import { MenuController, ModalController } from "@ionic/angular";
 import { Router, RouterEvent } from "@angular/router";
 import { Api } from "../../helpers/Api";
 import { ScannerService } from "../../services/app/ScannerService";
@@ -24,7 +24,6 @@ export class HomePage extends PageController {
     private router: Router,
     public modalCtrl: ModalController,
     private menu: MenuController,
-    public platform: Platform,
     private scannerService: ScannerService
   ) {
     super();

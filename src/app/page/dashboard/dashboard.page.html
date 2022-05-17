@@ -9,6 +9,7 @@
             {{country.country_name}}
           </ion-select-option>
         </ion-select>
+        <ion-label class="cell cell-padding-2x" *ngIf="!user.allow_multi_countries || session.countries!=null || session.countries.length >= 1">{{session.country?.country_code?.toUpperCase()}}</ion-label>
       </div>
     </ion-buttons>
     <ion-title> {{strings.getString("dashboard_title_txt")}} </ion-title>
@@ -20,6 +21,7 @@
             {{country.country_name}}
           </ion-select-option>
         </ion-select>
+        <ion-label class="cell cell-padding-2x" *ngIf="!user.allow_multi_countries || session.countries!=null || session.countries.length >= 1">{{session.country?.country_code?.toUpperCase()}}</ion-label>
       </div>
       <ion-button (click)="refreshDashboardView()">
         <ion-icon slot="icon-only" class="secondary" name="refresh"> </ion-icon>
@@ -548,7 +550,7 @@
     </div>
   </div>
   <br /><br /><br />
-  <ion-fab *ngIf="dashboard!=null && !is_mobile()" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab *ngIf="dashboard!=null && (!is_mobile() || is_tablet())" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="showScanCode()">
       <ion-icon name="qr-code"></ion-icon>
     </ion-fab-button>
