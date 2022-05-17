@@ -317,4 +317,7 @@ export class PageController implements OnInit, OnDestroy {
   public is_mobile() {
     return this.instance.platform.is("mobile");
   }
+  public is_tablet() {
+    return this.instance.platform.is("tablet");
+  }
 }
