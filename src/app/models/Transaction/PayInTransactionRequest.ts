@@ -9,6 +9,6 @@ export interface PayInTransactionRequest {
   payment_reference: string;
   currency_code: string;
   amount: number;
-  date_created: string;
+  created_at: string;
   payment_url: string;
 }

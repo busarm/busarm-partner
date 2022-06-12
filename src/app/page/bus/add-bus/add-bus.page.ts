@@ -30,14 +30,7 @@ export class AddBusPage extends PageController {
     await super.ngOnInit();
 
     /**Set bus seats for selected type*/
-    if (this.selectedBusType) {
-      this.busType = this.busTypes.find(
-        (type) => Utils.safeInt(type.id) == this.selectedBusType
-      );
-      if (this.busType) {
-        this.busSeats = Utils.safeInt(this.busType.seats);
-      }
-    }
+    this.setBusType()
   }
 
   /**Add Bus*/
@@ -97,6 +90,20 @@ export class AddBusPage extends PageController {
           this.strings.getString("select_bus_type_txt"),
           ToastType.ERROR
         );
+      }
+    }
+  }
+
+  /**
+   * Set bus type from selection
+   */
+  public setBusType() {
+    if (this.selectedBusType) {
+      this.busType = this.busTypes.find(
+        (type) => Utils.safeInt(type.id) == this.selectedBusType
+      );
+      if (this.busType) {
+        this.busSeats = Utils.safeInt(this.busType.seats);
       }
     }
   }
