@@ -52,19 +52,19 @@
   </div>
   <div style="position: absolute !important; bottom: 0; width: 100%; height: auto; z-index: 200 !important;"
     *ngIf="selectedPlace!=null">
-    <ion-card>
-      <ion-card-content>
+    <ion-card style="margin: 16px;">
+      <ion-card-content style="padding: 10px;">
         <div class="cell cell-flex cell-flex-center">
           <ion-button class="iconBt" (click)="selectedPlace=null">
-            <ion-icon color="primary" slot="icon-only" name="close"></ion-icon>
+            <ion-icon color="danger" slot="icon-only" name="close-circle-outline"></ion-icon>
           </ion-button>
         </div>
         <div>
           <div class="cell cell-flex cell-flex-center">
-            <ion-label class="cell-title">{{selectedPlace.name}}</ion-label>
+            <ion-label class="cell-title cell-center">{{selectedPlace.name}}</ion-label>
           </div>
           <div class="cell cell-flex cell-flex-center">
-            <ion-label class="cell-content">{{selectedPlace.formatted_address}}</ion-label>
+            <ion-label class="cell-content cell-center">{{selectedPlace.formatted_address}}</ion-label>
           </div>
         </div>
         <div class="cell cell-flex cell-flex-center">
