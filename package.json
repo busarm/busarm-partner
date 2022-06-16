@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start-ionic": "ionic serve --port=80",
+    "start-dev": "ionic serve --port=8100",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
