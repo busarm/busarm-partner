@@ -20,7 +20,16 @@ export class AddBusPage extends PageController {
   busType: BusType;
   busPlateNumber: string;
   busSeats: number;
-  busDesc: string;
+  busDescription: string;
+  hasAc?: boolean;
+  hasCharger?: boolean;
+  hasWifi?: boolean;
+  hasLight?: boolean;
+  hasBlanket?: boolean;
+  hasFood?: boolean;
+  hasWater?: boolean;
+  hasTv?: boolean;
+  hasToilet?: boolean;
 
   constructor(private modalCtrl: ModalController) {
     super();
@@ -42,7 +51,7 @@ export class AddBusPage extends PageController {
       //Get new bus entries
       if (Utils.assertAvailable(this.selectedBusType)) {
         if (Utils.assertAvailable(this.busPlateNumber)) {
-          let bus: Bus | any = {};
+          let bus: Bus = null;
           if (this.busType) {
             if (this.busSeats < Utils.safeInt(this.busType.seats)) {
               this.showToastMsg(
@@ -55,11 +64,19 @@ export class AddBusPage extends PageController {
               return false;
             }
             bus = {
-              plate_num: this.busPlateNumber,
-              description: this.busDesc,
-              seats: this.busSeats,
+              plate_number: this.busPlateNumber,
+              description: this.busDescription,
+              seats: String(this.busSeats),
               type: this.busType.id,
-              return: 1,
+              has_ac: this.hasAc ? '1' : '0',
+              has_charger: this.hasCharger ? '1' : '0',
+              has_wifi: this.hasWifi ? '1' : '0',
+              has_light: this.hasLight ? '1' : '0',
+              has_blanket: this.hasBlanket ? '1' : '0',
+              has_food: this.hasFood ? '1' : '0',
+              has_water: this.hasWater ? '1' : '0',
+              has_tv: this.hasTv ? '1' : '0',
+              has_toilet: this.hasToilet ? '1' : '0'
             };
           }
 

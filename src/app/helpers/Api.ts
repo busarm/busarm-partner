@@ -1246,7 +1246,7 @@ export class Api {
    * @param busId
    * @param callback
    * */
-  public static updateBus(
+   public static updateBus(
     busId: string,
     description: string,
     callback: ApiCallback<BaseResponse>
@@ -1257,6 +1257,28 @@ export class Api {
       params: {
         busId: busId,
         description: description,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
+
+  /**Update Bus Amenity
+   * @param busId
+   * @param callback
+   * */
+   public static updateBusAmenity(
+    busId: string,
+    amenites: any,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiBusAmenity,
+      method: ApiRequestMethod.PUT,
+      params: {
+        busId: busId,
+        ...amenites,
       },
       cache: false,
       callback: callback,

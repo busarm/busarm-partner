@@ -219,5 +219,16 @@
   "on_hold_info_msg": "Payment will not be released until the respective services such as trips, has been completed",
   "released_txt": "Released",
   "released_info_msg": "Payment is released and can be cashed out",
-  "loading_camera_txt": "Loading Camera..."
+  "loading_camera_txt": "Loading Camera...",
+  "amenities_txt": "Amenities",
+  "select_amenities_txt": "Select Available Amenities",
+  "has_ac_txt": "Air conditioning",
+  "has_charger_txt": "Charging ports",
+  "has_wifi_txt": "Wi-Fi or Internet",
+  "has_light_txt": "Reading lights",
+  "has_blanket_txt": "Blankets",
+  "has_food_txt": "Meal or Snacks",
+  "has_water_txt": "Bottled Water",
+  "has_tv_txt": "TV / Entertainment",
+  "has_toilet_txt": "Toilet"
 }

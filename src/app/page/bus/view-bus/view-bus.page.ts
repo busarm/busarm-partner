@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import {
   ActionSheetController,
+  IonToggle,
   ModalController,
   Platform,
 } from "@ionic/angular";
@@ -405,6 +406,49 @@ export class ViewBusPage extends PageController {
         }
       );
     });
+  }
+
+  /**
+   * Toggle Bus Amenity
+   * @param {CustomEvent<IonToggle>} event
+   * @param {String} amenity
+   */
+  public toggleAmenity(event: CustomEvent<IonToggle>, amenity: string) {
+    if (this.is_true(this.bus[amenity]) !== event.detail.checked) {
+      this.showLoading().then(() => {
+        this.bus[amenity] = event.detail.checked ? '1' : '0';
+        Api.updateBusAmenity(
+          this.bus.id,
+          {
+            [amenity]: event.detail.checked ? 1 : 0
+          },
+          ({ status, result, msg }) => {
+            this.hideLoading();
+            if (status) {
+              if (this.assertAvailable(result)) {
+                if (result.status) {
+                  this.updated.next(this.bus.id);
+                  this.events.busesUpdated.next(this.bus.id);
+                  this.showToastMsg(result.msg, ToastType.SUCCESS);
+                } else {
+                  this.bus[amenity] = event.detail.checked ? '0' : '1';
+                  this.showToastMsg(result.msg, ToastType.ERROR);
+                }
+              } else {
+                this.bus[amenity] = event.detail.checked ? '0' : '1';
+                this.showToastMsg(
+                  Strings.getString("error_unexpected"),
+                  ToastType.ERROR
+                );
+              }
+            } else {
+              this.bus[amenity] = event.detail.checked ? '0' : '1';
+              this.showToastMsg(msg, ToastType.ERROR);
+            }
+          }
+        );
+      });
+    }
   }
 
   /**Get Status class for bus status*/

@@ -298,9 +298,11 @@ export class PageController implements OnInit, OnDestroy {
     }
   }
 
+  /** Current platform is cordova */
   public is_cordova() {
     return this.instance.platform.is("cordova");
   }
+  /** Current platform is ios */
   public is_ios() {
     return (
       this.instance.platform.is("ios") ||
@@ -308,16 +310,28 @@ export class PageController implements OnInit, OnDestroy {
       this.instance.platform.is("iphone")
     );
   }
+  /** Current platform is android */
   public is_android() {
     return (
       this.instance.platform.is("android") ||
       this.instance.platform.is("phablet")
     );
   }
+  /** Current platform is mobile */
   public is_mobile() {
     return this.instance.platform.is("mobile");
   }
+  /** Current platform is tablet */
   public is_tablet() {
     return this.instance.platform.is("tablet");
+  }
+
+  /**
+   * Variable validataes to true
+   * @param {any} data
+   * @returns
+   */
+  public is_true(data: any) {
+    return data!==null && (data == true || data == 1 || data == '1');
   }
 }

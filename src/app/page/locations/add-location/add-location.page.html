@@ -13,37 +13,37 @@
     <form #tripForm="ngForm" (ngSubmit)="submit()" autocomplete="off">
         <ion-item>
             <ion-label position="stacked">{{strings.getString('name_txt')}}</ion-label>
-            <ion-input required name="name" (click)="selectLocation($event)" 
+            <ion-input required name="name" (click)="selectLocation($event)"
                     [value]="selectedLocation!=null ? selectedLocation.name :''"
                     [readonly]="!editLocationName"
-                    [(ngModel)]="selectedLocationName" 
+                    [(ngModel)]="selectedLocationName"
                     placeholder="{{strings.getString('select_location_txt')}}" type="text">
             </ion-input>
         </ion-item>
         <ion-item>
             <ion-label position="stacked">{{strings.getString('city_txt')}}</ion-label>
-            <ion-input required name="city" (click)="selectLocation($event)" 
+            <ion-input required name="city" (click)="selectLocation($event)"
                     [value]="selectedLocation!=null ? selectedLocation.city :''"
                     [readonly]="true" placeholder="{{strings.getString('select_location_txt')}}" type="text">
             </ion-input>
         </ion-item>
         <ion-item>
             <ion-label position="stacked">{{strings.getString('province_txt')}}</ion-label>
-            <ion-input required name="province" (click)="selectLocation($event)" 
+            <ion-input required name="province" (click)="selectLocation($event)"
                     [value]="selectedLocation!=null ? selectedLocation.province :''"
                     [readonly]="true" placeholder="{{strings.getString('select_location_txt')}}" type="text">
             </ion-input>
         </ion-item>
         <ion-item>
             <ion-label position="stacked">{{strings.getString('latitude_txt')}}</ion-label>
-            <ion-input required name="latitude" (click)="selectLocation($event)" 
+            <ion-input required name="latitude" (click)="selectLocation($event)"
                     [value]="selectedLocation!=null ? selectedLocation.lat :''"
                     [readonly]="true" placeholder="{{strings.getString('select_location_txt')}}" type="text">
             </ion-input>
         </ion-item>
         <ion-item>
             <ion-label position="stacked">{{strings.getString('longitude_txt')}}</ion-label>
-            <ion-input required name="longitude" (click)="selectLocation($event)" 
+            <ion-input required name="longitude" (click)="selectLocation($event)"
                     [value]="selectedLocation!=null ? selectedLocation.lng :''"
                     [readonly]="true" placeholder="{{strings.getString('select_location_txt')}}" type="text">
             </ion-input>
@@ -61,6 +61,8 @@
             <ion-checkbox name="is_admin" slot="end" color="primary" [(ngModel)]="isDefault">
             </ion-checkbox>
         </ion-item>
+        <br/>
+        <br/>
         <div>
             <ion-button expand="full" color="primary" type="submit"
                         [disabled]="!tripForm.form.valid">

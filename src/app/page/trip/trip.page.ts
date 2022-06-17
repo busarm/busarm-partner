@@ -153,7 +153,7 @@ export class TripPage extends PageController {
           trip.dropoff_loc_name.match(reg) ||
           trip.dropoff_city.match(reg) ||
           trip.agent_email.match(reg) ||
-          (trip.bus && trip.bus.plate_num.match(reg))
+          (trip.bus && trip.bus.plate_number.match(reg))
         );
       });
       this.currentTrips = this.groupTrips(list);
