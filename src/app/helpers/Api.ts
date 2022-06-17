@@ -402,7 +402,7 @@ export class Api {
             );
             if (cache) {
               // Check Internet connection
-              if (!NetworkProvider.isOnline()) {
+              if (!NetworkProvider.instance.isOnline()) {
                 if (requestParams.callback) {
                   requestParams.callback({
                     status: true,
@@ -431,7 +431,7 @@ export class Api {
               }
             } else if (!this.cacheLoaded && requestParams.callback) {
               // Check Internet connection
-              if (!NetworkProvider.isOnline()) {
+              if (!NetworkProvider.instance.isOnline()) {
                 NetworkProvider.instance.checkConnection().then((connected) => {
                   if (requestParams.callback) {
                     requestParams.callback({
@@ -460,7 +460,7 @@ export class Api {
             }
           } else {
             // Check Internet connection
-            if (!NetworkProvider.isOnline()) {
+            if (!NetworkProvider.instance.isOnline()) {
               NetworkProvider.instance.checkConnection().then((connected) => {
                 if (requestParams.callback) {
                   requestParams.callback({
@@ -821,7 +821,9 @@ export class Api {
         reference_code: referenceCode,
       },
       cache: true,
-      cacheId: String(Utils.hashString(Urls.apiValidateBooking + referenceCode)),
+      cacheId: String(
+        Utils.hashString(Urls.apiValidateBooking + referenceCode)
+      ),
       callback: callback,
     });
   }
@@ -830,14 +832,11 @@ export class Api {
    * @param id
    * @param callback
    * */
-   public static getBooking(
-    id: string,
-    callback: ApiCallback<BookingResponse>
-  ) {
+  public static getBooking(id: string, callback: ApiCallback<BookingResponse>) {
     this.performRequest({
       url: Urls.apiGetBooking,
       params: {
-        booking_id: id
+        booking_id: id,
       },
       cache: true,
       cacheId: String(Utils.hashString(Urls.apiGetBooking + id)),
@@ -1247,7 +1246,7 @@ export class Api {
    * @param busId
    * @param callback
    * */
-  public static updateBus(
+   public static updateBus(
     busId: string,
     description: string,
     callback: ApiCallback<BaseResponse>
@@ -1258,6 +1257,28 @@ export class Api {
       params: {
         busId: busId,
         description: description,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
+
+  /**Update Bus Amenity
+   * @param busId
+   * @param callback
+   * */
+   public static updateBusAmenity(
+    busId: string,
+    amenites: any,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiBusAmenity,
+      method: ApiRequestMethod.PUT,
+      params: {
+        busId: busId,
+        ...amenites,
       },
       cache: false,
       callback: callback,

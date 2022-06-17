@@ -3,7 +3,7 @@ import { AlertController, ModalController } from "@ionic/angular";
 import { Network } from "@ionic-native/network/ngx";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
-import { ToastType } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { BusType } from "../../models/Bus/BusType";
 import { Bus } from "../../models/Bus/Bus";
 import { PageController } from "../page-controller";
@@ -95,7 +95,7 @@ export class BusPage extends PageController {
             let bus: Bus = this.buses[index];
             let reg = new RegExp(this.searchText, "gi");
             if (
-              bus.plate_num.match(reg) ||
+              bus.plate_number.match(reg) ||
               bus.type.match(reg) ||
               bus.description.match(reg)
             ) {

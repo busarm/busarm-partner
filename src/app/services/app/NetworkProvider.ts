@@ -5,6 +5,7 @@ import { Urls } from "../../helpers/Urls";
 import { Events } from "./Events";
 import { SessionService } from "./SessionService";
 import { PingResponse } from "../../models/PingResponse";
+import { Platform } from "@ionic/angular";
 
 export enum ConnectionStatus {
   Unknown,
@@ -16,6 +17,9 @@ export enum ConnectionStatus {
   providedIn: "root",
 })
 export class NetworkProvider {
+  private intervalSeconds = 10;
+  private lastCheckedDate: Date = null;
+
   /**Get app instance*/
   public static get instance(): NetworkProvider {
     return NetworkProvider._instance;
@@ -24,75 +28,105 @@ export class NetworkProvider {
 
   private pingUrl: string = Urls.pingUrl;
 
-  private previousStatus: ConnectionStatus = ConnectionStatus.Unknown;
+  private status: ConnectionStatus = ConnectionStatus.Unknown;
 
   constructor(
+    public platform: Platform,
     public network: Network,
     public event: Events,
     public httpClient: HttpClient,
     private sessionService: SessionService
   ) {
     NetworkProvider._instance = this;
+    // Initial connection check
+    this.checkConnection();
   }
 
   /**Start connection check*/
-  public async initializeNetworkEvents() {
-    this.network
-      ? this.network.onChange().subscribe(() => {
-          return new Promise((resolve) => {
-            this.pingServer((connected) => {
-              this.notify(connected, false);
-              resolve(connected);
-            });
-          });
-        })
-      : null;
-  }
-
-  /**Notify response*/
-  public notify(connected: boolean, trigger: boolean = false): void {
-    if (connected) {
-      if (trigger && this.previousStatus != ConnectionStatus.Online) {
-        this.event.networkChanged.next(true);
-      }
-      this.previousStatus = ConnectionStatus.Online;
-    } else {
-      if (trigger && this.previousStatus != ConnectionStatus.Offline) {
-        this.event.networkChanged.next(false);
-      }
-      this.previousStatus = ConnectionStatus.Offline;
+  public initializeNetworkEvents() {
+    // Android / IOS
+    if (this.platform.is("cordova") && this.network) {
+      this.network.onChange().subscribe((value) => {
+        console.log("Network", value);
+        this.lastCheckedDate = null;
+        this.checkConnection(true);
+      });
+    }
+    // Browser
+    else if (typeof window !== "undefined") {
+      window.addEventListener("online", () => {
+        console.log("Network online");
+        this.lastCheckedDate = null;
+        this.checkConnection(true);
+      });
+      window.addEventListener("offline", () => {
+        console.log("Network offline");
+        this.notify(false, true);
+      });
     }
   }
 
-  /**Ping online server to check if connected*/
-  public pingServer(callback: (connected: boolean) => any) {
-    this.httpClient.get(this.pingUrl).subscribe(
-      (data: PingResponse) => {
-        this.sessionService.setPing(data);
-        callback(true);
-      },
-      () => {
-        callback(false);
+  /**
+   * Notify response
+   * @param {Boolean} connected
+   * @param {Boolean} trigger
+   */
+  public notify(connected: boolean, trigger: boolean = false): void {
+    if (connected) {
+      if (trigger && this.status != ConnectionStatus.Online) {
+        this.event.networkChanged.next(true);
       }
-    );
+      this.status = ConnectionStatus.Online;
+    } else {
+      if (trigger && this.status != ConnectionStatus.Offline) {
+        this.event.networkChanged.next(false);
+      }
+      this.status = ConnectionStatus.Offline;
+    }
   }
 
-  /**Check if connection available*/
-  public checkConnection(
-    callback?: (connected: boolean) => any
-  ): Promise<boolean> {
+  /**
+   * Ping online server to check if connected
+   * @returns {Promise<boolean>}
+   */
+  public ping(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.httpClient.get(this.pingUrl).subscribe(
+        (data: PingResponse) => {
+          this.sessionService.setPing(data);
+          resolve(true);
+        },
+        () => {
+          resolve(false);
+        }
+      );
+    });
+  }
+
+  /**Check if connection available
+   * @param {Boolean} trigger
+   * @returns {Promise<boolean>}
+   * */
+  public checkConnection(trigger: boolean = false): Promise<boolean> {
     /*Get Current network states*/
     return new Promise((resolve) => {
-      NetworkProvider.instance.pingServer((connected) => {
-        NetworkProvider.instance.notify(connected, false);
-        if (callback) callback(connected);
-        resolve(connected);
-      });
+      // If has not been checked in the given interval
+      if (
+        !this.lastCheckedDate ||
+        this.lastCheckedDate.getTime() / 1000 + this.intervalSeconds <=
+          new Date().getTime() / 1000
+      ) {
+        this.ping().then((connected) => {
+          this.lastCheckedDate = new Date();
+          this.notify(connected, trigger);
+          resolve(connected);
+        });
+      } else resolve(this.isOnline());
     });
   }
 
   /**Check if connection available*/
-  public static isOnline(): boolean {
-    return NetworkProvider.instance.previousStatus === ConnectionStatus.Online;
+  public isOnline(): boolean {
+    return NetworkProvider.instance.status === ConnectionStatus.Online;
   }
 }

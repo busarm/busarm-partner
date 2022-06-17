@@ -5,7 +5,7 @@ import { BookingTrip } from "../../../models/Booking/BookingTrip";
 import { PageController } from "../../page-controller";
 import { ModalController } from "@ionic/angular";
 import { ViewTripPage } from "../../trip/view-trip/view-trip.page";
-import { ToastType } from "../../../helpers/Utils";
+import { ToastType } from "../../../services/app/AlertService";
 import { Strings } from "../../../resources";
 import { Api } from "../../../helpers/Api";
 

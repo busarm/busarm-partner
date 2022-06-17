@@ -7,8 +7,16 @@ import {
   AlertController,
   AlertButton,
 } from "@ionic/angular";
-import { Utils, ToastType } from "../../helpers/Utils";
+import { Utils } from "../../helpers/Utils";
 import { Strings } from "../../resources";
+
+/**Define Type of toast message*/
+export enum ToastType {
+  WARNING = "toast-warning",
+  ERROR = "toast-error",
+  SUCCESS = "toast-success",
+  NORMAL = "toast-normal"
+}
 
 @Injectable({
   providedIn: "root",

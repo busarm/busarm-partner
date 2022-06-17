@@ -1,29 +1,41 @@
 <ion-header>
-    <ion-toolbar color="transparent">
-        <ion-buttons slot="start">
-            <ion-back-button color='secondary' defaultHref="/home/dashboard"> </ion-back-button>
-        </ion-buttons>
-        <ion-title>{{strings.getString("scan_txt")}}</ion-title>
-    </ion-toolbar>
+  <ion-toolbar color="transparent">
+    <ion-title>{{strings.getString("scan_txt")}}</ion-title>
+    <ion-buttons slot="end">
+        <ion-button (click)="dismiss()">
+            <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar showCancelButton="focus" placeholder="{{strings.getString('enter_ref_code_txt')}}"
+    (input)="onInput($event)" (search)="onInput($event, true)" (clear)="onClear($event)" [animated]="true"
+    inputmode="search" enterkeyhint="search" [autocomplete]="false" [autocorrect]="false"
+    [value]="lastScanned ? lastScanned.code : ''">
+  </ion-searchbar>
 </ion-header>
 <ion-content class="ion-padding ion-justify-content-center ion-align-items-center">
-    <div id="scanner-container" class="cell cell-flex cell-flex-center">
-        <zxing-scanner #scanner id="scanner"> </zxing-scanner>
-    </div>
-    <ion-fab *ngIf="flashAllowed || multiDeviceAllowed" vertical="bottom" horizontal="center" slot="fixed">
-        <ion-fab-button>
-            <ion-icon name="options"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-list *ngIf="flashAllowed" side="end">
-            <ion-fab-button (click)="toggleFlash()">
-                <ion-icon *ngIf="!flashEnabled" color="primary" name="flash"></ion-icon>
-                <ion-icon *ngIf="flashEnabled" color="primary" name="flash-off"></ion-icon>
-            </ion-fab-button>
-        </ion-fab-list>
-        <ion-fab-list *ngIf="multiDeviceAllowed" side="start">
-            <ion-fab-button (click)="changeMediaDevice()">
-                <ion-icon color="primary" name="camera-reverse"></ion-icon>
-            </ion-fab-button>
-        </ion-fab-list>
-    </ion-fab> 
+  <!--Loading view - Show if nothing hasn't been loaded yet-->
+  <app-loader *ngIf="!cameraLoaded" [failed]="cameraFailed"
+    [text]="strings.getString('loading_camera_txt')"
+    [error]="strings.getString(cameraPermissionGranted ? 'no_camera_msg' : 'no_camera_permission_msg')"></app-loader>
+
+  <div id="scanner-container" class="cell cell-flex cell-flex-center">
+    <zxing-scanner #scanner id="scanner"> </zxing-scanner>
+  </div>
+  <ion-fab *ngIf="(flashAllowed || multiDeviceAllowed)" vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="options"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list *ngIf="flashAllowed" side="end">
+      <ion-fab-button (click)="toggleFlash()">
+        <ion-icon *ngIf="!flashEnabled" color="primary" name="flash"></ion-icon>
+        <ion-icon *ngIf="flashEnabled" color="primary" name="flash-off"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+    <ion-fab-list *ngIf="multiDeviceAllowed" side="start">
+      <ion-fab-button (click)="changeMediaDevice()">
+        <ion-icon color="primary" name="camera-reverse"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>

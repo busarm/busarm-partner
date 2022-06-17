@@ -1,59 +1,59 @@
 <ion-header>
-    <ion-toolbar color="primary">
-        <ion-buttons slot="start">
-            <ion-back-button color='secondary' defaultHref="/home/dashboard"> </ion-back-button>
-        </ion-buttons>
-        <ion-title>{{strings.getString("bookings_txt")}}</ion-title>
-    </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button color='secondary' defaultHref="/home/dashboard"> </ion-back-button>
+    </ion-buttons>
+    <ion-title>{{strings.getString("bookings_txt")}}</ion-title>
+  </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
 
-    <!--Loading view - Show if nothing hasn't been loaded yet-->
-    <app-loader *ngIf="bookings==null" [text]="strings.getString('loading_txt')"></app-loader>
-    <!--Not found view -->
-    <app-loader *ngIf="bookings!=null && bookings.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
+  <!--Loading view - Show if nothing hasn't been loaded yet-->
+  <app-loader *ngIf="bookings==null || bookings.length == 0" [text]="strings.getString('loading_txt')"
+    [failed]="bookings!=null && bookings.length == 0" [error]="strings.getString('not_found_txt')"></app-loader>
 
-    <ion-grid *ngIf="bookings!=null && bookings.length > 0">
-        <ion-row wrap>
-            <ion-col size="12" size-md="6" *ngFor="let booking of bookings; let i = index" [attr.index]="i">
-                <ion-card>
-                    <ion-card-header>
-                        <ion-row>
-                            <ion-col size="4" class="cell cell-center cell-flex cell-flex-left">
-                                <div class="cell cell-center  cell-flex cell-flex-center  {{getBookingStatusClass(booking.status_id)}}">
-                                    {{booking.status}}
-                                </div>
-                            </ion-col>
-                            <ion-col size="8" class="cell cell-right cell-flex cell-flex-right">
-                                <ion-label class="cell-content">{{booking.date_created}}
-                                </ion-label>
-                            </ion-col>
-                        </ion-row>
-                    </ion-card-header>
-                    <ion-card-content>
-                        <div>
-                            <ion-label class="cell cell-center ">
-                                <div class="cell-title">{{strings.getString('booking_id_txt')}}</div>
-                                <div class="cell-content">{{booking.booking_id}}</div>
-                            </ion-label>
-                            <ion-label class="cell cell-center ">
-                                <div class="cell-title">{{strings.getString('payment_type')}}</div>
-                                <div class="cell-content">{{booking.payment_type}}</div>
-                            </ion-label>
-                            <ion-label class="cell cell-center ">
-                                <div class="cell-title">{{strings.getString('total_txt')}}</div>
-                                <h3 class="cell-content">{{booking.currency_code}} {{booking.total}}</h3>
-                            </ion-label>
-                        </div>
-                        <div class="cell cell-center ">
-                            <ion-button *ngIf="booking.status_id!='0' && booking.status_id!='10' && booking.status_id!='13'" color="primary" (click)="findBooking(booking.booking_id)">
-                                <ion-icon slot="start" name="open"> </ion-icon>
-                                {{strings.getString("view_txt")}}
-                            </ion-button>
-                        </div>
-                    </ion-card-content>
-                </ion-card>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+  <ion-grid *ngIf="bookings!=null && bookings.length > 0">
+    <ion-row wrap>
+      <ion-col size="12" size-md="6" *ngFor="let booking of bookings; let i = index" [attr.index]="i">
+        <ion-card>
+          <ion-card-header>
+            <ion-row>
+              <ion-col size="4" class="cell cell-center cell-flex cell-flex-left">
+                <div class="cell cell-center  cell-flex cell-flex-center  {{getBookingStatusClass(booking.status_id)}}">
+                  {{booking.status}}
+                </div>
+              </ion-col>
+              <ion-col size="8" class="cell cell-right cell-flex cell-flex-right">
+                <ion-label class="cell-content">{{booking.created_at}}
+                </ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-card-header>
+          <ion-card-content>
+            <div>
+              <ion-label class="cell cell-center ">
+                <div class="cell-title">{{strings.getString('booking_id_txt')}}</div>
+                <div class="cell-content">{{booking.booking_id}}</div>
+              </ion-label>
+              <ion-label class="cell cell-center ">
+                <div class="cell-title">{{strings.getString('payment_type')}}</div>
+                <div class="cell-content">{{booking.payment_type}}</div>
+              </ion-label>
+              <ion-label class="cell cell-center ">
+                <div class="cell-title">{{strings.getString('total_txt')}}</div>
+                <h3 class="cell-content">{{booking.currency_code}} {{booking.total}}</h3>
+              </ion-label>
+            </div>
+            <div class="cell cell-center ">
+              <ion-button *ngIf="booking.status_id!='0' && booking.status_id!='10' && booking.status_id!='13'"
+                color="primary" (click)="findBooking(booking.booking_id)">
+                <ion-icon slot="start" name="open"> </ion-icon>
+                {{strings.getString("view_txt")}}
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

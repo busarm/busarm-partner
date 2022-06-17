@@ -1,7 +1,8 @@
 import { Component } from "@angular/core";
 import { ActionSheetController, Platform } from "@ionic/angular";
 import { Network } from "@ionic-native/network/ngx";
-import { ToastType, Utils } from "../../helpers/Utils";
+import { Utils } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { PageController } from "../page-controller";
 import { SessionService } from "../../services/app/SessionService";
 import { Api } from "../../helpers/Api";

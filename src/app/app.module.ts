@@ -1,4 +1,4 @@
-import { enableProdMode, ErrorHandler, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, enableProdMode, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -36,14 +36,14 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 
-//Turn on production mode
-if (CONFIGS.production) {
-  enableProdMode();
-}
-
 // Add buffer to window
 import buffer from 'buffer';
 (window as any).Buffer = buffer.Buffer;
+
+// Turn on production mode
+if (CONFIGS.production) {
+  enableProdMode();
+}
 
 // Configure Bugsnag
 if (CONFIGS.bugsnag_key != "") {
@@ -101,7 +101,8 @@ export function errorHandlerFactory() {
     Deeplinks,
     { provide: ErrorHandler, useFactory: errorHandlerFactory }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas:  [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {
   constructor(library: FaIconLibrary) {

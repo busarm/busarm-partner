@@ -8,7 +8,7 @@ export interface TripSeat {
   booking_status_id?: string;
   date_locked?: string;
   date_reserved?: string;
-  date_created?: string;
+  created_at?: string;
 }
 
 export enum SeatStatus {

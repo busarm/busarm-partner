@@ -9,6 +9,7 @@
             {{country.country_name}}
           </ion-select-option>
         </ion-select>
+        <ion-label class="cell cell-padding-2x" *ngIf="!user.allow_multi_countries || session.countries!=null || session.countries.length >= 1">{{session.country?.country_code?.toUpperCase()}}</ion-label>
       </div>
     </ion-buttons>
     <ion-title> {{strings.getString("dashboard_title_txt")}} </ion-title>
@@ -20,16 +21,13 @@
             {{country.country_name}}
           </ion-select-option>
         </ion-select>
+        <ion-label class="cell cell-padding-2x" *ngIf="!user.allow_multi_countries || session.countries!=null || session.countries.length >= 1">{{session.country?.country_code?.toUpperCase()}}</ion-label>
       </div>
       <ion-button (click)="refreshDashboardView()">
         <ion-icon slot="icon-only" class="secondary" name="refresh"> </ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-searchbar showCancelButton="focus" placeholder="{{strings.getString('enter_ref_code_txt')}}"
-    (input)="onInput($event)" (search)="onInput($event, true)" (clear)="onClear($event)" [animated]="true"
-    inputmode="search" enterkeyhint="search" [autocomplete]="false" [autocorrect]="false" [(ngModel)]="referenceCode">
-  </ion-searchbar>
   <!-- Date selector -->
   <ion-select *ngIf="bookingMonths!=null && bookingMonths.length>0"
     placeholder="{{strings.getString('select_month_txt')}}" [(ngModel)]="selectedBookingMonth"
@@ -41,7 +39,7 @@
 </ion-header>
 <ion-content class="ion-padding">
   <!--Refresher -->
-  <ion-refresher slot="fixed" [pullMin]="80" (ionRefresh)="refreshDashboardView($event)" slot="fixed">
+  <ion-refresher *ngIf="!is_ios()" slot="fixed" [pullMin]="80" (ionRefresh)="refreshDashboardView($event)" slot="fixed">
     <ion-refresher-content [pullingText]="strings.getString('pull_refresh_txt')"
       [refreshingText]="strings.getString('refreshing_txt')" [refreshingSpinner]="'circles'">
     </ion-refresher-content>
@@ -134,6 +132,7 @@
         <ion-label class="cell-content">{{strings.getString('no_active_trip_txt')}}</ion-label>
       </div>
     </div>
+    <br>
     <div id="bookingList" *ngIf="showBookingsInfo">
       <!--Bookings header-->
       <div class="cell cell-center cell-margin-auto">
@@ -205,7 +204,8 @@
         </ion-card>
       </div>
     </div>
-    <div id="transactions" *ngIf="dashboard.transactions!=null">
+    <br>
+    <div id="transactions" *ngIf="dashboard.transactions!=null && transactionGroup!=null">
       <!--Transactions header-->
       <div class="cell cell-center cell-margin-auto">
         <div class="section-title">
@@ -215,7 +215,23 @@
           </div>
         </div>
       </div>
-
+      <div class="cell-margin-bottom-2x">
+        <ion-segment [value]="activeTransactionSegment" (ionChange)="transactionSegmentChanged($event)">
+          <ion-segment-button [value]="'on_hold'" class="cell cell-center cell-flex cell-flex-center small-text">
+            {{strings.getString('on_hold_txt')}}
+          </ion-segment-button>
+          <ion-segment-button [value]="'released'" class="cell cell-center cell-flex cell-flex-center small-text">
+            <span class="cell cell-flex cell-flex-center">
+              {{strings.getString('released_txt')}}
+              <ion-badge *ngIf="dashboard.transactions?.released?.payout.balance >= 1"
+                class="cell-margin-md xx-small-text" color="success" slot="end">
+                {{dashboard.transactions?.released?.payout.currency_code}}
+                {{nFormatter(dashboard.transactions?.released?.payout.balance)}}
+              </ion-badge>
+            </span>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
       <!--Transactions grid-->
       <ion-grid>
         <!-- Booking Transaction -->
@@ -231,13 +247,13 @@
                   </ion-col>
                   <ion-col size="12" position="center" class="cell cell-center cell-flex cell-flex-center">
                     <ion-label class="xxx-large-text bold" color="warning">
-                      {{dashboard.transactions.bookings.currency_code}}
-                      {{dashboard.transactions.bookings.amount}}
+                      {{transactionGroup.bookings.currency_code}}
+                      {{transactionGroup.bookings.amount}}
                     </ion-label>
                   </ion-col>
                 </ion-row>
-                <ion-list class="ion-justify-content-center" *ngIf="dashboard.transactions.bookings.amount_details">
-                  <ion-row *ngFor="let detail of dashboard.transactions.bookings.amount_details;">
+                <ion-list class="ion-justify-content-center" *ngIf="transactionGroup.bookings.amount_details">
+                  <ion-row *ngFor="let detail of transactionGroup.bookings.amount_details;">
                     <ion-col size="1" class="cell cell-flex cell-flex-center">
                       <ion-label class="small-text">&bull;</ion-label>
                     </ion-col>
@@ -272,6 +288,19 @@
                     </ion-col>
                   </ion-row>
                 </ion-list>
+                <ion-row>
+                  <ion-col size="12" class="cell cell-center">
+                    <ion-label color="{{activeTransactionSegment == 'on_hold' ? 'danger' : 'success'}}"
+                      class="x-small-text">
+                      <ion-icon class="{{activeTransactionSegment == 'on_hold' ? 'color-danger' : 'color-ok'}}"
+                        name="information-circle-outline" slot="start">
+                      </ion-icon>
+                      {{activeTransactionSegment == 'on_hold'?
+                      strings.getString('on_hold_info_msg'):
+                      strings.getString('released_info_msg') }}
+                    </ion-label>
+                  </ion-col>
+                </ion-row>
               </ion-card-content>
             </ion-card>
           </ion-col>
@@ -296,8 +325,8 @@
                       </ion-col>
                       <ion-col size="12" position="center">
                         <ion-label class="xxx-large-text bold" color="success">
-                          {{dashboard.transactions.payout.currency_code}}
-                          {{dashboard.transactions.payout.balance}}
+                          {{transactionGroup.payout.currency_code}}
+                          {{transactionGroup.payout.balance}}
                         </ion-label>
                       </ion-col>
                     </ion-row>
@@ -311,13 +340,13 @@
                           </ion-col>
                           <ion-col size="4" size-sm="6" size-xs="7">
                             <ion-label>
-                              {{dashboard.transactions.payout.currency_code}}
-                              {{dashboard.transactions.payout.amount}}
+                              {{transactionGroup.payout.currency_code}}
+                              {{transactionGroup.payout.amount}}
                             </ion-label>
                           </ion-col>
                         </ion-item>
-                        <ion-list size="12" *ngIf="dashboard.transactions.payout.amount_details">
-                          <ion-row *ngFor="let detail of dashboard.transactions.payout.amount_details;">
+                        <ion-list size="12" *ngIf="transactionGroup.payout.amount_details">
+                          <ion-row *ngFor="let detail of transactionGroup.payout.amount_details;">
                             <ion-col size-md="4" size-sm="3" size="8"
                               class="cell-flex cell-flex-left cell-flex-center-vertical">
                               <ion-label class="cell-padding-2x x-small-text">&bull;
@@ -361,8 +390,8 @@
                         </ion-col>
                         <ion-col size="4" size-sm="6" size-xs="7">
                           <ion-label>
-                            {{dashboard.transactions.payout.currency_code}}
-                            {{dashboard.transactions.payout.paid}}
+                            {{transactionGroup.payout.currency_code}}
+                            {{transactionGroup.payout.paid}}
                           </ion-label>
                         </ion-col>
                       </ion-item>
@@ -372,8 +401,8 @@
                         </ion-col>
                         <ion-col size="4" size-sm="6" size-xs="7">
                           <ion-label>
-                            {{dashboard.transactions.payout.currency_code}}
-                            {{dashboard.transactions.payout.overpaid}}
+                            {{transactionGroup.payout.currency_code}}
+                            {{transactionGroup.payout.overpaid}}
                           </ion-label>
                         </ion-col>
                       </ion-item>
@@ -381,11 +410,11 @@
                   </ion-col>
                 </ion-row>
                 <ion-row
-                  *ngIf="dashboard.transactions.payout.action_required || (dashboard.transactions.payout.requests && dashboard.transactions.payout.requests.length >= 1)"
+                  *ngIf="(activeTransactionSegment !== 'on_hold' && transactionGroup.payout.action_required) || (transactionGroup.payout.requests && transactionGroup.payout.requests.length >= 1)"
                   class="ion-justify-content-center">
                   <ion-col size="12" class="cell cell-flex cell-flex-center cell-padding-3x">
-                    <ion-button color="primary" (click)="showPayout(dashboard.transactions.payout)">
-                      {{dashboard.transactions.payout.action_required ?
+                    <ion-button color="primary" (click)="showPayout(transactionGroup.payout)">
+                      {{transactionGroup.payout.action_required ?
                       strings.getString("request_payout_txt") :
                       strings.getString("view_history_txt")}}
                     </ion-button>
@@ -412,8 +441,8 @@
                       </ion-col>
                       <ion-col size="12" position="center">
                         <ion-label class="xxx-large-text bold" color="success">
-                          {{dashboard.transactions.payin.currency_code}}
-                          {{dashboard.transactions.payin.balance}}
+                          {{transactionGroup.payin.currency_code}}
+                          {{transactionGroup.payin.balance}}
                         </ion-label>
                       </ion-col>
                     </ion-row>
@@ -427,13 +456,13 @@
                           </ion-col>
                           <ion-col size="4" size-sm="6" size-xs="7">
                             <ion-label>
-                              {{dashboard.transactions.payin.currency_code}}
-                              {{dashboard.transactions.payin.amount}}
+                              {{transactionGroup.payin.currency_code}}
+                              {{transactionGroup.payin.amount}}
                             </ion-label>
                           </ion-col>
                         </ion-item>
-                        <ion-list size="12" *ngIf="dashboard.transactions.payin.amount_details">
-                          <ion-row *ngFor="let detail of dashboard.transactions.payin.amount_details;">
+                        <ion-list size="12" *ngIf="transactionGroup.payin.amount_details">
+                          <ion-row *ngFor="let detail of transactionGroup.payin.amount_details;">
                             <ion-col size-md="4" size-sm="3" size="8"
                               class="cell-flex cell-flex-left cell-flex-center-vertical">
                               <ion-label class="cell-padding-2x x-small-text">&bull;
@@ -477,8 +506,8 @@
                         </ion-col>
                         <ion-col size="4" size-sm="6" size-xs="7">
                           <ion-label>
-                            {{dashboard.transactions.payin.currency_code}}
-                            {{dashboard.transactions.payin.paid}}
+                            {{transactionGroup.payin.currency_code}}
+                            {{transactionGroup.payin.paid}}
                           </ion-label>
                         </ion-col>
                       </ion-item>
@@ -488,8 +517,8 @@
                         </ion-col>
                         <ion-col size="4" size-sm="6" size-xs="7">
                           <ion-label>
-                            {{dashboard.transactions.payin.currency_code}}
-                            {{dashboard.transactions.payin.overpaid}}
+                            {{transactionGroup.payin.currency_code}}
+                            {{transactionGroup.payin.overpaid}}
                           </ion-label>
                         </ion-col>
                       </ion-item>
@@ -497,17 +526,17 @@
                   </ion-col>
                 </ion-row>
                 <ion-row
-                  *ngIf="dashboard.transactions.payin.action_required || (dashboard.transactions.payin.requests && dashboard.transactions.payin.requests.length >= 1)"
+                  *ngIf="(activeTransactionSegment !== 'on_hold' && transactionGroup.payin.action_required) || (transactionGroup.payin.requests && transactionGroup.payin.requests.length >= 1)"
                   class="ion-justify-content-center">
-                  <ion-col *ngIf="dashboard.transactions.payin.action_required" class="cell cell-flex cell-flex-center">
+                  <ion-col *ngIf="transactionGroup.payin.action_required" class="cell cell-flex cell-flex-center">
                     <ion-label class="small-text" color="danger">
                       {{strings.getString("pay_before_txt")}}
-                      {{dashboard.transactions.payin.last_day_to_action}}
+                      {{transactionGroup.payin.last_day_to_action}}
                     </ion-label>
                   </ion-col>
                   <ion-col size="12" class="cell cell-flex cell-flex-center cell-padding-3x">
-                    <ion-button color="primary" (click)="showPayIn(dashboard.transactions.payin)">
-                      {{dashboard.transactions.payin.action_required ?
+                    <ion-button color="primary" (click)="showPayIn(transactionGroup.payin)">
+                      {{transactionGroup.payin.action_required ?
                       strings.getString("make_payment_txt") :
                       strings.getString("view_history_txt")}}
                     </ion-button>
@@ -520,16 +549,9 @@
       </ion-grid>
     </div>
   </div>
-
   <br /><br /><br />
-  <ion-fab *ngIf="dashboard!=null && platform.is('cordova')" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab *ngIf="dashboard!=null && (!is_mobile() || is_tablet())" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="showScanCode()">
-      <ion-icon name="qr-code"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-  <ion-fab *ngIf="dashboard!=null && !platform.is('cordova') && webScanAvailable" vertical="bottom" horizontal="end"
-    slot="fixed">
-    <ion-fab-button (click)="showWebScanCode()">
       <ion-icon name="qr-code"></ion-icon>
     </ion-fab-button>
   </ion-fab>

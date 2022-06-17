@@ -6,7 +6,8 @@ import { OauthGrantType } from "busarm-oauth-client-js";
 import { Strings } from "../../resources";
 import { ApiResponseType } from "../../helpers/Api";
 import { PageController } from "../page-controller";
-import { ToastType, Utils } from "../../helpers/Utils";
+import { Utils } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { SessionService } from "../../services/app/SessionService";
 import { Urls } from "../../helpers/Urls";
 import { CONFIGS } from "../../../environments/environment";
@@ -47,17 +48,21 @@ export class LoginPage extends PageController {
     }
   }
 
+  private isProccessing = false
   /**
    * Process Login
    */
   public processLogin() {
+    if(this.isProccessing) return;
     // Show Loader
     this.showLoading().then(() => {
+      this.isProccessing = true;
       this.instance.authService
         .login(this.username, this.password)
         .then(async (success) => {
           // Hide Loader
           await this.hideLoading();
+          this.isProccessing = false;
           if (success) {
             if (this.redirectUri) {
               // Set Redirect uri as root
@@ -82,6 +87,7 @@ export class LoginPage extends PageController {
               : Strings.getString("error_unexpected"),
             ToastType.ERROR
           );
+          this.isProccessing = false;
         });
     });
   }
@@ -103,7 +109,9 @@ export class LoginPage extends PageController {
             CONFIGS.oauth_scopes,
             Urls.partnerOauthRedirectUrl,
             this.username,
-            Utils.getCurrentSignature(await this.instance.sessionService.getPing())
+            Utils.getCurrentSignature(
+              await this.instance.sessionService.getPing()
+            )
           );
         },
       }

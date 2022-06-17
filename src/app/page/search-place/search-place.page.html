@@ -1,85 +1,79 @@
 <ion-header>
-    <ion-toolbar color="primary">
-        <ion-title>{{title}}</ion-title>
-        <ion-buttons slot="end">
-            <ion-button (click)="dismiss()">
-                <ion-icon slot="icon-only" name="close"></ion-icon>
-            </ion-button>
-        </ion-buttons>
-    </ion-toolbar>
-    <ion-searchbar
-            showCancelButton="focus"
-            placeholder="{{strings.getString('location_search_hint')}}"
-            (input)="onInput($event)"
-            (search)="onInput($event)"
-            (clear)="onClear($event)"
-            [animated]="true"
-            inputmode="search"
-            enterkeyhint="search"
-            [autocomplete]="false"
-            [autocorrect]="false"
-            [(ngModel)]="searchText">
-    </ion-searchbar>
+  <ion-toolbar color="primary">
+    <ion-title>{{title}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar showCancelButton="focus" placeholder="{{strings.getString('location_search_hint')}}"
+    (input)="onInput($event)" (search)="onInput($event)" (clear)="onClear($event)" [animated]="true" inputmode="search"
+    enterkeyhint="search" [autocomplete]="false" [autocorrect]="false" [(ngModel)]="searchText">
+  </ion-searchbar>
 </ion-header>
 <ion-content>
-    <div #mapRef id="map" style="width: 100%; height: 100%"></div>
-    <div *ngIf="isLoading==true"
-         class="cell cell-flex cell-flex-center"
-         style="position: absolute !important; top: -20px; bottom: 0; left: 0; right: 0; width: 100%;height: 100%; z-index: 500 !important;">
-        <ion-spinner name="bubbles"></ion-spinner>
-    </div>
-    <div style="position: absolute !important; top: 0; width: 100%; height: auto; z-index: 300 !important;"
-         *ngIf="searchText!=null && searchText.length>=1">
-        <ion-card>
-            <ion-card-content style="min-height: 250px;">
-                <!--Loading view - Show if nothing hasn't been loaded yet-->
-                <app-loader  *ngIf="autoCompleteItems == null" [text]="strings.getString('loading_txt')"></app-loader>
-                <!--Not found view -->
-                <app-loader *ngIf="autoCompleteItems!=null && autoCompleteItems.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
+  <div #mapRef id="map" style="width: 100%; height: 100%"></div>
+  <div *ngIf="isLoading==true" class="cell cell-flex cell-flex-center"
+    style="position: absolute !important; top: -20px; bottom: 0; left: 0; right: 0; width: 100%;height: 100%; z-index: 500 !important;">
+    <ion-spinner name="bubbles"></ion-spinner>
+  </div>
+  <div style="position: absolute !important; top: 0; width: 100%; height: auto; z-index: 300 !important;"
+    *ngIf="searchText!=null && searchText.length>=1">
+    <ion-card>
+      <ion-card-content style="min-height: 250px;">
 
-                <ion-list *ngIf="autoCompleteItems!=null && autoCompleteItems.length>=1">
-                    <ion-item *ngFor="let item of autoCompleteItems; let i = index" [attr.index]="i" (click)="getPlaceDetails(item.placeId)">
-                        <ion-col size="2" class="cell cell-center cell-flex cell-flex-center ">
-                            <ion-icon name="pin" class="danger"></ion-icon>
-                        </ion-col>
-                        <ion-col size="10">
-                            <div class="cell">
-                                <div>
-                                    <ion-label class="cell-title cell-left">{{item.name}}</ion-label>
-                                </div>
-                                <div>
-                                    <ion-label class="cell-content cell-left">{{item.formatted_address}}</ion-label>
-                                </div>
-                            </div>
-                        </ion-col>
-                    </ion-item>
-                </ion-list>
-            </ion-card-content>
-        </ion-card>
-    </div>
-    <div style="position: absolute !important; bottom: 0; width: 100%; height: auto; z-index: 200 !important;"
-         *ngIf="selectedPlace!=null">
-        <ion-card>
-            <ion-card-content>
-                <div class="cell cell-flex cell-flex-center">
-                    <ion-button class="iconBt" (click)="selectedPlace=null">
-                        <ion-icon color="primary" slot="icon-only" name="close"></ion-icon>
-                    </ion-button>
+        <!--Loading view - Show if nothing hasn't been loaded yet-->
+        <app-loader *ngIf="autoCompleteItems==null || autoCompleteItems.length == 0"
+          [text]="strings.getString('loading_txt')" [failed]="autoCompleteItems!=null && autoCompleteItems.length == 0"
+          [error]="strings.getString('not_found_txt')">
+        </app-loader>
+
+        <ion-list *ngIf="autoCompleteItems!=null && autoCompleteItems.length>=1">
+          <ion-item *ngFor="let item of autoCompleteItems; let i = index" [attr.index]="i"
+            (click)="getPlaceDetails(item.placeId)">
+            <ion-col size="2" class="cell cell-center cell-flex cell-flex-center ">
+              <ion-icon name="pin" class="danger"></ion-icon>
+            </ion-col>
+            <ion-col size="10">
+              <div class="cell">
+                <div>
+                  <ion-label class="cell-title cell-left">{{item.name}}</ion-label>
                 </div>
                 <div>
-                    <div class="cell cell-flex cell-flex-center">
-                        <ion-label class="cell-title">{{selectedPlace.name}}</ion-label>
-                    </div>
-                    <div class="cell cell-flex cell-flex-center">
-                        <ion-label class="cell-content">{{selectedPlace.formatted_address}}</ion-label>
-                    </div>
+                  <ion-label class="cell-content cell-left">{{item.formatted_address}}</ion-label>
                 </div>
-                <div class="cell cell-flex cell-flex-center">
-                    <ion-button color="primary" (click)="dismiss()">
-                        {{strings.getString("select_txt")}}
-                        <ion-icon slot="start" color="secondary" name="add-circle-outline"></ion-icon></ion-button>
-                </div>
-            </ion-card-content>
-        </ion-card>
-    </div>
+              </div>
+            </ion-col>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <div style="position: absolute !important; bottom: 0; width: 100%; height: auto; z-index: 200 !important;"
+    *ngIf="selectedPlace!=null">
+    <ion-card style="margin: 16px;">
+      <ion-card-content style="padding: 10px;">
+        <div class="cell cell-flex cell-flex-center">
+          <ion-button class="iconBt" (click)="selectedPlace=null">
+            <ion-icon color="danger" slot="icon-only" name="close-circle-outline"></ion-icon>
+          </ion-button>
+        </div>
+        <div>
+          <div class="cell cell-flex cell-flex-center">
+            <ion-label class="cell-title cell-center">{{selectedPlace.name}}</ion-label>
+          </div>
+          <div class="cell cell-flex cell-flex-center">
+            <ion-label class="cell-content cell-center">{{selectedPlace.formatted_address}}</ion-label>
+          </div>
+        </div>
+        <div class="cell cell-flex cell-flex-center">
+          <ion-button color="primary" (click)="dismiss()">
+            {{strings.getString("select_txt")}}
+            <ion-icon slot="start" color="secondary" name="add-circle-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

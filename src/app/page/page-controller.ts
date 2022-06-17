@@ -1,16 +1,15 @@
-import { Component, OnChanges, OnDestroy, OnInit } from "@angular/core";
-import { Params } from "@angular/router";
-import { MD5 } from "crypto-js";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AppComponent } from "../app.component";
-import { ToastType, Utils } from "../helpers/Utils";
+import { Utils } from "../helpers/Utils";
+import { ToastType } from "../services/app/AlertService";
 import { Assets, Strings } from "../resources";
-import { SessionService } from "../services/app/SessionService";
 import { User } from "../models/User/User";
 import { Session } from "../models/Session";
 import { CONFIGS } from "../../environments/environment";
 import { Events } from "../services/app/Events";
 import { Subscription } from "rxjs";
 import { Api } from "../helpers/Api";
+import { AnimationService } from "../services/app/AnimationService";
 
 @Component({
   template: "",
@@ -20,6 +19,7 @@ export class PageController implements OnInit, OnDestroy {
   public strings = Strings;
   public assets = Assets;
 
+  protected animation: AnimationService;
   protected events: Events;
   protected subscriptions: Subscription = new Subscription();
 
@@ -38,6 +38,7 @@ export class PageController implements OnInit, OnDestroy {
     this.loadUser();
     // Load common event handler
     this.events = this.instance.events;
+    this.animation = this.instance.animationService;
   }
 
   /* lifecycle events */
@@ -53,7 +54,7 @@ export class PageController implements OnInit, OnDestroy {
     this.clearRouteParams();
     // Clear intervals
     if (this.interval) {
-      clearInterval(this.interval);
+      this.clearInterval();
     }
     // Subscriptions
     if (this.subscriptions) {
@@ -72,12 +73,12 @@ export class PageController implements OnInit, OnDestroy {
     this.clearRouteParams();
     // Clear intervals
     if (this.interval) {
-      clearInterval(this.interval);
+      this.clearInterval();
     }
   }
   public ionViewDidLeave() {
     if (this.interval) {
-      clearInterval(this.interval);
+      this.clearInterval();
     }
   }
 
@@ -245,18 +246,24 @@ export class PageController implements OnInit, OnDestroy {
    * Set Interval
    * @param handler
    * @param ms
-   * @param timeout
    * @param stopPrevious
    */
-  public async setInterval(
+  public setInterval(
     handler?: TimerHandler,
     ms?: number,
     stopPrevious: boolean = true
   ) {
     if (stopPrevious && this.interval) {
-      clearInterval(this.interval);
+      this.clearInterval();
     }
     this.interval = setInterval(handler, ms);
+  }
+
+  /**
+   * Clear Interval
+   */
+  public clearInterval() {
+    clearInterval(this.interval);
   }
 
   /**Set Country*/
@@ -289,5 +296,42 @@ export class PageController implements OnInit, OnDestroy {
         });
       });
     }
+  }
+
+  /** Current platform is cordova */
+  public is_cordova() {
+    return this.instance.platform.is("cordova");
+  }
+  /** Current platform is ios */
+  public is_ios() {
+    return (
+      this.instance.platform.is("ios") ||
+      this.instance.platform.is("ipad") ||
+      this.instance.platform.is("iphone")
+    );
+  }
+  /** Current platform is android */
+  public is_android() {
+    return (
+      this.instance.platform.is("android") ||
+      this.instance.platform.is("phablet")
+    );
+  }
+  /** Current platform is mobile */
+  public is_mobile() {
+    return this.instance.platform.is("mobile");
+  }
+  /** Current platform is tablet */
+  public is_tablet() {
+    return this.instance.platform.is("tablet");
+  }
+
+  /**
+   * Variable validataes to true
+   * @param {any} data
+   * @returns
+   */
+  public is_true(data: any) {
+    return data!==null && (data == true || data == 1 || data == '1');
   }
 }

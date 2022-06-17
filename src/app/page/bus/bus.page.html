@@ -1,113 +1,102 @@
 <ion-header>
-    <ion-toolbar color="primary">
-        <ion-buttons slot="start">
-            <ion-menu-button color="secondary">
-            </ion-menu-button>
-        </ion-buttons>
-        <ion-title>
-            {{strings.getString("buses_title_txt")}}
-        </ion-title>
-        <ion-buttons slot="end">
-            <ion-button (click)="refreshBusesView()">
-                <ion-icon slot="icon-only" class="secondary" name="refresh">
-                </ion-icon>
-            </ion-button>
-        </ion-buttons>
-    </ion-toolbar>
-    <ion-searchbar
-            showCancelButton="focus"
-            placeholder="{{strings.getString('bus_search_hint')}}"
-            (input)="onInput($event)"
-            (search)="onInput($event,true)"
-            (clear)="onClear($event)"
-            (cancel)="onClear($event)"
-            [animated]="true"
-            inputmode="search"
-            enterkeyhint="search"
-            [autocomplete]="false"
-            [autocorrect]="false"
-            [(ngModel)]="searchText">
-    </ion-searchbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button color="secondary">
+      </ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{strings.getString("buses_title_txt")}}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refreshBusesView()">
+        <ion-icon slot="icon-only" class="secondary" name="refresh">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar showCancelButton="focus" placeholder="{{strings.getString('bus_search_hint')}}"
+    (input)="onInput($event)" (search)="onInput($event,true)" (clear)="onClear($event)" (cancel)="onClear($event)"
+    [animated]="true" inputmode="search" enterkeyhint="search" [autocomplete]="false" [autocorrect]="false"
+    [(ngModel)]="searchText">
+  </ion-searchbar>
 </ion-header>
 
 <ion-content class="ion-padding">
 
-    <!--Refresher -->
-    <ion-refresher
-            slot="fixed"
-            [pullMin]="80"
-            (ionRefresh)="refreshBusesView($event)"
-            slot="fixed">
-        <ion-refresher-content
-                [pullingText]="strings.getString('pull_refresh_txt')"
-                [refreshingText]="strings.getString('refreshing_txt')"
-                [refreshingSpinner]="'circles'">
-        </ion-refresher-content>
-    </ion-refresher>
+  <!--Refresher -->
+  <ion-refresher *ngIf="!is_ios()" slot="fixed" [pullMin]="80" (ionRefresh)="refreshBusesView($event)" slot="fixed">
+    <ion-refresher-content [pullingText]="strings.getString('pull_refresh_txt')"
+      [refreshingText]="strings.getString('refreshing_txt')" [refreshingSpinner]="'circles'">
+    </ion-refresher-content>
+  </ion-refresher>
 
-    <!--Loading view - Show if nothing hasn't been loaded yet-->
-    <app-loader *ngIf="currentBuses==null" [text]="strings.getString('loading_txt')"></app-loader>
-    <!--Not found view -->
-    <app-loader *ngIf="currentBuses!=null && currentBuses.length == 0" [failed]="true" [text]="strings.getString('not_found_txt')"></app-loader>
+  <!--Loading view - Show if nothing hasn't been loaded yet-->
+  <app-loader *ngIf="currentBuses==null || currentBuses.length == 0" [text]="strings.getString('loading_txt')"
+    [failed]="currentBuses!=null && currentBuses.length == 0" [error]="strings.getString('not_found_txt')">
+  </app-loader>
 
-    <!--Bus Images-->
-    <div id="dashCards" *ngIf="currentBuses!=null && currentBuses.length > 0">
-        <ion-grid>
-            <ion-row>
-                <ion-col size="12" size-md="6" size-xl="4" *ngFor="let bus of currentBuses; let i = index" [attr.index]="i">
-                    <ion-card>
-                        <ion-card-header>
-                            <ion-row>
-                                <ion-col size="6" class="cell cell-flex cell-flex-left">
-                                    <div class="cell cell-center cell-flex cell-flex-center {{getBusStatusClass(bus.available=='1')}}">{{getBusStatus(bus.available=='1')}}</div>
-                                </ion-col>
-                            </ion-row>
-                        </ion-card-header>
-                        <ion-card-content>
-                            <ion-row>
-                                <ion-col size-sm="3" size="4" class="cell cell-flex cell-flex-center">
-                                    <ion-thumbnail *ngIf="bus.images!=null && bus.images.length>0">
-                                        <ion-img class="img thumbnail round-corner" (ionError)="bus.images[0].img = assets.getPath('placeholder')" [src]="bus.images[0].img">
-                                        </ion-img>
-                                    </ion-thumbnail>
-                                    <ion-icon *ngIf="bus.images==null || bus.images.length<1" name="bus" size="large"> </ion-icon>
-                                </ion-col>
-                                <ion-col size-sm="5" size="8" class="cell cell-flex cell-flex-center">
-                                    <div class="cell">
-                                        <div>
-                                            <ion-label class="cell-title cell-left">{{bus.plate_num}}</ion-label>
-                                        </div>
-                                        <div>
-                                            <ion-label class="cell-sub cell-left">{{strings.getString("seats_txt")}} - {{bus.seats}}</ion-label>
-                                        </div>
-                                        <div>
-                                            <ion-label class="cell-content cell-left">{{strings.getString("type_txt")}} - {{bus.type}}</ion-label>
-                                        </div>
-                                    </div>
-                                </ion-col>
-                                <ion-col size-sm="4" size="12" class="cell cell-center  cell-flex cell-flex-center ">
-                                    <div>
-                                        <div class="cell cell-center ">
-                                            <ion-button color="primary" (click)="showBus(bus)">
-                                                <ion-icon name="open" slot="start">
-                                                </ion-icon>
-                                                {{strings.getString("view_txt")}}
-                                            </ion-button>
-                                        </div>
-                                    </div>
-                                </ion-col>
-                            </ion-row>
-                        </ion-card-content>
-                    </ion-card>
+  <!--Bus Images-->
+  <div id="dashCards" *ngIf="currentBuses!=null && currentBuses.length > 0">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="6" size-xl="4" *ngFor="let bus of currentBuses; let i = index" [attr.index]="i">
+          <ion-card>
+            <ion-card-header>
+              <ion-row>
+                <ion-col size="6" class="cell cell-flex cell-flex-left">
+                  <div class="cell cell-center cell-flex cell-flex-center {{getBusStatusClass(bus.available=='1')}}">
+                    {{getBusStatus(bus.available=='1')}}</div>
                 </ion-col>
-            </ion-row>
-        </ion-grid>
-    </div>
-    <br><br><br>
-    <ion-fab  *ngIf="busTypes!=null && user!=null && user.is_admin" vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button (click)="showAddBus()">
-            <ion-icon name="add">
-            </ion-icon>
-        </ion-fab-button>
-    </ion-fab>
+              </ion-row>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-row>
+                <ion-col size-sm="3" size="4" class="cell cell-flex cell-flex-center">
+                  <ion-thumbnail *ngIf="bus.images!=null && bus.images.length>0">
+                    <ion-img class="img thumbnail round-corner"
+                      (ionError)="bus.images[0].img = assets.getPath('placeholder')" [src]="bus.images[0].img">
+                    </ion-img>
+                  </ion-thumbnail>
+                  <ion-icon *ngIf="bus.images==null || bus.images.length<1" name="bus" size="large"> </ion-icon>
+                </ion-col>
+                <ion-col size-sm="5" size="8" class="cell cell-flex cell-flex-center">
+                  <div class="cell">
+                    <div>
+                      <ion-label class="cell-title cell-left">{{bus.plate_number}}</ion-label>
+                    </div>
+                    <div>
+                      <ion-label class="cell-sub cell-left">{{strings.getString("seats_txt")}} - {{bus.seats}}
+                      </ion-label>
+                    </div>
+                    <div>
+                      <ion-label class="cell-content cell-left">{{strings.getString("type_txt")}} - {{bus.type}}
+                      </ion-label>
+                    </div>
+                  </div>
+                </ion-col>
+                <ion-col size-sm="4" size="12" class="cell cell-center  cell-flex cell-flex-center ">
+                  <div>
+                    <div class="cell cell-center ">
+                      <ion-button color="primary" (click)="showBus(bus)">
+                        <ion-icon name="open" slot="start">
+                        </ion-icon>
+                        {{strings.getString("view_txt")}}
+                      </ion-button>
+                    </div>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <br><br><br>
+  <ion-fab *ngIf="busTypes!=null && user!=null && user.is_admin" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="showAddBus()">
+      <ion-icon name="add">
+      </ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

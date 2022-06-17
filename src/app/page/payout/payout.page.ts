@@ -3,7 +3,8 @@ import { PageController } from "../page-controller";
 import { Bank } from "../../models/Bank";
 import { PaymentMethod } from "../../models/Transaction/PaymentMethod";
 import { PayOutTransaction } from "../../models/Transaction/PayOutTransaction";
-import { ToastType, Utils } from "../../helpers/Utils";
+import { Utils } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { Api } from "../../helpers/Api";
 
 @Component({

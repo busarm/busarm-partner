@@ -5,7 +5,8 @@ import { LocationRequest } from "../../../models/Location/LocationRequest";
 import { Country } from "../../../models/Country";
 import { PageController } from "../../page-controller";
 import { SearchPlacePage } from "../../search-place/search-place.page";
-import { ToastType, Utils } from "../../../helpers/Utils";
+import { Utils } from "../../../helpers/Utils";
+import { ToastType } from "../../../services/app/AlertService";
 import { Api } from "../../../helpers/Api";
 import { Strings } from "../../../resources";
 
@@ -163,7 +164,7 @@ export class AddLocationPage extends PageController {
     ) {
       place.address_components.forEach((address) => {
         if (address.types != null && address.types.length > 0) {
-          address.types.forEach((type) => {
+          address.types.forEach((type: string) => {
             switch (type) {
               case "country":
                 location.country = location.country
@@ -181,6 +182,11 @@ export class AddLocationPage extends PageController {
               case "locality":
                 location.city = location.city
                   ? location.city
+                  : address.long_name;
+                break;
+              case "route":
+                location.address = location.address
+                  ? location.address
                   : address.long_name;
                 break;
             }

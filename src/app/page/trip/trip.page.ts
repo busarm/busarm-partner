@@ -3,7 +3,8 @@ import { AlertController, ModalController } from "@ionic/angular";
 import { Network } from "@ionic-native/network/ngx";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
-import { ToastType, Utils } from "../../helpers/Utils";
+import { Utils } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { BusType } from "../../models/Bus/BusType";
 import { Status } from "../../models/Status";
 import { TicketType } from "../../models/Ticket/TicketType";
@@ -14,7 +15,7 @@ import { AddTripPage } from "./add-trip/add-trip.page";
 import {
   DatePickerType,
   SelectDatePage,
-} from "../select-date/select-date.page";
+} from "../../components/select-date/select-date.page";
 
 type GroupedTrips = { date: string; list: Trip[] };
 @Component({
@@ -88,7 +89,8 @@ export class TripPage extends PageController {
       this.events.tripsUpdated.asObservable().subscribe(async (id) => {
         await super.ngOnInit();
         if (
-          !this.trips || this.trips.length == 0 ||
+          !this.trips ||
+          this.trips.length == 0 ||
           (this.trips &&
             (!id || this.trips.some((trip) => trip.trip_id === id)))
         ) {
@@ -102,9 +104,9 @@ export class TripPage extends PageController {
       this.events.busesUpdated.asObservable().subscribe(async (id) => {
         await super.ngOnInit();
         if (
-          !this.trips || this.trips.length == 0 ||
-          (this.trips &&
-            (!id || this.trips.some((trip) => trip.bus_id === id)))
+          !this.trips ||
+          this.trips.length == 0 ||
+          (this.trips && (!id || this.trips.some((trip) => trip.bus_id === id)))
         ) {
           this.loadTripsView();
         }
@@ -151,7 +153,7 @@ export class TripPage extends PageController {
           trip.dropoff_loc_name.match(reg) ||
           trip.dropoff_city.match(reg) ||
           trip.agent_email.match(reg) ||
-          (trip.bus && trip.bus.plate_num.match(reg))
+          (trip.bus && trip.bus.plate_number.match(reg))
         );
       });
       this.currentTrips = this.groupTrips(list);
@@ -163,7 +165,7 @@ export class TripPage extends PageController {
   public groupTrips(trips: Trip[]): GroupedTrips[] {
     let list: GroupedTrips[] = [];
     for (let trip of trips) {
-      let date = new Date(trip.trip_date).toDateString();
+      let date = Utils.parseServerDate(trip.trip_date).toDateString();
       let match = list.find((t) => t.date === date);
       if (match) {
         let matchIndex = list.findIndex((t) => t.date === match.date);
@@ -226,6 +228,8 @@ export class TripPage extends PageController {
         maxDate: this.maxDate,
         type: DatePickerType.MonthYear,
       },
+      enterAnimation: (el: Element) => this.animation.modalZoomInEnterAnimation(el),
+      leaveAnimation: (el: Element) => this.animation.modalZoomOutLeaveAnimation(el),
     });
     chooseModal.onDidDismiss().then((data) => {
       if (data.data && data.data !== NaN && data.data !== null) {

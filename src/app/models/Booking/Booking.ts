@@ -5,6 +5,6 @@ export interface Booking {
   currency_code: string;
   total: number;
   payment_type: string;
-  date_created: string;
+  created_at: string;
   updated_at: string;
 }

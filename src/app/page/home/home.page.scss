@@ -12,3 +12,19 @@
     color: var(--text-color-light) !important;
   }
 }
+
+ion-tab-bar {
+  min-height: 65px !important;
+  ion-fab-button {
+    --background: var(--ion-color-primary-tint);
+    --box-shadow: none;
+  }
+  ion-tab-button {
+    ion-label {
+      max-width: 80px;
+    }
+  }
+  ion-fab-button, ion-tab-button {
+    max-width: 20%;
+  }
+}

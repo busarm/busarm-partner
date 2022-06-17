@@ -44,7 +44,7 @@
                             <ion-label color="dark">{{accountNumber}}</ion-label>
                         </ion-col>
                     </ion-row>
-    
+
                 </ion-list>
                 <br>
                 <ion-list>
@@ -85,6 +85,7 @@
                 <div class="cell cell-center danger">
                     <span class="x-small-text">{{payIn.info}}</span>
                 </div>
+                <br/>
                 <div>
                     <ion-button expand="full" color="primary" type="submit"
                                 [disabled]="!payInForm.form.valid">
@@ -95,7 +96,7 @@
         </ion-col>
     </ion-row>
     <br>
-    <ion-row *ngIf="payIn!=null && payIn.requests!=null && payIn.requests.length >= 1"> 
+    <ion-row *ngIf="payIn!=null && payIn.requests!=null && payIn.requests.length >= 1">
         <ion-col size="12" class="cell cell-flex cell-flex-center">
             <ion-label class="cell cell-center section-title">{{strings.getString('history_txt')}}</ion-label>
         </ion-col>
@@ -112,7 +113,7 @@
                                     </div>
                                 </ion-col>
                                 <ion-col size="8" class="cell cell-right cell-flex cell-flex-right">
-                                    <ion-label class="cell-content">{{request.date_created}}
+                                    <ion-label class="cell-content">{{request.created_at}}
                                     </ion-label>
                                 </ion-col>
                             </ion-row>
@@ -136,6 +137,7 @@
                                     <h3 class="cell-content">{{request.currency_code}} {{request.amount}}</h3>
                                 </ion-label>
                             </div>
+                            <br/>
                             <div *ngIf="request.payment_url!=null">
                                 <ion-button expand="full" color="success" type="button" (click)="gotoPayment(request.payment_url)">
                                     {{strings.getString("payment_not_made_txt")}}
@@ -145,7 +147,7 @@
                     </ion-card>
                 </ion-col>
             </ion-row>
-        </ion-grid> 
+        </ion-grid>
     </ion-row>
 </ion-content>
 

@@ -92,6 +92,8 @@
                 <div class="cell cell-centerdanger">
                     <span class="x-small-text">{{payout.info}}</span>
                 </div>
+                <br/>
+                <br/>
                 <div>
                     <ion-button expand="full" color="primary" type="submit"
                                 [disabled]="!payoutForm.form.valid || selectedMethod==null || receiverBankCode==null">
@@ -102,7 +104,7 @@
         </ion-col>
     </ion-row>
     <br>
-    <ion-row *ngIf="payout!=null && payout.requests!=null && payout.requests.length >= 1"> 
+    <ion-row *ngIf="payout!=null && payout.requests!=null && payout.requests.length >= 1">
         <ion-col size="12" class="cell cell-flex cell-flex-center">
             <ion-label class="cell cell-centersection-title">{{strings.getString('history_txt')}}</ion-label>
         </ion-col>
@@ -119,7 +121,7 @@
                                     </div>
                                 </ion-col>
                                 <ion-col size="8" class="cell cell-right cell-flex cell-flex-right">
-                                    <ion-label class="cell-content">{{request.date_created}}
+                                    <ion-label class="cell-content">{{request.created_at}}
                                     </ion-label>
                                 </ion-col>
                             </ion-row>
@@ -175,7 +177,7 @@
                     </ion-card>
                 </ion-col>
             </ion-row>
-        </ion-grid>  
+        </ion-grid>
     </ion-row>
 </ion-content>
 

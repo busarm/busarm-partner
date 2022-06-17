@@ -1,23 +1,21 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { PageController } from "../page-controller";
-import { ModalController, Platform } from "@ionic/angular";
+import { IonSegment, ModalController, Platform } from "@ionic/angular";
 import { BookingMonth } from "../../models/Booking/BookingMonth";
 import { PayOutTransaction } from "../../models/Transaction/PayOutTransaction";
 import { PayInTransaction } from "../../models/Transaction/PayInTransaction";
-import { Dashboard } from "../../models/Dashboard";
+import { Dashboard, TransactionGroup } from "../../models/Dashboard";
 import { Trip } from "../../models/Trip/Trip";
-import { BookingTrip } from "../../models/Booking/BookingTrip";
-import { ToastType, Utils } from "../../helpers/Utils";
+import { Utils } from "../../helpers/Utils";
+import { ToastType } from "../../services/app/AlertService";
 import { Api } from "../../helpers/Api";
 import { Strings } from "../../resources";
 import { ViewTripPage } from "../trip/view-trip/view-trip.page";
-import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import Chart, { ChartDataset } from "chart.js/auto";
-import { ViewBookingPage } from "../bookings/view-booking/view-booking.page";
 import { MD5 } from "crypto-js";
 import { ENVIRONMENT } from "../../../environments/environment";
 import { ENV } from "../../../environments/ENV";
-// import { WebScannerPage } from './web-scanner/web-scanner.page';
+import { ScannerService } from "../../services/app/ScannerService";
 
 @Component({
   selector: "app-dashboard",
@@ -26,24 +24,24 @@ import { ENV } from "../../../environments/ENV";
 })
 export class DashboardPage extends PageController {
   @ViewChild("bookingCanvas") bookingCanvas: ElementRef<HTMLCanvasElement>;
+  activeTransactionSegment: "on_hold" | "released" = "on_hold";
 
-  referenceCode: string = null;
   selectedBookingMonth: number = 0;
   dashboard: Dashboard = null;
   bookingMonths: BookingMonth[] = null;
+  transactionGroup: TransactionGroup = null;
 
   public webScanAvailable = false;
-
-  private isAlertShowing = false;
-  private isBookingShowing = false;
-  private isFindBookingProcessing = false;
-  private showBookingsInfo = false;
+  public isAlertShowing = false;
+  public isBookingShowing = false;
+  public isFindBookingProcessing = false;
+  public showBookingsInfo = false;
 
   private bookingsChart: Chart = null;
 
   constructor(
     public modalCtrl: ModalController,
-    private barcodeScanner: BarcodeScanner,
+    private scannerService: ScannerService,
     public platform: Platform
   ) {
     super();
@@ -107,25 +105,6 @@ export class DashboardPage extends PageController {
         }
       })
     );
-
-    /*Check if web scanning available */
-    if (!this.platform.is("cordova")) {
-      this.checkMediaDevice((available) => {
-        if (available) {
-          /*Web scanner event*/
-          this.subscriptions.add(
-            this.events.webScannerCompleted
-              .asObservable()
-              .subscribe(async (code) => {
-                if (this.referenceCode !== code) {
-                  this.referenceCode = code;
-                  this.findBooking();
-                }
-              })
-          );
-        }
-      });
-    }
   }
 
   public ngOnDestroy() {
@@ -156,28 +135,6 @@ export class DashboardPage extends PageController {
     /*Reload dashboard*/
     if (this.dashboard) {
       this.initDashboard();
-    }
-  }
-
-  /**Check if Media Device is available */
-  private checkMediaDevice(callback: (available: boolean) => any) {
-    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-      let checking = ["videoinput"];
-      navigator.mediaDevices
-        .enumerateDevices()
-        .then((devices) => {
-          this.webScanAvailable = devices.some((device) =>
-            checking.includes(device.kind)
-          );
-          callback(this.webScanAvailable);
-        })
-        .catch(() => {
-          this.webScanAvailable = false;
-          callback(this.webScanAvailable);
-        });
-    } else {
-      this.webScanAvailable = true;
-      callback(this.webScanAvailable);
     }
   }
 
@@ -247,6 +204,13 @@ export class DashboardPage extends PageController {
           Number(this.dashboard.bookings.verified) +
           Number(this.dashboard.bookings.canceled) >
         0;
+
+      // Set selectd transaction
+      if (this.activeTransactionSegment == "on_hold") {
+        this.transactionGroup = this.dashboard.transactions?.on_hold;
+      } else if (this.activeTransactionSegment == "released") {
+        this.transactionGroup = this.dashboard.transactions?.released;
+      }
 
       // Set up Charts
       this.setTimeout(500).then(() => {
@@ -418,65 +382,15 @@ export class DashboardPage extends PageController {
   /**Launch scan Qr Code page
    */
   async showScanCode() {
-    this.barcodeScanner
-      .scan({
-        resultDisplayDuration: 0,
-        disableSuccessBeep: false,
-        showTorchButton: true,
-      })
-      .then((barcodeData) => {
-        if (Utils.assertAvailable(barcodeData.text)) {
-          if (this.referenceCode !== barcodeData.text) {
-            this.referenceCode = barcodeData.text;
-            this.findBooking();
-          }
-        }
-      })
-      .catch((e) => {
-        this.showToastMsg(e, ToastType.ERROR);
-      });
-  }
-
-  /**Launch scan Qr Code for Web
-   */
-  async showWebScanCode() {
-    return this.navigate("web-scanner");
-  }
-
-  /**Search input event
-   * @param event
-   * @param {boolean} isSearch
-   */
-  public onInput(event, isSearch: boolean = false) {
-    if (event.isTrusted) {
-      if (
-        event.target.value &&
-        isSearch &&
-        event.target.value.length > 6 &&
-        !this.isFindBookingProcessing
-      ) {
-        this.referenceCode = String(event.target.value).toUpperCase().trim();
-        this.findBooking();
-      }
-    }
-  }
-
-  /**Reset Search bar
-   * @param event
-   */
-  public onClear(event) {
-    if (event.isTrusted) {
-      this.referenceCode = null;
-    }
+    this.scannerService.showScanCode();
   }
 
   /**Refresh View
    * @param event
    */
-  public refreshDashboardView(event?) {
+  public refreshDashboardView(event?: any) {
     this.loadDashboardView(true, () => {
       if (event) {
-        this.onClear(event);
         event.target.complete();
       }
     });
@@ -501,55 +415,6 @@ export class DashboardPage extends PageController {
         default:
           return "status-error";
       }
-    }
-  }
-
-  /**Launch Booking details
-   * @param {BookingTrip} booking
-   * @return {Promise<any>}
-   */
-  async showBooking(booking: BookingTrip): Promise<any> {
-    if (this.isBookingShowing) return;
-    let chooseModal = await this.modalCtrl.create({
-      component: ViewBookingPage,
-      componentProps: {
-        booking: booking,
-      },
-    });
-    chooseModal.onDidDismiss().then(() => {
-      this.referenceCode = null;
-      this.isBookingShowing = false;
-      return this.loadDashboardView();
-    });
-    return await chooseModal.present().then(() => {
-      this.isBookingShowing = true;
-    });
-  }
-
-  /**
-   * Search booking for reference number
-   */
-  private findBooking() {
-    if (this.referenceCode && !this.isFindBookingProcessing) {
-      this.isFindBookingProcessing = true;
-      this.showLoading().then(() => {
-        Api.validateBooking(this.referenceCode, ({ status, result, msg }) => {
-          this.hideLoading();
-          this.isFindBookingProcessing = false;
-          if (status) {
-            if (this.assertAvailable(result)) {
-              this.showBooking(result.data);
-            } else {
-              this.showToastMsg(
-                Strings.getString("error_unexpected"),
-                ToastType.ERROR
-              );
-            }
-          } else {
-            this.showToastMsg(msg, ToastType.ERROR);
-          }
-        });
-      });
     }
   }
 
@@ -604,5 +469,28 @@ export class DashboardPage extends PageController {
       } else if (force) await this.showToastMsg(msg, ToastType.ERROR);
       if (this.assertAvailable(completed)) completed();
     });
+  }
+
+  /**
+   * Transaction segment chnaged
+   * @param {CustomEvent<IonSegment>} event
+   */
+  public transactionSegmentChanged(event: CustomEvent<IonSegment>) {
+    if (event.detail.value == "on_hold") {
+      this.activeTransactionSegment = event.detail.value;
+      this.transactionGroup = this.dashboard?.transactions?.on_hold;
+    } else if (event.detail.value == "released") {
+      this.activeTransactionSegment = event.detail.value;
+      this.transactionGroup = this.dashboard?.transactions?.released;
+    }
+  }
+
+  /**
+   * Number formatter
+   * @param num
+   * @returns {string}
+   */
+  public nFormatter(num: number): string {
+    return Utils.nFormatter(num);
   }
 }

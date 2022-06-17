@@ -209,7 +209,8 @@ export class SearchPlacePage extends PageController {
   }
 
   /**Close Modal*/
-  dismiss() {
-    this.modalCtrl.dismiss(this.selectedPlace)
+  async dismiss() {
+    const modal = await this.modalCtrl.getTop();
+    if (modal) modal.dismiss(this.selectedPlace);
   }
 }

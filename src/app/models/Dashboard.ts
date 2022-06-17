@@ -6,19 +6,23 @@ import { PayInTransaction } from "./Transaction/PayInTransaction";
 import { AmountDetails } from "./AmountDetails";
 import { Alert } from "./Alert";
 
-
 export interface Dashboard {
   alert: Alert;
   active_trips: Trip[];
   booking_months?: BookingMonth[];
   bookings?: BookingGroup;
   transactions?: {
-    bookings: {
-      currency_code: string;
-      amount: number;
-      amount_details: AmountDetails[];
-    };
-    payin: PayInTransaction;
-    payout: PayOutTransaction;
+    on_hold?: TransactionGroup,
+    released?: TransactionGroup,
   };
+}
+
+export interface TransactionGroup {
+  bookings: {
+    currency_code: string;
+    amount: number;
+    amount_details: AmountDetails[];
+  };
+  payin: PayInTransaction;
+  payout: PayOutTransaction;
 }

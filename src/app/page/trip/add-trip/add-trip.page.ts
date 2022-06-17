@@ -8,7 +8,8 @@ import { Ticket } from "../../../models/Ticket/Ticket";
 import { Country } from "../../../models/Country";
 import { DatePicker } from "@ionic-native/date-picker/ngx";
 import { PageController } from "../../page-controller";
-import { ToastType, Utils } from "../../../helpers/Utils";
+import { Utils } from "../../../helpers/Utils";
+import { ToastType } from "../../../services/app/AlertService";
 import { Api } from "../../../helpers/Api";
 import { Strings } from "../../../resources";
 import { LocationsModal } from "../../locations/locations.modal";
@@ -16,7 +17,7 @@ import { AddTicketPage } from "../add-ticket/add-ticket.page";
 import {
   DatePickerType,
   SelectDatePage,
-} from "../../select-date/select-date.page";
+} from "../../../components/select-date/select-date.page";
 
 declare var google: any;
 
@@ -111,6 +112,8 @@ export class AddTripPage extends PageController {
         maxDate: this.maxDate,
         type: DatePickerType.DateTime,
       },
+      enterAnimation: (el: Element) => this.animation.modalZoomInEnterAnimation(el),
+      leaveAnimation: (el: Element) => this.animation.modalZoomOutLeaveAnimation(el),
     });
     chooseModal.onDidDismiss().then((data) => {
       if (data.data) {
@@ -332,8 +335,8 @@ export class AddTripPage extends PageController {
   public submit() {
     this.showLoading().then(() => {
       Api.addNewTrip(
-        this.selectedPickup.loc_id,
-        this.selectedDropOff.loc_id,
+        this.selectedPickup?.loc_id,
+        this.selectedDropOff?.loc_id,
         this.selectedDateTime
           ? new Date(this.selectedDateTime).toISOString()
           : null,
@@ -360,11 +363,6 @@ export class AddTripPage extends PageController {
         }
       );
     });
-  }
-
-  /**Convert to string*/
-  public toJson(data: any) {
-    return Utils.toJson(data);
   }
 
   /**Close Modal*/

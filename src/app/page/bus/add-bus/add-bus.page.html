@@ -1,103 +1,153 @@
 <ion-header>
-    <ion-toolbar color="primary">
-        <ion-title>{{strings.getString('add_bus_txt')}}</ion-title>
-        <ion-buttons slot="end">
-            <ion-button (click)="dismiss()">
-                <ion-icon slot="icon-only" name="close"></ion-icon>
-            </ion-button>
-        </ion-buttons>
-    </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-title>{{strings.getString('add_bus_txt')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-
-    <!--Bus list-->
-    <div *ngIf="buses!=null && buses.length > 0">
-        <ion-list>
-            <ion-card *ngFor="let bus of buses; let i = index" [attr.index]="i">
-                <ion-card-header>
-                    <ion-row>
-                        <ion-col size="6" class="cell cell-flex cell-flex-left">
-                            <div class="cell cell-center cell-flex cell-flex-center {{getBusStatusClass(bus.available=='1')}}">{{getBusStatus(bus.available=='1')}}</div>
-                        </ion-col>
-                    </ion-row>
-                </ion-card-header>
-                <ion-card-content>
-                    <ion-row>
-                        <ion-col size="3" class="cell cell-flex cell-flex-center">
-                            <ion-img *ngIf="bus.images!=null && bus.images.length>0" class="img thumbnail"
-                                     [src]="bus.images[0].img">
-                            </ion-img>
-                            <ion-icon *ngIf="bus.images==null || bus.images.length<1" name="bus" size="large"></ion-icon>
-                        </ion-col>
-                        <ion-col size="5" class="cell cell-flex cell-flex-center">
-                            <div class="cell">
-                                <div>
-                                    <ion-label class="cell-title cell-left">{{bus.plate_num}}</ion-label>
-                                </div>
-                                <div>
-                                    <ion-label class="cell-title cell-left">{{strings.getString("seats_txt")}} - {{bus.seats}}</ion-label>
-                                </div>
-                                <div>
-                                    <ion-label class="cell-content cell-left">{{bus.type}}</ion-label>
-                                </div>
-                            </div>
-                        </ion-col>
-                        <ion-col size="4" class="cell cell-center  cell-flex cell-flex-center ">
-                            <div>
-                                <div class="cell cell-center ">
-                                    <ion-button color="primary" (click)="add(bus)">
-                                        <ion-icon name="add" slot="start"></ion-icon>
-                                        {{strings.getString("select_txt")}}
-                                    </ion-button>
-                                </div>
-                            </div>
-                        </ion-col>
-                    </ion-row>
-                </ion-card-content>
-            </ion-card>
-        </ion-list>
+  <!--Bus list-->
+  <div *ngIf="buses!=null && buses.length > 0">
+    <ion-list>
+      <ion-card *ngFor="let bus of buses; let i = index" [attr.index]="i">
+        <ion-card-header>
+          <ion-row>
+            <ion-col size="6" class="cell cell-flex cell-flex-left">
+              <div class="cell cell-center cell-flex cell-flex-center {{getBusStatusClass(bus.available=='1')}}">
+                {{getBusStatus(bus.available=='1')}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-row>
+            <ion-col size="3" class="cell cell-flex cell-flex-center">
+              <ion-img *ngIf="bus.images!=null && bus.images.length>0" class="img thumbnail" [src]="bus.images[0].img">
+              </ion-img>
+              <ion-icon *ngIf="bus.images==null || bus.images.length<1" name="bus" size="large"></ion-icon>
+            </ion-col>
+            <ion-col size="5" class="cell cell-flex cell-flex-center">
+              <div class="cell">
+                <div>
+                  <ion-label class="cell-title cell-left">{{bus.plate_number}}</ion-label>
+                </div>
+                <div>
+                  <ion-label class="cell-title cell-left">{{strings.getString("seats_txt")}} - {{bus.seats}}</ion-label>
+                </div>
+                <div>
+                  <ion-label class="cell-content cell-left">{{bus.type}}</ion-label>
+                </div>
+              </div>
+            </ion-col>
+            <ion-col size="4" class="cell cell-center  cell-flex cell-flex-center ">
+              <div>
+                <div class="cell cell-center ">
+                  <ion-button color="primary" (click)="add(bus)">
+                    <ion-icon name="add" slot="start"></ion-icon>
+                    {{strings.getString("select_txt")}}
+                  </ion-button>
+                </div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+  </div>
+  <!--Bus Form-->
+  <form #busForm="ngForm" *ngIf="buses==null || buses.length < 1" (ngSubmit)="add()" autocomplete="off">
+    <div class="cell">
+      <ion-item>
+        <ion-label position="stacked">{{strings.getString('bus_type_txt')}}</ion-label>
+        <ion-select name="busType" required placeholder="{{strings.getString('select_bus_type_txt')}}"
+          [(ngModel)]="selectedBusType" (ionChange)="setBusType()">
+          <ion-select-option *ngFor="let type of busTypes" [value]="type.id">
+            {{type.name}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <br>
+      <ion-item>
+        <ion-label position="stacked">{{strings.getString('plate_no_txt')}}</ion-label>
+        <ion-input name="busPlateNumber" required [(ngModel)]="busPlateNumber"
+          placeholder="{{strings.getString('enter_bus_plate_no_txt')}}" type="TEXT"></ion-input>
+      </ion-item>
+      <br>
+      <ion-item>
+        <ion-label position="stacked">{{strings.getString('seats_txt')}}</ion-label>
+        <ion-input name="busSeats" required [(ngModel)]="busSeats" min="{{busType?busType.seats:0}}"
+          placeholder="{{strings.getString('enter_bus_seats_txt')}}" type="NUMBER"></ion-input>
+      </ion-item>
+      <br>
+      <ion-item>
+        <ion-label position="stacked">{{strings.getString('desc_txt')}}</ion-label>
+        <ion-textarea rows="6" name="busDesc" class="color-dark" [(ngModel)]="busDescription"></ion-textarea>
+      </ion-item>
     </div>
-    <form #busForm="ngForm" *ngIf="buses==null || buses.length < 1" (ngSubmit)="add()" autocomplete="off">
-        <ion-row>
-            <ion-col>
-                <ion-item>
-                    <ion-label position="stacked">{{strings.getString('bus_type_txt')}}</ion-label>
-                    <ion-select name="busType" required placeholder="{{strings.getString('select_bus_type_txt')}}"
-                                [(ngModel)]="selectedBusType"
-                                (ionChange)="setBusType()">
-                        <ion-select-option *ngFor="let type of busTypes" [value]="type.id">
-                            {{type.name}}
-                        </ion-select-option>
-                    </ion-select>
-                </ion-item>
-                <br>
-                <ion-item>
-                    <ion-label position="stacked">{{strings.getString('plate_no_txt')}}</ion-label>
-                    <ion-input name="busPlateNumber" required [(ngModel)]="busPlateNumber"
-                               placeholder="{{strings.getString('enter_bus_plate_no_txt')}}" type="TEXT"></ion-input>
-                </ion-item>
-                <br>
-                <ion-item>
-                    <ion-label position="stacked">{{strings.getString('seats_txt')}}</ion-label>
-                    <ion-input name="busSeats" required [(ngModel)]="busSeats"
-                                min="{{busType?busType.seats:0}}"
-                                placeholder="{{strings.getString('enter_bus_seats_txt')}}" type="NUMBER"></ion-input>
-                </ion-item>
-                <br>
-                <ion-item>
-                    <ion-label position="stacked">{{strings.getString('desc_txt')}}</ion-label>
-                    <ion-textarea rows="6" name="busDesc" [(ngModel)]="busDesc"></ion-textarea>
-                </ion-item>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col>
-                <ion-button expand="full" color="primary" type="submit"
-                            [disabled]="!busForm.form.valid">
-                    {{strings.getString("done_txt")}}
-                </ion-button>
-            </ion-col>
-        </ion-row>
-    </form>
+    <br/>
+    <br/>
+    <!-- Amenities -->
+    <div class="cell">
+      <div>
+        <ion-label class="bold large-text">{{strings.getString('select_amenities_txt')}}:</ion-label>
+      </div>
+      <br/>
+      <ion-item>
+        <ion-checkbox name="has_ac" slot="start" color="primary" [(ngModel)]="hasAc">
+        </ion-checkbox>
+        <ion-label>{{strings.getString('has_ac_txt')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox name="has_charger" slot="start" color="primary" [(ngModel)]="hasCharger">
+        </ion-checkbox>
+        <ion-label>{{strings.getString('has_charger_txt')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox name="has_wifi" slot="start" color="primary" [(ngModel)]="hasWifi">
+        </ion-checkbox>
+        <ion-label>{{strings.getString('has_wifi_txt')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox name="has_light" slot="start" color="primary" [(ngModel)]="hasLight">
+        </ion-checkbox>
+        <ion-label>{{strings.getString('has_light_txt')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox name="has_blanket" slot="start" color="primary" [(ngModel)]="hasBlanket">
+        </ion-checkbox>
+        <ion-label>{{strings.getString('has_blanket_txt')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox name="has_food" slot="start" color="primary" [(ngModel)]="hasFood">
+        </ion-checkbox>
+        <ion-label>{{strings.getString('has_food_txt')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox name="has_water" slot="start" color="primary" [(ngModel)]="hasWater">
+        </ion-checkbox>
+        <ion-label>{{strings.getString('has_water_txt')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox name="has_tv" slot="start" color="primary" [(ngModel)]="hasTv">
+        </ion-checkbox>
+        <ion-label>{{strings.getString('has_tv_txt')}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-checkbox name="has_toilet" slot="start" color="primary" [(ngModel)]="hasToilet">
+        </ion-checkbox>
+        <ion-label>{{strings.getString('has_toilet_txt')}}</ion-label>
+      </ion-item>
+    </div>
+    <br/>
+    <br/>
+    <!-- Done button -->
+    <div>
+      <ion-button expand="full" color="primary" type="submit" [disabled]="!busForm.form.valid">
+        {{strings.getString("done_txt")}}
+      </ion-button>
+    </div>
+  </form>
 </ion-content>

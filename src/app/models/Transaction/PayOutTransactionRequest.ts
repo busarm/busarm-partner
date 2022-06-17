@@ -13,5 +13,5 @@ export interface PayOutTransactionRequest {
   currency_code: string;
   amount: number;
   transfer_fee: number;
-  date_created: string;
+  created_at: string;
 }
