@@ -79,6 +79,7 @@ export class Urls {
   public static apiTripBus = Urls.apiBaseUrl + "agent/trip/bus";
   public static apiTripReserve = Urls.apiBaseUrl + "agent/trip/reserve";
   public static apiBus = Urls.apiBaseUrl + "agent/bus";
+  public static apiBusAmenity = Urls.apiBaseUrl + "agent/bus/amenities";
   public static apiBuses = Urls.apiBaseUrl + "agent/bus/list";
   public static apiBusImage = Urls.apiBaseUrl + "agent/bus/image";
   public static apiBusShare = Urls.apiBaseUrl + "agent/bus/share";

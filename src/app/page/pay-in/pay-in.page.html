@@ -85,6 +85,7 @@
                 <div class="cell cell-center danger">
                     <span class="x-small-text">{{payIn.info}}</span>
                 </div>
+                <br/>
                 <div>
                     <ion-button expand="full" color="primary" type="submit"
                                 [disabled]="!payInForm.form.valid">
@@ -136,6 +137,7 @@
                                     <h3 class="cell-content">{{request.currency_code}} {{request.amount}}</h3>
                                 </ion-label>
                             </div>
+                            <br/>
                             <div *ngIf="request.payment_url!=null">
                                 <ion-button expand="full" color="success" type="button" (click)="gotoPayment(request.payment_url)">
                                     {{strings.getString("payment_not_made_txt")}}

@@ -255,6 +255,7 @@ ion-icon {
 
 ion-title {
   color: var(--ion-color-secondary);
+  font-weight: 600;
 
   &.ok,
   .success {
@@ -280,6 +281,16 @@ ion-title {
   &.secondary {
     color: var(--ion-color-secondary) !important;
     --color: var(--ion-color-secondary) !important;
+  }
+
+  &.dark {
+    color: var(--ion-color-dark) !important;
+    --color: var(--ion-color-dark) !important;
+  }
+
+  &.light {
+    color: var(--ion-color-light) !important;
+    --color: var(--ion-color-light) !important;
   }
 }
 
@@ -519,7 +530,11 @@ ion-card {
   ion-icon {
     color: var(--ion-color-primary) !important;
   }
-
+  ion-card-title {
+    font-weight: bold;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
   ion-card-header {
     background: var(--ion-color-step-100);
     color: var(--ion-text-color) !important;
@@ -532,6 +547,10 @@ ion-card {
     }
 
     font-size: 14px !important;
+  }
+  ion-card-content {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
   }
 }
 
@@ -546,6 +565,11 @@ ion-segment-button {
 
 ion-checkbox {
   --border-color: var(--ion-border-color);
+}
+
+ion-col {
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 input,
@@ -813,7 +837,7 @@ input {
 }
 
 .cell {
-  padding: 4px;
+  padding: 5px;
   text-transform: none !important;
 
   h1 {
@@ -848,6 +872,12 @@ input {
 
   .bold {
     font-weight: bold;
+  }
+  .xx-bold {
+    font-weight: 600;
+  }
+  .xxx-bold {
+    font-weight: 800;
   }
 
   .xxx-large-text {
@@ -1070,7 +1100,8 @@ input {
 
 /*Colors*/
 .color-light {
-  color: var(--ion-text-color) !important;
+  // color: var(--ion-text-color) !important;
+  color: var(--ion-color-light) !important;
   --color: var(--ion-color-light) !important;
 }
 
@@ -1080,7 +1111,8 @@ input {
 }
 
 .color-dark {
-  color: var(--ion-text-color-darker) !important;
+  // color: var(--ion-text-color-darker) !important;
+  color: var(--ion-color-dark) !important;
   --color: var(--ion-color-dark) !important;
 }
 

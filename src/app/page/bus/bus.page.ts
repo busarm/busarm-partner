@@ -95,7 +95,7 @@ export class BusPage extends PageController {
             let bus: Bus = this.buses[index];
             let reg = new RegExp(this.searchText, "gi");
             if (
-              bus.plate_num.match(reg) ||
+              bus.plate_number.match(reg) ||
               bus.type.match(reg) ||
               bus.description.match(reg)
             ) {

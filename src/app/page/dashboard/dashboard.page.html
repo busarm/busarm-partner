@@ -205,7 +205,7 @@
       </div>
     </div>
     <br>
-    <div id="transactions" *ngIf="dashboard.transactions!=null">
+    <div id="transactions" *ngIf="dashboard.transactions!=null && transactionGroup!=null">
       <!--Transactions header-->
       <div class="cell cell-center cell-margin-auto">
         <div class="section-title">
@@ -233,7 +233,7 @@
         </ion-segment>
       </div>
       <!--Transactions grid-->
-      <ion-grid *ngIf="transactionGroup!=null">
+      <ion-grid>
         <!-- Booking Transaction -->
         <ion-row class="ion-justify-content-center ion-align-items-center">
           <ion-col size="12" size-md="8" size-lg="6">
