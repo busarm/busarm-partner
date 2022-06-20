@@ -59,17 +59,10 @@ export class ViewTripPage extends PageController {
         }
       })
     );
-  }
 
-  public ngOnDestroy() {
-    this.trip = null;
-    this.buses = null;
-    super.ngOnDestroy();
-  }
-
-  public ionViewDidEnter() {
+    // Load data
     if (this.assertAvailable(this.trip)) {
-      this.loadTripView(false);
+      this.loadTripView(true);
     } else {
       this.showToastMsg(
         this.strings.getString("error_unexpected"),
@@ -79,7 +72,19 @@ export class ViewTripPage extends PageController {
     }
   }
 
-  /**Load Trip View*/
+  public ngOnDestroy() {
+    this.trip = null;
+    this.buses = null;
+    super.ngOnDestroy();
+  }
+
+  public ionViewDidEnter() {}
+
+  /**
+   * Load Trip View
+   * @param refresh
+   * @param completed
+   */
   public async loadTripView(refresh: boolean = true, completed?: () => any) {
     /*Get Trip status*/
     Api.getAllTripStatusList(({ status, result }) => {
@@ -121,7 +126,10 @@ export class ViewTripPage extends PageController {
     }
   }
 
-  /**Load Trip*/
+  /**
+   * Load Trip
+   * @param completed
+   */
   public async loadTrip(completed?: () => any) {
     Api.getTrip(this.trip.trip_id, ({ status, result, msg }) => {
       if (status) {
@@ -146,7 +154,11 @@ export class ViewTripPage extends PageController {
     });
   }
 
-  /**Process Trip*/
+  /**
+   * Process Trip
+   * @param trip
+   * @param completed
+   */
   public async processTrip(trip: Trip, completed?: () => any) {
     // Process trip info
     this.selectedBusType = trip.bus_type_id;

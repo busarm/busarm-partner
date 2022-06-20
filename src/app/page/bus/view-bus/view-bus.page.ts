@@ -60,6 +60,18 @@ export class ViewBusPage extends PageController {
         }
       })
     );
+
+
+    // Load data
+    if (this.assertAvailable(this.bus)) {
+      this.loadBusView();
+    } else {
+      this.showToastMsg(
+        this.strings.getString("error_unexpected"),
+        ToastType.ERROR
+      );
+      this.dismiss();
+    }
   }
 
   public ngOnDestroy() {
@@ -68,13 +80,6 @@ export class ViewBusPage extends PageController {
   }
 
   public async ionViewDidEnter() {
-    if (!this.assertAvailable(this.bus)) {
-      this.showToastMsg(
-        this.strings.getString("error_unexpected"),
-        ToastType.ERROR
-      );
-      this.modalCtrl.dismiss();
-    }
   }
 
   /**Load Bus View*/

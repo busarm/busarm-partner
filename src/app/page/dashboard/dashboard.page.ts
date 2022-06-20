@@ -450,8 +450,8 @@ export class DashboardPage extends PageController {
     Api.getDashboard(min_date, max_date, async ({ status, result, msg }) => {
       this.isDashboardLoading = false;
       if (status) {
-        //Save user data to session
-        if (this.assertAvailable(result)) {
+        // Save user data to session
+        if (!this.assertAvailable(result)) {
           if (
             force ||
             (result.data &&

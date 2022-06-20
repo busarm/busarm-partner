@@ -52,12 +52,11 @@
             <ion-card-content>
               <ion-row>
                 <ion-col size-sm="3" size="4" class="cell cell-flex cell-flex-center">
-                  <ion-thumbnail *ngIf="bus.images!=null && bus.images.length>0">
+                  <ion-thumbnail>
                     <ion-img class="img thumbnail round-corner"
-                      (ionError)="bus.images[0].img = assets.getPath('placeholder')" [src]="bus.images[0].img">
+                      (ionError)="bus.thumbnail = assets.getPath('placeholder')" [src]="bus.thumbnail!=null ? bus.thumbnail : assets.getPath('placeholder')">
                     </ion-img>
                   </ion-thumbnail>
-                  <ion-icon *ngIf="bus.images==null || bus.images.length<1" name="bus" size="large"> </ion-icon>
                 </ion-col>
                 <ion-col size-sm="5" size="8" class="cell cell-flex cell-flex-center">
                   <div class="cell">
