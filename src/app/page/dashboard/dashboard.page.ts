@@ -451,7 +451,7 @@ export class DashboardPage extends PageController {
       this.isDashboardLoading = false;
       if (status) {
         // Save user data to session
-        if (!this.assertAvailable(result)) {
+        if (this.assertAvailable(result)) {
           if (
             force ||
             (result.data &&
