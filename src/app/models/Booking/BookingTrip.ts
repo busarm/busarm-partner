@@ -2,6 +2,7 @@ import { Booking } from "./Booking";
 import { BookingTicket } from "./BookingTicket";
 import { TripSeat } from "../Trip/TripSeat";
 import { Trip } from "../Trip//Trip";
+import { Location } from "../Location/Location";
 
 
 export interface BookingTrip extends Booking {
@@ -19,4 +20,6 @@ export interface BookingTrip extends Booking {
   tickets?: BookingTicket[];
   qrcode_url?: string;
   seats?: TripSeat[];
+  pickup_location?: Location;
+  dropoff_location?: Location;
 }

@@ -62,15 +62,15 @@
                     <ion-col size="12">
                         <ion-label class="cell cell-center ">
                             <div class="cell-title">{{strings.getString('from_txt')}}</div>
-                            <div class="cell-content">{{booking.trip.pickup_loc_name}}</div>
-                            <div class="cell-sub">{{booking.trip.pickup_loc_address}}</div>
-                            <div class="cell-sub">{{booking.trip.pickup_city}}</div>
+                            <div class="cell-content">{{booking.pickup_location ? booking.pickup_location.loc_name : booking.trip.pickup_loc_name}}</div>
+                            <div class="cell-sub">{{booking.pickup_location ? booking.pickup_location.loc_address : booking.trip.pickup_loc_address}}</div>
+                            <div class="cell-sub">{{booking.pickup_location ? booking.pickup_location.city_name : booking.trip.pickup_city}}</div>
                         </ion-label>
                         <ion-label class="cell cell-center ">
                             <div class="cell-title">{{strings.getString('to_txt')}}</div>
-                            <div class="cell-content">{{booking.trip.dropoff_loc_name}}</div>
-                            <div class="cell-sub">{{booking.trip.dropoff_loc_address}}</div>
-                            <div class="cell-sub">{{booking.trip.dropoff_city}}</div>
+                            <div class="cell-content">{{booking.dropoff_location ? booking.dropoff_location.loc_name : booking.trip.dropoff_loc_name}}</div>
+                            <div class="cell-sub">{{booking.dropoff_location ? booking.dropoff_location.loc_address : booking.trip.dropoff_loc_address}}</div>
+                            <div class="cell-sub">{{booking.dropoff_location ? booking.dropoff_location.city_name : booking.trip.dropoff_city}}</div>
                         </ion-label>
                         <ion-label class="cell cell-center ">
                             <div class="cell-title">{{strings.getString('departure_date_txt')}}</div>
