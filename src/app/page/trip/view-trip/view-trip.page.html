@@ -62,6 +62,7 @@
       </ion-row>
     </ion-card-content>
   </ion-card>
+  <br/>
   <!-- Pickup -->
   <ion-card *ngIf="trip!=null && trip.pickup_locations!=null && trip.pickup_locations.length>0">
     <ion-card-title class="cell cell-center ">
@@ -85,7 +86,7 @@
               (ionChange)="toggleTripPickup($event, pickup)">
             </ion-toggle>
           </ion-col>
-          <ion-col size="7" size-md="2" class="cell cell-center cell-flex cell-flex-center">
+          <ion-col size="7" size-md="8" class="cell cell-center cell-flex cell-flex-center">
             <ion-label class="cell-content">
               {{pickup.loc_name+', ' + pickup.loc_address}}
             </ion-label>
@@ -99,6 +100,7 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+  <br/>
   <!-- Dropoff -->
   <ion-card *ngIf="trip!=null && trip.dropoff_locations!=null && trip.dropoff_locations.length>0">
     <ion-card-title class="cell cell-center ">
@@ -107,7 +109,7 @@
     <ion-card-header>
       <ion-row>
         <ion-col size="12" class="cell cell-center  cell-flex cell-flex-left">
-          <ion-button color="primary" (click)="selectDroppoff()">
+          <ion-button color="primary" (click)="selectDropoff()">
             <ion-icon slot="start" name="add"> </ion-icon>
             {{strings.getString("add_txt")}}
           </ion-button>
@@ -122,7 +124,7 @@
               (ionChange)="toggleTripPickup($event, dropoff)">
             </ion-toggle>
           </ion-col>
-          <ion-col size="7" size-md="2" class="cell cell-center cell-flex cell-flex-center">
+          <ion-col size="7" size-md="8" class="cell cell-center cell-flex cell-flex-center">
             <ion-label class="cell-content">
               {{dropoff.loc_name+', ' + dropoff.loc_address}}
             </ion-label>
@@ -136,6 +138,7 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+  <br/>
   <!-- Tickets -->
   <ion-card *ngIf="trip!=null && checkIsOpen(trip.status_id) && trip.tickets!=null && trip.tickets.length>0">
     <ion-card-title class="cell cell-center ">
@@ -178,6 +181,7 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+  <br/>
   <!-- Seats -->
   <ion-card *ngIf="trip!=null && checkIsOpen(trip.status_id)">
     <ion-card-title class="cell cell-center ">
@@ -215,6 +219,8 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+  <br/>
+  <!-- Bus type -->
   <ion-card *ngIf="trip!=null && checkIsOpen(trip.status_id) && trip.bus==null">
     <ion-card-title class="cell cell-center ">
       {{strings.getString("bus_type_txt")}}

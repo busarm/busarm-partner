@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { PageController } from "../../page-controller";
 import { Location } from "../../../models/Location/Location";
 import { BusType } from "../../../models/Bus/BusType";
-import { Status } from "../../../models/Status";
+import { Status, StatusID } from "../../../models/Status";
 import { Bus } from "../../../models/Bus/Bus";
 import { TicketType } from "../../../models/Ticket/TicketType";
 import { Ticket } from "../../../models/Ticket/Ticket";
@@ -452,7 +452,7 @@ export class ViewTripPage extends PageController {
     // Pass only Active and Upcomming status
     let status = this.statusList
       ? this.statusList.filter(
-        (status) => status.status_id == "1" || status.status_id == "2"
+        (status) => status.status_id == StatusID.TRIP_UPCOMMING || status.status_id == StatusID.TRIP_ACTIVE
       )
       : [];
 
@@ -463,10 +463,12 @@ export class ViewTripPage extends PageController {
         busTypes: this.busTypes,
         ticketTypes: this.ticketTypes,
         selectedPickup: pickup,
-        selectedDropOff: dropoff,
+        selectedDropoff: dropoff,
         selectedBusType: this.trip.bus_type_id,
-        selectedStatus: "2",
+        selectedStatus: StatusID.TRIP_ACTIVE,
         selectedTickets: this.trip.tickets,
+        selectedPickupList: this.trip.pickup_locations,
+        selectedDropoffList: this.trip.dropoff_locations,
       },
     });
     chooseModal.onDidDismiss().then((data) => {
@@ -583,7 +585,7 @@ export class ViewTripPage extends PageController {
   }
 
   /**Select Destination place*/
-  public async selectDroppoff() {
+  public async selectDropoff() {
     if (this.user) {
       this.selectLocation(
         this.strings.getString("select_dropoff_txt"),

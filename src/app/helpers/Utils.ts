@@ -20,7 +20,7 @@ export class Utils {
     // Treats the string as UTC, but you can remove the `Date.UTC` part and use
     // `new Date` directly to treat the string as local time
     return new Date(
-      Date.UTC(+year, +month - 1, +day, +hours, +minutes, +seconds)
+      Date.UTC(+year, +month - 1, +day, +hours, +minutes, +seconds),
     );
   }
 
@@ -92,14 +92,14 @@ export class Utils {
     return String(
       CryptoJS.MD5(
         Utils.harold(date.getDay()) +
-          "-" +
-          Utils.harold(date.getMonth()) +
-          "-" +
-          Utils.harold(date.getFullYear()) +
-          "|" +
-          ip +
-          "|" +
-          location.host
+        "-" +
+        Utils.harold(date.getMonth()) +
+        "-" +
+        Utils.harold(date.getFullYear()) +
+        "|" +
+        ip +
+        "|" +
+        location.host
       )
     );
   }
@@ -271,7 +271,7 @@ export class Utils {
     let result = null;
     try {
       result = JSON.parse(json);
-    } catch (e) {}
+    } catch (e) { }
     return result;
   }
 
@@ -328,8 +328,8 @@ export class Utils {
             } else {
               encoded.push(
                 encodeURIComponent(parent + "[" + subKey + "]") +
-                  "=" +
-                  encodeURIComponent(data[key][subKey])
+                "=" +
+                encodeURIComponent(data[key][subKey])
               );
             }
           }
