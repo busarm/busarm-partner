@@ -1,4 +1,5 @@
 import { Bus } from "../Bus/Bus";
+import { Location } from "../Location/Location";
 import { Ticket } from "../Ticket/Ticket";
 import { TripSeat } from "./TripSeat";
 
@@ -16,6 +17,7 @@ export interface Trip {
   pickup_city?: string;
   pickup_prov_name?: string;
   pickup_prov_code?: string;
+  pickup_country_code?: string;
   pickup_loc_type?: string;
   dropoff_loc_id?: string;
   dropoff_loc_name?: string;
@@ -27,6 +29,7 @@ export interface Trip {
   dropoff_prov_name?: string;
   dropoff_prov_code?: string;
   dropoff_loc_type?: string;
+  dropoff_country_code?: string;
   ticket_id?: string;
   price?: string;
   currency_code?: string;
@@ -50,5 +53,6 @@ export interface Trip {
   bus_id?: string;
   bus?: Bus;
   tickets?: Ticket[];
-  trip_seats?: TripSeat[];
+  pickup_locations?: Location[];
+  dropoff_locations?: Location[];
 }

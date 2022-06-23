@@ -19,6 +19,8 @@ import { Subject } from "rxjs";
 export class LocationsPage extends PageController {
   @Input() title: string;
   @Input() selector: boolean;
+  @Input() city: string;
+  @Input() province: string;
   @Input() country: string;
 
   searchText: string = null;
@@ -63,6 +65,8 @@ export class LocationsPage extends PageController {
       return this.currentLocations.filter(
         (x) =>
           x.is_active == true &&
+          (!this.city || this.city === x.city_id) &&
+          (!this.province || this.province === x.prov_code) &&
           (!this.country || this.country === x.country_code)
       );
     }
@@ -185,7 +189,7 @@ export class LocationsPage extends PageController {
   /**Delete Location*/
   public deleteLocation(location: Location) {
     this.showLoading().then(() => {
-      Api.deleteLocation(location.loc_id, ({ status, result, msg }) => {
+      Api.deleteLocation(Number(location.loc_id), ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (this.assertAvailable(result)) {
@@ -215,7 +219,7 @@ export class LocationsPage extends PageController {
       location.is_active = event.detail.checked;
       this.showLoading().then(() => {
         Api.updateLocationActiveStatus(
-          location.loc_id,
+          Number(location.loc_id),
           Boolean(location.is_active),
           ({ status, result, msg }) => {
             this.hideLoading();
@@ -272,7 +276,7 @@ export class LocationsPage extends PageController {
     if (!location.is_default) {
       this.showLoading().then(() => {
         Api.updateLocationdDefaultStatus(
-          location.loc_id,
+          Number(location.loc_id),
           true,
           ({ status, result, msg }) => {
             this.hideLoading();

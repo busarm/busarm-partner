@@ -18,8 +18,9 @@ import { AddBusPage } from "../../bus/add-bus/add-bus.page";
 import { ViewBusPage } from "../../bus/view-bus/view-bus.page";
 import { SelectStatusPage } from "./select-status/select-status.page";
 import { AddTripPage } from "../add-trip/add-trip.page";
-import Chart, {ChartDataset} from "chart.js/auto";
+import Chart, { ChartDataset } from "chart.js/auto";
 import { Subject } from "rxjs";
+import { LocationsModal } from "../../locations/locations.modal";
 
 @Component({
   selector: "app-view-trip",
@@ -78,7 +79,7 @@ export class ViewTripPage extends PageController {
     super.ngOnDestroy();
   }
 
-  public ionViewDidEnter() {}
+  public ionViewDidEnter() { }
 
   /**
    * Load Trip View
@@ -233,7 +234,7 @@ export class ViewTripPage extends PageController {
           ],
         }
       ];
-      if(this.seatChart) {
+      if (this.seatChart) {
         this.seatChart.config.data.datasets = datasets;
         return this.seatChart.update('show');
       }
@@ -451,8 +452,8 @@ export class ViewTripPage extends PageController {
     // Pass only Active and Upcomming status
     let status = this.statusList
       ? this.statusList.filter(
-          (status) => status.status_id == "1" || status.status_id == "2"
-        )
+        (status) => status.status_id == "1" || status.status_id == "2"
+      )
       : [];
 
     let chooseModal = await this.modalCtrl.create({
@@ -522,9 +523,321 @@ export class ViewTripPage extends PageController {
     });
   }
 
+  /**Select Origin place*/
+  public async selectPickup() {
+    if (this.user) {
+      this.selectLocation(
+        this.strings.getString("select_pickup_txt"),
+        this.trip.pickup_city_id,
+        this.trip.pickup_prov_code,
+        this.trip.pickup_country_code,
+        (location: Location) => {
+
+          // Check if already exist
+          if (this.trip.pickup_locations &&
+            this.trip.pickup_locations.length > 0 &&
+            this.trip.pickup_locations.some(loc => loc.loc_id == location.loc_id)) {
+            return this.showToastMsg(
+              Strings.getString("invalid_location"),
+              ToastType.ERROR,
+              5000
+            );
+          }
+
+          // Check if matches default
+          if (location.loc_id == this.trip.pickup_loc_id) {
+            return this.showToastMsg(
+              Strings.getString("invalid_location_mactch_pickup"),
+              ToastType.ERROR,
+              5000
+            );
+          }
+
+          // Add location
+          this.showLoading().then(() => {
+            Api.addPickup(this.trip.trip_id, location.loc_id, ({ status, result, msg }) => {
+              this.hideLoading();
+              if (status) {
+                if (this.assertAvailable(result)) {
+                  if (result.status) {
+                    this.updated.next(this.trip.trip_id);
+                    this.events.tripsUpdated.next(this.trip.trip_id);
+                    this.showToastMsg(result.msg, ToastType.SUCCESS);
+                  } else {
+                    this.showToastMsg(result.msg, ToastType.ERROR);
+                  }
+                } else {
+                  this.showToastMsg(
+                    Strings.getString("error_unexpected"),
+                    ToastType.ERROR
+                  );
+                }
+              } else {
+                this.showToastMsg(msg, ToastType.ERROR);
+              }
+            });
+          });
+        }
+      );
+    }
+  }
+
+  /**Select Destination place*/
+  public async selectDroppoff() {
+    if (this.user) {
+      this.selectLocation(
+        this.strings.getString("select_dropoff_txt"),
+        this.trip.dropoff_city_id,
+        this.trip.dropoff_prov_code,
+        this.trip.dropoff_country_code,
+        (location: Location) => {
+
+          // Check if already exist
+          if (this.trip.dropoff_locations &&
+            this.trip.dropoff_locations.length > 0 &&
+            this.trip.dropoff_locations.some(loc => loc.loc_id == location.loc_id)) {
+            return this.showToastMsg(
+              Strings.getString("invalid_location"),
+              ToastType.ERROR,
+              5000
+            );
+          }
+
+          // Check if matches default
+          if (location.loc_id == this.trip.dropoff_loc_id) {
+            return this.showToastMsg(
+              Strings.getString("invalid_location_mactch_dropoff"),
+              ToastType.ERROR,
+              5000
+            );
+          }
+
+          // Add location
+          this.showLoading().then(() => {
+            Api.addDropoff(this.trip.trip_id, location.loc_id, ({ status, result, msg }) => {
+              this.hideLoading();
+              if (status) {
+                if (this.assertAvailable(result)) {
+                  if (result.status) {
+                    this.updated.next(this.trip.trip_id);
+                    this.events.tripsUpdated.next(this.trip.trip_id);
+                    this.showToastMsg(result.msg, ToastType.SUCCESS);
+                  } else {
+                    this.showToastMsg(result.msg, ToastType.ERROR);
+                  }
+                } else {
+                  this.showToastMsg(
+                    Strings.getString("error_unexpected"),
+                    ToastType.ERROR
+                  );
+                }
+              } else {
+                this.showToastMsg(msg, ToastType.ERROR);
+              }
+            });
+          });
+        }
+      );
+    }
+  }
+
+  /**Launch location selector*/
+  async selectLocation(
+    title: string,
+    city: string,
+    province: string,
+    country: string,
+    callback: (place: any) => any
+  ) {
+    let chooseModal = await this.modalCtrl.create({
+      component: LocationsModal,
+      componentProps: {
+        title: title,
+        selector: true,
+        country: country,
+        province: province,
+        city: city,
+      },
+    });
+    chooseModal.onDidDismiss().then((data) => {
+      if (data.data) {
+        callback(data.data);
+      }
+    });
+    return await chooseModal.present();
+  }
+
+  /**Toggle Trip Pickup Location*/
+  public toggleTripPickup(event: CustomEvent<IonToggle>, pickup: Location) {
+    if (pickup.is_active != event.detail.checked) {
+      pickup.is_active = event.detail.checked;
+      this.showLoading().then(() => {
+        Api.togglePickupLocation(
+          this.trip.trip_id,
+          pickup.loc_id,
+          Boolean(pickup.is_active),
+          ({ status, result, msg }) => {
+            this.hideLoading();
+            if (status) {
+              if (this.assertAvailable(result)) {
+                if (result.status) {
+                  this.updated.next(this.trip.trip_id);
+                  this.events.tripsUpdated.next(this.trip.trip_id);
+                  this.showToastMsg(result.msg, ToastType.SUCCESS);
+                } else {
+                  pickup.is_active = !event.detail.checked;
+                  this.showToastMsg(result.msg, ToastType.ERROR);
+                }
+              } else {
+                pickup.is_active = !event.detail.checked;
+                this.showToastMsg(
+                  Strings.getString("error_unexpected"),
+                  ToastType.ERROR
+                );
+              }
+            } else {
+              pickup.is_active = !event.detail.checked;
+              this.showToastMsg(msg, ToastType.ERROR);
+            }
+          }
+        );
+      });
+    }
+  }
+
+  /**
+   * Show Pickup Delete confirmation
+   * */
+  public confirmDeletePickup(pickup: Location) {
+    this.showAlert(
+      this.strings.getString("remove_pickup_loc_title_txt"),
+      this.strings.getString("remove_loc_msg_txt"),
+      {
+        title: this.strings.getString("no_txt"),
+      },
+      {
+        title: this.strings.getString("yes_txt"),
+        callback: () => {
+          this.deletePickup(pickup.loc_id);
+        },
+      }
+    );
+  }
+
+  /**Delete Pickup*/
+  public deletePickup(locId: number | string) {
+    this.showLoading().then(() => {
+      Api.deletePickupLocation(this.trip.trip_id, locId, ({ status, result, msg }) => {
+        this.hideLoading();
+        if (status) {
+          if (this.assertAvailable(result)) {
+            if (result.status) {
+              this.updated.next(this.trip.trip_id);
+              this.events.tripsUpdated.next(this.trip.trip_id);
+              this.showToastMsg(result.msg, ToastType.SUCCESS);
+            } else {
+              this.showToastMsg(result.msg, ToastType.ERROR);
+            }
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
+          }
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
+        }
+      });
+    });
+  }
+
+  /**Toggle Trip Dropoff Location*/
+  public toggleTripDropoff(event: CustomEvent<IonToggle>, dropoff: Location) {
+    if (dropoff.is_active != event.detail.checked) {
+      dropoff.is_active = event.detail.checked;
+      this.showLoading().then(() => {
+        Api.toggleDropoffLocation(
+          this.trip.trip_id,
+          dropoff.loc_id,
+          Boolean(dropoff.is_active),
+          ({ status, result, msg }) => {
+            this.hideLoading();
+            if (status) {
+              if (this.assertAvailable(result)) {
+                if (result.status) {
+                  this.updated.next(this.trip.trip_id);
+                  this.events.tripsUpdated.next(this.trip.trip_id);
+                  this.showToastMsg(result.msg, ToastType.SUCCESS);
+                } else {
+                  dropoff.is_active = !event.detail.checked;
+                  this.showToastMsg(result.msg, ToastType.ERROR);
+                }
+              } else {
+                dropoff.is_active = !event.detail.checked;
+                this.showToastMsg(
+                  Strings.getString("error_unexpected"),
+                  ToastType.ERROR
+                );
+              }
+            } else {
+              dropoff.is_active = !event.detail.checked;
+              this.showToastMsg(msg, ToastType.ERROR);
+            }
+          }
+        );
+      });
+    }
+  }
+
+  /**
+   * Show Dropoff Delete confirmation
+   * */
+  public confirmDeleteDropoff(dropoff: Location) {
+    this.showAlert(
+      this.strings.getString("remove_dropoff_loc_title_txt"),
+      this.strings.getString("remove_loc_msg_txt"),
+      {
+        title: this.strings.getString("no_txt"),
+      },
+      {
+        title: this.strings.getString("yes_txt"),
+        callback: () => {
+          this.deleteDropoff(dropoff.loc_id);
+        },
+      }
+    );
+  }
+
+  /**Delete Dropoff*/
+  public deleteDropoff(locId: number | string) {
+    this.showLoading().then(() => {
+      Api.deleteDropoffLocation(this.trip.trip_id, locId, ({ status, result, msg }) => {
+        this.hideLoading();
+        if (status) {
+          if (this.assertAvailable(result)) {
+            if (result.status) {
+              this.updated.next(this.trip.trip_id);
+              this.events.tripsUpdated.next(this.trip.trip_id);
+              this.showToastMsg(result.msg, ToastType.SUCCESS);
+            } else {
+              this.showToastMsg(result.msg, ToastType.ERROR);
+            }
+          } else {
+            this.showToastMsg(
+              Strings.getString("error_unexpected"),
+              ToastType.ERROR
+            );
+          }
+        } else {
+          this.showToastMsg(msg, ToastType.ERROR);
+        }
+      });
+    });
+  }
+
   /**Toggle Trip Ticket*/
   public toggleTripTicket(event: CustomEvent<IonToggle>, ticket: Ticket) {
-    if (ticket.is_active !== event.detail.checked) {
+    if (ticket.is_active != event.detail.checked) {
       ticket.is_active = event.detail.checked;
       this.showLoading().then(() => {
         Api.toggleTicket(

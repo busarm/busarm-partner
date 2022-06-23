@@ -37,6 +37,8 @@ export class AddTripPage extends PageController {
   @Input() selectedBusType: number;
   @Input() selectedStatus: number;
   @Input() selectedTickets: Ticket[] = [];
+  @Input() selectedPickupList: Location[] = [];
+  @Input() selectedDropoffList: Location[] = [];
 
   //Min current day
   minDate: Date = new Date();
@@ -213,7 +215,8 @@ export class AddTripPage extends PageController {
       if (this.user) {
         this.selectLocation(
           this.strings.getString("select_pickup_txt"),
-          this.session.country.country_code,
+          this.user.country.country_code,
+          null, null,
           (location: Location) => {
             if (
               // Origin location must always be from default country
@@ -242,7 +245,7 @@ export class AddTripPage extends PageController {
       if (this.user) {
         this.selectLocation(
           this.strings.getString("select_dropoff_txt"),
-          null,
+          null, null, null,
           (location: Location) => {
             if (
               // Destination location can either be from default country or any of the supported countries
@@ -295,6 +298,8 @@ export class AddTripPage extends PageController {
   /**Launch location selector*/
   async selectLocation(
     title: string,
+    city: string,
+    province: string,
     country: string,
     callback: (place: any) => any
   ) {
@@ -304,6 +309,8 @@ export class AddTripPage extends PageController {
         title: title,
         selector: true,
         country: country,
+        province: province,
+        city: city,
       },
     });
     chooseModal.onDidDismiss().then((data) => {
@@ -335,14 +342,16 @@ export class AddTripPage extends PageController {
   public submit() {
     this.showLoading().then(() => {
       Api.addNewTrip(
-        this.selectedPickup?.loc_id,
-        this.selectedDropOff?.loc_id,
+        Number(this.selectedPickup?.loc_id),
+        Number(this.selectedDropOff?.loc_id),
         this.selectedDateTime
           ? new Date(this.selectedDateTime).toISOString()
           : null,
         this.selectedBusType,
         this.selectedStatus,
         this.selectedTickets,
+        this.selectedPickupList.map((pickup) => Number(pickup.loc_id)),
+        this.selectedDropoffList.map((pickup) => Number(pickup.loc_id)),
         ({ status, result, msg }) => {
           if (status) {
             this.hideLoading();
