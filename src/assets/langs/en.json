@@ -158,7 +158,9 @@
   "bank_name_txt": "Bank Name",
   "account_number_txt": "Account Number",
   "action_confirm_msg_txt": "Are you sure you want to continue?",
-  "invalid_location": "Invalid location selected",
+  "invalid_location": "Invalid location selected. Please select another location",
+  "invalid_location_mactch_pickup": "Invalid location selected. Location must not be the same as the default pickup location",
+  "invalid_location_mactch_dropoff": "Invalid location selected. Location must not be the same as the default dropoff location",
   "support_txt": "Support",
   "terms_and_condition_txt": "Terms and Conditions",
   "privacy_policy_txt": "Privacy Policy",
@@ -230,5 +232,10 @@
   "has_food_txt": "Meal or Snacks",
   "has_water_txt": "Bottled Water",
   "has_tv_txt": "TV / Entertainment",
-  "has_toilet_txt": "Toilet"
+  "has_toilet_txt": "Toilet",
+  "pickup_loc_txt": "Pick-up Location(s)",
+  "dropoff_loc_txt": "Dropoff Location(s)",
+  "remove_pickup_loc_title_txt": "Remove Pick-up Location",
+  "remove_dropoff_loc_title_txt": "Remove Dropoff Location",
+  "remove_loc_msg_txt": "Are you sure you want to remove this location?"
 }

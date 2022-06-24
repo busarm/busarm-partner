@@ -165,7 +165,7 @@ export class TripPage extends PageController {
   public groupTrips(trips: Trip[]): GroupedTrips[] {
     let list: GroupedTrips[] = [];
     for (let trip of trips) {
-      let date = Utils.parseServerDate(trip.trip_date).toDateString();
+      let date = Utils.convertTZ(Utils.parseServerDate(trip.trip_date), this.session.country?.tz_text).toDateString();
       let match = list.find((t) => t.date === date);
       if (match) {
         let matchIndex = list.findIndex((t) => t.date === match.date);
@@ -321,11 +321,11 @@ export class TripPage extends PageController {
     Api.getTrips(
       this.selectedDate
         ? this.getDateString(
-            Utils.beginningOfMonth(
-              this.selectedDate,
-              this.session?.country?.tz_text
-            )
+          Utils.beginningOfMonth(
+            this.selectedDate,
+            this.session?.country?.tz_text
           )
+        )
         : "",
       ({ status, result, msg }) => {
         if (status) {

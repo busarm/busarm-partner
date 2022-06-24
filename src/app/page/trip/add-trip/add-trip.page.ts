@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { ModalController, NavParams, Platform } from "@ionic/angular";
+import { IonInput, ModalController, NavParams, Platform } from "@ionic/angular";
 import { Location } from "../../../models/Location/Location";
 import { BusType } from "../../../models/Bus/BusType";
 import { Status } from "../../../models/Status";
@@ -33,10 +33,12 @@ export class AddTripPage extends PageController {
 
   // Optional
   @Input() selectedPickup: Location;
-  @Input() selectedDropOff: Location;
+  @Input() selectedDropoff: Location;
   @Input() selectedBusType: number;
   @Input() selectedStatus: number;
   @Input() selectedTickets: Ticket[] = [];
+  @Input() selectedPickupList: Location[] = [];
+  @Input() selectedDropoffList: Location[] = [];
 
   //Min current day
   minDate: Date = new Date();
@@ -99,7 +101,7 @@ export class AddTripPage extends PageController {
       );
   }
 
-  /**Launch select date model*/
+  /**Launch select date modal*/
   async showSelectDate() {
     let chooseModal = await this.modalCtrl.create({
       component: SelectDatePage,
@@ -208,21 +210,23 @@ export class AddTripPage extends PageController {
   }
 
   /**Select Origin place*/
-  public async selectOrigin(event) {
+  public async selectOrigin(event: CustomEvent<IonInput>) {
     if (event.isTrusted) {
       if (this.user) {
         this.selectLocation(
           this.strings.getString("select_pickup_txt"),
-          this.session.country.country_code,
+          null, null,
+          this.session?.country?.country_code,
           (location: Location) => {
             if (
               // Origin location must always be from default country
-              (location.country_code == this.session.country.country_code ||
-                location.country_name == this.session.country.country_name) &&
-              (!this.selectedDropOff ||
-                location.loc_id != this.selectedDropOff.loc_id)
+              (location.country_code == this.session?.country?.country_code ||
+                location.country_name == this.session?.country?.country_name) &&
+              (!this.selectedDropoff ||
+                location.loc_id != this.selectedDropoff.loc_id)
             ) {
               this.selectedPickup = location;
+              this.selectedPickupList = [];
             } else {
               this.showToastMsg(
                 Strings.getString("invalid_location"),
@@ -237,23 +241,24 @@ export class AddTripPage extends PageController {
   }
 
   /**Select Destination place*/
-  public async selectDestination(event) {
+  public async selectDestination(event: CustomEvent<IonInput>) {
     if (event.isTrusted) {
       if (this.user) {
         this.selectLocation(
           this.strings.getString("select_dropoff_txt"),
-          null,
+          null, null, null,
           (location: Location) => {
             if (
               // Destination location can either be from default country or any of the supported countries
               ((this.session.configs.allow_international &&
                 this.user.allow_international) ||
-                location.country_code == this.session.country.country_code ||
-                location.country_name == this.session.country.country_name) &&
+                location.country_code == this.session?.country?.country_code ||
+                location.country_name == this.session?.country?.country_name) &&
               (!this.selectedPickup ||
                 location.loc_id != this.selectedPickup.loc_id)
             ) {
-              this.selectedDropOff = location;
+              this.selectedDropoff = location;
+              this.selectedDropoffList = [];
             } else {
               this.showToastMsg(
                 Strings.getString("invalid_location"),
@@ -292,9 +297,100 @@ export class AddTripPage extends PageController {
     }
   }
 
+
+  /**Select Pickup*/
+  public async selectPickup() {
+    if (this.selectedPickup) {
+      this.selectLocation(
+        this.strings.getString("select_pickup_txt"),
+        String(this.selectedPickup?.city_id),
+        String(this.selectedPickup?.prov_code),
+        String(this.selectedPickup?.country_code),
+        (location: Location) => {
+
+          // Check if already exist
+          if (this.selectedPickupList &&
+            this.selectedPickupList.length > 0 &&
+            this.selectedPickupList.some(loc => loc.loc_id == location.loc_id)) {
+            return this.showToastMsg(
+              Strings.getString("invalid_location"),
+              ToastType.ERROR,
+              5000
+            );
+          }
+
+          // Check if matches default
+          if (location.loc_id == this.selectedPickup?.loc_id) {
+            return this.showToastMsg(
+              Strings.getString("invalid_location_mactch_pickup"),
+              ToastType.ERROR,
+              5000
+            );
+          }
+
+          // Add location
+          this.selectedPickupList.push(location);
+        }
+      );
+    }
+  }
+
+  /**Remove Pickup*/
+  public removePickup(position: number) {
+    if (this.selectedPickupList != null && this.selectedPickupList.length > 0) {
+      this.selectedPickupList.splice(position, 1);
+    }
+  }
+
+  /**Select Droppoff*/
+  public async selectDropoff() {
+    if (this.selectedDropoff) {
+      this.selectLocation(
+        this.strings.getString("select_pickup_txt"),
+        String(this.selectedDropoff?.city_id),
+        String(this.selectedDropoff?.prov_code),
+        String(this.selectedDropoff?.country_code),
+        (location: Location) => {
+
+          // Check if already exist
+          if (this.selectedDropoffList &&
+            this.selectedDropoffList.length > 0 &&
+            this.selectedDropoffList.some(loc => loc.loc_id == location.loc_id)) {
+            return this.showToastMsg(
+              Strings.getString("invalid_location"),
+              ToastType.ERROR,
+              5000
+            );
+          }
+
+          // Check if matches default
+          if (location.loc_id == this.selectedDropoff?.loc_id) {
+            return this.showToastMsg(
+              Strings.getString("invalid_location_mactch_dropoff"),
+              ToastType.ERROR,
+              5000
+            );
+          }
+
+          // Add location
+          this.selectedDropoffList.push(location);
+        }
+      );
+    }
+  }
+
+  /**Remove Dropoff*/
+  public removeDropoff(position: number) {
+    if (this.selectedDropoffList != null && this.selectedDropoffList.length > 0) {
+      this.selectedDropoffList.splice(position, 1);
+    }
+  }
+
   /**Launch location selector*/
   async selectLocation(
     title: string,
+    city: string,
+    province: string,
     country: string,
     callback: (place: any) => any
   ) {
@@ -304,6 +400,8 @@ export class AddTripPage extends PageController {
         title: title,
         selector: true,
         country: country,
+        province: province,
+        city: city,
       },
     });
     chooseModal.onDidDismiss().then((data) => {
@@ -335,14 +433,16 @@ export class AddTripPage extends PageController {
   public submit() {
     this.showLoading().then(() => {
       Api.addNewTrip(
-        this.selectedPickup?.loc_id,
-        this.selectedDropOff?.loc_id,
+        Number(this.selectedPickup?.loc_id),
+        Number(this.selectedDropoff?.loc_id),
         this.selectedDateTime
           ? new Date(this.selectedDateTime).toISOString()
           : null,
         this.selectedBusType,
         this.selectedStatus,
         this.selectedTickets,
+        this.selectedPickupList.map((pickup) => Number(pickup.loc_id)),
+        this.selectedDropoffList.map((pickup) => Number(pickup.loc_id)),
         ({ status, result, msg }) => {
           if (status) {
             this.hideLoading();

@@ -221,9 +221,8 @@ export class Api {
     let token = await Oauth.storage.get(OauthStorageKeys.AccessTokenKey);
     let tokenType = await Oauth.storage.get(OauthStorageKeys.TokenTypeKey);
     if (token) {
-      requestParams.headers["Authorization"] = `${
-        tokenType || "Bearer"
-      } ${token}`;
+      requestParams.headers["Authorization"] = `${tokenType || "Bearer"
+        } ${token}`;
     }
 
     /*Process Request*/
@@ -366,8 +365,8 @@ export class Api {
         const data = result.body
           ? Utils.parseJson(result.body)
           : result.error
-          ? Utils.parseJson(result.error)
-          : {};
+            ? Utils.parseJson(result.error)
+            : {};
         if (result.status === 401) {
           // Failed to authenticate api access
           if (requestParams.callback) {
@@ -989,23 +988,27 @@ export class Api {
    * @param callback
    * */
   public static addNewTrip(
-    pickup: number,
-    dropoff: number,
+    pickupId: number,
+    dropoffId: number,
     date: string,
     busTypeId: number,
     statusId: number,
-    tickets: any,
+    tickets: any[],
+    pickupList: number[],
+    dropoffList: number[],
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: ApiRequestMethod.POST,
       params: {
-        pickup: pickup,
-        dropoff: dropoff,
+        pickupId: pickupId,
+        dropoffId: dropoffId,
         date: date,
         busTypeId: busTypeId,
         statusId: statusId,
         tickets: tickets,
+        pickupList: pickupList,
+        dropoffList: dropoffList,
       },
       url: Urls.apiTrip,
       cache: false,
@@ -1246,7 +1249,7 @@ export class Api {
    * @param busId
    * @param callback
    * */
-   public static updateBus(
+  public static updateBus(
     busId: string,
     description: string,
     callback: ApiCallback<BaseResponse>
@@ -1268,7 +1271,7 @@ export class Api {
    * @param busId
    * @param callback
    * */
-   public static updateBusAmenity(
+  public static updateBusAmenity(
     busId: string,
     amenites: any,
     callback: ApiCallback<BaseResponse>
@@ -1366,6 +1369,146 @@ export class Api {
     });
   }
 
+  /**
+   * Add pickup location
+   * @param tripId
+   * @param locId
+   * @param callback
+   * */
+   public static addPickup(
+    tripId: any,
+    locId: any,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      method: ApiRequestMethod.POST,
+      params: {
+        tripId: tripId,
+        locId: locId,
+      },
+      url: Urls.apiTripPickupLocation,
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**Toggle Pickup location
+   * @param tripId
+   * @param locId
+   * @param active
+   * @param callback
+   * */
+  public static togglePickupLocation(
+    tripId: number | string,
+    locId: number | string,
+    active: boolean,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiTripPickupLocation,
+      method: ApiRequestMethod.PUT,
+      params: {
+        tripId: tripId,
+        locId: locId,
+        active: active ? 1 : 0,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**Delete Pickup location
+   * @param tripId
+   * @param locId
+   * @param callback
+   * */
+  public static deletePickupLocation(
+    tripId: number | string,
+    locId: number | string,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiTripPickupLocation,
+      method: ApiRequestMethod.DELETE,
+      params: {
+        tripId: tripId,
+        locId: locId,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**
+   * Add dropoff location
+   * @param tripId
+   * @param locId
+   * @param callback
+   * */
+   public static addDropoff(
+    tripId: any,
+    locId: any,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      method: ApiRequestMethod.POST,
+      params: {
+        tripId: tripId,
+        locId: locId,
+      },
+      url: Urls.apiTripDropoffLocation,
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**Toggle Dropoff location
+   * @param tripId
+   * @param locId
+   * @param active
+   * @param callback
+   * */
+  public static toggleDropoffLocation(
+    tripId: number | string,
+    locId: number | string,
+    active: boolean,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiTripDropoffLocation,
+      method: ApiRequestMethod.PUT,
+      params: {
+        tripId: tripId,
+        locId: locId,
+        active: active ? 1 : 0,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**Delete Dropoff location
+   * @param tripId
+   * @param locId
+   * @param callback
+   * */
+  public static deleteDropoffLocation(
+    tripId: number | string,
+    locId: number | string,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiTripDropoffLocation,
+      method: ApiRequestMethod.DELETE,
+      params: {
+        tripId: tripId,
+        locId: locId,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
   /**Toggle Ticket
    * @param ticketId
    * @param typeId
@@ -1373,8 +1516,8 @@ export class Api {
    * @param callback
    * */
   public static toggleTicket(
-    ticketId: string,
-    typeId: string,
+    ticketId: number | string,
+    typeId: number | string,
     active: boolean,
     callback: ApiCallback<BaseResponse>
   ) {
