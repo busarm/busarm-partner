@@ -1,10 +1,9 @@
 import { Component } from "@angular/core";
-import { ActionSheetController, Platform } from "@ionic/angular";
+import { ActionSheetController, ModalController, Platform } from "@ionic/angular";
 import { Network } from "@ionic-native/network/ngx";
 import { Utils } from "../../helpers/Utils";
 import { ToastType } from "../../services/app/AlertService";
 import { PageController } from "../page-controller";
-import { SessionService } from "../../services/app/SessionService";
 import { Api } from "../../helpers/Api";
 import {
   Camera,
@@ -17,6 +16,7 @@ import { DestinationType } from "@ionic-native/camera";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { Urls } from "../../helpers/Urls";
 import { Oauth, OauthStorageKeys } from "busarm-oauth-client-js";
+import { UpdateAgentPage } from "../agents/update-agent/update-agent.page";
 @Component({
   selector: "app-account",
   templateUrl: "./account.page.html",
@@ -26,6 +26,7 @@ export class AccountPage extends PageController {
   public darkMode: boolean = false;
 
   constructor(
+    private modalCtrl: ModalController,
     private actionSheetController: ActionSheetController,
     private camera: Camera,
     private file: File,
@@ -38,11 +39,20 @@ export class AccountPage extends PageController {
 
   public async ngOnInit() {
     await super.ngOnInit();
+
     this.subscriptions.add(
       this.events.darkModeChanged.subscribe((enabled) => {
         this.darkMode = enabled;
       })
     );
+
+    this.events.userUpdated.subscribe(async () => {
+      let session = await this.instance.authService.validateSession();
+      if (session) {
+        super.ngOnInit();
+      }
+    });
+
     this.darkMode = (await this.instance.sessionService.getDarkMode());
   }
 
@@ -275,5 +285,18 @@ export class AccountPage extends PageController {
         }
       }
     });
+  }
+
+  /**Launch add user page*/
+  async showUpdateAgent() {
+    let chooseModal = await this.modalCtrl.create({
+      component: UpdateAgentPage,
+    });
+    chooseModal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.events.userUpdated.next();
+      }
+    });
+    return await chooseModal.present();
   }
 }

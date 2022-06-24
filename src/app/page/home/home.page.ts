@@ -22,7 +22,7 @@ export class HomePage extends PageController {
 
   constructor(
     private router: Router,
-    public modalCtrl: ModalController,
+    private modalCtrl: ModalController,
     private menu: MenuController,
     private scannerService: ScannerService
   ) {

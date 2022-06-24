@@ -23,7 +23,7 @@ export class BusPage extends PageController {
 
   constructor(
     public alertCtrl: AlertController,
-    public modalCtrl: ModalController,
+    private modalCtrl: ModalController,
     public network: Network
   ) {
     super();

@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{strings.getString('update_agent_txt')}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form #updateAgentForm="ngForm" (ngSubmit)="update()" autocomplete="off">
+    <ion-row>
+      <ion-col>
+        <ion-item *ngIf="this.user.is_admin || this.user.is_partner">
+          <ion-label position="stacked">{{strings.getString('company_name_txt')}}</ion-label>
+          <ion-input name="company_name" [required]="false" [(ngModel)]="partnerName" type="email">
+          </ion-input>
+        </ion-item>
+        <br>
+        <ion-item>
+          <ion-label position="stacked">{{strings.getString('name_txt')}}</ion-label>
+          <ion-input name="name" [required]="false" [(ngModel)]="name" type="text">
+          </ion-input>
+        </ion-item>
+        <br>
+        <ion-item>
+          <ion-label position="fixed">{{dialCode}}</ion-label>
+          <ion-input name="phone" [required]="false" [(ngModel)]="phone" type="number"
+            placeholder="{{strings.getString('phone_txt')}}">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <br />
+    <br />
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" color="primary" type="submit"
+          [disabled]="!updateAgentForm.form.valid || ((!name || name.length == 0) && (!phone || phone.length == 0) && (!partnerName  || partnerName.length == 0))">
+          {{strings.getString("submit_txt")}}
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>
