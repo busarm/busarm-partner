@@ -217,7 +217,7 @@ export class AccountPage extends PageController {
   /**Show Support page*/
   public async showSupport() {
     let token = await Oauth.storage.get(OauthStorageKeys.AccessTokenKey);
-    this.iab.create(Urls.support + "?access_token=" + token, "_blank", {
+    this.iab.create(Urls.support, "_blank", {
       zoom: "no",
       hardwareback: "yes",
     });
