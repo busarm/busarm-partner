@@ -30,7 +30,7 @@ export class LocationsPage extends PageController {
 
   public readonly updated = new Subject<string>();
 
-  constructor(public modalCtrl: ModalController) {
+  constructor(private modalCtrl: ModalController) {
     super();
   }
 

@@ -4,12 +4,14 @@ import {FormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 
 import {AccountPage} from './account.page';
+import { UpdateAgentPageModule } from '../agents/update-agent/update-agent.module';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        IonicModule
+        IonicModule,
+        UpdateAgentPageModule
     ],
     declarations: [AccountPage]
 })

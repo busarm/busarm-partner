@@ -64,7 +64,7 @@ export class AppComponent {
     public router: Router,
     private statusBar: StatusBar,
     private splashScreen: SplashScreen,
-    public modalCtrl: ModalController,
+    private modalCtrl: ModalController,
     private menu: MenuController,
     private actionSheetCtrl: ActionSheetController,
     private popoverCtrl: PopoverController,
@@ -80,7 +80,7 @@ export class AppComponent {
     AppComponent._instance = this;
 
     // Subscribe to network change event
-    this.events.networkChanged.asObservable().subscribe((online) => {
+    this.events.networkChanged.subscribe((online) => {
       if (online) {
         this.alertService.hideToastMsg();
       } else {

@@ -21,7 +21,7 @@ export class AgentsPage extends PageController {
 
   public readonly updated = new Subject<string>();
 
-  constructor(public modalCtrl: ModalController, private iab: InAppBrowser) {
+  constructor(private modalCtrl: ModalController, private iab: InAppBrowser) {
     super();
   }
 

@@ -432,7 +432,7 @@ export class AddTripPage extends PageController {
   /**Submit form*/
   public submit() {
     this.showLoading().then(() => {
-      Api.addNewTrip(
+      Api.addTrip(
         Number(this.selectedPickup?.loc_id),
         Number(this.selectedDropoff?.loc_id),
         this.selectedDateTime

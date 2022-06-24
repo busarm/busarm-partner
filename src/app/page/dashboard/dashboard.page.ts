@@ -40,7 +40,7 @@ export class DashboardPage extends PageController {
   private bookingsChart: Chart = null;
 
   constructor(
-    public modalCtrl: ModalController,
+    private modalCtrl: ModalController,
     private scannerService: ScannerService,
     public platform: Platform
   ) {
