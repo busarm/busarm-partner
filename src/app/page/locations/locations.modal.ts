@@ -8,7 +8,4 @@ import { LocationsPage } from './locations.page';
     styleUrls: ['./locations.page.scss'],
 })
 export class LocationsModal extends LocationsPage {
-    constructor(public modalCtrl: ModalController) {
-        super(modalCtrl);
-    }
 }

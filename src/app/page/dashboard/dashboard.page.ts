@@ -40,7 +40,7 @@ export class DashboardPage extends PageController {
   private bookingsChart: Chart = null;
 
   constructor(
-    public modalCtrl: ModalController,
+    private modalCtrl: ModalController,
     private scannerService: ScannerService,
     public platform: Platform
   ) {
@@ -450,7 +450,7 @@ export class DashboardPage extends PageController {
     Api.getDashboard(min_date, max_date, async ({ status, result, msg }) => {
       this.isDashboardLoading = false;
       if (status) {
-        //Save user data to session
+        // Save user data to session
         if (this.assertAvailable(result)) {
           if (
             force ||

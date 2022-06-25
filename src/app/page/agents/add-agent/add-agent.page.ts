@@ -11,14 +11,13 @@ import { Api } from "../../../helpers/Api";
   styleUrls: ["./add-agent.page.scss"],
 })
 export class AddAgentPage extends PageController {
+
   name: string;
   email: string;
   phone: string;
   dialCode: string;
   isAdmin: boolean;
   isExistingUser: boolean;
-
-  updated: boolean = false;
 
   constructor(private modalCtrl: ModalController) {
     super();
@@ -32,7 +31,7 @@ export class AddAgentPage extends PageController {
     this.dialCode = this.session.country.dial_code;
   }
 
-  /**Add Bus*/
+  /**Add Agent*/
   public add() {
     let user: User;
     if (this.isExistingUser) {
@@ -50,14 +49,14 @@ export class AddAgentPage extends PageController {
       };
     }
 
-    //Show Loader
+    // Show Loader
     this.showLoading().then(() => {
-      Api.addNewAgent(user, ({ status, result, msg }) => {
+      Api.addAgent(user, ({ status, result, msg }) => {
         this.hideLoading();
         if (status) {
           if (result.status) {
-            this.updated = true;
-            this.dismiss();
+            this.dismiss(true);
+            this.events.userUpdated.next();
             this.showToastMsg(result.msg, ToastType.SUCCESS);
           } else {
             this.showToastMsg(result.msg, ToastType.ERROR);
@@ -70,8 +69,8 @@ export class AddAgentPage extends PageController {
   }
 
   /**Close Modal*/
-  async dismiss() {
+  async dismiss(updated = false) {
     const modal = await this.modalCtrl.getTop();
-    if (modal) modal.dismiss(this.updated);
+    if (modal) modal.dismiss(updated);
   }
 }

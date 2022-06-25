@@ -221,9 +221,8 @@ export class Api {
     let token = await Oauth.storage.get(OauthStorageKeys.AccessTokenKey);
     let tokenType = await Oauth.storage.get(OauthStorageKeys.TokenTypeKey);
     if (token) {
-      requestParams.headers["Authorization"] = `${
-        tokenType || "Bearer"
-      } ${token}`;
+      requestParams.headers["Authorization"] = `${tokenType || "Bearer"
+        } ${token}`;
     }
 
     /*Process Request*/
@@ -366,8 +365,8 @@ export class Api {
         const data = result.body
           ? Utils.parseJson(result.body)
           : result.error
-          ? Utils.parseJson(result.error)
-          : {};
+            ? Utils.parseJson(result.error)
+            : {};
         if (result.status === 401) {
           // Failed to authenticate api access
           if (requestParams.callback) {
@@ -605,7 +604,7 @@ export class Api {
     loadCache = true
   ) {
     this.performRequest({
-      url: Urls.apiGetAgents,
+      url: Urls.apiAgents,
       cache: true,
       loadCache: loadCache,
       callback: callback,
@@ -719,7 +718,7 @@ export class Api {
     callback: ApiCallback<DashboardResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetDashboard,
+      url: Urls.apiDashboard,
       cache: true,
       loadCache: false,
       params: {
@@ -727,7 +726,7 @@ export class Api {
         max_date: maxDate,
       },
       cacheId: String(
-        Utils.hashString(Urls.apiGetDashboard + minDate + maxDate)
+        Utils.hashString(Urls.apiDashboard + minDate + maxDate)
       ),
       callback: callback,
     });
@@ -742,7 +741,7 @@ export class Api {
     callback: ApiCallback<BankListResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetBanks,
+      url: Urls.apiTransactionBanks,
       params: {
         countryCode: countryCode,
         methodId: methodId,
@@ -750,7 +749,7 @@ export class Api {
       cache: true,
       loadCache: true,
       cacheId: String(
-        Utils.hashString(Urls.apiGetBanks + countryCode + methodId)
+        Utils.hashString(Urls.apiTransactionBanks + countryCode + methodId)
       ),
       callback: callback,
     });
@@ -763,7 +762,7 @@ export class Api {
     callback: ApiCallback<PayInTransactionResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetPayin,
+      url: Urls.apiTransactionPayin,
       cache: true,
       callback: callback,
     });
@@ -776,7 +775,7 @@ export class Api {
     callback: ApiCallback<PayOutTransactionResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetPayout,
+      url: Urls.apiTransactionPayout,
       cache: true,
       callback: callback,
     });
@@ -792,7 +791,7 @@ export class Api {
     callback: ApiCallback<BookingListResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetBookings,
+      url: Urls.apiBookings,
       params: {
         status: status,
         min_date: min_date,
@@ -801,7 +800,7 @@ export class Api {
       cache: true,
       loadCache: true,
       cacheId: String(
-        Utils.hashString(Urls.apiGetBookings + status + min_date + max_date)
+        Utils.hashString(Urls.apiBookings + status + min_date + max_date)
       ),
       callback: callback,
     });
@@ -834,12 +833,12 @@ export class Api {
    * */
   public static getBooking(id: string, callback: ApiCallback<BookingResponse>) {
     this.performRequest({
-      url: Urls.apiGetBooking,
+      url: Urls.apiBooking,
       params: {
         booking_id: id,
       },
       cache: true,
-      cacheId: String(Utils.hashString(Urls.apiGetBooking + id)),
+      cacheId: String(Utils.hashString(Urls.apiBooking + id)),
       callback: callback,
     });
   }
@@ -851,13 +850,13 @@ export class Api {
     callback: ApiCallback<StatusListResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetTripStatusList,
+      url: Urls.apiTripStatusList,
       cache: true,
       loadCache: true,
       params: {
         isNew: true,
       },
-      cacheId: String(Utils.hashString(Urls.apiGetTripStatusList + 1)),
+      cacheId: String(Utils.hashString(Urls.apiTripStatusList + 1)),
       callback: callback,
     });
   }
@@ -869,7 +868,7 @@ export class Api {
     callback: ApiCallback<StatusListResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetTripStatusList,
+      url: Urls.apiTripStatusList,
       cache: true,
       loadCache: true,
       callback: callback,
@@ -881,7 +880,7 @@ export class Api {
    * */
   public static getBusTypes(callback: ApiCallback<BusTypeListResponse>) {
     this.performRequest({
-      url: Urls.apiGetBusTypes,
+      url: Urls.apiBusTypes,
       cache: true,
       loadCache: true,
       callback: callback,
@@ -893,7 +892,7 @@ export class Api {
    * */
   public static getPartnerBusTypes(callback: ApiCallback<BusTypeListResponse>) {
     this.performRequest({
-      url: Urls.apiGetPartnerBusTypes,
+      url: Urls.apiAgentBusTypes,
       cache: true,
       loadCache: true,
       callback: callback,
@@ -905,7 +904,7 @@ export class Api {
    * */
   public static getTicketTypes(callback: ApiCallback<TicketTypeListRepsonse>) {
     this.performRequest({
-      url: Urls.apiGetTicketTypes,
+      url: Urls.apiTicketTypes,
       cache: true,
       loadCache: true,
       callback: callback,
@@ -919,7 +918,7 @@ export class Api {
     callback: ApiCallback<LocationTypeListResponse>
   ) {
     this.performRequest({
-      url: Urls.apiGetLocationTypes,
+      url: Urls.apiLocationTypes,
       cache: true,
       loadCache: true,
       callback: callback,
@@ -954,7 +953,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      url: Urls.apiVerify,
+      url: Urls.apiAgentVerify,
       method: ApiRequestMethod.POST,
       params: {
         email: email,
@@ -969,7 +968,13 @@ export class Api {
    * @param data
    * @param callback
    * */
-  public static addNewAgent(data: any, callback: ApiCallback<BaseResponse>) {
+  public static addAgent(data: {
+    name?: string,
+    phone?: string,
+    dial_code?: string,
+    email?: string,
+    is_admin?: number | boolean,
+  }, callback: ApiCallback<BaseResponse>) {
     this.performRequest({
       method: ApiRequestMethod.POST,
       params: data,
@@ -988,24 +993,28 @@ export class Api {
    * @param tickets
    * @param callback
    * */
-  public static addNewTrip(
-    pickup: number,
-    dropoff: number,
+  public static addTrip(
+    pickupId: number,
+    dropoffId: number,
     date: string,
     busTypeId: number,
     statusId: number,
-    tickets: any,
+    tickets: any[],
+    pickupList: number[],
+    dropoffList: number[],
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
       method: ApiRequestMethod.POST,
       params: {
-        pickup: pickup,
-        dropoff: dropoff,
+        pickupId: pickupId,
+        dropoffId: dropoffId,
         date: date,
         busTypeId: busTypeId,
         statusId: statusId,
         tickets: tickets,
+        pickupList: pickupList,
+        dropoffList: dropoffList,
       },
       url: Urls.apiTrip,
       cache: false,
@@ -1136,7 +1145,7 @@ export class Api {
     this.performRequest({
       method: ApiRequestMethod.POST,
       params: formData,
-      url: Urls.apiUpdatePartnerLogo,
+      url: Urls.apiAgentLogo,
       callback: callback,
     });
   }
@@ -1152,7 +1161,7 @@ export class Api {
     this.performRequest({
       method: ApiRequestMethod.POST,
       params: payInRequest,
-      url: Urls.apiPayInRequest,
+      url: Urls.apiTransactionPayInRequest,
       encrypt: true,
       callback: callback,
     });
@@ -1169,7 +1178,29 @@ export class Api {
     this.performRequest({
       method: ApiRequestMethod.POST,
       params: payoutRequest,
-      url: Urls.apiPayoutRequest,
+      url: Urls.apiTransactionPayoutRequest,
+      encrypt: true,
+      callback: callback,
+    });
+  }
+
+  /**Update Agent Admin Status
+   * @param data
+   * @param callback
+   * */
+  public static updateAgent(data: {
+    name?: string,
+    phone?: string,
+    dial_code?: string,
+    partner_name?: string,
+  },
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiAgent,
+      method: ApiRequestMethod.PUT,
+      params: data,
+      cache: false,
       encrypt: true,
       callback: callback,
     });
@@ -1186,7 +1217,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      url: Urls.apiAdmin,
+      url: Urls.apiAgentAdmin,
       method: ApiRequestMethod.PUT,
       params: {
         agentId: agentId,
@@ -1209,7 +1240,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      url: Urls.apiUpdateTripStatus,
+      url: Urls.apiTripStatus,
       method: ApiRequestMethod.PUT,
       params: {
         tripId: tripId,
@@ -1231,7 +1262,7 @@ export class Api {
     callback: ApiCallback<BaseResponse>
   ) {
     this.performRequest({
-      url: Urls.apiUpdateTripBusType,
+      url: Urls.apiTripBusType,
       method: ApiRequestMethod.PUT,
       params: {
         tripId: tripId,
@@ -1246,7 +1277,7 @@ export class Api {
    * @param busId
    * @param callback
    * */
-   public static updateBus(
+  public static updateBus(
     busId: string,
     description: string,
     callback: ApiCallback<BaseResponse>
@@ -1268,7 +1299,7 @@ export class Api {
    * @param busId
    * @param callback
    * */
-   public static updateBusAmenity(
+  public static updateBusAmenity(
     busId: string,
     amenites: any,
     callback: ApiCallback<BaseResponse>
@@ -1366,6 +1397,146 @@ export class Api {
     });
   }
 
+  /**
+   * Add pickup location
+   * @param tripId
+   * @param locId
+   * @param callback
+   * */
+  public static addPickup(
+    tripId: any,
+    locId: any,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      method: ApiRequestMethod.POST,
+      params: {
+        tripId: tripId,
+        locId: locId,
+      },
+      url: Urls.apiTripPickupLocation,
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**Toggle Pickup location
+   * @param tripId
+   * @param locId
+   * @param active
+   * @param callback
+   * */
+  public static togglePickupLocation(
+    tripId: number | string,
+    locId: number | string,
+    active: boolean,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiTripPickupLocation,
+      method: ApiRequestMethod.PUT,
+      params: {
+        tripId: tripId,
+        locId: locId,
+        active: active ? 1 : 0,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**Delete Pickup location
+   * @param tripId
+   * @param locId
+   * @param callback
+   * */
+  public static deletePickupLocation(
+    tripId: number | string,
+    locId: number | string,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiTripPickupLocation,
+      method: ApiRequestMethod.DELETE,
+      params: {
+        tripId: tripId,
+        locId: locId,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**
+   * Add dropoff location
+   * @param tripId
+   * @param locId
+   * @param callback
+   * */
+  public static addDropoff(
+    tripId: any,
+    locId: any,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      method: ApiRequestMethod.POST,
+      params: {
+        tripId: tripId,
+        locId: locId,
+      },
+      url: Urls.apiTripDropoffLocation,
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**Toggle Dropoff location
+   * @param tripId
+   * @param locId
+   * @param active
+   * @param callback
+   * */
+  public static toggleDropoffLocation(
+    tripId: number | string,
+    locId: number | string,
+    active: boolean,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiTripDropoffLocation,
+      method: ApiRequestMethod.PUT,
+      params: {
+        tripId: tripId,
+        locId: locId,
+        active: active ? 1 : 0,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
+  /**Delete Dropoff location
+   * @param tripId
+   * @param locId
+   * @param callback
+   * */
+  public static deleteDropoffLocation(
+    tripId: number | string,
+    locId: number | string,
+    callback: ApiCallback<BaseResponse>
+  ) {
+    this.performRequest({
+      url: Urls.apiTripDropoffLocation,
+      method: ApiRequestMethod.DELETE,
+      params: {
+        tripId: tripId,
+        locId: locId,
+      },
+      cache: false,
+      callback: callback,
+    });
+  }
+
   /**Toggle Ticket
    * @param ticketId
    * @param typeId
@@ -1373,8 +1544,8 @@ export class Api {
    * @param callback
    * */
   public static toggleTicket(
-    ticketId: string,
-    typeId: string,
+    ticketId: number | string,
+    typeId: number | string,
     active: boolean,
     callback: ApiCallback<BaseResponse>
   ) {

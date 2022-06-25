@@ -59,6 +59,7 @@
       </ion-row>
     </ion-card-content>
   </ion-card>
+  <br />
   <!-- Photos -->
   <ion-card>
     <ion-card-title class="cell cell-center ">
@@ -108,6 +109,7 @@
       </ion-row>
     </ion-card-content>
   </ion-card>
+  <br />
   <!-- Amenities -->
   <ion-card *ngIf="bus!=null">
     <ion-card-title class="cell cell-center ">
@@ -192,6 +194,8 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+  <br />
+  <!-- Shared bus -->
   <ion-card *ngIf="bus!=null && bus.shared != '1'">
     <ion-card-title class="cell cell-center ">
       {{strings.getString("share_bus_txt")}}

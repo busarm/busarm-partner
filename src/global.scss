@@ -511,16 +511,6 @@ ion-tabs {
   }
 }
 
-// ion-tab-button {
-//   --color-focused: var(--text-color-light) !important;
-//   --color-selected: var(--text-color-light) !important;
-//   ion-label {
-//     // color: var(--ion-color-secondary) !important;
-//     // --color: var(--ion-color-secondary) !important;
-//     color: var(--text-color-light) !important;
-//     --color: var(--text-color-light) !important;
-//   }
-// }
 
 ion-toast {
   --button-color: var(--ion-color-secondary);
@@ -571,7 +561,9 @@ ion-col {
   padding-top: 5px;
   padding-bottom: 5px;
 }
-
+ion-toast {
+  margin-bottom: 70px;
+}
 input,
 button {
   background: transparent;
@@ -581,6 +573,10 @@ button {
   &:focus {
     outline: 0;
   }
+}
+
+ion-badge {
+  padding: 5px
 }
 
 button {

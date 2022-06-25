@@ -4,6 +4,7 @@ import { BusSharedPartner } from "./BusSharedPartner";
 
 export interface Bus {
   id?: string;
+  thumbnail?: string;
   plate_number?: string;
   description?: string;
   seats?: string;
