@@ -47,7 +47,7 @@
                   <ion-col size="12" *ngIf="(user.partner_logo!=null && user.partner_logo!='') && user.is_admin"
                     class="cell cell-flex cell-flex-center">
                     <ion-button color="clear" *ngIf="!platform.is('cordova')"
-                      style="height: 30px!important;width: 30px!important;" class="iconBt">
+                      style="height: 30px!important; width: 30px!important;" class="iconBt">
                       <input class="fileInput" id="fileInputLogo" type="file" accept="image/*"
                         (change)="changeListener($event)" />
                       <label class="fileInputLabel" id="fileInputLogoLabel" for="fileInputLogo">
@@ -61,24 +61,28 @@
               <ion-col size-sm="6" size="12" class="cell cell-flex cell-flex-center">
                 <div class="cell cell-center cell-left">
                   <div>
-                    <ion-label class="cell-title cell-sub">{{user.partner_name}}</ion-label>
+                    <ion-label class="cell-title">{{user.partner_name}}</ion-label>
                   </div>
                   <div>
-                    <ion-label class="cell-title">{{user.name}}
+                    <ion-label class="cell-title cell-sub">{{user.name}}
                       ({{user.is_partner ? strings.getString('owner_txt') : (user.is_admin ?
                       strings.getString('admin_txt') : (user.is_agent ? strings.getString('agent_txt') :
                       strings.getString('user_txt')))}})
                     </ion-label>
                   </div>
                   <div>
-                    <ion-label class="cell-content">{{user.email}}</ion-label>
+                    <ion-label class="cell-content cell-sub">{{user.email}}</ion-label>
                   </div>
                   <div>
-                    <ion-label class="cell-content">{{user.dial_code}}{{user.phone}}</ion-label>
+                    <ion-label class="cell-content cell-sub">{{user.dial_code}}{{user.phone}}</ion-label>
                   </div>
                   <div>
-                    <ion-label id="accountIdLb" class="cell-content copy"><strong>Account ID -
-                      </strong>{{user.account_id}}</ion-label>
+                    <ion-label class="cell-content cell-sub x-small-text copy">
+                      <strong>{{strings.getString('account_id_txt')}}: </strong>{{user.account_id}}
+                    </ion-label>
+                  </div>
+                  <div class="cell-content cell-sub x-small-text copy" style="max-width: 200px">
+                    <strong>{{strings.getString('link_txt')}}: </strong><a class="color-normal" target="_blank" href="{{getAppLink()}}">{{getAppLink()}}</a>
                   </div>
                   <div class="cell-margin-top-2x">
                     <ion-button color="primary" (click)="showUpdateAgent()">
@@ -115,6 +119,17 @@
               </ion-card-content>
             </ion-card>
           </ion-col>
+          <ion-col hidden size="12">
+            <ion-card (click)="showApp()">
+              <ion-card-content>
+                <ion-item lines="none" detail>
+                  <ion-icon name="phone-portrait" slot="start">
+                  </ion-icon>
+                  {{strings.getString('my_app_txt')}}
+                </ion-item>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
           <ion-col size="12">
             <ion-card>
               <ion-card-content>
@@ -126,9 +141,6 @@
                 </ion-item>
                 <ion-item lines="none" (click)="showPrivacy()" detail>
                   {{strings.getString('privacy_policy_txt')}}
-                </ion-item>
-                <ion-item hidden lines="none" (click)="showApp()" detail>
-                  {{strings.getString('go_to_app_txt')}}
                 </ion-item>
                 <ion-item lines="none">
                   {{strings.getString('dark_mode_txt')}}

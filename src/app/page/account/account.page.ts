@@ -15,7 +15,6 @@ import { Strings } from "../../resources";
 import { DestinationType } from "@ionic-native/camera";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { Urls } from "../../helpers/Urls";
-import { Oauth, OauthStorageKeys } from "busarm-oauth-client-js";
 import { UpdateAgentPage } from "../agents/update-agent/update-agent.page";
 @Component({
   selector: "app-account",
@@ -216,8 +215,7 @@ export class AccountPage extends PageController {
 
   /**Show Support page*/
   public async showSupport() {
-    let token = await Oauth.storage.get(OauthStorageKeys.AccessTokenKey);
-    this.iab.create(Urls.support, "_blank", {
+    this.iab.create(Urls.supportUrl, "_blank", {
       zoom: "no",
       hardwareback: "yes",
     });
@@ -225,8 +223,7 @@ export class AccountPage extends PageController {
 
   /**Show App page*/
   public async showApp() {
-    let token = await Oauth.storage.get(OauthStorageKeys.AccessTokenKey);
-    this.iab.create(Urls.appUrl + "?access_token=" + token, "_blank", {
+    this.iab.create(this.getAppLink(), "_blank", {
       zoom: "no",
       hardwareback: "yes",
     });
@@ -236,6 +233,14 @@ export class AccountPage extends PageController {
   public toggleTheme() {
     this.instance.sessionService.setDarkMode(this.darkMode);
     document.body.classList.toggle("dark", this.darkMode);
+  }
+
+  /**
+   * Get account's app link
+   * @returns {String}
+   */
+  public getAppLink(): string {
+    return Urls.appUrl + "P-" + this.user.account_id
   }
 
   /**Logout user*/

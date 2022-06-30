@@ -52,7 +52,8 @@ export class Urls {
   }
 
   /*Generic Urls*/
-  public static support = Urls.appUrl + "support";
+  public static appPartnerUrl = Urls.appUrl + "partner";
+  public static supportUrl = Urls.appUrl + "support";
   public static termsUrl = Urls.appUrl + "terms";
   public static privacyUrl = Urls.appUrl + "privacy";
   public static partnerOauthRedirectUrl = Urls.baseUrl() + "hooks/oauth/authorize";
