@@ -242,5 +242,7 @@
   "remove_dropoff_loc_title_txt": "Remove Dropoff Location",
   "remove_loc_msg_txt": "Are you sure you want to remove this location?",
   "link_txt": "Link",
-  "account_id_txt": "Account ID"
+  "account_id_txt": "Account ID",
+  "account_inactive_txt": "Your account is not active. Hence, your services will not be available. Please contact support",
+  "account_unverified_txt": "Your account is not verified. Hence, your services will not be available. Please contact support"
 }

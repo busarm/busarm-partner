@@ -143,6 +143,19 @@ export class DashboardPage extends PageController {
    */
   public async initDashboard(): Promise<void> {
     if (this.dashboard) {
+      // Set active status
+      this.instance.authService.accountActive = this.dashboard.account_active;
+      this.instance.authService.accountVerified = this.dashboard.account_verified;
+      if (!this.instance.authService.accountActive) {
+        this.instance.accountStatusBanner = this.strings.getString('account_inactive_txt');
+      }
+      else if (!this.instance.authService.accountVerified) {
+        this.instance.accountStatusBanner = this.strings.getString('account_unverified_txt');
+      }
+      else {
+        this.instance.accountStatusBanner = null;
+      }
+
       // Set up status alerts
       if (this.dashboard.alert && this.dashboard.alert.status) {
         let toastType: ToastType = ToastType.NORMAL;
@@ -199,10 +212,10 @@ export class DashboardPage extends PageController {
       // Determine whether to show booking info
       this.showBookingsInfo =
         Number(this.dashboard.bookings.unpaid) +
-          Number(this.dashboard.bookings.paid) +
-          Number(this.dashboard.bookings.pending) +
-          Number(this.dashboard.bookings.verified) +
-          Number(this.dashboard.bookings.canceled) >
+        Number(this.dashboard.bookings.paid) +
+        Number(this.dashboard.bookings.pending) +
+        Number(this.dashboard.bookings.verified) +
+        Number(this.dashboard.bookings.canceled) >
         0;
 
       // Set selectd transaction
@@ -456,7 +469,7 @@ export class DashboardPage extends PageController {
             force ||
             (result.data &&
               String(MD5(Utils.toJson(this.dashboard))) !=
-                String(MD5(Utils.toJson(result.data))))
+              String(MD5(Utils.toJson(result.data))))
           ) {
             this.dashboard = result.data;
             await this.initDashboard();

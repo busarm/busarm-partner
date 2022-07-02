@@ -1,7 +1,7 @@
 {
   "name": "Busarm Partner",
   "short_name": "Busarm Partner",
-  "version":  "1.0.64",
+  "version":  "1.0.65",
   "theme_color": "#3f5f44",
   "background_color": "#ffffff",
   "display": "standalone",

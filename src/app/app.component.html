@@ -1,28 +1,34 @@
 <ion-app>
-    <div *ngIf="showEnvironmentBanner" style="height:30px; background:black; padding: 4px; text-align:center;">
-        <span style="color: yellow; font-size:12px;">{{environment}} - <a target="_blank" style="color: yellowgreen;" href="{{liveUrl}}">{{strings.getString('go_to_live_txt')}}</a></span>
+  <div *ngIf="envBanner && !accountStatusBanner" class="top-banner env-banner">
+    <span class="banner-text">{{environment}} - <a target="_blank" style="color: yellowgreen;"
+        href="{{liveUrl}}">{{strings.getString('go_to_live_txt')}}</a></span>
+  </div>
+  <div *ngIf="accountStatusBanner" class="top-banner status-banner">
+    <span class="banner-text">{{accountStatusBanner}}</span>
+  </div>
+  <div #loaderDiv [class.top-env-banner]="envBanner && !accountStatusBanner"
+    [class.top-status-banner]="accountStatusBanner" [hidden]="loaded==true" class="app-page-loader">
+    <div class="loader">
+      <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+        <div class="bounce4"></div>
+        <div class="bounce5"></div>
+      </div>
     </div>
-    <div #loaderDiv [class.top-banner]="showEnvironmentBanner" [hidden]="loaded==true" class="app-page-loader">
-        <div class="loader">
-            <div class="spinner">
-                <div class="bounce1"></div>
-                <div class="bounce2"></div>
-                <div class="bounce3"></div>
-                <div class="bounce4"></div>
-                <div class="bounce5"></div>
-            </div>
-        </div>
-    </div>
-    <ion-router-outlet [class.top-banner]="showEnvironmentBanner"  id="main-router">
-        <!--App content will display in here-->
-    </ion-router-outlet>
-    <!-- Preload components -->
-    <ion-toast hidden></ion-toast>
-    <ion-loading hidden></ion-loading>
-    <ion-alert hidden></ion-alert>
-    <ion-modal hidden></ion-modal>
-    <ion-datetime hidden></ion-datetime>
-    <ion-popover hidden></ion-popover>
-    <ion-picker hidden></ion-picker>
-    <ion-picker-internal hidden></ion-picker-internal>
+  </div>
+  <ion-router-outlet [class.top-env-banner]="envBanner && !accountStatusBanner"
+    [class.top-status-banner]="accountStatusBanner" id="main-router">
+    <!--App content will display in here-->
+  </ion-router-outlet>
+  <!-- Preload components -->
+  <ion-toast hidden></ion-toast>
+  <ion-loading hidden></ion-loading>
+  <ion-alert hidden></ion-alert>
+  <ion-modal hidden></ion-modal>
+  <ion-datetime hidden></ion-datetime>
+  <ion-popover hidden></ion-popover>
+  <ion-picker hidden></ion-picker>
+  <ion-picker-internal hidden></ion-picker-internal>
 </ion-app>

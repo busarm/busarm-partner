@@ -5,7 +5,6 @@ import { Platform } from "@ionic/angular";
 import {
   Oauth,
   OauthGrantType,
-  OauthStorageKeys,
 } from "busarm-oauth-client-js";
 
 import { Api, ApiResponse, ApiResponseType } from "../../helpers/Api";
@@ -34,6 +33,8 @@ export class AuthService {
 
   public authAttempted = false;
   public authorized = false;
+  public accountActive = false;
+  public accountVerified = false;
 
   constructor(
     public networkProvider: NetworkProvider,
@@ -267,6 +268,10 @@ export class AuthService {
         async ({ status, result, type, msg }) => {
           if (status && result) {
             let session: Session = result.data;
+            console.log(session);
+            // Set account status
+            this.accountActive = Boolean(session.user.partner_active)
+            this.accountVerified = Boolean(session.user.partner_verified)
             // Save  session info
             await this.sessionService.setSession(session);
             if (session.user) {

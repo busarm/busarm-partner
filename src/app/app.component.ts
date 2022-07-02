@@ -33,7 +33,8 @@ import { AnimationService } from "./services/app/AnimationService";
 import Bugsnag from "@bugsnag/browser";
 @Component({
   selector: "app-root",
-  templateUrl: "app.component.html",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
   /**Get app instance*/
@@ -47,9 +48,9 @@ export class AppComponent {
 
   public strings = Strings;
 
-  /*Defines whether or not
-    the app has been completed loading or not*/
-  public showEnvironmentBanner = ENVIRONMENT != ENV.PROD;
+  /*Show banners*/
+  public envBanner = ENVIRONMENT != ENV.PROD;
+  public accountStatusBanner = null;
 
   /*Defines whether or not
     the app has been completed loading or not*/
@@ -78,6 +79,7 @@ export class AppComponent {
     public animationService: AnimationService
   ) {
     AppComponent._instance = this;
+    this.accountStatusBanner = !authService.accountActive ? this.strings.getString('account_inactive_txt') : null;
 
     // Subscribe to network change event
     this.events.networkChanged.subscribe((online) => {
@@ -246,7 +248,7 @@ export class AppComponent {
           }
           return;
         }
-      } catch (error) {}
+      } catch (error) { }
     }
 
     // close popover
@@ -260,7 +262,7 @@ export class AppComponent {
           }
           return;
         }
-      } catch (error) {}
+      } catch (error) { }
     }
 
     // close modal
@@ -274,7 +276,7 @@ export class AppComponent {
           }
           return;
         }
-      } catch (error) {}
+      } catch (error) { }
     }
 
     // close side menu
@@ -288,7 +290,7 @@ export class AppComponent {
           }
           return;
         }
-      } catch (error) {}
+      } catch (error) { }
     }
 
     // Go back

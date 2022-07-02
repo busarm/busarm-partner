@@ -1,0 +1,28 @@
+
+.top-banner {
+  background:black;
+  padding: 10px 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .banner-text, span {
+    color: yellow;
+    font-size: 12px;
+    line-height: 1rem;
+  }
+}
+.env-banner {
+  height: 30px;
+}
+.status-banner {
+  height: 40px;
+}
+
+.top-env-banner {
+  top: 30px;
+}
+.top-status-banner {
+  top: 40px;
+}
+

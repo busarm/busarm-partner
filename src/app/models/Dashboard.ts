@@ -8,6 +8,8 @@ import { Alert } from "./Alert";
 
 export interface Dashboard {
   alert: Alert;
+  account_active: boolean;
+  account_verified: boolean;
   active_trips: Trip[];
   booking_months?: BookingMonth[];
   bookings?: BookingGroup;
