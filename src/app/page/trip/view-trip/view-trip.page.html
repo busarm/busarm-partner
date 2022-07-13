@@ -249,7 +249,7 @@
     </ion-card-content>
   </ion-card>
   <!-- Bus -->
-  <ion-card *ngIf="trip!=null && checkIsOpen(trip.status_id)">
+  <ion-card *ngIf="trip!=null">
     <ion-card-title class="cell cell-center ">
       {{strings.getString("bus_txt")}}
     </ion-card-title>
@@ -261,7 +261,7 @@
             {{strings.getString("view_txt")}}
           </ion-button>
         </ion-col>
-        <ion-col *ngIf="trip!=null && trip.bus==null" size="12" class="cell cell-center cell-flex cell-flex-left">
+        <ion-col *ngIf="trip!=null && trip.bus==null && checkIsOpen(trip.status_id)" size="12" class="cell cell-center cell-flex cell-flex-left">
           <ion-button color="primary" (click)="showAddBus()">
             <ion-icon slot="start" name="add"></ion-icon>
             {{strings.getString("add_txt")}}
@@ -273,7 +273,7 @@
       <ion-row>
         <ion-col size="2" class="cell cell-center  cell-flex cell-flex-center ">
           <ion-button class="iconBt" (click)="confirmDeleteBus(trip.bus)">
-            <ion-icon slot="icon-only" class="danger" name="remove-circle"></ion-icon>
+            <ion-icon slot="icon-only" class="danger" [disabled]="!checkIsOpen(trip.status_id)" name="remove-circle"></ion-icon>
           </ion-button>
         </ion-col>
         <ion-col size="4" class="cell cell-center  cell-flex cell-flex-center ">

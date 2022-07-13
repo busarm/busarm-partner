@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import {AccountPage} from './account.page';
 import { UpdateAgentPageModule } from '../agents/update-agent/update-agent.module';
@@ -11,7 +12,8 @@ import { UpdateAgentPageModule } from '../agents/update-agent/update-agent.modul
         CommonModule,
         FormsModule,
         IonicModule,
-        UpdateAgentPageModule
+        UpdateAgentPageModule,
+        FontAwesomeModule
     ],
     declarations: [AccountPage]
 })

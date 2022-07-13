@@ -978,14 +978,14 @@ export class ViewTripPage extends PageController {
   public getTripStatusClass(status: string): string {
     if (this.assertAvailable(status)) {
       switch (status) {
-        case "2":
+        case StatusID.TRIP_ACTIVE:
         default:
           return "status-default";
-        case "3":
+        case StatusID.TRIP_CLOSED:
           return "status-cancel";
-        case "7":
+        case StatusID.TRIP_COMPLETED:
           return "status-ok";
-        case "8":
+        case StatusID.TRIP_ISSUES:
           return "status-warn";
       }
     }
@@ -995,9 +995,9 @@ export class ViewTripPage extends PageController {
   public checkIsOpen(status: string): boolean {
     if (this.assertAvailable(status)) {
       switch (status) {
-        case "3":
-        case "7":
-        case "8":
+        case StatusID.TRIP_CLOSED:
+        case StatusID.TRIP_COMPLETED:
+        case StatusID.TRIP_ISSUES:
           return false;
         default:
           return true;

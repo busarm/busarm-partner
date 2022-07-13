@@ -117,6 +117,7 @@
   "add_agent_txt": "Add Agent",
   "update_agent_txt": "Update Agent",
   "update_account_txt": "Update Account",
+  "change_pass_txt": "Change Password",
   "admin_txt": "Admin",
   "delete_agent_title_txt": "Delete Agent",
   "delete_agent_msg_txt": "Are you sure you want to delete this agent?",
@@ -241,7 +242,7 @@
   "remove_pickup_loc_title_txt": "Remove Pick-up Location",
   "remove_dropoff_loc_title_txt": "Remove Dropoff Location",
   "remove_loc_msg_txt": "Are you sure you want to remove this location?",
-  "link_txt": "Link",
+  "link_txt": "App Link",
   "account_id_txt": "Account ID",
   "account_inactive_txt": "Your account is not active. Hence, your services will not be available. Please contact support",
   "account_unverified_txt": "Your account is not verified. Hence, your services will not be available. Please contact support"

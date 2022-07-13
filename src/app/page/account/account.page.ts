@@ -16,6 +16,7 @@ import { DestinationType } from "@ionic-native/camera";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { Urls } from "../../helpers/Urls";
 import { UpdateAgentPage } from "../agents/update-agent/update-agent.page";
+import { Oauth, OauthStorageKeys } from "busarm-oauth-client-js";
 @Component({
   selector: "app-account",
   templateUrl: "./account.page.html",
@@ -23,6 +24,8 @@ import { UpdateAgentPage } from "../agents/update-agent/update-agent.page";
 })
 export class AccountPage extends PageController {
   public darkMode: boolean = false;
+  public token: string = null;
+  public accountPath: string = null;
 
   constructor(
     private modalCtrl: ModalController,
@@ -53,6 +56,8 @@ export class AccountPage extends PageController {
     });
 
     this.darkMode = (await this.instance.sessionService.getDarkMode());
+    this.token = await Oauth.storage.get(OauthStorageKeys.AccessTokenKey);
+    this.accountPath =  "P-" + this.user.account_id;
   }
 
   public ngOnDestroy() {
@@ -239,8 +244,16 @@ export class AccountPage extends PageController {
    * Get account's app link
    * @returns {String}
    */
-  public getAppLink(): string {
-    return Urls.appUrl + "P-" + this.user.account_id
+  public getAppLink(isPrivate = true): string {
+    return Urls.appUrl + (isPrivate ? this.accountPath : '');
+  }
+  
+  /**
+   * Get account's security link
+   * @returns {String}
+   */
+  public getAppSecurityLink(): string {
+    return Urls.accountSecurityUrl;
   }
 
   /**Logout user*/

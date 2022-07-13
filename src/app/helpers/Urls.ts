@@ -56,6 +56,7 @@ export class Urls {
   public static supportUrl = Urls.appUrl + "support";
   public static termsUrl = Urls.appUrl + "terms";
   public static privacyUrl = Urls.appUrl + "privacy";
+  public static accountSecurityUrl = Urls.appUrl + "account/security";
   public static partnerOauthRedirectUrl = Urls.baseUrl() + "hooks/oauth/authorize";
 
   /*Oauth Urls*/
