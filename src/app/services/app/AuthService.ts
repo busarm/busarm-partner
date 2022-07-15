@@ -268,7 +268,6 @@ export class AuthService {
         async ({ status, result, type, msg }) => {
           if (status && result) {
             let session: Session = result.data;
-            console.log(session);
             // Set account status
             this.accountActive = Boolean(session.user.partner_active)
             this.accountVerified = Boolean(session.user.partner_verified)
