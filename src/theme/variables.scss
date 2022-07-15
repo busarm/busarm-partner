@@ -148,20 +148,20 @@
   --ion-color-danger-tint: rgb(155, 70, 32);
 
   /** light **/
-  --ion-color-light: rgb(241, 241, 241);
-  --ion-color-light-rgb: rgb(241, 241, 241);
+  --ion-color-light: #f0f0f0;
+  --ion-color-light-rgb: rgb(240, 240, 240);
   --ion-color-light-contrast: #000000;
   --ion-color-light-contrast-rgb: 0, 0, 0;
-  --ion-color-light-shade: whitesmoke;
+  --ion-color-light-shade: #fafafa;
   --ion-color-light-tint: white;
   --ion-color-light-tint-rgb: rgb(255, 255, 255);
 
   /** dark **/
-  --ion-color-dark: #1d1d1d;
-  --ion-color-dark-rgb: rgb(25, 25, 25);
+  --ion-color-dark: #151515;
+  --ion-color-dark-rgb: rgb(21, 21, 21);
   --ion-color-dark-contrast: #ffffff;
   --ion-color-dark-contrast-rgb: 255, 255, 255;
-  --ion-color-dark-shade: #181818;
+  --ion-color-dark-shade: #121212;
   --ion-color-dark-tint: #0c0c0c;
   --ion-color-dark-tint-rgb: rgb(12, 12, 12);
 
@@ -229,23 +229,23 @@ body.dark {
   /** custom */
   --border-color: var(--ion-color-step-750);
 
-  /** dark **/
-  --ion-color-dark: rgb(241, 241, 241);
-  --ion-color-dark-rgb: rgb(241, 241, 241);
-  --ion-color-dark-contrast: #000000;
-  --ion-color-dark-contrast-rgb: 0, 0, 0;
-  --ion-color-dark-shade: whitesmoke;
-  --ion-color-dark-tint: white;
-  --ion-color-dark-tint-rgb: rgb(255, 255, 255);
-
   /** light **/
-  --ion-color-light: #1d1d1d;
-  --ion-color-light-rgb: rgb(25, 25, 25);
+  --ion-color-light: #151515;
+  --ion-color-light-rgb: rgb(21, 21, 21);
   --ion-color-light-contrast: #ffffff;
   --ion-color-light-contrast-rgb: 255, 255, 255;
-  --ion-color-light-shade: #181818;
+  --ion-color-light-shade: #121212;
   --ion-color-light-tint: #0c0c0c;
   --ion-color-light-tint-rgb: rgb(12, 12, 12);
+
+  /** dark **/
+  --ion-color-dark: #f0f0f0;
+  --ion-color-dark-rgb: rgb(240, 240, 240);
+  --ion-color-dark-contrast: #000000;
+  --ion-color-dark-contrast-rgb: 0, 0, 0;
+  --ion-color-dark-shade: #fafafa;
+  --ion-color-dark-tint: white;
+  --ion-color-dark-tint-rgb: rgb(255, 255, 255);
 
   /** medium **/
   --ion-color-medium: #d6d6d6;

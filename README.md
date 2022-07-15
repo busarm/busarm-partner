@@ -7,7 +7,8 @@ App for Busarm Partners
 ## Requirementts
 
 - NodeJs Version - Version >= 14.0
-- Framework - Ionic (Angular) v5. Visit https://ionicframework.com/docs/
+- Angular Version - Version >= 12.0
+- Framework - Ionic (Angular) v6. Visit https://ionicframework.com/docs/
 
 ## Security
 
