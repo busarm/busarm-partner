@@ -79,8 +79,7 @@ export class AppComponent {
     public animationService: AnimationService
   ) {
     AppComponent._instance = this;
-    this.accountStatusBanner = !authService.accountActive ? this.strings.getString('account_inactive_txt') : null;
-
+    
     // Subscribe to network change event
     this.events.networkChanged.subscribe((online) => {
       if (online) {
