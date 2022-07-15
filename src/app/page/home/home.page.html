@@ -1,12 +1,12 @@
 <!-- Split Pane -->
 <ion-split-pane *ngIf="!is_mobile() || is_tablet()" when="lg" contentId="home-router">
   <!--Menu Controller-->
-  <ion-menu size="start" menuId="home" contentId="home-router" type="overlay">
+  <ion-menu class="side-menu" size="start" menuId="home" contentId="home-router" type="overlay">
     <ion-content class="background-primary">
       <div class="logoContainer">
-        <img draggable="false" class="logo logoTxt" src="{{assets.getPath('logo_txt_light')}}">
+        <img draggable="false" class="logo logoTxt" src="{{assets.getPath('logo_txt_white')}}">
         <div class="cell cell-center">
-          <h3 class="logoNameTxt color-secondary">{{strings.getString("partner_txt")}}</h3>
+          <h3 class="logoNameTxt color-white">{{strings.getString("partner_txt")}}</h3>
         </div>
       </div>
       <ion-menu-toggle auto-hide="false">

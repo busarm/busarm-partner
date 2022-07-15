@@ -245,5 +245,6 @@
   "link_txt": "App Link",
   "account_id_txt": "Account ID",
   "account_inactive_txt": "Your account is not active. Hence, your services will not be available. Please contact support",
-  "account_unverified_txt": "Your account is not verified. Hence, your services will not be available. Please contact support"
+  "account_unverified_txt": "Your account is not verified. Hence, your services will not be available. Please contact support",
+  "error_login_limit": "Too login attempts. Please try again later"
 }

@@ -1,14 +1,10 @@
 import { Component } from "@angular/core";
 import { Platform } from "@ionic/angular";
 
-import { OauthGrantType } from "busarm-oauth-client-js";
-
 import { Strings } from "../../resources";
-import { ApiResponseType } from "../../helpers/Api";
 import { PageController } from "../page-controller";
 import { Utils } from "../../helpers/Utils";
 import { ToastType } from "../../services/app/AlertService";
-import { SessionService } from "../../services/app/SessionService";
 import { Urls } from "../../helpers/Urls";
 import { CONFIGS } from "../../../environments/environment";
 
@@ -20,9 +16,14 @@ import { CONFIGS } from "../../../environments/environment";
 export class LoginPage extends PageController {
   private redirectUri: string;
 
+  private maxRequests = 5;
+  private maxRequestSeconds = 60;
+
   public username: string;
   public password: string;
   public forgottenPassword: boolean;
+  public requestDate: Date;
+  public requestCount: number = 0;
 
   platform: Platform;
 
@@ -36,7 +37,7 @@ export class LoginPage extends PageController {
     this.redirectUri = (await this.getQueryParams()).redirectUri; // get redirect Uri
   }
 
-  public async ionViewDidEnter() {}
+  public async ionViewDidEnter() { }
 
   /**Process user Login request
    * */
@@ -53,7 +54,16 @@ export class LoginPage extends PageController {
    * Process Login
    */
   public processLogin() {
-    if(this.isProccessing) return;
+    // Check if processing
+    if (this.isProccessing) return;
+    // Check request limit
+    if (this.requestDate &&
+      this.requestCount >= this.maxRequests &&
+      (new Date().getTime() - this.requestDate.getTime()) < (this.maxRequestSeconds * 1000)) {
+      this.showToastMsg(Strings.getString("error_login_limit"), ToastType.ERROR);
+      return;
+    }
+
     // Show Loader
     this.showLoading().then(() => {
       this.isProccessing = true;
@@ -76,6 +86,8 @@ export class LoginPage extends PageController {
           } else {
             await this.instance.authService.logout();
           }
+          this.requestDate = new Date();
+          this.requestCount = ++this.requestCount;
         })
         .catch(async (msg) => {
           // Hide Loader
@@ -88,6 +100,8 @@ export class LoginPage extends PageController {
             ToastType.ERROR
           );
           this.isProccessing = false;
+          this.requestDate = new Date();
+          this.requestCount = ++this.requestCount;
         });
     });
   }

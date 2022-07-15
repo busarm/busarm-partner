@@ -1,3 +1,10 @@
+.side-menu {
+  .logoContainer {
+    margin: 20px;
+    padding: 10px;
+    background: var(--ion-color-primary-tint);
+  }
+}
 .active-item {
   ion-icon,
   ion-label {
