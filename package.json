@@ -1,6 +1,6 @@
 {
   "name": "busarm-partner",
-  "version": "1.0.65",
+  "version": "1.0.66",
   "author": "Ionic Framework",
   "homepage": "https://partner.busarm.com/",
   "scripts": {
@@ -52,7 +52,7 @@
     "@zxing/browser": "~0.1.1",
     "@zxing/library": "~0.19.1",
     "@zxing/ngx-scanner": "~3.4.2",
-    "busarm-oauth-client-js": "^1.0.11",
+    "busarm-oauth-client-js": "^1.0.12",
     "chart.js": "^3.7.1",
     "cordova-android": "^10.1.0",
     "cordova-browser": "^6.0.0",

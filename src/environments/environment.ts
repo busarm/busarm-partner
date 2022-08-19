@@ -5,7 +5,7 @@ export const ENVIRONMENT: ENV = ENV.DEV;
 export const CONFIGS = {
     production: false,
     app_name: "Busarm Partner",
-    app_version: "1.0.65",
+    app_version: "1.0.66",
     oauth_scopes: ['openid', 'user', 'agent', 'tester'],
     ...envConfigs
 };
