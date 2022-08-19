@@ -204,6 +204,7 @@
     "builder": "@angular-devkit/build-angular:browser",
     "options": {
       "allowedCommonJsDependencies": [
+        "buffer",
         "chart.js",
         "crypto-js",
         "rxjs",

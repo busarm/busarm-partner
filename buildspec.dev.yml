@@ -27,3 +27,6 @@ artifacts:
   files:
     - '**/*'
   base-directory: www
+cache:
+    paths:
+        - "node_modules/**/*"
