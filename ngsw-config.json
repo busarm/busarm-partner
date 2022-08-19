@@ -32,5 +32,36 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "api",
+      "urls": [
+        "https://api.busarm.com",
+        "https://api.staging.busarm.com"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "30d"
+      }
+    },
+    {
+      "name": "api-performance",
+      "urls": [
+        "https://api.busarm.com/agent/trip",
+        "https://api.busarm.com/agent/bus",
+        "https://api.busarm.com/agent/location",
+        "https://api.staging.com/agent/trip",
+        "https://api.staging.com/agent/bus",
+        "https://api.staging.com/agent/location"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 100,
+        "maxAge": "1m"
+      }
+    }
   ]
+
 }

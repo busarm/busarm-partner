@@ -31,12 +31,12 @@ export class AuthorizePage extends PageController {
         params.code,
         Urls.partnerOauthRedirectUrl,
         (token) => {
-          if (token.accessToken) {
+          if (token?.accessToken) {
             this.oauth.saveAccess(token);
             this.instance.routeService.goHome();
           } else {
             this.showToastMsg(
-              Strings.getString("error_authorize_txt"),
+              token?.errorDescription ?? Strings.getString("error_authorize_txt"),
               ToastType.ERROR
             );
             this.instance.routeService.goToLogin();
@@ -45,7 +45,7 @@ export class AuthorizePage extends PageController {
       );
     } else {
       this.showToastMsg(
-        Strings.getString("error_authorize_txt"),
+        params?.error_description || Strings.getString("error_authorize_txt"),
         ToastType.ERROR
       );
       this.instance.routeService.goToLogin();
