@@ -49,12 +49,23 @@
     {
       "name": "api-performance",
       "urls": [
+        "https://api.busarm.com/app/trip",
+        "https://api.busarm.com/app/ticket",
+        "https://api.busarm.com/app/bus",
+        "https://api.busarm.com/app/location",
         "https://api.busarm.com/agent/trip",
+        "https://api.busarm.com/agent/ticket",
         "https://api.busarm.com/agent/bus",
         "https://api.busarm.com/agent/location",
-        "https://api.staging.com/agent/trip",
-        "https://api.staging.com/agent/bus",
-        "https://api.staging.com/agent/location"
+        
+        "https://api.staging.busarm.com/app/trip",
+        "https://api.staging.busarm.com/app/ticket",
+        "https://api.staging.busarm.com/app/bus",
+        "https://api.staging.busarm.com/app/location",
+        "https://api.staging.busarm.com/agent/trip",
+        "https://api.staging.busarm.com/agent/ticket",
+        "https://api.staging.busarm.com/agent/bus",
+        "https://api.staging.busarm.com/agent/location"
       ],
       "cacheConfig": {
         "strategy": "performance",
