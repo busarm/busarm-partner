@@ -511,7 +511,6 @@ ion-tabs {
   }
 }
 
-
 ion-toast {
   --button-color: var(--ion-color-secondary);
 }
@@ -576,7 +575,7 @@ button {
 }
 
 ion-badge {
-  padding: 5px
+  padding: 5px;
 }
 
 button {
@@ -1091,8 +1090,17 @@ input {
 }
 
 /*Colors*/
+.color-white {
+  color: #ffffff !important;
+  --color: #ffffff !important;
+}
+
+.color-black {
+  color: #000000 !important;
+  --color: #000000 !important;
+}
+
 .color-light {
-  // color: var(--ion-text-color) !important;
   color: var(--ion-color-light) !important;
   --color: var(--ion-color-light) !important;
 }
@@ -1103,7 +1111,6 @@ input {
 }
 
 .color-dark {
-  // color: var(--ion-text-color-darker) !important;
   color: var(--ion-color-dark) !important;
   --color: var(--ion-color-dark) !important;
 }
